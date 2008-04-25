@@ -6,6 +6,7 @@
     <packaging>pom</packaging>
     <name>Cube°n</name>
     <description>Cube°n Task-Focused Interface for NetBeans </description>
+    <url>http://code.google.com/p/cubeon/</url>
     <version>${cubeon.release}</version>
     <inceptionYear>2008</inceptionYear>
     <licenses>
