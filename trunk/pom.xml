@@ -14,6 +14,10 @@
         <developerConnection>scm:svn:https://cubeon.googlecode.com/svn/trunk/</developerConnection>
         <url>http://code.google.com/p/cubeon/source/browse</url>
     </scm>
+    <issueManagement>
+        <system>googel</system>
+        <url>http://code.google.com/p/cubeon/issues/list</url>
+    </issueManagement>
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
