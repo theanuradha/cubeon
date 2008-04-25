@@ -9,6 +9,11 @@
     <url>cubeon.googlecode.com</url>
     <version>${cubeon.release}</version>
     <inceptionYear>2008</inceptionYear>
+    <scm>
+        <connection>scm:svn:http://cubeon.googlecode.com/svn/trunk/</connection>
+        <developerConnection>scm:svn:https://cubeon.googlecode.com/svn/trunk/</developerConnection>
+        <url>http://code.google.com/p/cubeon/source/browse</url>
+    </scm>
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
