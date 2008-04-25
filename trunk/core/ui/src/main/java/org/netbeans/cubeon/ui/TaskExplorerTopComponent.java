@@ -59,19 +59,19 @@ final class TaskExplorerTopComponent extends TopComponent implements ExplorerMan
         setName(NbBundle.getMessage(TaskExplorerTopComponent.class, "CTL_TaskExplorerTopComponent"));
         setToolTipText(NbBundle.getMessage(TaskExplorerTopComponent.class, "HINT_TaskExplorerTopComponent"));
         setIcon(Utilities.loadImage(ICON_PATH, true));
-        unloadViews();
+        unloadViewMenu();
         viewMenu.addPopupMenuListener(new PopupMenuListener() {
 
             public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
-                loadViews();
+                loadViewMenu();
             }
 
             public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
-               unloadViews();
+                unloadViewMenu();
             }
 
             public void popupMenuCanceled(PopupMenuEvent e) {
-               unloadViews();
+                unloadViewMenu();
             }
         });
 
@@ -80,21 +80,24 @@ final class TaskExplorerTopComponent extends TopComponent implements ExplorerMan
     public ExplorerManager getExplorerManager() {
         return explorerManager;
     }
-    private void unloadViews(){
-       viewMenu.removeAll();
-       viewMenu.addSeparator();
+
+    private void unloadViewMenu() {
+        viewMenu.removeAll();
+        viewMenu.addSeparator();
     }
-    private void loadViews() {
+
+    private void loadViewMenu() {
         viewMenu.removeAll();
         Collection<? extends TaskNodeView> views = Lookup.getDefault().lookupAll(TaskNodeView.class);
         for (final TaskNodeView view : views) {
-           JCheckBoxMenuItem item= new JCheckBoxMenuItem(new AbstractAction(view.getName()) {
+            JCheckBoxMenuItem item = new JCheckBoxMenuItem(new AbstractAction(view.getName()) {
 
                 public void actionPerformed(ActionEvent e) {
                     selectView(view);
                 }
             });
             item.setSelected(view.equals(selectedView));
+            item.setEnabled(views.size() > 1);
             viewMenu.add(item);
         }
     }
@@ -223,6 +226,10 @@ final class TaskExplorerTopComponent extends TopComponent implements ExplorerMan
 
     @Override
     public void componentOpened() {
+        loadView();
+    }
+
+    private void loadView() {
         if (selectedView == null) {
             Collection<? extends TaskNodeView> views = Lookup.getDefault().lookupAll(TaskNodeView.class);
             String selctedId = preferences.get(SELECTED_VIEW, null);
@@ -233,8 +240,14 @@ final class TaskExplorerTopComponent extends TopComponent implements ExplorerMan
                     break;
                 }
             }
-
+            
+            if (selectedView == null && views.size() > 0) {
+                //previse view is no longer available so set null on preferences and re call loadView()
+                preferences.put(SELECTED_VIEW, null);
+                loadViewMenu();
+            }
         }
+
     }
 
     @Override
