@@ -1,5 +1,5 @@
 /*
- *  Copyright 2008 Cube°n Team.
+ *  Copyright 2008 Anuradha.
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,19 +14,27 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.api;
 
-import org.openide.nodes.Node;
+package org.netbeans.cubeon.jira.repository;
+
+import org.netbeans.cubeon.spi.TaskRepositoryProvider;
 
 /**
  *
  * @author Anuradha G
  */
-public interface TaskNodeView {
-    String getId();
-    String getName();
+public class JiraTaskRepositoryProvider implements TaskRepositoryProvider{
 
-    String getDescription();
+    public String getName() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-    Node createRootContext();
+    public String getDiscription() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void createNewTaskRepository() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 }

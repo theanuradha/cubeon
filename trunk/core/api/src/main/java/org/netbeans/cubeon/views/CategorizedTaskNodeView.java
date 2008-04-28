@@ -17,7 +17,7 @@
 
 package org.netbeans.cubeon.views;
 
-import org.netbeans.cubeon.api.TaskNodeView;
+import org.netbeans.cubeon.spi.TaskNodeView;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;

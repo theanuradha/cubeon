@@ -1,5 +1,5 @@
 /*
- *  Copyright 2008 Cube°n Team.
+ *  Copyright 2008 Anuradha.
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,15 +14,34 @@
  *  limitations under the License.
  *  under the License.
  */
-
 package org.netbeans.cubeon.api;
 
-import org.openide.util.Lookup;
+import java.util.List;
+import org.netbeans.cubeon.spi.TaskRepository;
 
 /**
  *
  * @author Anuradha G
  */
-public interface TaskContext {
-  Lookup getLookup();
+public interface TaskRepositoryHandler {
+
+    /**
+     * Get all Task Repositories
+     * @return list of repositories
+     */
+    List<TaskRepository> getTaskRepositorys();
+
+    /**
+     * Find Task Repository by Id
+     * @param id Repository id
+     * @return matching Task Repository  may return null 
+     */
+    TaskRepository getTaskRepositoryById(String id);
+    
+    
+    
+    /**
+    void addTaskRepository();
+    void removeTaskRepository(TaskRepository repository);
+     **/
 }

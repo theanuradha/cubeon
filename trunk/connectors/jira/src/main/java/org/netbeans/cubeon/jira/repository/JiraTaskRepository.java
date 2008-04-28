@@ -1,5 +1,5 @@
 /*
- *  Copyright 2008 Cube°n Team.
+ *  Copyright 2008 Anuradha.
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,14 +15,27 @@
  *  under the License.
  */
 
-package org.netbeans.cubeon.api;
+package org.netbeans.cubeon.jira.repository;
 
+import org.netbeans.cubeon.spi.TaskRepository;
 import org.openide.util.Lookup;
 
 /**
  *
  * @author Anuradha G
  */
-public interface TaskContext {
-  Lookup getLookup();
+public class JiraTaskRepository implements TaskRepository{
+
+    public String getId() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public String getName() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Lookup getLookup() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 }

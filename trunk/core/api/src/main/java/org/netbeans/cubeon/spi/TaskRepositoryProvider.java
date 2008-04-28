@@ -1,5 +1,5 @@
 /*
- *  Copyright 2008 Cube°n Team.
+ *  Copyright 2008 Anuradha.
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,15 +14,19 @@
  *  limitations under the License.
  *  under the License.
  */
-
-package org.netbeans.cubeon.api;
-
-import org.openide.util.Lookup;
+package org.netbeans.cubeon.spi;
 
 /**
  *
  * @author Anuradha G
+ * 
+ * 
  */
-public interface TaskContext {
-  Lookup getLookup();
+public interface TaskRepositoryProvider {
+
+    String getName();
+
+    String getDiscription();
+    
+    void createNewTaskRepository();
 }

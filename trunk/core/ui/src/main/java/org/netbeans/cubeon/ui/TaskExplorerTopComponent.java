@@ -27,7 +27,7 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
-import org.netbeans.cubeon.api.TaskNodeView;
+import org.netbeans.cubeon.spi.TaskNodeView;
 import org.openide.awt.DropDownButtonFactory;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.BeanTreeView;

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2008 Cube°n Team.
+ *  Copyright 2008 Anuradha.
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,15 +14,17 @@
  *  limitations under the License.
  *  under the License.
  */
+package org.netbeans.cubeon.spi;
 
-package org.netbeans.cubeon;
-
-import org.netbeans.cubeon.api.TaskContext;
+import org.openide.util.Lookup;
 
 /**
  *
- * @author Anuradha
+ * @author Anuradha G
  */
-public class TaskContextImpl implements TaskContext{
-  
+public interface TaskElement {
+
+    TaskRepository getTaskRepository();
+
+    Lookup getLookup();
 }

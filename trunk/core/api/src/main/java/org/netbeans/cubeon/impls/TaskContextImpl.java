@@ -14,15 +14,21 @@
  *  limitations under the License.
  *  under the License.
  */
+package org.netbeans.cubeon.impls;
 
-package org.netbeans.cubeon.api;
-
+import org.netbeans.cubeon.api.TaskContext;
 import org.openide.util.Lookup;
+import org.openide.util.lookup.Lookups;
 
 /**
  *
- * @author Anuradha G
+ * @author Anuradha
  */
-public interface TaskContext {
-  Lookup getLookup();
+public class TaskContextImpl implements TaskContext {
+
+    public Lookup getLookup() {
+        return Lookups.fixed(
+                /*Task Repository Handler Implementation*/
+                new TaskRepositoryHandlerImpl());
+    }
 }
