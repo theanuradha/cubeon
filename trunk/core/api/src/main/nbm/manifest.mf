@@ -1,5 +1,0 @@
-Manifest-Version: 1.0
-OpenIDE-Module-Localizing-Bundle: org/netbeans/cubeon/api/Bundle.properties
-OpenIDE-Module-Layer: org/netbeans/cubeon/api/layer.xml
-
-
