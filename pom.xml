@@ -105,7 +105,7 @@
                     <extensions>true</extensions>
                     <configuration>
                         <descriptor>src/main/nbm/module.xml</descriptor>
-                        <keystorealias>mevenide2</keystorealias>
+                        <keystorealias>cubeon</keystorealias>
                     </configuration>
                     <dependencies>
                         <dependency>

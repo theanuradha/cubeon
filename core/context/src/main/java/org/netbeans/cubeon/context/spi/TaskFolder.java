@@ -17,16 +17,38 @@
 package org.netbeans.cubeon.context.spi;
 
 import java.util.List;
+import org.openide.util.Lookup;
 
 /**
  *
  * @author Anuradha G
  */
 public interface TaskFolder {
-
+    
+    /**
+     * 
+     * @return get uuid of the folder
+     */
+    String getUUID();
+    
+    /**
+     * 
+     * @return Name of the folder
+     */
     String getName();
 
+    /**
+     * 
+     * @return Description of folder
+     */
     String getDescription();
+
+    /**
+     * 
+     * @return Lookup instance contain feature provided like  
+     * @link TaskFolderOparations, Node 
+     */
+    Lookup getLookup();
 
     boolean addFolder(TaskFolder folder);
 
