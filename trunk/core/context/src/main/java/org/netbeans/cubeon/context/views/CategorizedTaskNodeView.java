@@ -42,6 +42,8 @@ public class CategorizedTaskNodeView implements TaskNodeView{
     }
 
     public Node createRootContext() {
+        //validate default settings
+        validate();
         return new AbstractNode(Children.LEAF,Lookup.EMPTY){
 
             @Override
@@ -50,6 +52,10 @@ public class CategorizedTaskNodeView implements TaskNodeView{
             }
         
         };
+    }
+
+    private void validate() {
+        
     }
 
 }

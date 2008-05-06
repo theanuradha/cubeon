@@ -24,5 +24,6 @@ import org.openide.util.Lookup;
  * @author Anuradha G
  */
 public interface TaskContext {
+    
   Lookup getLookup();
 }
