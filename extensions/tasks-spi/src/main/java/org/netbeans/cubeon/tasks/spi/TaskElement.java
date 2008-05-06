@@ -14,13 +14,17 @@
  *  limitations under the License.
  *  under the License.
  */
+package org.netbeans.cubeon.tasks.spi;
 
-package org.netbeans.cubeon.context.spi;
+import org.openide.util.Lookup;
 
 /**
  *
  * @author Anuradha G
  */
-public interface TasksFileSystem {
-  
+public interface TaskElement {
+
+    TaskRepository getTaskRepository();
+
+    Lookup getLookup();
 }

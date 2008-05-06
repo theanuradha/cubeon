@@ -17,7 +17,7 @@
 package org.netbeans.cubeon.context.api;
 
 import java.util.List;
-import org.netbeans.cubeon.context.spi.TaskRepository;
+import org.netbeans.cubeon.tasks.spi.TaskRepository;
 
 /**
  *

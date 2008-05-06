@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 import javax.swing.Action;
 import org.netbeans.cubeon.context.api.TaskContext;
 import org.netbeans.cubeon.context.api.TaskRepositoryHandler;
-import org.netbeans.cubeon.context.spi.TaskRepository;
+import org.netbeans.cubeon.tasks.spi.TaskRepository;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.BeanTreeView;
 import org.openide.nodes.AbstractNode;

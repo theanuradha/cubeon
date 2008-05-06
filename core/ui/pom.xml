@@ -26,6 +26,16 @@
             <version>${cubeon.release}</version>
         </dependency>
         <dependency>
+            <groupId>org.netbeans.cubeon</groupId>
+            <artifactId>cubeon-tasks-spi</artifactId>
+            <version>${cubeon.release}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util</artifactId>
+            <version>${netbeans.release}</version>
+        </dependency>
+        <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-windows</artifactId>
             <version>${netbeans.release}</version>
@@ -66,6 +76,6 @@
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-awt</artifactId>
             <version>${netbeans.release}</version>
-        </dependency>  
+        </dependency>
     </dependencies>
 </project>

@@ -16,7 +16,7 @@
  */
 package org.netbeans.cubeon.context.internals;
 
-import org.netbeans.cubeon.context.spi.TaskFolder;
+import org.netbeans.cubeon.tasks.spi.TaskFolder;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 
