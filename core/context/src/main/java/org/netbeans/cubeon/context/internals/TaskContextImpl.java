@@ -14,7 +14,7 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.context.impls;
+package org.netbeans.cubeon.context.internals;
 
 import org.netbeans.cubeon.context.api.TaskContext;
 import org.openide.util.Lookup;

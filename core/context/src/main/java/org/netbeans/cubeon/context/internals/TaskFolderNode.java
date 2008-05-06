@@ -14,32 +14,34 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.context.impls;
+package org.netbeans.cubeon.context.internals;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.netbeans.cubeon.context.api.TaskRepositoryHandler;
-import org.netbeans.cubeon.context.spi.TaskRepository;
+import java.awt.Image;
+import org.netbeans.cubeon.context.api.NodeUtils;
+import org.openide.nodes.AbstractNode;
+import org.openide.nodes.Children;
 
 /**
  *
  * @author Anuradha G
  */
-class TaskRepositoryHandlerImpl implements TaskRepositoryHandler {
+public class TaskFolderNode extends AbstractNode {
 
-    public List<TaskRepository> getTaskRepositorys() {
-        //todo
-        return new ArrayList<TaskRepository>();
+    public TaskFolderNode(String name, String description) {
+        super(Children.LEAF);//todo add children
+
+        setDisplayName(name);
+        setShortDescription(description);
+
     }
 
-    public TaskRepository getTaskRepositoryById(String id) {
-        List<TaskRepository> repositorys = getTaskRepositorys();
-        for (TaskRepository tr : repositorys) {
-            if (tr.getId().equals(id)) {
-                return tr;
-            }
-        }
+    @Override
+    public Image getIcon(int arg0) {
+        return NodeUtils.getTreeFolderIcon(false);
+    }
 
-        return null;
+    @Override
+    public Image getOpenedIcon(int arg0) {
+        return NodeUtils.getTreeFolderIcon(true);
     }
 }
