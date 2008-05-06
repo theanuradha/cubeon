@@ -7,7 +7,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>cubeon-tasks-spi</artifactId>
-  <packaging>pom</packaging>
+  <packaging>jar</packaging>
   <name>Cube°n Tasks SPI</name>
   <description>Cube°n Tasks SPI</description>
   <version>${cubeon.release}</version>
