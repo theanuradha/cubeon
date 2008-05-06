@@ -14,15 +14,19 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.context.spi;
+package org.netbeans.cubeon.tasks.spi;
 
 /**
  *
  * @author Anuradha G
+ * 
+ * 
  */
-public interface TaskFolderOparations {
+public interface TaskRepositoryProvider {
 
-    void setName(String name);
+    String getName();
 
-    void setDescription(String description);
+    String getDiscription();
+    
+    void createNewTaskRepository();
 }

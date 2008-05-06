@@ -17,7 +17,8 @@
 
 package org.netbeans.cubeon.jira.repository;
 
-import org.netbeans.cubeon.context.spi.TaskRepository;
+
+import org.netbeans.cubeon.tasks.spi.TaskRepository;
 import org.openide.util.Lookup;
 
 /**

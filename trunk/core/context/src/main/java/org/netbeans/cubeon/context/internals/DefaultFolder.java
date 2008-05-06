@@ -17,8 +17,8 @@
 package org.netbeans.cubeon.context.internals;
 
 import java.util.List;
-import org.netbeans.cubeon.context.spi.TaskFolder;
-import org.netbeans.cubeon.context.spi.TaskFolderOparations;
+import org.netbeans.cubeon.tasks.spi.TaskFolder;
+import org.netbeans.cubeon.tasks.spi.TaskFolderOparations;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.Lookups;
 

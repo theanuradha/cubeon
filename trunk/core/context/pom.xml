@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <parent>
-    <groupId>org.netbeans.cubeon</groupId>
-    <artifactId>cubeon-core</artifactId>
+    <parent>
+        <groupId>org.netbeans.cubeon</groupId>
+        <artifactId>cubeon-core</artifactId>
+        <version>${cubeon.release}</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>cubeon-context</artifactId>
+    <packaging>nbm</packaging>
+    <name>Cube°n Context</name>
+    <description>Context of the Cube°n</description>
     <version>${cubeon.release}</version>
-  </parent>
-  <modelVersion>4.0.0</modelVersion>
-  <artifactId>cubeon-context</artifactId>
-  <packaging>nbm</packaging>
-  <name>Cube°n Context</name>
-  <description>Context of the Cube°n</description>
-  <version>${cubeon.release}</version>
     <build>
         <plugins>
             <plugin>
@@ -22,8 +22,18 @@
     <dependencies>
         <dependency>
             <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util</artifactId>
+            <version>${netbeans.release}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-nodes</artifactId>
             <version>${netbeans.release}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.cubeon</groupId>
+            <artifactId>cubeon-tasks-spi</artifactId>
+            <version>${cubeon.release}</version>
         </dependency>
     </dependencies>
 </project>
