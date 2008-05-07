@@ -22,7 +22,9 @@ package org.netbeans.cubeon.tasks.spi;
  */
 public interface TaskFolderOparations {
 
-    void setName(String name);
+    boolean rename(String name);
 
+    boolean moveTo(TaskFolder folder);
+    
     void setDescription(String description);
 }

@@ -31,9 +31,12 @@ public class DefaultFolder implements TaskFolder, TaskFolderOparations {
     private String uuid;
     private String name;
     private String description;
+    private String path;
+    private TaskFolder parent;
     private final TaskFolderNode folderNode;
 
-    public DefaultFolder(String uuid, String name, String description) {
+    DefaultFolder(DefaultFolder parent, String uuid, String name, String description) {
+        this.parent = parent;
         this.uuid = uuid;
         this.name = name;
         this.description = description;
@@ -53,9 +56,15 @@ public class DefaultFolder implements TaskFolder, TaskFolderOparations {
         return description;
     }
 
-    public void setName(String name) {
+    public TaskFolder getParent() {
+        return parent;
+    }
+
+    public boolean rename(String name) {
+        //TODO : add vaidations
         this.name = name;
         folderNode.setDisplayName(name);
+        return true;
     }
 
     public void setDescription(String description) {
@@ -80,5 +89,16 @@ public class DefaultFolder implements TaskFolder, TaskFolderOparations {
 
     public List<TaskFolder> getSubFolders() {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public boolean moveTo(TaskFolder folder) {
+        //TODO : add vaidations
+
+
+        this.parent = folder;
+        return true;
+
+
+
     }
 }

@@ -35,6 +35,9 @@ public class TaskFolderChildrens extends Children.Keys<TaskFolder> {
     @Override
     protected Node[] createNodes(TaskFolder taskFolder) {
         Node node = taskFolder.getLookup().lookup(Node.class);
+
+        assert node != null;
+
         return node != null ? new Node[]{node} : new Node[]{};
     }
 

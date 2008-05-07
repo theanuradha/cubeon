@@ -14,7 +14,6 @@
  *  limitations under the License.
  *  under the License.
  */
-
 package org.netbeans.cubeon.tasks.spi;
 
 /**
@@ -22,5 +21,8 @@ package org.netbeans.cubeon.tasks.spi;
  * @author Anuradha G
  */
 public interface TasksFileSystem {
-  
+
+    TaskFolder getRootFolder();
+    
+    //TODO : add backup restore oprations
 }
