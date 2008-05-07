@@ -24,13 +24,13 @@ import org.openide.util.Lookup;
  * @author Anuradha G
  */
 public interface TaskFolder {
-    
+
     /**
      * 
      * @return get uuid of the folder
      */
     String getUUID();
-    
+
     /**
      * 
      * @return Name of the folder
@@ -42,6 +42,12 @@ public interface TaskFolder {
      * @return Description of folder
      */
     String getDescription();
+
+    /**
+     * 
+     * @return Parent Folder 
+     */
+    TaskFolder getParent();
 
     /**
      * 
