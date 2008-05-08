@@ -17,5 +17,10 @@
             <artifactId>org-openide-util</artifactId>
             <version>${netbeans.release}</version>
         </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-filesystems</artifactId>
+            <version>${netbeans.release}</version>
+        </dependency>
     </dependencies>
 </project>
