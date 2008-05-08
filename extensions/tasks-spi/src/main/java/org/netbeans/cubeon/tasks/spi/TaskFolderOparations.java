@@ -26,5 +26,7 @@ public interface TaskFolderOparations {
 
     boolean moveTo(TaskFolder folder);
     
+    boolean copyTo(TaskFolder folder);
+    
     void setDescription(String description);
 }

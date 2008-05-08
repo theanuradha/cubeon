@@ -17,6 +17,7 @@
 package org.netbeans.cubeon.tasks.spi;
 
 import java.util.List;
+import org.openide.filesystems.FileObject;
 import org.openide.util.Lookup;
 
 /**
@@ -37,6 +38,12 @@ public interface TaskFolder {
      */
     String getName();
 
+    /**
+     * 
+     * @return path of filesystem
+     */
+    FileObject getPath();
+    
     /**
      * 
      * @return Description of folder
