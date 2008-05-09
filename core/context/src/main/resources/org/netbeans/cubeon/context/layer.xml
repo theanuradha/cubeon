@@ -2,6 +2,9 @@
 <!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.1//EN" "http://www.netbeans.org/dtds/filesystem-1_1.dtd">
 <filesystem>
     <folder name="cubeon">
-        <folder name="tasks"/>
+        <folder name="tasks">
+            <folder name="Uncategorized">
+            </folder>
+        </folder>
     </folder>
 </filesystem>

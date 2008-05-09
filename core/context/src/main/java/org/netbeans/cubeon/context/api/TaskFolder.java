@@ -14,7 +14,7 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.tasks.spi;
+package org.netbeans.cubeon.context.api;
 
 import java.util.List;
 import org.openide.filesystems.FileObject;
@@ -42,8 +42,8 @@ public interface TaskFolder {
      * 
      * @return path of filesystem
      */
-    FileObject getPath();
-    
+    FileObject getFileObject();
+
     /**
      * 
      * @return Description of folder

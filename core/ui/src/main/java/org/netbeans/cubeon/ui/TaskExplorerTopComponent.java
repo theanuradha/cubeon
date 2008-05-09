@@ -59,6 +59,7 @@ final class TaskExplorerTopComponent extends TopComponent implements ExplorerMan
         setName(NbBundle.getMessage(TaskExplorerTopComponent.class, "CTL_TaskExplorerTopComponent"));
         setToolTipText(NbBundle.getMessage(TaskExplorerTopComponent.class, "HINT_TaskExplorerTopComponent"));
         setIcon(Utilities.loadImage(ICON_PATH, true));
+        taskTreeView.setRootVisible(false);
         unloadViewMenu();
         viewMenu.addPopupMenuListener(new PopupMenuListener() {
 
