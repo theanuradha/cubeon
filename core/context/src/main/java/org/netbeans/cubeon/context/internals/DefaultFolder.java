@@ -104,7 +104,14 @@ public class DefaultFolder implements TaskFolder, TaskFolderOparations {
     }
 
     public boolean removeFolder(TaskFolder folder) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        try {
+
+            folder.getFileObject().delete();
+            return true;
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return false;
     }
 
     public List<TaskFolder> getSubFolders() {
