@@ -28,12 +28,6 @@ public interface TaskFolder {
 
     /**
      * 
-     * @return get uuid of the folder
-     */
-    String getUUID();
-
-    /**
-     * 
      * @return Name of the folder
      */
     String getName();
@@ -63,7 +57,7 @@ public interface TaskFolder {
      */
     Lookup getLookup();
 
-    boolean addFolder(TaskFolder folder);
+    TaskFolder addNewFolder(String name,String description);
 
     boolean removeFolder(TaskFolder folder);
 

@@ -17,13 +17,13 @@
 package org.netbeans.cubeon.context.internals;
 
 import java.io.IOException;
-import java.util.UUID;
 import org.netbeans.cubeon.context.api.TaskFolder;
 import org.netbeans.cubeon.context.api.TasksFileSystem;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.filesystems.Repository;
 import org.openide.util.Exceptions;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -32,7 +32,6 @@ import org.openide.util.Exceptions;
 public class DefaultFileSystem implements TasksFileSystem {
 
     static final String BASE_PATH = "cubeon/tasks";
-    static final String UUID_TAG = "uuid";
     static final String DESCRIPTION_TAG = "description";
     private FileObject root;
 
@@ -41,18 +40,14 @@ public class DefaultFileSystem implements TasksFileSystem {
             root = FileUtil.createFolder(Repository.getDefault().
                     getDefaultFileSystem().getRoot(), BASE_PATH);
 
-            String uuid = (String) root.getAttribute(UUID_TAG);
+
             String name = root.getName();
             String description = (String) root.getAttribute(DESCRIPTION_TAG);
-            if (uuid == null) {
-                uuid = UUID.randomUUID().toString();
-                root.setAttribute(UUID_TAG, uuid);
-            }
             if (description == null) {
-                description = "";
+                description = NbBundle.getMessage(DefaultFileSystem.class, "LBL_NA");
                 root.setAttribute(DESCRIPTION_TAG, description);
             }
-            return new DefaultFolder(null, uuid, name, root, description);
+            return new DefaultFolder(null, name, root, description);
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
