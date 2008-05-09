@@ -17,9 +17,11 @@
 package org.netbeans.cubeon.context.internals;
 
 import java.awt.Image;
+import javax.swing.Action;
 import org.netbeans.cubeon.context.api.NodeUtils;
+import org.netbeans.cubeon.context.api.TaskFolder;
 import org.openide.nodes.AbstractNode;
-import org.openide.nodes.Children;
+import org.openide.util.lookup.Lookups;
 
 /**
  *
@@ -27,21 +29,25 @@ import org.openide.nodes.Children;
  */
 public class TaskFolderNode extends AbstractNode {
 
-    public TaskFolderNode(String name, String description) {
-        super(Children.LEAF);//todo add children
-
-        setDisplayName(name);
-        setShortDescription(description);
+    public TaskFolderNode(TaskFolder folder) {
+        super(new TaskFolderChildrens(folder), Lookups.fixed(folder));
+        setDisplayName(folder.getName());
+        setShortDescription(folder.getDescription());
 
     }
 
     @Override
-    public Image getIcon(int arg0) {
+    public Image getIcon(int i) {
         return NodeUtils.getTreeFolderIcon(false);
     }
 
     @Override
-    public Image getOpenedIcon(int arg0) {
+    public Image getOpenedIcon(int i) {
         return NodeUtils.getTreeFolderIcon(true);
+    }
+
+    @Override
+    public Action[] getActions(boolean b) {
+        return new Action[]{};
     }
 }

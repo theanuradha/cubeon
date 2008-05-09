@@ -17,9 +17,10 @@
 package org.netbeans.cubeon.context.internals;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import org.netbeans.cubeon.tasks.spi.TaskFolder;
-import org.netbeans.cubeon.tasks.spi.TaskFolderOparations;
+import org.netbeans.cubeon.context.api.TaskFolder;
+import org.netbeans.cubeon.context.api.TaskFolderOparations;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
@@ -35,18 +36,19 @@ public class DefaultFolder implements TaskFolder, TaskFolderOparations {
     private String uuid;
     private String name;
     private String description;
-    private FileObject path;
+    private FileObject fileObject;
     private TaskFolder parent;
     private final TaskFolderNode folderNode;
 
-    DefaultFolder(DefaultFolder parent, String uuid, String name, FileObject path, String description) {
+    DefaultFolder(DefaultFolder parent, String uuid, String name,
+            FileObject fileObject, String description) {
         this.parent = parent;
         this.uuid = uuid;
         this.name = name;
-        this.path = path;
+        this.fileObject = fileObject;
         this.description = description;
 
-        folderNode = new TaskFolderNode(name, description);
+        folderNode = new TaskFolderNode(this);
     }
 
     public String getUUID() {
@@ -57,8 +59,8 @@ public class DefaultFolder implements TaskFolder, TaskFolderOparations {
         return name;
     }
 
-    public FileObject getPath() {
-        return path;
+    public FileObject getFileObject() {
+        return fileObject;
     }
 
     public String getDescription() {
@@ -72,7 +74,7 @@ public class DefaultFolder implements TaskFolder, TaskFolderOparations {
     public boolean rename(String name) {
         try {
             //TODO : add vaidations
-            path.rename(path.lock(), name, null);
+            fileObject.rename(fileObject.lock(), name, null);
             this.name = name;
             folderNode.setDisplayName(name);
             return true;
@@ -103,14 +105,24 @@ public class DefaultFolder implements TaskFolder, TaskFolderOparations {
     }
 
     public List<TaskFolder> getSubFolders() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        List<TaskFolder> folders = new ArrayList<TaskFolder>();
+        FileObject[] fos = fileObject.getChildren();
+        for (FileObject fo : fos) {
+            if (fo.isFolder()) {
+                String cuuid = (String) fo.getAttribute(DefaultFileSystem.UUID_TAG);
+                String cname = fo.getName();
+                String cdescription = (String) fo.getAttribute(DefaultFileSystem.DESCRIPTION_TAG);
+                folders.add(new DefaultFolder(this, cuuid, cname, fo, cdescription));
+            }
+        }
+        return folders;
     }
 
     public boolean moveTo(TaskFolder parent) {
         //TODO : add vaidations
-        FileObject parentPath = parent.getPath();
+        FileObject parentPath = parent.getFileObject();
         try {
-            path = FileUtil.moveFile(path, parentPath, name);
+            fileObject = FileUtil.moveFile(fileObject, parentPath, name);
             this.parent = parent;
             return true;
         } catch (IOException ex) {
@@ -123,9 +135,9 @@ public class DefaultFolder implements TaskFolder, TaskFolderOparations {
 
     public boolean copyTo(TaskFolder parent) {
         //TODO : add vaidations
-        FileObject parentPath = parent.getPath();
+        FileObject parentPath = parent.getFileObject();
         try {
-            path = FileUtil.copyFile(path, parentPath, name);
+            fileObject = FileUtil.copyFile(fileObject, parentPath, name);
             this.parent = parent;
             return true;
         } catch (IOException ex) {

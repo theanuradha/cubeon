@@ -14,9 +14,10 @@
  *  limitations under the License.
  *  under the License.
  */
-
 package org.netbeans.cubeon.context.views;
 
+import org.netbeans.cubeon.context.api.TaskFolder;
+import org.netbeans.cubeon.context.api.TasksFileSystem;
 import org.netbeans.cubeon.context.spi.TaskNodeView;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
@@ -28,11 +29,12 @@ import org.openide.util.NbBundle;
  *
  * @author Anuradha G
  */
-public class CategorizedTaskNodeView implements TaskNodeView{
+public class CategorizedTaskNodeView implements TaskNodeView {
 
-    public String getId(){
-      return "CategorizedTaskNodeView";
+    public String getId() {
+        return "CategorizedTaskNodeView";
     }
+
     public String getName() {
         return NbBundle.getMessage(CategorizedTaskNodeView.class, "LBL_Categorized_Name");
     }
@@ -42,20 +44,8 @@ public class CategorizedTaskNodeView implements TaskNodeView{
     }
 
     public Node createRootContext() {
-        //validate default settings
-        validate();
-        return new AbstractNode(Children.LEAF,Lookup.EMPTY){
-
-            @Override
-            public String getDisplayName() {
-                return "TODO : ADD VIEW";
-            }
-        
-        };
+        TasksFileSystem fileSystem = Lookup.getDefault().lookup(TasksFileSystem.class);
+        TaskFolder folder = fileSystem.getRootFolder();
+        return folder.getLookup().lookup(Node.class);
     }
-
-    private void validate() {
-        
-    }
-
 }
