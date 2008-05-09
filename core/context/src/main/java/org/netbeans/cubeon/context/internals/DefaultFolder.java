@@ -33,26 +33,21 @@ import org.openide.util.lookup.Lookups;
  */
 public class DefaultFolder implements TaskFolder, TaskFolderOparations {
 
-    private String uuid;
     private String name;
     private String description;
     private FileObject fileObject;
     private TaskFolder parent;
     private final TaskFolderNode folderNode;
 
-    DefaultFolder(DefaultFolder parent, String uuid, String name,
+    DefaultFolder(DefaultFolder parent, String name,
             FileObject fileObject, String description) {
         this.parent = parent;
-        this.uuid = uuid;
+
         this.name = name;
         this.fileObject = fileObject;
         this.description = description;
 
         folderNode = new TaskFolderNode(this);
-    }
-
-    public String getUUID() {
-        return uuid;
     }
 
     public String getName() {
@@ -96,8 +91,16 @@ public class DefaultFolder implements TaskFolder, TaskFolderOparations {
         return Lookups.fixed(folderNode, this);
     }
 
-    public boolean addFolder(TaskFolder folder) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public TaskFolder addNewFolder(String name, String description) {
+        try {
+
+            FileObject fo = fileObject.createFolder(name);
+            fo.setAttribute(DefaultFileSystem.DESCRIPTION_TAG, description);
+            return new DefaultFolder(this, name, fo, description);
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return null;
     }
 
     public boolean removeFolder(TaskFolder folder) {
@@ -109,10 +112,9 @@ public class DefaultFolder implements TaskFolder, TaskFolderOparations {
         FileObject[] fos = fileObject.getChildren();
         for (FileObject fo : fos) {
             if (fo.isFolder()) {
-                String cuuid = (String) fo.getAttribute(DefaultFileSystem.UUID_TAG);
                 String cname = fo.getName();
                 String cdescription = (String) fo.getAttribute(DefaultFileSystem.DESCRIPTION_TAG);
-                folders.add(new DefaultFolder(this, cuuid, cname, fo, cdescription));
+                folders.add(new DefaultFolder(this, cname, fo, cdescription));
             }
         }
         return folders;
