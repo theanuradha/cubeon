@@ -18,6 +18,7 @@ package org.netbeans.cubeon.ui.actions;
 
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
+import javax.swing.KeyStroke;
 import org.netbeans.cubeon.context.api.TaskFolder;
 import org.netbeans.cubeon.context.api.TaskFolderOparations;
 import org.netbeans.cubeon.ui.dialogs.AddEditTaskFolder;
@@ -39,7 +40,7 @@ public class EditTaskFolderAction extends AbstractAction {
         putValue(SHORT_DESCRIPTION, NbBundle.getMessage(EditTaskFolderAction.class,
                 "LBL_Edit_Folder_Description"));
         
-
+        putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke("F2"));//NOI18N
         
     }
 
