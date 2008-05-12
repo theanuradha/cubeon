@@ -16,6 +16,9 @@
  */
 package org.netbeans.cubeon.context.internals;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import org.netbeans.cubeon.context.api.TaskFolder;
 import org.netbeans.cubeon.context.spi.RefreshProvider;
 import org.openide.nodes.Children;
@@ -49,6 +52,14 @@ public class TaskFolderChildren extends Children.Keys<TaskFolder> implements Ref
 
     @Override
     protected void addNotify() {
-        setKeys(folder.getSubFolders());
+        List<TaskFolder> subFolders = folder.getSubFolders();
+        //TODO Comparator selecteble
+        Collections.sort(subFolders, new Comparator<TaskFolder>() {
+
+            public int compare(TaskFolder o1, TaskFolder o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+        setKeys(subFolders);
     }
 }
