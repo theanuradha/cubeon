@@ -38,10 +38,11 @@ public class TaskFolderActions implements TaskFolderActionsProvider {
 
     public Action[] getActions(TaskFolder taskFolder) {
         return new Action[]{
-            
-            new DeleteTaskFolderAction(taskFolder),
-            null,
-            new EditTaskFolderAction(taskFolder)
-        };
+                    new CopyToTaskFolderAction(taskFolder),
+                    new MoveToTaskFolderAction(taskFolder),
+                    new DeleteTaskFolderAction(taskFolder),
+                    null,
+                    new EditTaskFolderAction(taskFolder)
+                };
     }
 }
