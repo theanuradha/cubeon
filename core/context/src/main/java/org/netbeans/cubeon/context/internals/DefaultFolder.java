@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.netbeans.cubeon.context.api.TaskFolder;
 import org.netbeans.cubeon.context.api.TaskFolderOparations;
+import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
@@ -38,6 +39,7 @@ public class DefaultFolder implements TaskFolder, TaskFolderOparations {
     private FileObject fileObject;
     private TaskFolder parent;
     private final TaskFolderNode folderNode;
+    private final TaskFolderChildren folderChildren;
 
     DefaultFolder(DefaultFolder parent, String name,
             FileObject fileObject, String description) {
@@ -46,8 +48,8 @@ public class DefaultFolder implements TaskFolder, TaskFolderOparations {
         this.name = name;
         this.fileObject = fileObject;
         this.description = description;
-
-        folderNode = new TaskFolderNode(this);
+        folderChildren = new TaskFolderChildren(this);
+        folderNode = new TaskFolderNode(this, folderChildren);
     }
 
     public String getName() {
@@ -69,7 +71,11 @@ public class DefaultFolder implements TaskFolder, TaskFolderOparations {
     public boolean rename(String name) {
         try {
             //TODO : add vaidations
-            fileObject.rename(fileObject.lock(), name, null);
+            //get file lock
+            FileLock lock = fileObject.lock();
+            fileObject.rename(lock, name, null);
+            //release lock after rename 
+            lock.releaseLock();
             this.name = name;
             folderNode.setDisplayName(name);
             return true;
@@ -86,9 +92,9 @@ public class DefaultFolder implements TaskFolder, TaskFolderOparations {
 
     public Lookup getLookup() {
         /**
-         * lookup contain Node implementation and TaskFolderOparations
+         * lookup contain Node implementation , TaskFolderOparations,RefreshProvider
          */
-        return Lookups.fixed(folderNode, this);
+        return Lookups.fixed(folderNode, this, folderChildren);
     }
 
     public TaskFolder addNewFolder(String name, String description) {

@@ -17,10 +17,24 @@
 package org.netbeans.cubeon.context.internals;
 
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import org.netbeans.cubeon.context.api.NodeUtils;
 import org.netbeans.cubeon.context.api.TaskFolder;
+import org.netbeans.cubeon.context.spi.TaskFolderActionsProvider;
 import org.openide.nodes.AbstractNode;
+import org.openide.nodes.Children;
+import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
+import org.openide.util.actions.Presenter;
+import org.openide.util.actions.Presenter.Popup;
 import org.openide.util.lookup.Lookups;
 
 /**
@@ -29,8 +43,11 @@ import org.openide.util.lookup.Lookups;
  */
 public class TaskFolderNode extends AbstractNode {
 
-    public TaskFolderNode(TaskFolder folder) {
-        super(new TaskFolderChildrens(folder), Lookups.fixed(folder));
+    private TaskFolder folder;
+
+    public TaskFolderNode(TaskFolder folder, Children children) {
+        super(children, Lookups.fixed(folder));
+        this.folder = folder;
         setDisplayName(folder.getName());
         setShortDescription(folder.getDescription());
 
@@ -48,6 +65,90 @@ public class TaskFolderNode extends AbstractNode {
 
     @Override
     public Action[] getActions(boolean b) {
-        return new Action[]{};
+        List<Action> actions = new ArrayList<Action>();
+        actions.add(new NewAction());
+        actions.add(null);
+        final List<TaskFolderActionsProvider> providers =
+                new ArrayList<TaskFolderActionsProvider>(
+                Lookup.getDefault().lookupAll(TaskFolderActionsProvider.class));
+        boolean sepetatorAdd = false;
+        for (TaskFolderActionsProvider tfap : providers) {
+            Action[] as = tfap.getActions(folder);
+            for (Action action : as) {
+                //check null and addSeparator 
+                if (action == null) {
+                    //check sepetatorAdd to prevent adding duplicate Separators 
+                    if (!sepetatorAdd) {
+                        //mark sepetatorAdd to true
+                        sepetatorAdd = true;
+                        actions.add(action);
+
+                    }
+                    continue;
+                }
+                actions.add(action);
+            }
+        }
+        return actions.toArray(new Action[0]);
+    }
+
+    private class NewAction extends AbstractAction implements Presenter.Popup {
+
+        public NewAction() {
+            putValue(NAME, NbBundle.getMessage(TaskFolderNode.class, "LBL_NEW"));
+        }
+
+        public void actionPerformed(ActionEvent e) {
+        }
+
+        public JMenuItem getPopupPresenter() {
+            final JMenu menu = new JMenu(this);
+            //lookup TaskFolderActionsProvider and sort with position attribute
+            final List<TaskFolderActionsProvider> providers =
+                    new ArrayList<TaskFolderActionsProvider>(
+                    Lookup.getDefault().lookupAll(TaskFolderActionsProvider.class));
+
+            Collections.sort(providers, new Comparator<TaskFolderActionsProvider>() {
+
+                public int compare(TaskFolderActionsProvider o1,
+                        TaskFolderActionsProvider o2) {
+                    if (o1.getPosition() == o2.getPosition()) {
+                        return 0;
+                    }
+                    if (o1.getPosition() > o2.getPosition()) {
+                        return 1;
+                    }
+                    return -1;
+                }
+            });
+            boolean sepetatorAdd = false;
+            for (TaskFolderActionsProvider tfap : providers) {
+                Action[] actions = tfap.getNewActions(folder);
+                for (Action action : actions) {
+                    //check null and addSeparator 
+                    if (action == null) {
+                        //check sepetatorAdd to prevent adding duplicate Separators 
+                        if (!sepetatorAdd) {
+                            //mark sepetatorAdd to true
+                            sepetatorAdd = true;
+                            menu.addSeparator();
+
+                        }
+                        continue;
+                    }
+                    //mark sepetatorAdd to false
+                    sepetatorAdd = false;
+                    //check for Presenter.Popup
+                    if (action instanceof Presenter.Popup) {
+                        Presenter.Popup popup = (Popup) action;
+                        menu.add(popup.getPopupPresenter());
+                        continue;
+                    }
+
+                    menu.add(new JMenuItem(action));
+                }
+            }
+            return menu;
+        }
     }
 }
