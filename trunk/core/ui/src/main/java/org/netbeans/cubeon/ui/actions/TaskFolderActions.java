@@ -14,35 +14,32 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.context.internals;
+package org.netbeans.cubeon.ui.actions;
 
+import javax.swing.Action;
 import org.netbeans.cubeon.context.api.TaskFolder;
-import org.openide.nodes.Children;
-import org.openide.nodes.Node;
+import org.netbeans.cubeon.context.spi.TaskFolderActionsProvider;
 
 /**
  *
  * @author Anuradha G
  */
-public class TaskFolderChildrens extends Children.Keys<TaskFolder> {
+public class TaskFolderActions implements TaskFolderActionsProvider {
 
-    private TaskFolder folder;
-
-    public TaskFolderChildrens(TaskFolder folder) {
-        this.folder = folder;
+    public Action[] getNewActions(final TaskFolder taskFolder) {
+        return new Action[]{
+                    new AddTaskFolderAction(taskFolder)
+                };
     }
 
-    @Override
-    protected Node[] createNodes(TaskFolder taskFolder) {
-        Node node = taskFolder.getLookup().lookup(Node.class);
-
-        assert node != null;
-
-        return node != null ? new Node[]{node} : new Node[]{};
+    public int getPosition() {
+        return 1000;
     }
 
-    @Override
-    protected void addNotify() {
-        setKeys(folder.getSubFolders());
+    public Action[] getActions(TaskFolder taskFolder) {
+        return new Action[]{
+            new EditTaskFolderAction(taskFolder),
+            new DeleteTaskFolderAction(taskFolder)
+        };
     }
 }
