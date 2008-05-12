@@ -42,7 +42,7 @@ public class DeleteTaskFolderAction extends AbstractAction {
         //TODO Add comnformation and
         TaskFolder parent = folder.getParent();
         parent.removeFolder(folder);
-        RefreshProvider refreshProvider = folder.getLookup().lookup(RefreshProvider.class);
+        RefreshProvider refreshProvider = parent.getLookup().lookup(RefreshProvider.class);
         assert refreshProvider != null;
         refreshProvider.refreshContent();
     }
