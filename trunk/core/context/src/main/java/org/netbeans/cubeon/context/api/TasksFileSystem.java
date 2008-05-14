@@ -16,13 +16,16 @@
  */
 package org.netbeans.cubeon.context.api;
 
+import java.util.List;
+
 /**
  *
  * @author Anuradha G
  */
 public interface TasksFileSystem {
 
-    TaskFolder getRootFolder();
+    List<TaskFolder> getFolders();
     
+    TaskFolder getDefaultFolder();
     //TODO : add backup restore oprations
 }

@@ -17,6 +17,8 @@
 package org.netbeans.cubeon.context.internals;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import org.netbeans.cubeon.context.api.TaskFolder;
 import org.netbeans.cubeon.context.api.TasksFileSystem;
 import org.openide.filesystems.FileObject;
@@ -35,7 +37,7 @@ public class DefaultFileSystem implements TasksFileSystem {
     static final String DESCRIPTION_TAG = "description";
     private FileObject root;
 
-    public synchronized TaskFolder getRootFolder() {
+    private synchronized TaskFolder getRootFolder() {
         try {
             root = FileUtil.createFolder(Repository.getDefault().
                     getDefaultFileSystem().getRoot(), BASE_PATH);
@@ -53,5 +55,15 @@ public class DefaultFileSystem implements TasksFileSystem {
         }
         assert root != null;
         return null;
+    }
+
+    public TaskFolder getDefaultFolder() {
+        //TODO return default dir for Tasks 
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public List<TaskFolder> getFolders() {
+        final TaskFolder taskFolder = getRootFolder();
+        return new ArrayList<TaskFolder>(taskFolder.getSubFolders());
     }
 }
