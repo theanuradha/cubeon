@@ -19,7 +19,7 @@ package org.netbeans.cubeon.ui.actions;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import org.netbeans.cubeon.context.api.TaskFolder;
-import org.netbeans.cubeon.context.spi.RefreshProvider;
+import org.netbeans.cubeon.context.spi.TaskNodeChildren;
 import org.netbeans.cubeon.ui.dialogs.AddEditTaskFolder;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -56,7 +56,7 @@ public class AddTaskFolderAction extends AbstractAction {
         if (atf.getOKButton() == ret) {
 
             folder.addNewFolder(atf.getFolderName(), atf.getFolderDescription());
-            RefreshProvider refreshProvider = folder.getLookup().lookup(RefreshProvider.class);
+            TaskNodeChildren refreshProvider = folder.getLookup().lookup(TaskNodeChildren.class);
             assert refreshProvider != null;
             refreshProvider.refreshContent();
         }

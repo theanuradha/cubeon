@@ -20,7 +20,7 @@ package org.netbeans.cubeon.context.spi;
  *
  * @author Anuradha G
  */
-public interface RefreshProvider {
+public interface TaskNodeChildren {
 
     void refreshContent();
 }

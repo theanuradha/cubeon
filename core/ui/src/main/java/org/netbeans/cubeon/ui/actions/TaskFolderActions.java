@@ -41,8 +41,9 @@ public class TaskFolderActions implements TaskFolderActionsProvider {
                     new CopyToTaskFolderAction(taskFolder),
                     new MoveToTaskFolderAction(taskFolder),
                     new DeleteTaskFolderAction(taskFolder),
+                    new EditTaskFolderAction(taskFolder),
                     null,
-                    new EditTaskFolderAction(taskFolder)
+                    new RefreshTaskFolderAction(taskFolder)
                 };
     }
 }

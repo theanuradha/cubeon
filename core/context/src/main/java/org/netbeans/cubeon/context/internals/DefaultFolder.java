@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.netbeans.cubeon.context.api.TaskFolder;
 import org.netbeans.cubeon.context.api.TaskFolderOparations;
+import org.netbeans.cubeon.tasks.spi.TaskElement;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -161,5 +162,17 @@ public class DefaultFolder implements TaskFolder, TaskFolderOparations {
         }
 
         return false;
+    }
+
+    public TaskFolder addTaskElement(TaskElement element) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public boolean removeTaskElement(TaskElement element) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public List<TaskElement> getTaskElements() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
