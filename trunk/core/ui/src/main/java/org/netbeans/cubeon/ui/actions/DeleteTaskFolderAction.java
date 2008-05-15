@@ -20,7 +20,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
 import org.netbeans.cubeon.context.api.TaskFolder;
-import org.netbeans.cubeon.context.spi.RefreshProvider;
+import org.netbeans.cubeon.context.spi.TaskNodeChildren;
 import org.openide.util.NbBundle;
 
 /**
@@ -42,7 +42,7 @@ public class DeleteTaskFolderAction extends AbstractAction {
         //TODO Add comnformation and
         TaskFolder parent = folder.getParent();
         parent.removeFolder(folder);
-        RefreshProvider refreshProvider = parent.getLookup().lookup(RefreshProvider.class);
+        TaskNodeChildren refreshProvider = parent.getLookup().lookup(TaskNodeChildren.class);
         assert refreshProvider != null;
         refreshProvider.refreshContent();
     }

@@ -21,6 +21,7 @@ import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
 import org.netbeans.cubeon.context.api.TaskFolder;
 import org.netbeans.cubeon.context.api.TaskFolderOparations;
+import org.netbeans.cubeon.context.spi.TaskNodeChildren;
 import org.netbeans.cubeon.ui.dialogs.AddEditTaskFolder;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -39,9 +40,9 @@ public class EditTaskFolderAction extends AbstractAction {
         putValue(NAME, NbBundle.getMessage(EditTaskFolderAction.class, "LBL_Edit_Folder"));
         putValue(SHORT_DESCRIPTION, NbBundle.getMessage(EditTaskFolderAction.class,
                 "LBL_Edit_Folder_Description"));
-        
-        putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke("F2"));//NOI18N
-        
+
+        //putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke("F2"));//NOI18N
+
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -64,13 +65,27 @@ public class EditTaskFolderAction extends AbstractAction {
             final TaskFolderOparations oparations =
                     folder.getLookup().lookup(TaskFolderOparations.class);
             assert oparations != null;
+            //flag that control Node should refresh or not
+            boolean refresh = false;
             String newName = atf.getFolderName();
+
+            //check if name has change
             if (!folder.getName().equals(newName)) {
                 oparations.rename(newName);
+                //flag to refresh
+                refresh = true;
             }
             String newDescription = atf.getFolderDescription();
+            //check if description has change
             if (!folder.getDescription().equals(newDescription)) {
                 oparations.setDescription(newDescription);
+
+            }
+            if (refresh) {
+                TaskNodeChildren refreshProvider = folder.getParent().
+                        getLookup().lookup(TaskNodeChildren.class);
+                assert refreshProvider != null;
+                refreshProvider.refreshContent();
             }
         }
     }
