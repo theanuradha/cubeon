@@ -164,7 +164,7 @@ public class DefaultFolder implements TaskFolder, TaskFolderOparations {
         return false;
     }
 
-    public TaskFolder addTaskElement(TaskElement element) {
+    public TaskElement addTaskElement(TaskElement element) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

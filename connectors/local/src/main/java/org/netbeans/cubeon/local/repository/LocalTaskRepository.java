@@ -14,35 +14,37 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.jira.repository;
+package org.netbeans.cubeon.local.repository;
 
 import org.netbeans.cubeon.tasks.spi.TaskElement;
 import org.netbeans.cubeon.tasks.spi.TaskRepository;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
+import org.openide.util.lookup.Lookups;
 
 /**
  *
  * @author Anuradha G
  */
-public class JiraTaskRepository implements TaskRepository {
+public class LocalTaskRepository implements TaskRepository {
 
     public String getId() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return "_LOCAL_REPO_";//NOI18N
     }
 
     public String getName() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return NbBundle.getMessage(LocalTaskRepository.class, "LBL_LOCAL_REPO");
     }
 
     public Lookup getLookup() {
+        return Lookups.fixed(this);
+    }
+
+    public TaskElement getTaskElementById(String id) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public TaskElement createTaskElement() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public TaskElement getTaskElementById(String id) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

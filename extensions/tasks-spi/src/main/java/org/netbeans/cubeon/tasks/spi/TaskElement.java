@@ -24,6 +24,12 @@ import org.openide.util.Lookup;
  */
 public interface TaskElement {
 
+    String getId();
+    
+    String getName();
+    
+    String getDescription();
+
     TaskRepository getTaskRepository();
 
     Lookup getLookup();

@@ -64,7 +64,7 @@ public interface TaskFolder {
 
     List<TaskFolder> getSubFolders();
     
-    TaskFolder addTaskElement(TaskElement element);
+    TaskElement addTaskElement(TaskElement element);
 
     boolean removeTaskElement(TaskElement element);
     
