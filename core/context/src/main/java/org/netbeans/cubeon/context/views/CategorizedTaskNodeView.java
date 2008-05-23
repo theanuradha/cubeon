@@ -16,13 +16,8 @@
  */
 package org.netbeans.cubeon.context.views;
 
-import java.util.List;
-import javax.swing.Action;
-import org.netbeans.cubeon.context.api.TaskFolder;
 import org.netbeans.cubeon.context.api.TasksFileSystem;
 import org.netbeans.cubeon.context.spi.TaskNodeView;
-import org.openide.nodes.AbstractNode;
-import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -46,24 +41,9 @@ public class CategorizedTaskNodeView implements TaskNodeView {
     }
 
     public Node createRootContext() {
-        Children.Array array = new Children.Array();
-        TasksFileSystem fileSystem = Lookup.getDefault().lookup(TasksFileSystem.class);
-        List<TaskFolder> folders = fileSystem.getFolders();
-        Node[] nodes = new Node[folders.size()];
-        for (int i = 0; i < folders.size(); i++) {
-            TaskFolder taskFolder = folders.get(i);
-            nodes[i] = taskFolder.getLookup().lookup(Node.class);
-        }
-        array.add(nodes);
-        Node node = new AbstractNode(array) {
 
-            @Override
-            public Action[] getActions(boolean arg0) {
-                return new Action[]{
-                //todo add rooot level actions  using spi
-                };
-            }
-        };
-        return node;
+        TasksFileSystem fileSystem = Lookup.getDefault().lookup(TasksFileSystem.class);
+
+        return fileSystem.getRootTaskFolder().getLookup().lookup(Node.class);
     }
 }

@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.netbeans.cubeon.context.api.TaskRepositoryHandler;
 import org.netbeans.cubeon.tasks.spi.TaskRepository;
+import org.netbeans.cubeon.tasks.spi.TaskRepositoryType;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -28,8 +30,12 @@ import org.netbeans.cubeon.tasks.spi.TaskRepository;
 class TaskRepositoryHandlerImpl implements TaskRepositoryHandler {
 
     public List<TaskRepository> getTaskRepositorys() {
-        //todo
-        return new ArrayList<TaskRepository>();
+        final List<TaskRepository> taskRepositorys = new ArrayList<TaskRepository>();
+        final List<TaskRepositoryType> repositoryTypes = getTaskRepositoryTypes();
+        for (TaskRepositoryType taskRepositoryType : repositoryTypes) {
+            taskRepositorys.addAll(taskRepositoryType.getRepositorys());
+        }
+        return taskRepositorys;
     }
 
     public TaskRepository getTaskRepositoryById(String id) {
@@ -41,5 +47,10 @@ class TaskRepositoryHandlerImpl implements TaskRepositoryHandler {
         }
 
         return null;
+    }
+
+    public List<TaskRepositoryType> getTaskRepositoryTypes() {
+        return new ArrayList<TaskRepositoryType>(Lookup.getDefault().
+                lookupAll(TaskRepositoryType.class));
     }
 }

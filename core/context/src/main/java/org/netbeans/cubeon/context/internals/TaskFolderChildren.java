@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import org.netbeans.cubeon.context.api.TaskFolder;
-import org.netbeans.cubeon.context.spi.TaskNodeChildren;
+import org.netbeans.cubeon.context.api.TaskFolderRefreshable;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 
@@ -28,7 +28,7 @@ import org.openide.nodes.Node;
  *
  * @author Anuradha G
  */
-public class TaskFolderChildren extends Children.Keys<TaskFolder> implements TaskNodeChildren {
+public class TaskFolderChildren extends Children.Keys<TaskFolder> implements TaskFolderRefreshable {
 
     private TaskFolder folder;
 

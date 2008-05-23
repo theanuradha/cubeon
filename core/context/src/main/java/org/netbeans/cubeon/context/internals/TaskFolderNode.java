@@ -66,35 +66,36 @@ public class TaskFolderNode extends AbstractNode {
     @Override
     public Action[] getActions(boolean b) {
         List<Action> actions = new ArrayList<Action>();
-        actions.add(new NewAction());
+        actions.add(new NewActions());
         actions.add(null);
         final List<TaskFolderActionsProvider> providers =
                 new ArrayList<TaskFolderActionsProvider>(
                 Lookup.getDefault().lookupAll(TaskFolderActionsProvider.class));
-        boolean sepetatorAdd = false;
+        boolean sepetatorAdded = false;
         for (TaskFolderActionsProvider tfap : providers) {
             Action[] as = tfap.getActions(folder);
             for (Action action : as) {
                 //check null and addSeparator 
                 if (action == null) {
                     //check sepetatorAdd to prevent adding duplicate Separators 
-                    if (!sepetatorAdd) {
+                    if (!sepetatorAdded) {
                         //mark sepetatorAdd to true
-                        sepetatorAdd = true;
+                        sepetatorAdded = true;
                         actions.add(action);
 
                     }
                     continue;
                 }
                 actions.add(action);
+                sepetatorAdded = false;
             }
         }
         return actions.toArray(new Action[0]);
     }
 
-    private class NewAction extends AbstractAction implements Presenter.Popup {
+    private class NewActions extends AbstractAction implements Presenter.Popup {
 
-        public NewAction() {
+        public NewActions() {
             putValue(NAME, NbBundle.getMessage(TaskFolderNode.class, "LBL_NEW"));
         }
 
@@ -121,23 +122,23 @@ public class TaskFolderNode extends AbstractNode {
                     return -1;
                 }
             });
-            boolean sepetatorAdd = false;
+            boolean sepetatorAdded = false;
             for (TaskFolderActionsProvider tfap : providers) {
                 Action[] actions = tfap.getNewActions(folder);
                 for (Action action : actions) {
                     //check null and addSeparator 
                     if (action == null) {
                         //check sepetatorAdd to prevent adding duplicate Separators 
-                        if (!sepetatorAdd) {
+                        if (!sepetatorAdded) {
                             //mark sepetatorAdd to true
-                            sepetatorAdd = true;
+                            sepetatorAdded = true;
                             menu.addSeparator();
 
                         }
                         continue;
                     }
                     //mark sepetatorAdd to false
-                    sepetatorAdd = false;
+                    sepetatorAdded = false;
                     //check for Presenter.Popup
                     if (action instanceof Presenter.Popup) {
                         Presenter.Popup popup = (Popup) action;
