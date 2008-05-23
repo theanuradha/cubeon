@@ -18,6 +18,7 @@ package org.netbeans.cubeon.context.api;
 
 import java.util.List;
 import org.netbeans.cubeon.tasks.spi.TaskRepository;
+import org.netbeans.cubeon.tasks.spi.TaskRepositoryType;
 
 /**
  *
@@ -38,7 +39,7 @@ public interface TaskRepositoryHandler {
      */
     TaskRepository getTaskRepositoryById(String id);
     
-    
+    List< TaskRepositoryType> getTaskRepositoryTypes();
     
     /**
     void addTaskRepository();

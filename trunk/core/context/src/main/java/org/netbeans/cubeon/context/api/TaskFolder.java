@@ -33,11 +33,6 @@ public interface TaskFolder {
      */
     String getName();
 
-    /**
-     * 
-     * @return path of filesystem
-     */
-    FileObject getFileObject();
 
     /**
      * 

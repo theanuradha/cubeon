@@ -16,16 +16,30 @@
  */
 package org.netbeans.cubeon.context.internals;
 
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import org.netbeans.cubeon.context.api.TaskFolder;
+import org.netbeans.cubeon.context.api.TaskFolderRefreshable;
 import org.netbeans.cubeon.context.api.TasksFileSystem;
+import org.netbeans.cubeon.context.spi.TaskExplorerViewActionsProvider;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.filesystems.Repository;
+import org.openide.nodes.AbstractNode;
+import org.openide.nodes.Children;
+import org.openide.nodes.Node;
 import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.util.actions.Presenter;
 
 /**
  *
@@ -34,27 +48,75 @@ import org.openide.util.NbBundle;
 public class DefaultFileSystem implements TasksFileSystem {
 
     static final String BASE_PATH = "cubeon/tasks";
-    static final String DESCRIPTION_TAG = "description";
-    private FileObject root;
+    private TaskFolderImpl rootfTaskFolder;
 
     private synchronized TaskFolder getRootFolder() {
-        try {
-            root = FileUtil.createFolder(Repository.getDefault().
-                    getDefaultFileSystem().getRoot(), BASE_PATH);
+        if (rootfTaskFolder == null) {
+            try {
+                FileObject fileObject = FileUtil.createFolder(Repository.getDefault().
+                        getDefaultFileSystem().getRoot(), BASE_PATH);
 
 
-            String name = root.getName();
-            String description = (String) root.getAttribute(DESCRIPTION_TAG);
-            if (description == null) {
-                description = NbBundle.getMessage(DefaultFileSystem.class, "LBL_NA");
-                root.setAttribute(DESCRIPTION_TAG, description);
+                String name = fileObject.getName();
+                String description = description = NbBundle.getMessage(DefaultFileSystem.class, "LBL_NA");
+
+                rootfTaskFolder = new TaskFolderImpl(new PersistenceHandler(fileObject), null, name, description);
+                final Children.Array array = new Children.Array();
+                TaskFolderRefreshable refreshable = new TaskFolderRefreshable() {
+
+                    public void refreshContent() {
+                        array.remove(array.getNodes());
+
+                        List<TaskFolder> folders = rootfTaskFolder.getSubFolders();
+                        Node[] nodes = new Node[folders.size()];
+                        for (int i = 0; i < folders.size(); i++) {
+                            TaskFolder taskFolder = folders.get(i);
+                            nodes[i] = taskFolder.getLookup().lookup(Node.class);
+                        }
+                        array.add(nodes);
+                    }
+                };
+                refreshable.refreshContent();
+                Node node = new AbstractNode(array, rootfTaskFolder.getLookup()) {
+
+                    @Override
+                    public Action[] getActions(boolean arg0) {
+                        List<Action> actions = new ArrayList<Action>();
+                        actions.add(new NewActions());
+                        actions.add(null);
+                        final List<TaskExplorerViewActionsProvider> providers =
+                                new ArrayList<TaskExplorerViewActionsProvider>(
+                                Lookup.getDefault().lookupAll(TaskExplorerViewActionsProvider.class));
+                        boolean sepetatorAdded = false;
+                        for (TaskExplorerViewActionsProvider tevap : providers) {
+                            Action[] as = tevap.getActions();
+                            for (Action action : as) {
+                                //check null and addSeparator 
+                                if (action == null) {
+                                    //check sepetatorAdd to prevent adding duplicate Separators 
+                                    if (!sepetatorAdded) {
+                                        //mark sepetatorAdd to true
+                                        sepetatorAdded = true;
+                                        actions.add(action);
+
+                                    }
+                                    continue;
+                                }
+                                actions.add(action);
+                                sepetatorAdded = false;
+                            }
+                        }
+                        return actions.toArray(new Action[0]);
+                    }
+                };
+                rootfTaskFolder.setFolderNode(node);
+                rootfTaskFolder.setRefreshable(refreshable);
+
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
             }
-            return new DefaultFolder(null, name, root, description);
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
         }
-        assert root != null;
-        return null;
+        return rootfTaskFolder;
     }
 
     public TaskFolder getDefaultFolder() {
@@ -65,5 +127,69 @@ public class DefaultFileSystem implements TasksFileSystem {
     public List<TaskFolder> getFolders() {
         final TaskFolder taskFolder = getRootFolder();
         return new ArrayList<TaskFolder>(taskFolder.getSubFolders());
+    }
+
+    public TaskFolder getRootTaskFolder() {
+        return getRootFolder();
+    }
+    //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    private class NewActions extends AbstractAction implements Presenter.Popup {
+
+        public NewActions() {
+            putValue(NAME, NbBundle.getMessage(DefaultFileSystem.class, "LBL_NEW"));
+        }
+
+        public void actionPerformed(ActionEvent e) {
+        }
+
+        public JMenuItem getPopupPresenter() {
+            final JMenu menu = new JMenu(this);
+            //lookup TaskExplorerViewActionsProvider and sort with position attribute
+            final List<TaskExplorerViewActionsProvider> providers =
+                    new ArrayList<TaskExplorerViewActionsProvider>(
+                    Lookup.getDefault().lookupAll(TaskExplorerViewActionsProvider.class));
+
+            Collections.sort(providers, new Comparator<TaskExplorerViewActionsProvider>() {
+
+                public int compare(TaskExplorerViewActionsProvider o1,
+                        TaskExplorerViewActionsProvider o2) {
+                    if (o1.getPosition() == o2.getPosition()) {
+                        return 0;
+                    }
+                    if (o1.getPosition() > o2.getPosition()) {
+                        return 1;
+                    }
+                    return -1;
+                }
+            });
+            boolean sepetatorAdded = false;
+            for (TaskExplorerViewActionsProvider tevap : providers) {
+                Action[] actions = tevap.getNewActions();
+                for (Action action : actions) {
+                    //check null and addSeparator 
+                    if (action == null) {
+                        //check sepetatorAdd to prevent adding duplicate Separators 
+                        if (!sepetatorAdded) {
+                            //mark sepetatorAdd to true
+                            sepetatorAdded = true;
+                            menu.addSeparator();
+
+                        }
+                        continue;
+                    }
+                    //mark sepetatorAdd to false
+                    sepetatorAdded = false;
+                    //check for Presenter.Popup
+                    if (action instanceof Presenter.Popup) {
+                        Presenter.Popup popup = (Popup) action;
+                        menu.add(popup.getPopupPresenter());
+                        continue;
+                    }
+
+                    menu.add(new JMenuItem(action));
+                }
+            }
+            return menu;
+        }
     }
 }

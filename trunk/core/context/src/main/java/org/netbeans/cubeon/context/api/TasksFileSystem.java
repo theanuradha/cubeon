@@ -27,5 +27,7 @@ public interface TasksFileSystem {
     List<TaskFolder> getFolders();
     
     TaskFolder getDefaultFolder();
+    
+    TaskFolder getRootTaskFolder();
     //TODO : add backup restore oprations
 }

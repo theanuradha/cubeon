@@ -16,10 +16,10 @@
  */
 package org.netbeans.cubeon.local.repository;
 
+import org.netbeans.cubeon.local.nodes.LocalRepositoryNode;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
 import org.netbeans.cubeon.tasks.spi.TaskRepository;
 import org.openide.util.Lookup;
-import org.openide.util.NbBundle;
 import org.openide.util.lookup.Lookups;
 
 /**
@@ -28,16 +28,31 @@ import org.openide.util.lookup.Lookups;
  */
 public class LocalTaskRepository implements TaskRepository {
 
+    private final String id;
+    private String name;
+    private String description;
+
+    public LocalTaskRepository(String id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+    }
+
     public String getId() {
-        return "_LOCAL_REPO_";//NOI18N
+        return id;//NOI18N
     }
 
     public String getName() {
-        return NbBundle.getMessage(LocalTaskRepository.class, "LBL_LOCAL_REPO");
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public Lookup getLookup() {
-        return Lookups.fixed(this);
+        return Lookups.fixed(this,
+                new LocalRepositoryNode(this));
     }
 
     public TaskElement getTaskElementById(String id) {

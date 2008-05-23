@@ -8,8 +8,8 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>cubeon-local-connecter</artifactId>
     <packaging>nbm</packaging>
-    <name>Cube°n Local Repository Connecter</name>
-    <description>Local Repository Connecter for the Cube°n </description>
+    <name>Cube°n Local Repository</name>
+    <description>Local Repository Connecter for the Cube°n</description>
     <version>${cubeon.release}</version>
     <build>
         <plugins>
@@ -25,11 +25,11 @@
             <artifactId>org-openide-nodes</artifactId>
             <version>${netbeans.release}</version>
         </dependency>
-        <dependency>
+        <!--dependency>
             <groupId>org.netbeans.cubeon</groupId>
             <artifactId>cubeon-context</artifactId>
             <version>${cubeon.release}</version>
-        </dependency>
+        </dependency-->
         <dependency>
             <groupId>org.netbeans.cubeon</groupId>
             <artifactId>cubeon-tasks-spi</artifactId>

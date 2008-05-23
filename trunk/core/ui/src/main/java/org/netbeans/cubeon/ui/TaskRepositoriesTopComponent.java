@@ -6,11 +6,14 @@ package org.netbeans.cubeon.ui;
 
 import java.awt.Image;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.swing.Action;
-import org.netbeans.cubeon.context.api.TaskContext;
+import org.netbeans.cubeon.context.api.CubeonContext;
 import org.netbeans.cubeon.context.api.TaskRepositoryHandler;
+import org.netbeans.cubeon.context.spi.RepositorysViewActionsProvider;
 import org.netbeans.cubeon.tasks.spi.TaskRepository;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.BeanTreeView;
@@ -35,8 +38,7 @@ final class TaskRepositoriesTopComponent extends TopComponent implements Explore
     //node tree view
     private final BeanTreeView treeView = new BeanTreeView();
     private final transient ExplorerManager explorerManager = new ExplorerManager();
-    
-    
+
     private TaskRepositoriesTopComponent() {
         initComponents();
         setName(NbBundle.getMessage(TaskRepositoriesTopComponent.class, "CTL_TaskRepositoriesTopComponent"));
@@ -47,39 +49,62 @@ final class TaskRepositoriesTopComponent extends TopComponent implements Explore
 
         refresh();
     }
-    
+
     /**
      * 
      * load registered Task repositories
      * 
      */
-    private void refresh() {
+     void refresh() {
         Children.Array array = new Children.Array();
         explorerManager.setRootContext(
                 new AbstractNode(array) {
+
                     @Override
                     public Action[] getActions(boolean arg0) {
-                        return new Action[]{};
+                        List<Action> actions = new ArrayList<Action>();
+                        Collection<? extends RepositorysViewActionsProvider> actionsProviders =
+                                Lookup.getDefault().lookupAll(RepositorysViewActionsProvider.class);
+
+                        boolean seperatorAdded = false;
+                        for (RepositorysViewActionsProvider rvap : actionsProviders) {
+                            Action[] as = rvap.getActions();
+                            for (Action action : as) {
+                                if (action == null) {
+                                    if (!seperatorAdded) {
+                                        actions.add(action);
+                                        seperatorAdded = true;
+                                    }
+                                    continue;
+                                }
+                                seperatorAdded = false;
+                                actions.add(action);
+                            }
+                        }
+
+
+                        return actions.toArray(new Action[0]);
+
                     }
                 });
 
-        //lookup TaskContext
-        TaskContext taskContext = Lookup.getDefault().lookup(TaskContext.class);
-        assert taskContext!=null :"TaskContext can't be null";
+        //lookup CubeonContext
+        CubeonContext cubeonContext = Lookup.getDefault().lookup(CubeonContext.class);
+        assert cubeonContext != null : "CubeonContext can't be null";
 
         //lookup TaskRepositoryHandler
-        TaskRepositoryHandler repositoryHandler = taskContext.getLookup().lookup(TaskRepositoryHandler.class); 
-        assert repositoryHandler!=null :"TaskRepositoryHandler can't be null";
+        TaskRepositoryHandler repositoryHandler = cubeonContext.getLookup().lookup(TaskRepositoryHandler.class);
+        assert repositoryHandler != null : "TaskRepositoryHandler can't be null";
 
         List<TaskRepository> repositorys = repositoryHandler.getTaskRepositorys();
         for (TaskRepository tr : repositorys) {
             //get task repository lookup and find node from it
             Node repositoryNode = tr.getLookup().lookup(Node.class);
             //repository node can not be null
-            assert repositoryNode!=null;
+            assert repositoryNode != null;
             array.add(new Node[]{repositoryNode});
         }
-        
+
         //if no repositories found show empty       
         if (repositorys.isEmpty()) {
             array.add(new Node[]{EMPTY_REPOSITORIES});
@@ -139,7 +164,6 @@ final class TaskRepositoriesTopComponent extends TopComponent implements Explore
         return TopComponent.PERSISTENCE_ALWAYS;
     }
 
-
     /** replaces this in object stream */
     @Override
     public Object writeReplace() {
@@ -163,12 +187,11 @@ final class TaskRepositoriesTopComponent extends TopComponent implements Explore
     public ExplorerManager getExplorerManager() {
         return explorerManager;
     }
-    
     /**
      * "< Empty >"
      * this Node will show if no TaskRepositories found
      */
-    private static final Node EMPTY_REPOSITORIES = new AbstractNode ( Children.LEAF ){
+    private static final Node EMPTY_REPOSITORIES = new AbstractNode(Children.LEAF) {
 
         @Override
         public Image getIcon(int arg0) {
@@ -185,7 +208,7 @@ final class TaskRepositoriesTopComponent extends TopComponent implements Explore
             return super.getShortDescription();
         //TODO add better description 
         }
-        
+
         /**Override to remove actions */
         @Override
         public Action[] getActions(boolean arg0) {

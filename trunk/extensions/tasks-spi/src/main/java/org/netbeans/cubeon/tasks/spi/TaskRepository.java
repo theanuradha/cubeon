@@ -27,6 +27,8 @@ public interface TaskRepository {
     String getId();
 
     String getName();
+    
+    String getDescription();
 
     Lookup getLookup();
     
