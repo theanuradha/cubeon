@@ -18,7 +18,7 @@ package org.netbeans.cubeon.local.nodes;
 
 import java.awt.Image;
 import javax.swing.Action;
-import org.netbeans.cubeon.local.repository.LocalTaskRepository;
+import org.netbeans.cubeon.local.LocalTask;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.util.Utilities;
@@ -26,27 +26,25 @@ import org.openide.util.lookup.Lookups;
 
 /**
  *
- * @author Anuradha G
+ * @author Anuradha
  */
-public class LocalRepositoryNode extends AbstractNode {
+public class LocalTaskNode extends AbstractNode {
 
-    public LocalRepositoryNode(LocalTaskRepository repository) {
-        super(Children.LEAF, Lookups.singleton(repository));
-        setDisplayName(repository.getName());
-        setShortDescription(repository.getDescription());
-        
+
+    public LocalTaskNode(LocalTask localTask) {
+        super(Children.LEAF, Lookups.singleton(localTask));
+        setDisplayName(localTask.getName());
+        setShortDescription(localTask.getDescription());
     }
 
     @Override
     public Image getIcon(int arg0) {
- 
-        return Utilities.loadImage("org/netbeans/cubeon/local/nodes/local-repository.png");
+
+        return Utilities.loadImage("org/netbeans/cubeon/local/nodes/task.png");
     }
 
     @Override
     public Action[] getActions(boolean arg0) {
         return new Action[0];
     }
-    
-    
 }

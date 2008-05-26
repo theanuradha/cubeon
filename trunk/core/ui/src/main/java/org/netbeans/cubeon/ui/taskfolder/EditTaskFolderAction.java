@@ -77,7 +77,7 @@ public class EditTaskFolderAction extends AbstractAction {
             }
             String newDescription = atf.getFolderDescription();
             //check if description has change
-            if (!folder.getDescription().equals(newDescription)) {
+            if (!newDescription.equals(folder.getDescription())) {
                 oparations.setDescription(newDescription);
 
             }

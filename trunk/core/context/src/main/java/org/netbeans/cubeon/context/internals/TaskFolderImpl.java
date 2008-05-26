@@ -16,13 +16,20 @@
  */
 package org.netbeans.cubeon.context.internals;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import org.netbeans.cubeon.context.api.TaskFolder;
 import org.netbeans.cubeon.context.api.TaskFolderOparations;
 import org.netbeans.cubeon.context.api.TaskFolderRefreshable;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
+import org.openide.filesystems.FileLock;
+import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 import org.openide.nodes.Node;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.Lookups;
 
@@ -30,29 +37,47 @@ import org.openide.util.lookup.Lookups;
  *
  * @author Anuradha G
  */
-public class TaskFolderImpl implements TaskFolder, TaskFolderOparations {
+class TaskFolderImpl implements TaskFolder, TaskFolderOparations, TaskFolderRefreshable {
 
     private String name;
     private String description;
-    private TaskFolder parent;
-    private Node folderNode;
-    private TaskFolderRefreshable refreshable;
-    private PersistenceHandler persistenceHandler;
+    protected FileObject fileObject;
+    protected TaskFolder parent;
+    protected Node folderNode;
+    protected TaskFolderChildren folderChildren;
+    protected final List<TaskFolderImpl> taskFolders = new ArrayList<TaskFolderImpl>();
+    protected final List<TaskElement> taskElements = new ArrayList<TaskElement>();
+    protected final PersistenceHandler persistenceHandler;
 
-    TaskFolderImpl(PersistenceHandler persistenceHandler, TaskFolder parent,
-            String name, String description) {
-        this.persistenceHandler = persistenceHandler;
+    protected TaskFolderImpl(TaskFolderImpl parent, String name,
+            FileObject fileObject, String description, boolean lazy) {
         this.parent = parent;
         this.name = name;
-
+        this.fileObject = fileObject;
         this.description = description;
-        TaskFolderChildren folderChildren = new TaskFolderChildren(this);
-        refreshable = folderChildren;
-        folderNode = new TaskFolderNode(this, folderChildren);
+
+        persistenceHandler = new PersistenceHandler(this);
+
+        if (!lazy) {
+            refreshFolders();
+            persistenceHandler.refresh();
+            folderChildren = new TaskFolderChildren(this);
+            folderNode = new TaskFolderNode(this, folderChildren);
+        }
+    }
+
+    TaskFolderImpl(TaskFolderImpl parent, String name,
+            FileObject fileObject, String description) {
+        this(parent, name, fileObject, description, false);
+
     }
 
     public String getName() {
         return name;
+    }
+
+    public FileObject getFileObject() {
+        return fileObject;
     }
 
     public String getDescription() {
@@ -64,14 +89,20 @@ public class TaskFolderImpl implements TaskFolder, TaskFolderOparations {
     }
 
     public boolean rename(String name) {
-
-        //TODO : add vaidations
-
-        this.name = name;
-        folderNode.setDisplayName(name);
-        return true;
-
-
+        try {
+            //TODO : add vaidations
+            //get file lock
+            FileLock lock = fileObject.lock();
+            fileObject.rename(lock, name, null);
+            //release lock after rename 
+            lock.releaseLock();
+            this.name = name;
+            folderNode.setDisplayName(name);
+            return true;
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return false;
     }
 
     public void setDescription(String description) {
@@ -83,58 +114,121 @@ public class TaskFolderImpl implements TaskFolder, TaskFolderOparations {
         /**
          * lookup contain Node implementation , TaskFolderOparations,RefreshProvider
          */
-        return Lookups.fixed(folderNode, this, refreshable);
+        return Lookups.fixed(folderNode, this);
     }
 
     public TaskFolder addNewFolder(String name, String description) {
-        TaskFolder taskFolder = persistenceHandler.addTaskFolder(this,
-                new TaskFolderImpl(persistenceHandler, this, name, description));
+        try {
 
-        return taskFolder;
+            FileObject fo = fileObject.createFolder(name);
+            fo.setAttribute(DefaultFileSystem.DESCRIPTION_TAG, description);
+            TaskFolderImpl impl = new TaskFolderImpl(this, name, fo, description);
+
+            return impl;
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return null;
     }
 
     public boolean removeFolder(TaskFolder folder) {
-        persistenceHandler.removeTaskFolder(this, folder);
-        return true;
+        try {
+            TaskFolderImpl folderImpl = folder.getLookup().lookup(TaskFolderImpl.class);
+            folderImpl.getFileObject().delete();
+
+            return true;
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return false;
+    }
+
+    protected void refreshFolders() {
+        clearFolder(this);
+
+        FileObject[] fos = fileObject.getChildren();
+        for (FileObject fo : fos) {
+            if (fo.isFolder()) {
+                String cname = fo.getName();
+                String cdescription = (String) fo.getAttribute(DefaultFileSystem.DESCRIPTION_TAG);
+                taskFolders.add(new TaskFolderImpl(this, cname, fo, cdescription));
+            }
+        }
+
     }
 
     public List<TaskFolder> getSubFolders() {
-
-        //FIXME need cache here  badly 
-        return persistenceHandler.getTaskFolders(this);
+        Collections.sort(taskFolders, new TaskFolderComparator());
+        return new ArrayList<TaskFolder>(taskFolders);
     }
 
     public boolean moveTo(TaskFolder parent) {
         //TODO : add vaidations
+        TaskFolderImpl folderImpl = parent.getLookup().lookup(TaskFolderImpl.class);
+        FileObject parentPath = folderImpl.getFileObject();
+        try {
+            fileObject = FileUtil.moveFile(fileObject, parentPath, name);
+            this.parent = parent;
+            return true;
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
 
+        }
 
         return false;
     }
 
     public boolean copyTo(TaskFolder parent) {
         //TODO : add vaidations
+        TaskFolderImpl folderImpl = parent.getLookup().lookup(TaskFolderImpl.class);
+        FileObject parentPath = folderImpl.getFileObject();
+        try {
+            fileObject = FileUtil.copyFile(fileObject, parentPath, name);
+            this.parent = parent;
+            return true;
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
 
+        }
 
         return false;
     }
 
     public TaskElement addTaskElement(TaskElement element) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        persistenceHandler.addTaskElement(element);
+        return element;
     }
 
     public boolean removeTaskElement(TaskElement element) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        persistenceHandler.removeTaskElement(element);
+        return true;
     }
 
     public List<TaskElement> getTaskElements() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new ArrayList<TaskElement>(taskElements);
     }
 
-    void setFolderNode(Node folderNode) {
-        this.folderNode = folderNode;
+    boolean setTaskElements(Collection<? extends TaskElement> c) {
+
+        taskElements.clear();
+        return taskElements.addAll(c);
     }
 
-    void setRefreshable(TaskFolderRefreshable refreshable) {
-        this.refreshable = refreshable;
+    public void refreshContent() {
+        synchronized (this) {
+            refreshFolders();
+            persistenceHandler.refresh();
+            folderChildren.refreshContent();
+        }
+    }
+
+    protected void clearFolder(TaskFolderImpl impl) {
+        for (TaskFolderImpl taskFolder : impl.taskFolders) {
+            clearFolder(taskFolder);
+        }
+        if (impl.folderChildren != null) {
+            impl.folderChildren.clear();
+        }
+        impl.taskFolders.clear();
     }
 }

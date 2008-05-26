@@ -43,7 +43,7 @@ public class CategorizedTaskNodeView implements TaskNodeView {
     public Node createRootContext() {
 
         TasksFileSystem fileSystem = Lookup.getDefault().lookup(TasksFileSystem.class);
-
+        assert fileSystem!=null;
         return fileSystem.getRootTaskFolder().getLookup().lookup(Node.class);
     }
 }

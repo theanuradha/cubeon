@@ -14,13 +14,23 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.context.spi;
+package org.netbeans.cubeon.context.internals;
+
+import java.util.Comparator;
+import org.netbeans.cubeon.context.api.TaskFolder;
 
 /**
  *
- * @author Anuradha G
+ * @author Anuradha
  */
-public interface TaskNodeChildren {
+class TaskFolderComparator implements Comparator<TaskFolder> {
 
-    void refreshContent();
+    TaskFolderComparator() {
+    }
+
+    public int compare(TaskFolder o1, TaskFolder o2) {
+
+
+        return o1.getName().compareTo(o2.getName());
+    }
 }

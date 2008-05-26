@@ -20,12 +20,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import org.netbeans.cubeon.context.api.TaskFolder;
+import org.netbeans.cubeon.context.api.CubeonContext;
+import org.netbeans.cubeon.context.api.TaskRepositoryHandler;
+import org.netbeans.cubeon.tasks.spi.TaskElement;
+import org.netbeans.cubeon.tasks.spi.TaskRepository;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
 import org.openide.xml.XMLUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -40,136 +43,104 @@ import org.xml.sax.SAXException;
  */
 class PersistenceHandler {
 
-    private static final String FILESYSTEM_FILE_NAME = "tasks-filesystem.xml"; //NOI18N
+    private static final String FILESYSTEM_FILE_NAME = "tasks.xml"; //NOI18N
     private static final String NAMESPACE = null;//FIXME add propper namespase
-    private static final String TAG_ROOT = "tasks-filesystem";
+    private static final String TAG_ROOT = "tasks";
     private static final String TAG_REPOSITORY = "repository";
     private static final String TAG_ID = "id";
-    private static final String TAG_FOLDERS = "folders";
-    private static final String TAG_FOLDER = "folder";
     private static final String TAG_TASKS = "tasks";
     private static final String TAG_TASK = "task";
     private static final String TAG_NAME = "name";
     private static final String TAG_DESCRIPTION = "description";
-    private FileObject baseDir;
+    private TaskFolderImpl folderImpl;
 
-    public PersistenceHandler(FileObject baseDir) {
-        this.baseDir = baseDir;
+    PersistenceHandler(TaskFolderImpl folderImpl) {
+        this.folderImpl = folderImpl;
     }
 
-    public TaskFolder addTaskFolder(TaskFolder parent, TaskFolder folder) {
-        Element baseElement = getConfigurationFragment(TAG_FOLDERS, NAMESPACE);
-        Element element = findTaskFolderElement(baseElement, parent);
-        if (element == null) {
-            element = baseElement;
+    void addTaskElement(TaskElement te) {
+        Document document = getDocument();
+        Element root = getRootElement(document);
+        Element tasksElement = findElement(root, TAG_TASKS, NAMESPACE);
+        //check tasksElement null and create element
+        if (tasksElement == null) {
+            tasksElement = document.createElementNS(NAMESPACE, TAG_TASKS);
+            root.appendChild(tasksElement);
         }
-        Document document = element.getOwnerDocument();
-        Element folderElement = document.createElementNS(NAMESPACE, TAG_FOLDER);
-        element.appendChild(folderElement);
-        //put basic informations
-        folderElement.setAttributeNS(NAMESPACE, TAG_NAME, folder.getName());
-        folderElement.setAttributeNS(NAMESPACE, TAG_DESCRIPTION, folder.getDescription());
+        
+        Element taskElement = document.createElementNS(NAMESPACE, TAG_TASK);
+        tasksElement.appendChild(taskElement);
 
+        taskElement.setAttributeNS(NAMESPACE, TAG_ID, te.getId());
+        taskElement.setAttributeNS(NAMESPACE, TAG_REPOSITORY, te.getTaskRepository().getId());
 
-
-        putConfigurationFragment(baseElement);
-        return folder;
+        save(document);
     }
 
-    public void removeTaskFolder(TaskFolder parent, TaskFolder folder) {
-        Element baseElement = getConfigurationFragment(TAG_FOLDERS, NAMESPACE);
+    void removeTaskElement(TaskElement te) {
+        Document document = getDocument();
+        Element root = getRootElement(document);
+        Element tasksElement = findElement(root, TAG_TASKS, NAMESPACE);
+        Element taskElement = null;
 
+        NodeList taskNodes =
+                tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_TASK);
 
-        Element parentElement = findTaskFolderElement(baseElement, parent);
-        Element folderElement = findTaskFolderElement(baseElement, folder);
-
-        parentElement.removeChild(folderElement);
-
-        putConfigurationFragment(baseElement);
-    }
-
-    public List<TaskFolder> getTaskFolders(TaskFolder taskFolder) {
-        List<TaskFolder> taskFolders = new ArrayList<TaskFolder>();
-        Element baseElement = getConfigurationFragment(TAG_FOLDERS, NAMESPACE);
-        Element foldersElement = findTaskFolderElement(baseElement, taskFolder);
-        if (foldersElement == null) {
-            foldersElement = baseElement;
-        }
-
-        if (foldersElement != null) {
-            NodeList nodeList =
-                    foldersElement.getElementsByTagNameNS(NAMESPACE, TAG_FOLDER);
-            for (int i = 0; i < nodeList.getLength(); i++) {
-                Node node = nodeList.item(i);
-                if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    Element element = (Element) node;
-                    String name = element.getAttribute(TAG_NAME);
-                    String description = element.getAttribute(TAG_DESCRIPTION);
-                    taskFolders.add(new TaskFolderImpl(this, taskFolder, name, description));
-                }
-            }
-        }
-
-
-
-
-
-        return taskFolders;
-    }
-
-    private List<TaskFolder> getHierarchyAsList(TaskFolder folder) {
-        List<TaskFolder> folders = new ArrayList<TaskFolder>();
-        readParents(folders, folder);
-
-        Collections.reverse(folders);
-        return folders;
-    }
-
-    private void readParents(List<TaskFolder> folders, TaskFolder folder) {
-        folders.add(folder);
-        TaskFolder parent = folder.getParent();
-        if (parent != null) {
-            readParents(folders, parent);
-        }
-    }
-    //xml related
-    private Element findTaskFolderElement(Element element, TaskFolder taskFolder) {
-
-        //check is root folder 
-        if (taskFolder.getParent() != null) {
-            List<TaskFolder> folders = getHierarchyAsList(taskFolder);
-            for (TaskFolder tf : folders) {
-                element = findMatchingElement(element, tf);
-                assert element != null;
-            }
-        }
-
-        return element;
-    }
-
-    private Element findMatchingElement(Element parent, TaskFolder tf) {
-        NodeList nodeList = parent.getElementsByTagNameNS(NAMESPACE, TAG_FOLDERS);
-
-        for (int i = 0; i < nodeList.getLength(); i++) {
-            Node node = nodeList.item(i);
+        for (int i = 0; i < taskNodes.getLength(); i++) {
+            Node node = taskNodes.item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element) node;
-                String name = element.getAttribute(TAG_NAME);
-                if (tf.getName().equals(name)) {
-                    return element;
+                String id = element.getAttributeNS(NAMESPACE, TAG_ID);
+                if (te.getId().equals(id)) {
+                    taskElement = element;
+                    break;
                 }
             }
         }
-        return null;
+        assert taskElement != null;
+
+        tasksElement.removeChild(taskElement);
+
+        save(document);
     }
 
-    private Element getDocumentElement() {
-        final FileObject config = baseDir.getFileObject(FILESYSTEM_FILE_NAME);
+    void refresh() {
+        CubeonContext context = Lookup.getDefault().lookup(CubeonContext.class);
+        TaskRepositoryHandler repositoryHandler = context.getLookup().
+                lookup(TaskRepositoryHandler.class);
+        List<TaskElement> taskElements = new ArrayList<TaskElement>();
+        Document document = getDocument();
+        Element root = getRootElement(document);
+        Element tasksElement = findElement(root, TAG_TASKS, NAMESPACE);
+
+        if (tasksElement != null) {
+            NodeList taskNodes =
+                    tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_TASK);
+            for (int i = 0; i < taskNodes.getLength(); i++) {
+                Node node = taskNodes.item(i);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element element = (Element) node;
+                    String id = element.getAttributeNS(NAMESPACE, TAG_ID);
+                    String repository = element.getAttributeNS(NAMESPACE, TAG_REPOSITORY);
+
+                    TaskRepository taskRepository =
+                            repositoryHandler.getTaskRepositoryById(repository);
+                    assert taskRepository != null;
+
+                    TaskElement taskElement = taskRepository.getTaskElementById(id);
+                    assert taskElement != null;
+
+                    taskElements.add(taskElement);
+                }
+            }
+            folderImpl.setTaskElements(taskElements);
+        }
+    }
+
+    private Document getDocument() {
+        final FileObject config = folderImpl.getFileObject().getFileObject(FILESYSTEM_FILE_NAME);
         Document doc = null;
         if (config != null) {
-
-
-
             InputStream in = null;
             try {
                 in = config.getInputStream();
@@ -192,53 +163,29 @@ class PersistenceHandler {
 
 
         } else {
-            doc = XMLUtil.createDocument(TAG_ROOT, null, null, null);
+            doc = XMLUtil.createDocument(TAG_ROOT, NAMESPACE, null, null);
 
         }
-        return doc.getDocumentElement();
+        return doc;
     }
 
-    private Element getConfigurationFragment(final String elementName, final String namespace) {
-        Element documentElement = getDocumentElement();
-        Element findElement = findElement(documentElement, elementName, namespace);
-        if (findElement == null) {
-            findElement = documentElement.getOwnerDocument().createElementNS(namespace, elementName);
+    private Element getRootElement(Document doc) {
+        Element rootElement = doc.getDocumentElement();
+        if (rootElement == null) {
+            rootElement = doc.createElementNS(NAMESPACE, TAG_ROOT);
         }
-        return findElement;
+        return rootElement;
     }
 
-    private void putConfigurationFragment(final Element fragment) throws IllegalArgumentException {
+    private void save(Document doc) {
 
-        Document doc = null;
-        FileObject config = baseDir.getFileObject(FILESYSTEM_FILE_NAME);
-
-        if (config != null) {
-            try {
-                doc = XMLUtil.parse(new InputSource(config.getInputStream()), false, true, null, null);
-            } catch (SAXException ex) {
-                ex.printStackTrace();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        } else {
-
-            doc = XMLUtil.createDocument(TAG_ROOT, null, null, null);
-
-        }
-
-        if (doc != null) {
-            Element el = findElement(doc.getDocumentElement(), fragment.getNodeName(), fragment.getNamespaceURI());
-            if (el != null) {
-                doc.getDocumentElement().removeChild(el);
-            }
-            doc.getDocumentElement().appendChild(doc.importNode(fragment, true));
-        }
+        FileObject config = folderImpl.getFileObject().getFileObject(FILESYSTEM_FILE_NAME);
 
         FileLock lck = null;
         OutputStream out = null;
         try {
             if (config == null) {
-                config = baseDir.createData(FILESYSTEM_FILE_NAME);
+                config = folderImpl.getFileObject().createData(FILESYSTEM_FILE_NAME);
             }
             lck = config.lock();
             out = config.getOutputStream(lck);
@@ -257,9 +204,6 @@ class PersistenceHandler {
                 lck.releaseLock();
             }
         }
-
-
-
 
     }
 
