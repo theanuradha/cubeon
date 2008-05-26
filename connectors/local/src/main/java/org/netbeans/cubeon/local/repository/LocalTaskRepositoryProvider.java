@@ -39,13 +39,13 @@ import org.openide.util.lookup.Lookups;
  */
 public class LocalTaskRepositoryProvider implements TaskRepositoryType {
 
-    private static final String BASE_PATH = "cubeon/local_repositorys";
+    static final String BASE_PATH = "cubeon/local_repositorys/";
     private List<LocalTaskRepository> taskRepositorys = new ArrayList<LocalTaskRepository>();
-    private LocalRepositoryPersistence persistence;
+    private final LocalRepositoryPersistence persistence;
     private AtomicBoolean initiailzed = new AtomicBoolean(false);
-
+    private FileObject baseDir = null;
     public LocalTaskRepositoryProvider() {
-        FileObject baseDir = null;
+        
         try {
             baseDir = FileUtil.createFolder(Repository.getDefault().
                     getDefaultFileSystem().getRoot(), BASE_PATH);
@@ -53,7 +53,7 @@ public class LocalTaskRepositoryProvider implements TaskRepositoryType {
             Exceptions.printStackTrace(ex);
         }
         assert baseDir != null;
-        persistence = new LocalRepositoryPersistence(baseDir);
+        persistence = new LocalRepositoryPersistence(this,baseDir);
     }
 
     public String getName() {
@@ -123,4 +123,10 @@ public class LocalTaskRepositoryProvider implements TaskRepositoryType {
     public ConfigurationHandler createConfigurationHandler() {
         return new ConfigurationHandlerImpl(this);
     }
+
+    FileObject getBaseDir() {
+        return baseDir;
+    }
+    
+    
 }

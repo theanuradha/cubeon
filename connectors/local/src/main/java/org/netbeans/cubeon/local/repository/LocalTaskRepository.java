@@ -16,6 +16,10 @@
  */
 package org.netbeans.cubeon.local.repository;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import org.netbeans.cubeon.local.LocalTask;
 import org.netbeans.cubeon.local.nodes.LocalRepositoryNode;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
 import org.netbeans.cubeon.tasks.spi.TaskRepository;
@@ -28,18 +32,25 @@ import org.openide.util.lookup.Lookups;
  */
 public class LocalTaskRepository implements TaskRepository {
 
+    private final LocalTaskRepositoryProvider provider;
     private final String id;
     private String name;
     private String description;
+    private List<LocalTask> localTasks = new ArrayList<LocalTask>();
+    private final PersistenceHandler persistenceHandler;
 
-    public LocalTaskRepository(String id, String name, String description) {
+    public LocalTaskRepository(LocalTaskRepositoryProvider provider,
+            String id, String name, String description) {
+        this.provider = provider;
         this.id = id;
         this.name = name;
         this.description = description;
+        persistenceHandler = new PersistenceHandler(this, provider.getBaseDir());
+        refresh();
     }
 
     public String getId() {
-        return id;//NOI18N
+        return id;
     }
 
     public String getName() {
@@ -52,14 +63,39 @@ public class LocalTaskRepository implements TaskRepository {
 
     public Lookup getLookup() {
         return Lookups.fixed(this,
-                new LocalRepositoryNode(this));
+                new LocalRepositoryNode(this), provider);
+    }
+
+    public List<TaskElement> getTaskElements() {
+        return new ArrayList<TaskElement>(localTasks);
     }
 
     public TaskElement getTaskElementById(String id) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        List<TaskElement> taskElements = getTaskElements();
+        for (TaskElement taskElement : taskElements) {
+            if (taskElement.getId().equals(id)) {
+                return taskElement;
+            }
+        }
+
+        return null;
     }
 
+    void refresh(){
+      persistenceHandler.refresh();
+    
+    }
+    
     public TaskElement createTaskElement() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        LocalTask localTask = new LocalTask(UUID.randomUUID().toString(),
+                "New Task", "", this);
+        persistenceHandler.addTaskElement(localTask);
+        localTasks.add(localTask);
+        return localTask;
+    }
+
+    void setTaskElements(List<LocalTask> taskElements) {
+        localTasks.clear();
+        localTasks.addAll(taskElements);
     }
 }

@@ -28,7 +28,8 @@ public class TaskFolderActions implements TaskFolderActionsProvider {
 
     public Action[] getNewActions(final TaskFolder taskFolder) {
         return new Action[]{
-                    new AddTaskFolderAction(taskFolder)
+                    new AddTaskFolderAction(taskFolder),
+                    new NewTaskElementAction(taskFolder)
                 };
     }
 

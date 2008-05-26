@@ -46,9 +46,11 @@ class LocalRepositoryPersistence {
     private static final String TAG_ID = "id";
     private static final String TAG_NAME = "name";
     private static final String TAG_DESCRIPTION = "description";
+    private LocalTaskRepositoryProvider provider;
     private FileObject baseDir;
 
-    LocalRepositoryPersistence(FileObject baseDir) {
+    LocalRepositoryPersistence(LocalTaskRepositoryProvider provider,FileObject baseDir) {
+        this.provider = provider;
         this.baseDir = baseDir;
     }
 
@@ -137,7 +139,7 @@ class LocalRepositoryPersistence {
                     String id = element.getAttribute(TAG_ID);
                     String name = element.getAttribute(TAG_NAME);
                     String description = element.getAttribute(TAG_DESCRIPTION);
-                     repositorys.add(new LocalTaskRepository(id, name, description));
+                     repositorys.add(new LocalTaskRepository(provider,id, name, description));
                 }
             }
         }

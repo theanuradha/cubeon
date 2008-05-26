@@ -16,6 +16,7 @@
  */
 package org.netbeans.cubeon.tasks.spi;
 
+import java.util.List;
 import org.openide.util.Lookup;
 
 /**
@@ -33,6 +34,8 @@ public interface TaskRepository {
     Lookup getLookup();
     
     TaskElement  createTaskElement();
+    
+    List<TaskElement> getTaskElements();
     
     TaskElement getTaskElementById(String id);
 }

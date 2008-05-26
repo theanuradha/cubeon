@@ -16,6 +16,7 @@
  */
 package org.netbeans.cubeon.local;
 
+import org.netbeans.cubeon.local.nodes.LocalTaskNode;
 import org.netbeans.cubeon.local.repository.*;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
 import org.netbeans.cubeon.tasks.spi.TaskRepository;
@@ -32,6 +33,7 @@ public class LocalTask implements TaskElement {
     private String name;
     private String description;
     private LocalTaskRepository taskRepository;
+    private LocalTaskNode node;
 
     public LocalTask(String id, String name, String description,
             LocalTaskRepository taskRepository) {
@@ -39,6 +41,7 @@ public class LocalTask implements TaskElement {
         this.name = name;
         this.description = description;
         this.taskRepository = taskRepository;
+        node=new LocalTaskNode(this);
     }
 
     public String getId() {
@@ -51,6 +54,7 @@ public class LocalTask implements TaskElement {
 
     public void setName(String name) {
         this.name = name;
+        node.setDisplayName(name);
     }
 
     public String getDescription() {
@@ -59,6 +63,7 @@ public class LocalTask implements TaskElement {
 
     public void setDescription(String description) {
         this.description = description;
+        node.setShortDescription(description);
     }
 
     public TaskRepository getTaskRepository() {
@@ -66,6 +71,6 @@ public class LocalTask implements TaskElement {
     }
 
     public Lookup getLookup() {
-        return Lookups.fixed(this);
+        return Lookups.fixed(this,node);
     }
 }

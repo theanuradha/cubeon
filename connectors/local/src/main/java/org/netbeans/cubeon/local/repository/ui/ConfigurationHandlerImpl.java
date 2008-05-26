@@ -44,7 +44,7 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
     }
 
     public TaskRepository getTaskRepository() {
-        return new LocalTaskRepository(txtId.getText().trim(),
+        return new LocalTaskRepository(repositoryProvider,txtId.getText().trim(),
                 txtName.getText().trim(), txtDescription.getText().trim());
     }
 
