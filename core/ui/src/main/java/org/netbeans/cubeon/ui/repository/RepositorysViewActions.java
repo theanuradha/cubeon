@@ -18,6 +18,7 @@ package org.netbeans.cubeon.ui.repository;
 
 import javax.swing.Action;
 import org.netbeans.cubeon.context.spi.RepositorysViewActionsProvider;
+import org.netbeans.cubeon.ui.TaskExplorerAction;
 
 /**
  *
@@ -31,7 +32,10 @@ public class RepositorysViewActions implements RepositorysViewActionsProvider {
 
     public Action[] getActions() {
         return new Action[]{
-                    new NewRepositoryWizardAction()
+                    new NewRepositoryWizardAction(),
+                    null,
+                    new TaskExplorerAction(),
+                    null
                 };
     }
 }

@@ -20,7 +20,9 @@ import javax.swing.Action;
 import org.netbeans.cubeon.context.api.TaskFolder;
 import org.netbeans.cubeon.context.api.TasksFileSystem;
 import org.netbeans.cubeon.context.spi.TaskExplorerViewActionsProvider;
+import org.netbeans.cubeon.ui.TaskRepositoriesAction;
 import org.openide.util.Lookup;
+import org.openide.util.actions.SystemAction;
 
 /**
  *
@@ -40,8 +42,12 @@ public class TaskExplorerViewActions implements TaskExplorerViewActionsProvider 
     }
 
     public Action[] getActions() {
+     
         return new Action[]{
-                    new RefreshTaskFolderAction(taskFolder)
+                    new RefreshTaskFolderAction(taskFolder),
+                    null,
+                    new TaskRepositoriesAction(),null
+                            
                 };
     }
 
