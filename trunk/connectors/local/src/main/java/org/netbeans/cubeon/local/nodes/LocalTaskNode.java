@@ -17,19 +17,36 @@
 package org.netbeans.cubeon.local.nodes;
 
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.util.Collection;
+import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.netbeans.cubeon.local.LocalTask;
+import org.netbeans.cubeon.tasks.spi.TaskBadgeProvider;
+import org.netbeans.cubeon.tasks.spi.TaskElement;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
+import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 
 /**
  *
- * @author Anuradha
+ * @author Anuradha G
  */
 public class LocalTaskNode extends AbstractNode {
 
+    private final Action openTask = new AbstractAction(
+            NbBundle.getMessage(LocalTaskNode.class, "LBL_Open")) {
+
+        public void actionPerformed(ActionEvent e) {
+
+            final TaskElement taskElement = getLookup().lookup(TaskElement.class);
+            assert taskElement != null;
+            taskElement.open();
+        }
+    };
 
     public LocalTaskNode(LocalTask localTask) {
         super(Children.LEAF, Lookups.singleton(localTask));
@@ -39,8 +56,22 @@ public class LocalTaskNode extends AbstractNode {
 
     @Override
     public Image getIcon(int arg0) {
+        TaskElement taskElement = getLookup().lookup(TaskElement.class);
+        Image image = Utilities.loadImage("org/netbeans/cubeon/local/nodes/task.png");
+        //badging task element with bages
+        Collection<? extends TaskBadgeProvider> badgeProviders =
+                Lookup.getDefault().lookupAll(TaskBadgeProvider.class);
 
-        return Utilities.loadImage("org/netbeans/cubeon/local/nodes/task.png");
+        for (TaskBadgeProvider provider : badgeProviders) {
+            image = provider.bageTaskIcon(taskElement, image);
+
+        }
+        return image;
+    }
+
+    @Override
+    public Action getPreferredAction() {
+        return openTask;
     }
 
     @Override
