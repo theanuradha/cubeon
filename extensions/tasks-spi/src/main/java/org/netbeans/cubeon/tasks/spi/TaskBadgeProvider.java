@@ -16,30 +16,13 @@
  */
 package org.netbeans.cubeon.tasks.spi;
 
-import java.util.List;
-import org.openide.util.Lookup;
+import java.awt.Image;
 
 /**
  *
  * @author Anuradha G
  */
-public interface TaskRepository {
+public interface TaskBadgeProvider {
 
-    String getId();
-
-    String getName();
-
-    String getDescription();
-
-    Lookup getLookup();
-
-    TaskElement createTaskElement();
-
-    List<TaskElement> getTaskElements();
-
-    TaskElement getTaskElementById(String id);
-
-    
-    
-  
+    Image bageTaskIcon(TaskElement element,Image image);
 }

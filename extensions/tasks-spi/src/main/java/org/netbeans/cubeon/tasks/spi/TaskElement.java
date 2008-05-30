@@ -16,6 +16,8 @@
  */
 package org.netbeans.cubeon.tasks.spi;
 
+import javax.swing.JComponent;
+import javax.swing.event.ChangeListener;
 import org.openide.util.Lookup;
 
 /**
@@ -25,12 +27,29 @@ import org.openide.util.Lookup;
 public interface TaskElement {
 
     String getId();
-    
+
     String getName();
-    
+
     String getDescription();
 
     TaskRepository getTaskRepository();
 
     Lookup getLookup();
+
+    void open();
+
+    TaskBasicAttributeHandler createAttributeHandler();
+
+    public interface TaskBasicAttributeHandler {
+
+        void addChangeListener(ChangeListener changeListener);
+
+        void removeChangeListener(ChangeListener changeListener);
+
+        boolean isValidConfiguration();
+
+        JComponent getComponent();
+        
+        TaskElement getTaskElement();
+    }
 }

@@ -32,7 +32,7 @@ public interface TaskRepositoryType {
 
     String getName();
 
-    String getDiscription();
+    String getDescription();
 
     Image getImage();
 

@@ -60,7 +60,7 @@ public class LocalTaskRepositoryProvider implements TaskRepositoryType {
         return NbBundle.getMessage(LocalTaskRepository.class, "LBL_LOCAL_REPO");
     }
 
-    public String getDiscription() {
+    public String getDescription() {
         return NbBundle.getMessage(LocalTaskRepository.class, "LBL_LOCAL_REPO_DEC");
     }
 

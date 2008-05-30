@@ -19,6 +19,7 @@ package org.netbeans.cubeon.ui.taskfolder;
 import javax.swing.Action;
 import org.netbeans.cubeon.context.api.TaskFolder;
 import org.netbeans.cubeon.context.spi.TaskFolderActionsProvider;
+import org.netbeans.cubeon.ui.taskelemet.NewTaskWizardAction;
 
 /**
  *
@@ -29,7 +30,7 @@ public class TaskFolderActions implements TaskFolderActionsProvider {
     public Action[] getNewActions(final TaskFolder taskFolder) {
         return new Action[]{
                     new AddTaskFolderAction(taskFolder),
-                    new NewTaskElementAction(taskFolder)
+                    new NewTaskWizardAction(taskFolder)
                 };
     }
 
