@@ -18,6 +18,7 @@ package org.netbeans.cubeon.local;
 
 import org.netbeans.cubeon.local.nodes.LocalTaskNode;
 import org.netbeans.cubeon.local.repository.*;
+import org.netbeans.cubeon.local.ui.BasicAttributeHandler;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
 import org.netbeans.cubeon.tasks.spi.TaskRepository;
 import org.openide.util.Lookup;
@@ -41,7 +42,7 @@ public class LocalTask implements TaskElement {
         this.name = name;
         this.description = description;
         this.taskRepository = taskRepository;
-        node=new LocalTaskNode(this);
+        node = new LocalTaskNode(this);
     }
 
     public String getId() {
@@ -71,6 +72,14 @@ public class LocalTask implements TaskElement {
     }
 
     public Lookup getLookup() {
-        return Lookups.fixed(this,node);
+        return Lookups.fixed(this, node);
+    }
+
+    public void open() {
+        //To-Do add task  
+    }
+
+    public TaskBasicAttributeHandler createAttributeHandler() {
+        return new BasicAttributeHandler(this);
     }
 }

@@ -67,7 +67,7 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
 
     public boolean isValidConfiguration() {
 
-
+        //to-do
         return true;
     }
 

@@ -1,18 +1,17 @@
 /*
- * ChooseRepositoryProvider.java
+ * ChooseRepository.java
  *
  * Created on May 17, 2008, 11:20 AM
  */
-package org.netbeans.cubeon.ui.repository;
+package org.netbeans.cubeon.ui.taskelemet;
 
-import java.awt.Image;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 import javax.swing.Action;
 import org.netbeans.cubeon.context.api.CubeonContext;
 import org.netbeans.cubeon.context.api.TaskRepositoryHandler;
-import org.netbeans.cubeon.tasks.spi.TaskRepositoryType;
+import org.netbeans.cubeon.tasks.spi.TaskRepository;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.BeanTreeView;
 import org.openide.nodes.AbstractNode;
@@ -20,21 +19,21 @@ import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
-import org.openide.util.lookup.Lookups;
 
 /**
  *
  * @author  Anuradha G
  */
-final class ChooseRepositoryProvider extends javax.swing.JPanel implements ExplorerManager.Provider {
+final class ChooseRepository extends javax.swing.JPanel implements ExplorerManager.Provider {
 
     private final BeanTreeView taskTreeView = new BeanTreeView();
     private final transient ExplorerManager explorerManager = new ExplorerManager();
 
-    /** Creates new form ChooseRepositoryProvider */
-    ChooseRepositoryProvider(final ChooseRepositoryWizard wizard) {
+    /** Creates new form ChooseRepository */
+    ChooseRepository(final ChooseRepositoryWizard wizard) {
         initComponents();
         taskTreeView.setRootVisible(false);
+        taskTreeView.setPopupAllowed(false);
         explorerManager.addPropertyChangeListener(new PropertyChangeListener() {
 
             public void propertyChange(PropertyChangeEvent evt) {
@@ -43,7 +42,7 @@ final class ChooseRepositoryProvider extends javax.swing.JPanel implements Explo
                 }
             }
         });
-        loadProviders();
+        loadRepositorys();
     }
 
     @Override
@@ -51,16 +50,16 @@ final class ChooseRepositoryProvider extends javax.swing.JPanel implements Explo
         return "Step #1";
     }
 
-    public boolean isTypeSelected() {
-        return getTaskRepositoryType() != null;
+    public boolean isTaskRepositorySelected() {
+        return getTaskRepository() != null;
     }
 
-    TaskRepositoryType getTaskRepositoryType() {
+    TaskRepository getTaskRepository() {
         Node[] nodes = explorerManager.getSelectedNodes();
         if (nodes.length > 0) {
             Node node = nodes[0];
-            TaskRepositoryType type = node.getLookup().lookup(TaskRepositoryType.class);
-            return type;
+            TaskRepository repository = node.getLookup().lookup(TaskRepository.class);
+            return repository;
         }
         return null;
     }
@@ -69,50 +68,29 @@ final class ChooseRepositoryProvider extends javax.swing.JPanel implements Explo
         return explorerManager;
     }
 
-    private void loadProviders() {
+    private void loadRepositorys() {
         //lookup CubeonContext
         CubeonContext cubeonContext = Lookup.getDefault().lookup(CubeonContext.class);
         assert cubeonContext != null : "CubeonContext can't be null";
         //lookup TaskRepositoryHandler
         TaskRepositoryHandler repositoryHandler = cubeonContext.getLookup().lookup(TaskRepositoryHandler.class);
 
-        List<TaskRepositoryType> providers = repositoryHandler.getTaskRepositoryTypes();
+        List<TaskRepository> repositorys = repositoryHandler.getTaskRepositorys();
 
         Children.Array array = new Children.Array();
 
-        Node[] nodes = new Node[providers.size()];
+        Node[] nodes = new Node[repositorys.size()];
 
-        for (int i = 0; i < providers.size(); i++) {
-            final TaskRepositoryType trp = providers.get(i);
-            nodes[i] = new AbstractNode(Children.LEAF, Lookups.singleton(trp)) {
-
-                @Override
-                public String getDisplayName() {
-                    return trp.getName();
-                }
-
-                @Override
-                public String getShortDescription() {
-                    return trp.getDescription();
-                }
-
-                @Override
-                public Image getIcon(int arg0) {
-                    return trp.getImage();
-                }
-
-                @Override
-                public Action[] getActions(boolean arg0) {
-                    return new Action[0];
-                }
-            };
+        for (int i = 0; i < repositorys.size(); i++) {
+            final TaskRepository repository = repositorys.get(i);
+            nodes[i] = repository.getLookup().lookup(Node.class);
         }
         array.add(nodes);
         Node node = new AbstractNode(array) {
 
             @Override
             public String getName() {
-                return "Providers";//NOI18N
+                return "Repositories";//NOI18N
             }
 
             @Override
@@ -142,11 +120,11 @@ final class ChooseRepositoryProvider extends javax.swing.JPanel implements Explo
         pnlHeader.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         lblMainHeader.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        lblMainHeader.setText(NbBundle.getMessage(ChooseRepositoryProvider.class, "LBL_Repo_Provider")); // NOI18N
+        lblMainHeader.setText(NbBundle.getMessage(ChooseRepository.class, "LBL_Repo")); // NOI18N
 
-        lblSubHeader.setText(NbBundle.getMessage(ChooseRepositoryProvider.class, "LBL_Repo_Provider_Dec")); // NOI18N
+        lblSubHeader.setText(NbBundle.getMessage(ChooseRepository.class, "LBL_Repo_Dec")); // NOI18N
 
-        lblIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/cubeon/ui/repository_add.png"))); // NOI18N
+        lblIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/cubeon/ui/new_task.png"))); // NOI18N
 
         javax.swing.GroupLayout pnlHeaderLayout = new javax.swing.GroupLayout(pnlHeader);
         pnlHeader.setLayout(pnlHeaderLayout);
