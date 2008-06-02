@@ -18,8 +18,8 @@ package org.netbeans.cubeon.ui.taskfolder;
 
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
-import org.netbeans.cubeon.taskui.api.TaskFolder;
-import org.netbeans.cubeon.taskui.api.TaskFolderRefreshable;
+import org.netbeans.cubeon.tasks.core.api.TaskFolder;
+import org.netbeans.cubeon.tasks.core.api.TaskFolderRefreshable;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.util.NbBundle;

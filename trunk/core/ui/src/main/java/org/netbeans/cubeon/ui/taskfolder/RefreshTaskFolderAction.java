@@ -19,8 +19,8 @@ package org.netbeans.cubeon.ui.taskfolder;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
-import org.netbeans.cubeon.taskui.api.TaskFolder;
-import org.netbeans.cubeon.taskui.api.TaskFolderRefreshable;
+import org.netbeans.cubeon.tasks.core.api.TaskFolder;
+import org.netbeans.cubeon.tasks.core.api.TaskFolderRefreshable;
 import org.openide.util.NbBundle;
 
 /**
