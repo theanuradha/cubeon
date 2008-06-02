@@ -17,38 +17,17 @@
 package org.netbeans.cubeon.tasks.spi;
 
 import java.util.List;
-import org.openide.util.Lookup;
 
 /**
  *
  * @author Anuradha G
  */
-public interface TaskRepository {
-
-    String getId();
-
-    String getName();
-
-    String getDescription();
-
-    Lookup getLookup();
-
-    TaskElement createTaskElement();
-
-    List<TaskElement> getTaskElements();
-
-    TaskElement getTaskElementById(String id);
-
-        
-    /**
-     * save modifid attributes
-     */
-    void persist(TaskElement element);
+public interface TaskPriorityProvider {
 
     /**
-     * reset modifid attributes
+     * 
+     * @return list of TaskPriority that support by 
+     * providing repository implementation
      */
-    void reset(TaskElement element);
-    
-  
+    List<TaskPriority> getTaskPrioritys();
 }

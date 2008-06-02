@@ -36,8 +36,13 @@ public interface TaskElement {
 
     Lookup getLookup();
 
-    void open();
+    /*--------------------------Priority------------------------*/
+    TaskPriority getPriority();
 
+    void setPriority(TaskPriority priority);
+    /*-----------------------------------------------------------*/
+
+    /*-----------------------Customizer--------------------------*/
     TaskBasicAttributeHandler createAttributeHandler();
 
     public interface TaskBasicAttributeHandler {
@@ -49,7 +54,7 @@ public interface TaskElement {
         boolean isValidConfiguration();
 
         JComponent getComponent();
-        
+
         TaskElement getTaskElement();
     }
 }
