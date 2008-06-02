@@ -14,7 +14,7 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.context.internals;
+package org.netbeans.cubeon.taskui.internals;
 
 import java.awt.event.ActionEvent;
 import java.io.IOException;
@@ -26,8 +26,8 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import org.netbeans.cubeon.context.api.TaskFolder;
-import org.netbeans.cubeon.context.spi.TaskExplorerViewActionsProvider;
+import org.netbeans.cubeon.taskui.api.TaskFolder;
+import org.netbeans.cubeon.taskui.spi.TaskExplorerViewActionsProvider;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.filesystems.Repository;

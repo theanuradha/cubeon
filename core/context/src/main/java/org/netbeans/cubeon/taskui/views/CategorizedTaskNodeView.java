@@ -14,10 +14,10 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.context.views;
+package org.netbeans.cubeon.taskui.views;
 
-import org.netbeans.cubeon.context.api.TasksFileSystem;
-import org.netbeans.cubeon.context.spi.TaskNodeView;
+import org.netbeans.cubeon.taskui.api.TasksFileSystem;
+import org.netbeans.cubeon.taskui.spi.TaskNodeView;
 import org.openide.nodes.Node;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;

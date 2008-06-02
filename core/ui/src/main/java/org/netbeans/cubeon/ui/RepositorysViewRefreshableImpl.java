@@ -17,7 +17,7 @@
 
 package org.netbeans.cubeon.ui;
 
-import org.netbeans.cubeon.context.spi.RepositorysViewRefreshable;
+import org.netbeans.cubeon.taskui.spi.RepositorysViewRefreshable;
 
 /**
  *

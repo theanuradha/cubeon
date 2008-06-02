@@ -14,13 +14,13 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.context.internals;
+package org.netbeans.cubeon.taskui.internals;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.netbeans.cubeon.context.api.TaskFolder;
-import org.netbeans.cubeon.context.api.TasksFileSystem;
+import org.netbeans.cubeon.taskui.api.TaskFolder;
+import org.netbeans.cubeon.taskui.api.TasksFileSystem;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.filesystems.Repository;

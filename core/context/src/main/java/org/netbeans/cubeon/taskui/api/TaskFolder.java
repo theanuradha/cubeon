@@ -14,7 +14,7 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.context.api;
+package org.netbeans.cubeon.taskui.api;
 
 import java.util.List;
 import org.netbeans.cubeon.tasks.spi.TaskElement;

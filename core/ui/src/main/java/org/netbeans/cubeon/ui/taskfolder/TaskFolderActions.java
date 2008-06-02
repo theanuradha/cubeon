@@ -17,8 +17,8 @@
 package org.netbeans.cubeon.ui.taskfolder;
 
 import javax.swing.Action;
-import org.netbeans.cubeon.context.api.TaskFolder;
-import org.netbeans.cubeon.context.spi.TaskFolderActionsProvider;
+import org.netbeans.cubeon.taskui.api.TaskFolder;
+import org.netbeans.cubeon.taskui.spi.TaskFolderActionsProvider;
 import org.netbeans.cubeon.ui.taskelemet.NewTaskWizardAction;
 import org.openide.util.NbBundle;
 

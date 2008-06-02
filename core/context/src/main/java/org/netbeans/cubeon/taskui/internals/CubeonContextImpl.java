@@ -1,5 +1,5 @@
 /*
- *  Copyright 2008 Anuradha.
+ *  Copyright 2008 Cube°n Team.
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,13 +14,21 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.context.spi;
+package org.netbeans.cubeon.taskui.internals;
+
+import org.netbeans.cubeon.taskui.api.CubeonContext;
+import org.openide.util.Lookup;
+import org.openide.util.lookup.Lookups;
 
 /**
  *
  * @author Anuradha G
  */
-public interface RepositorysViewRefreshable {
+public class CubeonContextImpl implements CubeonContext {
 
-    void refreshContent();
+    public Lookup getLookup() {
+        return Lookups.fixed(
+                /*Task Repository Handler Implementation*/
+                new TaskRepositoryHandlerImpl());
+    }
 }
