@@ -19,6 +19,8 @@ package org.netbeans.cubeon.ui.repository;
 import javax.swing.Action;
 import org.netbeans.cubeon.context.spi.RepositorysViewActionsProvider;
 import org.netbeans.cubeon.ui.TaskExplorerAction;
+import org.netbeans.cubeon.ui.taskelemet.NewTaskWizardAction;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -33,8 +35,11 @@ public class RepositorysViewActions implements RepositorysViewActionsProvider {
     public Action[] getActions() {
         return new Action[]{
                     new NewRepositoryWizardAction(),
+                    new  NewTaskWizardAction(NbBundle.getMessage(RepositorysViewActions.class,
+                            "LBL_Task_New")),
                     null,
-                    new TaskExplorerAction(),
+                    new TaskExplorerAction(NbBundle.getMessage(RepositorysViewActions.class,
+                            "LBL_Show_Task_Explore")),
                     null
                 };
     }

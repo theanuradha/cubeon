@@ -20,7 +20,6 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import org.netbeans.cubeon.context.api.TaskFolder;
 import org.netbeans.cubeon.context.api.TaskFolderRefreshable;
-import org.netbeans.cubeon.ui.taskfolder.AddTaskFolder;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.util.NbBundle;
@@ -31,8 +30,9 @@ import org.openide.util.NbBundle;
  */
 public class AddTaskFolderAction extends AbstractAction {
 
-    private TaskFolder folder;
+    private final TaskFolder folder;
 
+       
     public AddTaskFolderAction(TaskFolder folder) {
         this.folder = folder;
         putValue(NAME, NbBundle.getMessage(AddTaskFolderAction.class, "LBL_Add_Folder"));

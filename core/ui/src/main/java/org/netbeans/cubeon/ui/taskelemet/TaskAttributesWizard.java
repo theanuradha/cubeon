@@ -11,6 +11,7 @@ import java.util.Set;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.netbeans.cubeon.tasks.spi.TaskElement.TaskBasicAttributeHandler;
+import org.netbeans.cubeon.tasks.spi.TaskRepository;
 import org.netbeans.cubeon.ui.taskelemet.NewTaskWizardAction.WizardObject;
 import org.openide.WizardDescriptor;
 import org.openide.util.HelpCtx;
@@ -22,6 +23,18 @@ class TaskAttributesWizard implements WizardDescriptor.Panel<WizardObject> {
      * component from this class, just use getComponent().
      */
     private TaskAttributes component;
+    private final TaskRepository  defaultRepository;
+
+    public TaskAttributesWizard() {
+        defaultRepository=null;
+    }
+
+    public TaskAttributesWizard(TaskRepository defaultRepository) {
+       
+        this.defaultRepository = defaultRepository;
+    }
+    
+    
     // Get the visual component for the panel. In this template, the component
     // is kept separate. This can be more efficient: if the wizard is created
     // but never displayed, or not all panels are displayed, it is better to
@@ -73,6 +86,9 @@ class TaskAttributesWizard implements WizardDescriptor.Panel<WizardObject> {
     // WizardDescriptor.getProperty & putProperty to store information entered
     // by the user.
     public void readSettings(WizardObject settings) {
+        if(defaultRepository!=null){
+          settings.setRepository(defaultRepository);
+        }
         component.setWizardObject(settings);
     }
 
