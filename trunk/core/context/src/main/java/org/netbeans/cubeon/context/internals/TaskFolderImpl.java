@@ -50,7 +50,7 @@ class TaskFolderImpl implements TaskFolder, TaskFolderOparations, TaskFolderRefr
     protected final PersistenceHandler persistenceHandler;
 
     protected TaskFolderImpl(TaskFolderImpl parent, String name,
-            FileObject fileObject, String description, boolean lazy) {
+            FileObject fileObject, String description, boolean basic) {
         this.parent = parent;
         this.name = name;
         this.fileObject = fileObject;
@@ -58,7 +58,7 @@ class TaskFolderImpl implements TaskFolder, TaskFolderOparations, TaskFolderRefr
 
         persistenceHandler = new PersistenceHandler(this);
 
-        if (!lazy) {
+        if (!basic) {
             refreshFolders();
             persistenceHandler.refresh();
             folderChildren = new TaskFolderChildren(this);

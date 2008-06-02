@@ -44,7 +44,7 @@ public class LocalTaskNode extends AbstractNode {
 
             final TaskElement taskElement = getLookup().lookup(TaskElement.class);
             assert taskElement != null;
-            taskElement.open();
+            //to-do opening tasks
         }
     };
 
@@ -57,7 +57,7 @@ public class LocalTaskNode extends AbstractNode {
     @Override
     public Image getIcon(int arg0) {
         TaskElement taskElement = getLookup().lookup(TaskElement.class);
-        Image image = Utilities.loadImage("org/netbeans/cubeon/local/nodes/task.png");
+        Image image = Utilities.loadImage("org/netbeans/cubeon/local/task.png");
         //badging task element with bages
         Collection<? extends TaskBadgeProvider> badgeProviders =
                 Lookup.getDefault().lookupAll(TaskBadgeProvider.class);

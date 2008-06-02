@@ -20,6 +20,7 @@ import org.netbeans.cubeon.local.nodes.LocalTaskNode;
 import org.netbeans.cubeon.local.repository.*;
 import org.netbeans.cubeon.local.ui.BasicAttributeHandler;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
+import org.netbeans.cubeon.tasks.spi.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.TaskRepository;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.Lookups;
@@ -35,6 +36,7 @@ public class LocalTask implements TaskElement {
     private String description;
     private LocalTaskRepository taskRepository;
     private LocalTaskNode node;
+    private TaskPriority priority = LocalTaskPriorityProvider.P3;//default priority  is p3
 
     public LocalTask(String id, String name, String description,
             LocalTaskRepository taskRepository) {
@@ -81,5 +83,13 @@ public class LocalTask implements TaskElement {
 
     public TaskBasicAttributeHandler createAttributeHandler() {
         return new BasicAttributeHandler(this);
+    }
+
+    public TaskPriority getPriority() {
+        return priority;
+    }
+
+    public void setPriority(TaskPriority priority) {
+        this.priority = priority;
     }
 }
