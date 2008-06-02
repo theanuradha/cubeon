@@ -29,8 +29,13 @@ import org.openide.windows.TopComponent;
 public class TaskExplorerAction extends AbstractAction {
 
     public TaskExplorerAction() {
-        super(NbBundle.getMessage(TaskExplorerAction.class, "CTL_TaskExplorerAction"));
+        this(NbBundle.getMessage(TaskExplorerAction.class, "CTL_TaskExplorerAction"));
+    }
+
+    public TaskExplorerAction(String name) {
+        super(name);
         putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage(TaskExplorerTopComponent.ICON_PATH, true)));
+
     }
 
     public void actionPerformed(ActionEvent evt) {

@@ -28,6 +28,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import org.netbeans.cubeon.context.spi.TaskNodeView;
+import org.netbeans.cubeon.ui.taskelemet.NewTaskWizardAction;
 import org.openide.awt.DropDownButtonFactory;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.BeanTreeView;
@@ -142,6 +143,11 @@ final class TaskExplorerTopComponent extends TopComponent implements ExplorerMan
         newTask.setFocusable(false);
         newTask.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         newTask.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        newTask.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newTaskActionPerformed(evt);
+            }
+        });
         mainToolBar.add(newTask);
 
         refresh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/cubeon/ui/refresh.png"))); // NOI18N
@@ -178,6 +184,10 @@ final class TaskExplorerTopComponent extends TopComponent implements ExplorerMan
 
         add(mainToolbarHolder, java.awt.BorderLayout.PAGE_START);
     }// </editor-fold>//GEN-END:initComponents
+
+private void newTaskActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newTaskActionPerformed
+    new NewTaskWizardAction("").actionPerformed(evt);
+}//GEN-LAST:event_newTaskActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton downMenu;
     private javax.swing.JButton focas;
@@ -188,7 +198,6 @@ final class TaskExplorerTopComponent extends TopComponent implements ExplorerMan
     private javax.swing.JToolBar subToolbar;
     private javax.swing.JButton taskView;
     // End of variables declaration//GEN-END:variables
-
     /**
      * Gets default instance. Do not use directly: reserved for *.settings files only,
      * i.e. deserialization routines; otherwise you could get a non-deserialized instance.
@@ -241,7 +250,7 @@ final class TaskExplorerTopComponent extends TopComponent implements ExplorerMan
                     break;
                 }
             }
-            
+
             if (selectedView == null && views.size() > 0) {
                 //previse view is no longer available so set null on preferences and re call loadView()
                 preferences.put(SELECTED_VIEW, null);
@@ -275,6 +284,4 @@ final class TaskExplorerTopComponent extends TopComponent implements ExplorerMan
             return TaskExplorerTopComponent.getDefault();
         }
     }
-    
-     
 }

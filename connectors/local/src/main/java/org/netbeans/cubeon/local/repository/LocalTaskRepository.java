@@ -38,6 +38,7 @@ public class LocalTaskRepository implements TaskRepository {
     private String description;
     private List<LocalTask> localTasks = new ArrayList<LocalTask>();
     private final PersistenceHandler persistenceHandler;
+    private final LocalTaskPriorityProvider ltpp = new LocalTaskPriorityProvider();
 
     public LocalTaskRepository(LocalTaskRepositoryProvider provider,
             String id, String name, String description) {
@@ -63,7 +64,7 @@ public class LocalTaskRepository implements TaskRepository {
 
     public Lookup getLookup() {
         return Lookups.fixed(this,
-                new LocalRepositoryNode(this), provider);
+                new LocalRepositoryNode(this), provider, persistenceHandler, ltpp);
     }
 
     public List<TaskElement> getTaskElements() {
@@ -81,21 +82,35 @@ public class LocalTaskRepository implements TaskRepository {
         return null;
     }
 
-    void refresh(){
-      persistenceHandler.refresh();
-    
+    void refresh() {
+        persistenceHandler.refresh();
+
     }
-    
+
     public TaskElement createTaskElement() {
         LocalTask localTask = new LocalTask(UUID.randomUUID().toString(),
                 "New Task", "", this);
-        persistenceHandler.addTaskElement(localTask);
-        localTasks.add(localTask);
+
         return localTask;
     }
 
     void setTaskElements(List<LocalTask> taskElements) {
         localTasks.clear();
         localTasks.addAll(taskElements);
+    }
+
+    public void persist(TaskElement element) {
+        LocalTask localTask = element.getLookup().lookup(LocalTask.class);
+        assert localTask != null;
+        persistenceHandler.addTaskElement(localTask);
+        localTasks.add(localTask);
+    }
+
+    public void reset(TaskElement element) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public LocalTaskPriorityProvider getLocalTaskPriorityProvider() {
+        return ltpp;
     }
 }

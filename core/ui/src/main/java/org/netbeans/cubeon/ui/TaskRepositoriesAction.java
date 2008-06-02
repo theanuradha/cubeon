@@ -16,11 +16,16 @@ import org.openide.windows.TopComponent;
  */
 public class TaskRepositoriesAction extends AbstractAction {
 
-    public TaskRepositoriesAction() {
-        super(NbBundle.getMessage(TaskRepositoriesAction.class, "CTL_TaskRepositoriesAction"));
+    public TaskRepositoriesAction(String name) {
+        super(name);
         putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage(TaskRepositoriesTopComponent.ICON_PATH, true)));
     }
 
+    public TaskRepositoriesAction() {
+        this(NbBundle.getMessage(TaskRepositoriesAction.class, "CTL_TaskRepositoriesAction"));
+    }
+
+    
     public void actionPerformed(ActionEvent evt) {
         TopComponent win = TaskRepositoriesTopComponent.findInstance();
         win.open();
