@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.netbeans.cubeon.context.api;
+package org.netbeans.cubeon.taskui.api;
 
 import java.awt.Image;
 import javax.swing.Icon;

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2008 Cube°n Team.
+ *  Copyright 2008 Anuradha.
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,21 +14,13 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.context.internals;
-
-import org.netbeans.cubeon.context.api.CubeonContext;
-import org.openide.util.Lookup;
-import org.openide.util.lookup.Lookups;
+package org.netbeans.cubeon.taskui.api;
 
 /**
  *
  * @author Anuradha G
  */
-public class CubeonContextImpl implements CubeonContext {
+public interface TaskFolderRefreshable {
 
-    public Lookup getLookup() {
-        return Lookups.fixed(
-                /*Task Repository Handler Implementation*/
-                new TaskRepositoryHandlerImpl());
-    }
+    void refreshContent();
 }

@@ -14,10 +14,10 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.context.spi;
+package org.netbeans.cubeon.taskui.spi;
 
 import javax.swing.Action;
-import org.netbeans.cubeon.context.api.TaskFolder;
+import org.netbeans.cubeon.taskui.api.TaskFolder;
 
 /**
  *

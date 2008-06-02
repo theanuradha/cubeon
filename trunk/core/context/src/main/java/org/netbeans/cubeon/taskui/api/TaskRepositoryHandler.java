@@ -14,33 +14,35 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.context.spi;
+package org.netbeans.cubeon.taskui.api;
 
-import javax.swing.Action;
+import java.util.List;
+import org.netbeans.cubeon.tasks.spi.TaskRepository;
+import org.netbeans.cubeon.tasks.spi.TaskRepositoryType;
 
 /**
  *
  * @author Anuradha G
  */
-public interface TaskExplorerViewActionsProvider {
+public interface TaskRepositoryHandler {
 
     /**
-     * Use to sort TaskExplorerViewActionsProvider 
-     * @return Number 
+     * Get all Task Repositories
+     * @return list of repositories
      */
-    int getPosition();
+    List<TaskRepository> getTaskRepositorys();
 
     /**
-     * New Menu Actions
-     * @return Actions that show in  tasks view. Can return null elements 
-     * to add sepetator to menu 
+     * Find Task Repository by Id
+     * @param id Repository id
+     * @return matching Task Repository  may return null 
      */
-    Action[] getNewActions();
-
+    TaskRepository getTaskRepositoryById(String id);
+    
+    List< TaskRepositoryType> getTaskRepositoryTypes();
+    
     /**
-     * Repositort View Menu Actions
-     * 
-     * @return Actions that show in top level
-     */
-    Action[] getActions();
+    void addTaskRepository();
+    void removeTaskRepository(TaskRepository repository);
+     **/
 }

@@ -14,11 +14,11 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.context.internals;
+package org.netbeans.cubeon.taskui.internals;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.netbeans.cubeon.context.api.TaskFolder;
+import org.netbeans.cubeon.taskui.api.TaskFolder;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;

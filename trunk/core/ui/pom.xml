@@ -22,7 +22,7 @@
     <dependencies>
         <dependency>
             <groupId>org.netbeans.cubeon</groupId>
-            <artifactId>cubeon-context</artifactId>
+            <artifactId>cubeon-taskui</artifactId>
             <version>${cubeon.release}</version>
         </dependency>
         <dependency>

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2008 Cube°n Team.
+ *  Copyright 2008 Anuradha.
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,21 +14,20 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.context.spi;
+package org.netbeans.cubeon.taskui.api;
 
-import org.openide.nodes.Node;
+import java.util.List;
 
 /**
  *
  * @author Anuradha G
  */
-public interface TaskNodeView {
+public interface TasksFileSystem {
 
-    String getId();
-
-    String getName();
-
-    String getDescription();
-
-    Node createRootContext();
+    List<TaskFolder> getFolders();
+    
+    TaskFolder getDefaultFolder();
+    
+    TaskFolder getRootTaskFolder();
+    //TODO : add backup restore oprations
 }

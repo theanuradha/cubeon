@@ -14,16 +14,16 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.context.internals;
+package org.netbeans.cubeon.taskui.internals;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import org.netbeans.cubeon.context.api.TaskFolder;
-import org.netbeans.cubeon.context.api.TaskFolderOparations;
-import org.netbeans.cubeon.context.api.TaskFolderRefreshable;
+import org.netbeans.cubeon.taskui.api.TaskFolder;
+import org.netbeans.cubeon.taskui.api.TaskFolderOparations;
+import org.netbeans.cubeon.taskui.api.TaskFolderRefreshable;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;

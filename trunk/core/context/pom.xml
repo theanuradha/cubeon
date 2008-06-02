@@ -6,10 +6,10 @@
         <version>${cubeon.release}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>cubeon-context</artifactId>
+    <artifactId>cubeon-taskui</artifactId>
     <packaging>nbm</packaging>
-    <name>Cube°n Context</name>
-    <description>Context of the Cube°n</description>
+    <name>Cube°n Task UI</name>
+    <description>TaskUI of the Cube°n</description>
     <version>${cubeon.release}</version>
     <build>
         <plugins>
