@@ -20,6 +20,7 @@ import javax.swing.Action;
 import org.netbeans.cubeon.context.api.TaskFolder;
 import org.netbeans.cubeon.context.spi.TaskFolderActionsProvider;
 import org.netbeans.cubeon.ui.taskelemet.NewTaskWizardAction;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -30,7 +31,8 @@ public class TaskFolderActions implements TaskFolderActionsProvider {
     public Action[] getNewActions(final TaskFolder taskFolder) {
         return new Action[]{
                     new AddTaskFolderAction(taskFolder),
-                    new NewTaskWizardAction(taskFolder)
+                    new NewTaskWizardAction(NbBundle.getMessage(TaskFolderActions.class,
+                            "LBL_Task"),taskFolder)
                 };
     }
 

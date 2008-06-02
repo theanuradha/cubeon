@@ -16,7 +16,7 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Component id="pnlHeader" alignment="0" max="32767" attributes="0"/>
-          <Component id="pnlHolder" alignment="0" pref="500" max="32767" attributes="0"/>
+          <Component id="pnlHolder" alignment="0" pref="400" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -50,9 +50,9 @@
                   <Group type="103" groupAlignment="1" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace min="10" pref="10" max="10" attributes="0"/>
-                          <Component id="lblSubHeader" pref="403" max="32767" attributes="0"/>
+                          <Component id="lblSubHeader" pref="303" max="32767" attributes="0"/>
                       </Group>
-                      <Component id="lblMainHeader" alignment="1" pref="413" max="32767" attributes="0"/>
+                      <Component id="lblMainHeader" alignment="1" pref="313" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="45" max="-2" attributes="0"/>
                   <Component id="lblIcon" min="-2" pref="18" max="-2" attributes="0"/>

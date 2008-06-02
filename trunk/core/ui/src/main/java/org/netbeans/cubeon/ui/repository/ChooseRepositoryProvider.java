@@ -141,7 +141,7 @@ final class ChooseRepositoryProvider extends javax.swing.JPanel implements Explo
         pnlHeader.setBackground(new java.awt.Color(255, 255, 255));
         pnlHeader.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        lblMainHeader.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        lblMainHeader.setFont(new java.awt.Font("Tahoma", 1, 11));
         lblMainHeader.setText(NbBundle.getMessage(ChooseRepositoryProvider.class, "LBL_Repo_Provider")); // NOI18N
 
         lblSubHeader.setText(NbBundle.getMessage(ChooseRepositoryProvider.class, "LBL_Repo_Provider_Dec")); // NOI18N
@@ -157,8 +157,8 @@ final class ChooseRepositoryProvider extends javax.swing.JPanel implements Explo
                 .addGroup(pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(pnlHeaderLayout.createSequentialGroup()
                         .addGap(10, 10, 10)
-                        .addComponent(lblSubHeader, javax.swing.GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE))
-                    .addComponent(lblMainHeader, javax.swing.GroupLayout.DEFAULT_SIZE, 413, Short.MAX_VALUE))
+                        .addComponent(lblSubHeader, javax.swing.GroupLayout.DEFAULT_SIZE, 303, Short.MAX_VALUE))
+                    .addComponent(lblMainHeader, javax.swing.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE))
                 .addGap(45, 45, 45)
                 .addComponent(lblIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -185,7 +185,7 @@ final class ChooseRepositoryProvider extends javax.swing.JPanel implements Explo
             .addComponent(pnlHeader, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addGap(10, 10, 10)
-                .addComponent(scrPane, javax.swing.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
+                .addComponent(scrPane, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(

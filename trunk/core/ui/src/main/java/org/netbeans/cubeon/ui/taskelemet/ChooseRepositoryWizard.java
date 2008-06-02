@@ -7,10 +7,12 @@ package org.netbeans.cubeon.ui.taskelemet;
 import java.awt.Component;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.netbeans.cubeon.tasks.spi.TaskRepository;
 import org.netbeans.cubeon.ui.taskelemet.NewTaskWizardAction.WizardObject;
 import org.openide.WizardDescriptor;
 import org.openide.util.HelpCtx;
@@ -22,13 +24,23 @@ class ChooseRepositoryWizard implements WizardDescriptor.Panel<WizardObject> {
      * component from this class, just use getComponent().
      */
     private ChooseRepository component;
+    private List<TaskRepository> repositorys;
+
+    public ChooseRepositoryWizard( List<TaskRepository> repositorys) {
+
+        this.repositorys = repositorys;
+    }
+    
+    
+    
+    
     // Get the visual component for the panel. In this template, the component
     // is kept separate. This can be more efficient: if the wizard is created
     // but never displayed, or not all panels are displayed, it is better to
     // create only those which really need to be visible.
     public Component getComponent() {
         if (component == null) {
-            component = new ChooseRepository(this);
+            component = new ChooseRepository(this,repositorys);
         }
         return component;
     }

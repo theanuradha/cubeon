@@ -8,29 +8,39 @@ import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.event.ActionEvent;
 import java.text.MessageFormat;
-import java.util.Collection;
+import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
+import org.netbeans.cubeon.context.api.CubeonContext;
 import org.netbeans.cubeon.context.api.TaskFolder;
 import org.netbeans.cubeon.context.api.TaskFolderRefreshable;
-import org.netbeans.cubeon.context.spi.RepositorysViewRefreshable;
+import org.netbeans.cubeon.context.api.TaskRepositoryHandler;
+import org.netbeans.cubeon.context.api.TasksFileSystem;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
 import org.netbeans.cubeon.tasks.spi.TaskRepository;
-import org.netbeans.cubeon.tasks.spi.TaskRepositoryType;
 import org.openide.DialogDisplayer;
 import org.openide.WizardDescriptor;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
-import org.openide.util.NbBundle;
 
 public final class NewTaskWizardAction extends AbstractAction {
 
-    private TaskFolder taskFolder;
+    private final TaskFolder taskFolder;
     private WizardDescriptor.Panel<WizardObject>[] panels;
 
-    public NewTaskWizardAction(TaskFolder taskFolder) {
+    public NewTaskWizardAction(String name) {
+        //set null to flag add to default
+        taskFolder = null;
+        init(name);
+    }
+
+    public NewTaskWizardAction(String name,TaskFolder taskFolder) {
         this.taskFolder = taskFolder;
-        putValue(NAME, NbBundle.getMessage(NewTaskWizardAction.class, "LBL_Repo_New"));
+        init(name);
+    }
+
+    private void init(String name) {
+        putValue(NAME,name);
     }
 
     /**
@@ -39,10 +49,25 @@ public final class NewTaskWizardAction extends AbstractAction {
      */
     private WizardDescriptor.Panel[] getPanels() {
         if (panels == null) {
-            panels = new WizardDescriptor.Panel[]{
-                        new ChooseRepositoryWizard(),
-                        new TaskAttributesWizard()
-                    };
+            //lookup CubeonContext
+            CubeonContext cubeonContext = Lookup.getDefault().lookup(CubeonContext.class);
+            assert cubeonContext != null : "CubeonContext can't be null";
+            //lookup TaskRepositoryHandler
+            TaskRepositoryHandler repositoryHandler = cubeonContext.getLookup().lookup(TaskRepositoryHandler.class);
+
+            List<TaskRepository> repositorys = repositoryHandler.getTaskRepositorys();
+
+            if (repositorys.size() == 1) {
+                panels = new WizardDescriptor.Panel[]{
+                            new TaskAttributesWizard(repositorys.get(0))
+                        };
+            } else {
+                panels = new WizardDescriptor.Panel[]{
+                            new ChooseRepositoryWizard(repositorys),
+                            new TaskAttributesWizard()
+                        };
+            }
+
             String[] steps = new String[panels.length];
             for (int i = 0; i < panels.length; i++) {
                 Component c = panels[i].getComponent();
@@ -86,10 +111,18 @@ public final class NewTaskWizardAction extends AbstractAction {
             assert element != null;
             TaskRepository repository = wizardObject.getRepository();
             assert repository != null;
+            repository.persist(element);
+            TaskFolder tf = taskFolder;
+            //check null and add to defult folder
+            if (tf == null) {
+                TasksFileSystem fileSystem = Lookup.getDefault().lookup(TasksFileSystem.class);
+                assert fileSystem != null;
+                tf = fileSystem.getDefaultFolder();
 
-            taskFolder.addTaskElement(element);
+            }
+            tf.addTaskElement(element);
 
-            TaskFolderRefreshable refreshable = taskFolder.getLookup().lookup(TaskFolderRefreshable.class);
+            TaskFolderRefreshable refreshable = tf.getLookup().lookup(TaskFolderRefreshable.class);
             assert refreshable != null;
             refreshable.refreshContent();
         }

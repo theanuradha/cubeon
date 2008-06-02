@@ -9,15 +9,12 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 import javax.swing.Action;
-import org.netbeans.cubeon.context.api.CubeonContext;
-import org.netbeans.cubeon.context.api.TaskRepositoryHandler;
 import org.netbeans.cubeon.tasks.spi.TaskRepository;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.BeanTreeView;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
-import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
@@ -28,9 +25,9 @@ final class ChooseRepository extends javax.swing.JPanel implements ExplorerManag
 
     private final BeanTreeView taskTreeView = new BeanTreeView();
     private final transient ExplorerManager explorerManager = new ExplorerManager();
-
+     
     /** Creates new form ChooseRepository */
-    ChooseRepository(final ChooseRepositoryWizard wizard) {
+    ChooseRepository(final ChooseRepositoryWizard wizard,List<TaskRepository> repositorys) {
         initComponents();
         taskTreeView.setRootVisible(false);
         taskTreeView.setPopupAllowed(false);
@@ -42,7 +39,7 @@ final class ChooseRepository extends javax.swing.JPanel implements ExplorerManag
                 }
             }
         });
-        loadRepositorys();
+        loadRepositorys(repositorys);
     }
 
     @Override
@@ -68,15 +65,8 @@ final class ChooseRepository extends javax.swing.JPanel implements ExplorerManag
         return explorerManager;
     }
 
-    private void loadRepositorys() {
-        //lookup CubeonContext
-        CubeonContext cubeonContext = Lookup.getDefault().lookup(CubeonContext.class);
-        assert cubeonContext != null : "CubeonContext can't be null";
-        //lookup TaskRepositoryHandler
-        TaskRepositoryHandler repositoryHandler = cubeonContext.getLookup().lookup(TaskRepositoryHandler.class);
-
-        List<TaskRepository> repositorys = repositoryHandler.getTaskRepositorys();
-
+    private void loadRepositorys(List<TaskRepository> repositorys) {
+        
         Children.Array array = new Children.Array();
 
         Node[] nodes = new Node[repositorys.size()];
