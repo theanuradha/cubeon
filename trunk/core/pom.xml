@@ -13,6 +13,7 @@
     <version>${cubeon.release}</version>
     <modules>
         <module>context</module>
+        <module>tasks-spi</module>
         <module>ui</module>
     </modules>
     <build>
