@@ -12,7 +12,7 @@
     <description>Core of the Cube°n </description>
     <version>${cubeon.release}</version>
     <modules>
-        <module>context</module>
+        <module>tasks-core</module>
         <module>tasks-spi</module>
         <module>ui</module>
     </modules>

@@ -17,7 +17,7 @@
 package org.netbeans.cubeon.ui.repository;
 
 import javax.swing.Action;
-import org.netbeans.cubeon.taskui.spi.RepositorysViewActionsProvider;
+import org.netbeans.cubeon.tasks.core.spi.RepositorysViewActionsProvider;
 import org.netbeans.cubeon.ui.TaskExplorerAction;
 import org.netbeans.cubeon.ui.taskelemet.NewTaskWizardAction;
 import org.openide.util.NbBundle;

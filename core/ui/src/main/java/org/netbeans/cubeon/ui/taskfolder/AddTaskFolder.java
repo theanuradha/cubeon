@@ -7,7 +7,7 @@ package org.netbeans.cubeon.ui.taskfolder;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import org.netbeans.cubeon.taskui.api.TaskFolder;
+import org.netbeans.cubeon.tasks.core.api.TaskFolder;
 import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 

@@ -11,7 +11,7 @@ import java.text.MessageFormat;
 import java.util.Collection;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
-import org.netbeans.cubeon.taskui.spi.RepositorysViewRefreshable;
+import org.netbeans.cubeon.tasks.core.spi.RepositorysViewRefreshable;
 import org.netbeans.cubeon.tasks.spi.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.TaskRepositoryType;
 import org.openide.DialogDisplayer;
