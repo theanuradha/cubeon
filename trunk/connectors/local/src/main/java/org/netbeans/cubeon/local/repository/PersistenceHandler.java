@@ -48,6 +48,7 @@ class PersistenceHandler {
     private static final String TAG_TASKS = "tasks";
     private static final String TAG_TASK = "task";
     private static final String TAG_NAME = "name";
+    private static final String TAG_PRIORITY = "priority";
     private static final String TAG_DESCRIPTION = "description";
     private LocalTaskRepository localTaskRepository;
     private FileObject baseDir;
@@ -125,6 +126,7 @@ class PersistenceHandler {
                     String id = element.getAttributeNS(NAMESPACE, TAG_ID);
                     String name = element.getAttributeNS(NAMESPACE, TAG_NAME);
                     String description = element.getAttributeNS(NAMESPACE, TAG_DESCRIPTION);
+                    String priority = element.getAttributeNS(NAMESPACE, TAG_PRIORITY);
 
 
 
