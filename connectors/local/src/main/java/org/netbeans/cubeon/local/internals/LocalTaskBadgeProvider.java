@@ -35,7 +35,7 @@ public class LocalTaskBadgeProvider implements TaskBadgeProvider {
             TaskPriority priority = localTask.getPriority();
 
             Image badge = priority.getImage();
-            image = Utilities.mergeImages(image, badge, 0, 0);
+            image = Utilities.mergeImages(badge,image , 7, 0);
         }
 
         return image;

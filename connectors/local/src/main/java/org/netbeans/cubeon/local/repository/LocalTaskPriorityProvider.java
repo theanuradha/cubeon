@@ -59,7 +59,7 @@ public class LocalTaskPriorityProvider implements TaskPriorityProvider {
                 return tp;
             }
         }
-        // returning null if Priority not found
-        return null;
+        // returning P3 if Priority not found
+        return P3;
     }
 }

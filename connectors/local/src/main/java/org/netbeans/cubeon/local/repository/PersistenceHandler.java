@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.netbeans.cubeon.local.LocalTask;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
+import org.netbeans.cubeon.tasks.spi.TaskPriority;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
@@ -78,6 +79,7 @@ class PersistenceHandler {
         taskElement.setAttributeNS(NAMESPACE, TAG_NAME, te.getName());
         taskElement.setAttributeNS(NAMESPACE, TAG_DESCRIPTION, te.getDescription());
         taskElement.setAttributeNS(NAMESPACE, TAG_REPOSITORY, te.getTaskRepository().getId());
+        taskElement.setAttributeNS(NAMESPACE, TAG_PRIORITY, te.getPriority().getId());
 
         save(document);
     }
@@ -119,6 +121,8 @@ class PersistenceHandler {
         if (tasksElement != null) {
             NodeList taskNodes =
                     tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_TASK);
+            LocalTaskPriorityProvider priorityProvider = localTaskRepository.
+                    getLocalTaskPriorityProvider();
             for (int i = 0; i < taskNodes.getLength(); i++) {
                 Node node = taskNodes.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
@@ -127,12 +131,12 @@ class PersistenceHandler {
                     String name = element.getAttributeNS(NAMESPACE, TAG_NAME);
                     String description = element.getAttributeNS(NAMESPACE, TAG_DESCRIPTION);
                     String priority = element.getAttributeNS(NAMESPACE, TAG_PRIORITY);
-
+                    TaskPriority taskPriority = priorityProvider.getTaskPriorityById(priority);
 
 
 
                     LocalTask taskElement = new LocalTask(id, name, description, localTaskRepository);
-
+                    taskElement.setPriority(taskPriority);
 
                     taskElements.add(taskElement);
                 }
