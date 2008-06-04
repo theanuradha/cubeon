@@ -39,7 +39,6 @@ public interface TaskRepository {
 
     TaskElement getTaskElementById(String id);
 
-        
     /**
      * save modifid attributes
      */
@@ -49,6 +48,4 @@ public interface TaskRepository {
      * reset modifid attributes
      */
     void reset(TaskElement element);
-    
-  
 }

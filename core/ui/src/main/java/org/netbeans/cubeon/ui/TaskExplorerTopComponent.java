@@ -17,8 +17,10 @@
 package org.netbeans.cubeon.ui;
 
 import java.awt.event.ActionEvent;
+import java.beans.PropertyVetoException;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.AbstractAction;
@@ -32,9 +34,13 @@ import org.netbeans.cubeon.ui.taskelemet.NewTaskWizardAction;
 import org.openide.awt.DropDownButtonFactory;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.BeanTreeView;
+import org.openide.nodes.Children;
+import org.openide.nodes.Node;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
+import org.openide.util.RequestProcessor;
+import org.openide.util.RequestProcessor.Task;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 import org.openide.util.Utilities;
@@ -107,7 +113,27 @@ final class TaskExplorerTopComponent extends TopComponent implements ExplorerMan
     private synchronized void selectView(final TaskNodeView view) {
         selectedView = view;
         preferences.put(SELECTED_VIEW, view.getId());
-        explorerManager.setRootContext(view.createRootContext());
+        final Node node = view.createRootContext();
+        explorerManager.setRootContext(node);
+        Task task = RequestProcessor.getDefault().create(new Runnable() {
+
+            public void run() {
+                Children children = node.getChildren();
+                Node[] nodes = children.getNodes();
+                for (Node n : nodes) {
+                    taskTreeView.expandNode(n);
+                }
+                if (nodes.length > 0) {
+                    try {
+                        explorerManager.setSelectedNodes(new Node[]{nodes[0]});
+                    } catch (PropertyVetoException ex) {
+                        //ignore
+                        Logger.getLogger(getClass().getName()).log(Level.WARNING, ex.getMessage(), ex);
+                    }
+                }
+            }
+        });
+        task.schedule(200);
     }
 
     /** This method is called from within the constructor to
@@ -128,10 +154,11 @@ final class TaskExplorerTopComponent extends TopComponent implements ExplorerMan
         focas = new javax.swing.JButton();
         subToolbar = new javax.swing.JToolBar();
         downMenu = new javax.swing.JButton();
+        jSeparator1 = new javax.swing.JSeparator();
 
         setLayout(new java.awt.BorderLayout());
 
-        treeView.setBorder(javax.swing.BorderFactory.createEtchedBorder(null, javax.swing.UIManager.getDefaults().getColor("CheckBoxMenuItem.selectionBackground")));
+        treeView.setBorder(null);
         add(treeView, java.awt.BorderLayout.CENTER);
 
         mainToolbarHolder.setLayout(new java.awt.BorderLayout());
@@ -181,6 +208,7 @@ final class TaskExplorerTopComponent extends TopComponent implements ExplorerMan
         subToolbar.add(downMenu);
 
         mainToolbarHolder.add(subToolbar, java.awt.BorderLayout.EAST);
+        mainToolbarHolder.add(jSeparator1, java.awt.BorderLayout.SOUTH);
 
         add(mainToolbarHolder, java.awt.BorderLayout.PAGE_START);
     }// </editor-fold>//GEN-END:initComponents
@@ -191,6 +219,7 @@ private void newTaskActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton downMenu;
     private javax.swing.JButton focas;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JToolBar mainToolBar;
     private javax.swing.JPanel mainToolbarHolder;
     private javax.swing.JButton newTask;

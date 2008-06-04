@@ -36,6 +36,8 @@ public interface TaskElement {
 
     Lookup getLookup();
 
+    public void open();
+    
     /*--------------------------Priority------------------------*/
     TaskPriority getPriority();
 

@@ -59,14 +59,19 @@ final class TaskAttributes extends JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        pnlHolder = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
         pnlHeader = new javax.swing.JPanel();
         lblMainHeader = new javax.swing.JLabel();
         lblSubHeader = new javax.swing.JLabel();
         lblIcon = new javax.swing.JLabel();
-        pnlHolder = new javax.swing.JPanel();
+        jSeparator1 = new javax.swing.JSeparator();
+
+        pnlHolder.setLayout(new java.awt.BorderLayout());
+
+        jPanel1.setLayout(new java.awt.BorderLayout());
 
         pnlHeader.setBackground(new java.awt.Color(255, 255, 255));
-        pnlHeader.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         lblMainHeader.setFont(new java.awt.Font("Tahoma", 1, 11));
         org.openide.awt.Mnemonics.setLocalizedText(lblMainHeader, "_MAIN_HEADING_");
@@ -84,11 +89,12 @@ final class TaskAttributes extends JPanel {
                 .addGroup(pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(pnlHeaderLayout.createSequentialGroup()
                         .addGap(10, 10, 10)
-                        .addComponent(lblSubHeader, javax.swing.GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE))
-                    .addComponent(lblMainHeader, javax.swing.GroupLayout.DEFAULT_SIZE, 413, Short.MAX_VALUE))
+                        .addComponent(lblSubHeader, javax.swing.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE))
+                    .addComponent(lblMainHeader, javax.swing.GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE))
                 .addGap(45, 45, 45)
                 .addComponent(lblIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
+            .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
         );
         pnlHeaderLayout.setVerticalGroup(
             pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -100,27 +106,30 @@ final class TaskAttributes extends JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(lblSubHeader))
                     .addComponent(lblIcon, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE))
-                .addContainerGap())
+                .addGap(9, 9, 9)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        pnlHolder.setLayout(new java.awt.BorderLayout());
+        jPanel1.add(pnlHeader, java.awt.BorderLayout.CENTER);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pnlHeader, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(pnlHolder, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(pnlHeader, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(pnlHolder, javax.swing.GroupLayout.DEFAULT_SIZE, 345, Short.MAX_VALUE))
+                .addComponent(pnlHolder, javax.swing.GroupLayout.DEFAULT_SIZE, 344, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel lblIcon;
     private javax.swing.JLabel lblMainHeader;
     private javax.swing.JLabel lblSubHeader;

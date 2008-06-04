@@ -44,7 +44,7 @@ public class LocalTaskNode extends AbstractNode {
 
             final TaskElement taskElement = getLookup().lookup(TaskElement.class);
             assert taskElement != null;
-            //to-do opening tasks
+            taskElement.open();
         }
     };
 
@@ -76,6 +76,6 @@ public class LocalTaskNode extends AbstractNode {
 
     @Override
     public Action[] getActions(boolean arg0) {
-        return new Action[0];
+        return new Action[]{openTask};
     }
 }
