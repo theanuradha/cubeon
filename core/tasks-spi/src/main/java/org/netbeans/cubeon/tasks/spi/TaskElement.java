@@ -26,37 +26,95 @@ import org.openide.util.Lookup;
  */
 public interface TaskElement {
 
+    /**
+     * 
+     * @return
+     */
     String getId();
 
+    /**
+     * 
+     * @return
+     */
     String getName();
 
+    /**
+     * 
+     * @return
+     */
     String getDescription();
 
+    /**
+     * 
+     * @return
+     */
     TaskRepository getTaskRepository();
 
+    /**
+     * 
+     * @return
+     */
     Lookup getLookup();
 
+    /**
+     * 
+     */
     public void open();
     
     /*--------------------------Priority------------------------*/
+    /**
+     * 
+     * @return
+     */
     TaskPriority getPriority();
 
+    /**
+     * 
+     * @param priority
+     */
     void setPriority(TaskPriority priority);
     /*-----------------------------------------------------------*/
 
     /*-----------------------Customizer--------------------------*/
+    /**
+     * 
+     * @return
+     */
     TaskBasicAttributeHandler createAttributeHandler();
 
+    /**
+     * 
+     */
     public interface TaskBasicAttributeHandler {
 
+        /**
+         * 
+         * @param changeListener
+         */
         void addChangeListener(ChangeListener changeListener);
 
+        /**
+         * 
+         * @param changeListener
+         */
         void removeChangeListener(ChangeListener changeListener);
 
+        /**
+         * 
+         * @return
+         */
         boolean isValidConfiguration();
 
+        /**
+         * 
+         * @return
+         */
         JComponent getComponent();
 
+        /**
+         * 
+         * @return
+         */
         TaskElement getTaskElement();
     }
 }

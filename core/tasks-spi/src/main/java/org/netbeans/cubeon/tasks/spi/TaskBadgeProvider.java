@@ -24,5 +24,11 @@ import java.awt.Image;
  */
 public interface TaskBadgeProvider {
 
+    /**
+     * 
+     * @param element
+     * @param image
+     * @return
+     */
     Image bageTaskIcon(TaskElement element,Image image);
 }

@@ -25,27 +25,58 @@ import org.openide.util.Lookup;
  */
 public interface TaskRepository {
 
+    /**
+     * 
+     * @return
+     */
     String getId();
 
+    /**
+     * 
+     * @return
+     */
     String getName();
 
+    /**
+     * 
+     * @return
+     */
     String getDescription();
 
+    /**
+     * 
+     * @return
+     */
     Lookup getLookup();
 
+    /**
+     * 
+     * @return
+     */
     TaskElement createTaskElement();
 
+    /**
+     * 
+     * @return
+     */
     List<TaskElement> getTaskElements();
 
+    /**
+     * 
+     * @param id
+     * @return
+     */
     TaskElement getTaskElementById(String id);
 
     /**
      * save modifid attributes
+     * @param element 
      */
     void persist(TaskElement element);
 
     /**
      * reset modifid attributes
+     * @param element 
      */
     void reset(TaskElement element);
 }
