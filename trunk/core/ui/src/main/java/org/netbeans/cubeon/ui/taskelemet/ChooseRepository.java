@@ -104,12 +104,12 @@ final class ChooseRepository extends javax.swing.JPanel implements ExplorerManag
         lblMainHeader = new javax.swing.JLabel();
         lblSubHeader = new javax.swing.JLabel();
         lblIcon = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
         javax.swing.JScrollPane scrPane = taskTreeView;
 
         pnlHeader.setBackground(new java.awt.Color(255, 255, 255));
-        pnlHeader.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        lblMainHeader.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        lblMainHeader.setFont(new java.awt.Font("Tahoma", 1, 11));
         lblMainHeader.setText(NbBundle.getMessage(ChooseRepository.class, "LBL_Repo")); // NOI18N
 
         lblSubHeader.setText(NbBundle.getMessage(ChooseRepository.class, "LBL_Repo_Dec")); // NOI18N
@@ -125,11 +125,12 @@ final class ChooseRepository extends javax.swing.JPanel implements ExplorerManag
                 .addGroup(pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(pnlHeaderLayout.createSequentialGroup()
                         .addGap(10, 10, 10)
-                        .addComponent(lblSubHeader, javax.swing.GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE))
-                    .addComponent(lblMainHeader, javax.swing.GroupLayout.DEFAULT_SIZE, 413, Short.MAX_VALUE))
+                        .addComponent(lblSubHeader, javax.swing.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE))
+                    .addComponent(lblMainHeader, javax.swing.GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE))
                 .addGap(45, 45, 45)
                 .addComponent(lblIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
+            .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
         );
         pnlHeaderLayout.setVerticalGroup(
             pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -141,7 +142,9 @@ final class ChooseRepository extends javax.swing.JPanel implements ExplorerManag
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(lblSubHeader))
                     .addComponent(lblIcon, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE))
-                .addContainerGap())
+                .addGap(8, 8, 8)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(2, 2, 2))
         );
 
         scrPane.setBorder(javax.swing.BorderFactory.createEtchedBorder(null, javax.swing.UIManager.getDefaults().getColor("ComboBox.selectionBackground")));
@@ -166,6 +169,7 @@ final class ChooseRepository extends javax.swing.JPanel implements ExplorerManag
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel lblIcon;
     private javax.swing.JLabel lblMainHeader;
     private javax.swing.JLabel lblSubHeader;

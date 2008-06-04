@@ -18,11 +18,7 @@
     <Container class="javax.swing.JScrollPane" name="treeView">
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-          <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
-            <EtchetBorder>
-              <Color PropertyName="shadow" blue="70" green="a0" id="CheckBoxMenuItem.selectionBackground" palette="3" red="93" type="palette"/>
-            </EtchetBorder>
-          </Border>
+          <Border info="null"/>
         </Property>
       </Properties>
       <AuxValues>
@@ -139,6 +135,13 @@
             </Component>
           </SubComponents>
         </Container>
+        <Component class="javax.swing.JSeparator" name="jSeparator1">
+          <Constraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+              <BorderConstraints direction="South"/>
+            </Constraint>
+          </Constraints>
+        </Component>
       </SubComponents>
     </Container>
   </SubComponents>
