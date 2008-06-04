@@ -30,37 +30,103 @@ import org.openide.util.Lookup;
  */
 public interface TaskRepositoryType {
 
+    /**
+     * 
+     * @return
+     */
     String getName();
 
+    /**
+     * 
+     * @return
+     */
     String getDescription();
 
+    /**
+     * 
+     * @return
+     */
     Image getImage();
 
+    /**
+     * 
+     * @return
+     */
     Lookup getLookup();
 
+    /**
+     * 
+     * @param taskRepository
+     * @return
+     */
     TaskRepository addRepository(TaskRepository taskRepository);
 
+    /**
+     * 
+     * @param taskRepository
+     * @return
+     */
     boolean removeRepository(TaskRepository taskRepository);
 
+    /**
+     * 
+     * @return
+     */
     List<TaskRepository> getRepositorys();
 
+    /**
+     * 
+     * @param Id
+     * @return
+     */
     TaskRepository getRepositoryById(String Id);
 
+    /**
+     * 
+     * @return
+     */
     ConfigurationHandler createConfigurationHandler();
 
+    /**
+     * 
+     */
     public interface ConfigurationHandler {
 
+        /**
+         * 
+         * @param changeListener
+         */
         void addChangeListener(ChangeListener changeListener);
 
+        /**
+         * 
+         * @param changeListener
+         */
         void removeChangeListener(ChangeListener changeListener);
         
         
+        /**
+         * 
+         * @param repository
+         */
         void setTaskRepository(TaskRepository repository);
         
-        TaskRepository getTaskRepository(); 
+        /**
+         * 
+         * @return
+         */
+        TaskRepository getTaskRepository();
         
+        /**
+         * 
+         * @return
+         */
         boolean isValidConfiguration();
         
+        /**
+         * 
+         * @return
+         */
         JComponent getComponent();
     }
 }
