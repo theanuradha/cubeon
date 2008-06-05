@@ -19,6 +19,7 @@ package org.netbeans.cubeon.local;
 import org.netbeans.cubeon.local.nodes.LocalTaskNode;
 import org.netbeans.cubeon.local.repository.*;
 import org.netbeans.cubeon.local.ui.BasicAttributeHandler;
+import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
 import org.netbeans.cubeon.tasks.spi.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.TaskRepository;
@@ -78,7 +79,8 @@ public class LocalTask implements TaskElement {
     }
 
     public void open() {
-        //To-Do add task  
+        TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
+        factory.createTaskEditor(this);
     }
 
     public TaskBasicAttributeHandler createAttributeHandler() {

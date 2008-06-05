@@ -25,11 +25,11 @@
             <artifactId>org-openide-nodes</artifactId>
             <version>${netbeans.release}</version>
         </dependency>
-        <!--dependency>
+        <dependency>
             <groupId>org.netbeans.cubeon</groupId>
-            <artifactId>cubeon-context</artifactId>
+            <artifactId>cubeon-tasks-core</artifactId>
             <version>${cubeon.release}</version>
-        </dependency-->
+        </dependency>
         <dependency>
             <groupId>org.netbeans.cubeon</groupId>
             <artifactId>cubeon-tasks-spi</artifactId>
