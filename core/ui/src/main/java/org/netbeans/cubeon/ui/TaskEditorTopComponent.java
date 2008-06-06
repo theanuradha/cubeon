@@ -8,13 +8,16 @@ import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.beans.BeanInfo;
+
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
 import org.netbeans.cubeon.tasks.spi.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.TaskRepositoryType;
+import org.netbeans.cubeon.ui.util.PaintUtils;
 import org.openide.nodes.Node;
 import org.openide.util.Lookup;
 import org.openide.windows.TopComponent;
@@ -25,8 +28,24 @@ import org.openide.windows.TopComponent;
 final class TaskEditorTopComponent extends TopComponent {
 
     private static final String PREFERRED_ID = "TaskEditorTopComponent";
+    private static final Color c = UIManager.getDefaults().getColor("InternalFrame.activeTitleGradient");
+    private static final Color start = new Color(255, 255, 255, 255);
+    private static final Color end = new Color(255, 255, 255, 0);
+    private static final RenderingHints hints;
+    private final static GradientPaint GRADIENT_HEADER_LARGE = new GradientPaint(0, 0,
+            Color.WHITE, 0, 33, c);
+    
 
-     TaskEditorTopComponent(TaskElement element) {
+    static {
+        hints = new RenderingHints(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
+        hints.put(RenderingHints.KEY_INTERPOLATION,
+                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        hints.put(RenderingHints.KEY_RENDERING,
+                RenderingHints.VALUE_RENDER_QUALITY);
+    }
+
+    TaskEditorTopComponent(TaskElement element) {
         initComponents();
         setName(element.getName());
 
@@ -39,7 +58,8 @@ final class TaskEditorTopComponent extends TopComponent {
         TaskRepositoryType repositoryType = taskRepository.getLookup().lookup(TaskRepositoryType.class);
         Node taskRepositoryNode = taskRepository.getLookup().lookup(Node.class);
         lblHeader.setIcon(new ImageIcon(taskRepositoryNode.getIcon(BeanInfo.ICON_MONO_16x16)));
-        lblHeader.setText(element.getName()); 
+        lblHeader.setText(element.getName());
+
     }
 
     /** This method is called from within the constructor to
@@ -51,20 +71,62 @@ final class TaskEditorTopComponent extends TopComponent {
     private void initComponents() {
 
         base = new javax.swing.JPanel();
-        header =  new JPanel() {
+        header =         new JPanel() {
+
+            private int count;
 
             /**
             * Paints a gradient in the background of this component
             */
             @Override
             protected void paintComponent(Graphics g) {
-                GradientPaint bgGradient =new GradientPaint(0, 0,
-                    UIManager.getDefaults().getColor("InternalFrame.activeTitleGradient"), 0, (getHeight()/4)*3 , Color.WHITE);// background for the GUI
-                ((Graphics2D) g).setPaint(bgGradient);
-                g.fillRect(0, 0, getWidth(), getHeight());
+                int i = count++;
+                Graphics2D g2 = (Graphics2D) g;
+
+                g2.setPaint(GRADIENT_HEADER_LARGE);
+                g2.fillRect(0, 0, getWidth(), getHeight());
+
+                RenderingHints oldHints = g2.getRenderingHints();
+                g2.setRenderingHints(hints);
+
+                float width = getWidth();
+                float height = getHeight();
+
+                g2.translate(0, -30);
+
+                PaintUtils.drawCurve(g2,
+                    20.0f, -10.0f, 20.0f, -10.0f,
+                    width / 2.0f - 40.0f, 10.0f,
+                    0.0f, -5.0f,
+                    width / 2.0f + 40, 1.0f,
+                    0.0f, 5.0f,
+                    50.0f, 5.0f, false,i,width,start,end );
+
+                g2.translate(0, 30);
+                g2.translate(0, height - 60);
+
+                PaintUtils.drawCurve(g2,
+                    30.0f, -15.0f, 50.0f, 15.0f,
+                    width / 2.0f - 40.0f, 1.0f,
+                    15.0f, -25.0f,
+                    width / 2.0f, 1.0f / 2.0f,
+                    0.0f, 25.0f,
+                    15.0f, 9.0f, false, i, width, start, end);
+
+                g2.translate(0, -height + 60);
+
+                PaintUtils.drawCurve(g2,
+                    height - 35.0f, -5.0f, height - 50.0f, 10.0f,
+                    width / 2.0f - 40.0f, 1.0f,
+                    height - 35.0f, -25.0f,
+                    width / 2.0f, 1.0f / 2.0f,
+                    height - 20.0f, 25.0f,
+                    25.0f, 7.0f, true, i, width, start, end);
+
+                g2.setRenderingHints(oldHints);
             }
         };
-        separator = new javax.swing.JSeparator();
+        javax.swing.JSeparator separator = new javax.swing.JSeparator();
         lblHeader = new javax.swing.JLabel();
 
         setLayout(new java.awt.BorderLayout());
@@ -72,9 +134,7 @@ final class TaskEditorTopComponent extends TopComponent {
         base.setBackground(new java.awt.Color(255, 255, 255));
         base.setLayout(new java.awt.BorderLayout());
 
-        header.setBackground(javax.swing.UIManager.getDefaults().getColor("InternalFrame.activeTitleGradient"));
-
-        lblHeader.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
+        lblHeader.setFont(new java.awt.Font("Tahoma", 1, 13));
         lblHeader.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/cubeon/ui/repository.png"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(lblHeader, "Task Element Name"); // NOI18N
 
@@ -82,18 +142,17 @@ final class TaskEditorTopComponent extends TopComponent {
         header.setLayout(headerLayout);
         headerLayout.setHorizontalGroup(
             headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(separator, javax.swing.GroupLayout.DEFAULT_SIZE, 711, Short.MAX_VALUE)
+            .addComponent(separator, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 711, Short.MAX_VALUE)
             .addGroup(headerLayout.createSequentialGroup()
-                .addGap(3, 3, 3)
-                .addComponent(lblHeader, javax.swing.GroupLayout.PREFERRED_SIZE, 453, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(5, 5, 5)
+                .addComponent(lblHeader, javax.swing.GroupLayout.PREFERRED_SIZE, 443, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(263, Short.MAX_VALUE))
         );
         headerLayout.setVerticalGroup(
             headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, headerLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lblHeader, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lblHeader, javax.swing.GroupLayout.DEFAULT_SIZE, 33, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(separator, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -105,7 +164,6 @@ final class TaskEditorTopComponent extends TopComponent {
     private javax.swing.JPanel base;
     private javax.swing.JPanel header;
     private javax.swing.JLabel lblHeader;
-    private javax.swing.JSeparator separator;
     // End of variables declaration//GEN-END:variables
     @Override
     public int getPersistenceType() {
