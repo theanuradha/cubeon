@@ -36,7 +36,7 @@ import org.openide.windows.TopComponent;
 /**
  * Top component which displays something.
  */
-final class TaskEditorTopComponent extends TopComponent {
+final class TaskEditorTopComponent extends TopComponent implements  SaveCookie {
 
     private static final String PREFERRED_ID = "TaskEditorTopComponent";
     private static final Color c = UIManager.getDefaults().getColor("InternalFrame.activeTitleGradient");
@@ -78,8 +78,8 @@ final class TaskEditorTopComponent extends TopComponent {
         lblHeader.setIcon(new ImageIcon(taskRepositoryNode.getIcon(BeanInfo.ICON_MONO_16x16)));
         lblHeader.setText(eah.getDisplayName());
         base.add(eah.getComponent(), BorderLayout.CENTER);
-        editorNode = new EditorNode(eah);
-        setActivatedNodes(new Node[]{editorNode});
+        
+        setActivatedNodes(new Node[]{editorNode = new EditorNode(this)});
         eah.addChangeListener(editorNode);
 
     }
@@ -197,40 +197,22 @@ final class TaskEditorTopComponent extends TopComponent {
         return PREFERRED_ID;
     }
 
-    private class EditorNode extends AbstractNode implements ChangeListener, SaveCookie {
+    private class EditorNode extends AbstractNode implements ChangeListener{
 
-        private EditorAttributeHandler eah;
-
-        public EditorNode(EditorAttributeHandler eah) {
+        private SaveCookie cookie;
+         
+        public EditorNode(SaveCookie cookie) {
             super(Children.LEAF);
-            this.eah = eah;
+            this.cookie = cookie;
 
         }
 
-        @Override
-        public String getName() {
-
-            return eah.getName();
-        }
-
-        @Override
-        public String getDisplayName() {
-            return eah.getDisplayName();
-        }
-
-        @Override
-        public String getShortDescription() {
-            return getShortDescription();
-        }
-
-        public void stateChanged(ChangeEvent e) {
-            setModified(true);
-        }
+        
 
         public void setModified(boolean modified) {
 
             if (modified) {
-                getCookieSet().assign(SaveCookie.class, this);
+                getCookieSet().assign(SaveCookie.class, cookie);
             } else {
                 getCookieSet().assign(SaveCookie.class);
             }
@@ -239,5 +221,13 @@ final class TaskEditorTopComponent extends TopComponent {
         public void save() throws IOException {
             setModified(false);
         }
+
+        public void stateChanged(ChangeEvent e) {
+           setModified(true);
+        }
+    }
+
+    public void save() throws IOException {
+       editorNode.setModified(false);
     }
 }
