@@ -39,7 +39,7 @@ public class LocalTaskRepository implements TaskRepository {
     private List<LocalTask> localTasks = new ArrayList<LocalTask>();
     private final PersistenceHandler persistenceHandler;
     private final LocalTaskPriorityProvider ltpp = new LocalTaskPriorityProvider();
-
+    private final LocalTaskStatusProvider ltsp=new LocalTaskStatusProvider();
     public LocalTaskRepository(LocalTaskRepositoryProvider provider,
             String id, String name, String description) {
         this.provider = provider;
@@ -64,7 +64,7 @@ public class LocalTaskRepository implements TaskRepository {
 
     public Lookup getLookup() {
         return Lookups.fixed(this,
-                new LocalRepositoryNode(this), provider, persistenceHandler, ltpp);
+                new LocalRepositoryNode(this), provider, persistenceHandler, ltpp,ltsp);
     }
 
     public List<TaskElement> getTaskElements() {
@@ -113,4 +113,9 @@ public class LocalTaskRepository implements TaskRepository {
     public LocalTaskPriorityProvider getLocalTaskPriorityProvider() {
         return ltpp;
     }
+
+    public LocalTaskStatusProvider getLocalTaskStatusProvider() {
+        return ltsp;
+    }
+    
 }
