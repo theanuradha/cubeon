@@ -84,18 +84,7 @@ final class TaskEditorTopComponent extends TopComponent {
 
     }
 
-    @Override
-    public Lookup getLookup() {
-        Lookup lookup = element.getLookup();
-        Lookup lookup2 = Lookups.fixed(new SaveCookie() {
-
-            public void save() throws IOException {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-        });
-
-        return new ProxyLookup(lookup, lookup2);
-    }
+  
 
     /** This method is called from within the constructor to
      * initialize the form.
