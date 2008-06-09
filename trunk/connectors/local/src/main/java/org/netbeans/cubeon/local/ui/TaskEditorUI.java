@@ -29,6 +29,8 @@ import java.util.Set;
 import javax.swing.JComponent;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import org.netbeans.cubeon.local.LocalTask;
 import org.netbeans.cubeon.local.repository.LocalTaskPriorityProvider;
 import org.netbeans.cubeon.local.repository.LocalTaskRepository;
@@ -68,6 +70,21 @@ public class TaskEditorUI extends javax.swing.JPanel implements EditorAttributeH
             jComboBox2.addItem(status);
         }
         jComboBox2.setSelectedItem(localTask.getStatus());
+
+        jTextField1.getDocument().addDocumentListener(new DocumentListener() {
+
+            public void insertUpdate(DocumentEvent arg0) {
+                fireChangeEvent();
+            }
+
+            public void removeUpdate(DocumentEvent arg0) {
+                fireChangeEvent();
+            }
+
+            public void changedUpdate(DocumentEvent arg0) {
+                fireChangeEvent();
+            }
+        });
     }
 
     @Override

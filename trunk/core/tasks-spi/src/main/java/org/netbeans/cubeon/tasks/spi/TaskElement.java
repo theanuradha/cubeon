@@ -60,7 +60,7 @@ public interface TaskElement {
      * 
      */
     public void open();
-    
+
     /*--------------------------Priority------------------------*/
     /**
      * 
@@ -73,48 +73,10 @@ public interface TaskElement {
      * @param priority
      */
     void setPriority(TaskPriority priority);
-    /*-----------------------------------------------------------*/
 
-    /*-----------------------Customizer--------------------------*/
-    /**
-     * 
-     * @return
-     */
-    TaskBasicAttributeHandler createAttributeHandler();
+    TaskStatus getStatus();
 
-    /**
-     * 
-     */
-    public interface TaskBasicAttributeHandler {
+    void setStatus(TaskStatus status);
+    /*-----------------------------------------------------------*/ /*-----------------------Customizer--------------------------*/
 
-        /**
-         * 
-         * @param changeListener
-         */
-        void addChangeListener(ChangeListener changeListener);
-
-        /**
-         * 
-         * @param changeListener
-         */
-        void removeChangeListener(ChangeListener changeListener);
-
-        /**
-         * 
-         * @return
-         */
-        boolean isValidConfiguration();
-
-        /**
-         * 
-         * @return
-         */
-        JComponent getComponent();
-
-        /**
-         * 
-         * @return
-         */
-        TaskElement getTaskElement();
-    }
 }
