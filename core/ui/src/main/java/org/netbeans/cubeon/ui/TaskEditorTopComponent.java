@@ -84,8 +84,6 @@ final class TaskEditorTopComponent extends TopComponent {
 
     }
 
-  
-
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -226,13 +224,20 @@ final class TaskEditorTopComponent extends TopComponent {
         }
 
         public void stateChanged(ChangeEvent e) {
+            setModified(true);
+        }
 
+        public void setModified(boolean modified) {
 
-            getCookieSet().assign(SaveCookie.class, this);
+            if (modified) {
+                getCookieSet().assign(SaveCookie.class, this);
+            } else {
+                getCookieSet().assign(SaveCookie.class);
+            }
         }
 
         public void save() throws IOException {
-            throw new UnsupportedOperationException("Not supported yet.");
+            setModified(false);
         }
     }
 }
