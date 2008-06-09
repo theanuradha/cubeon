@@ -16,13 +16,17 @@
  */
 package org.netbeans.cubeon.local;
 
+import org.netbeans.cubeon.local.internals.TaskEditorProviderImpl;
 import org.netbeans.cubeon.local.nodes.LocalTaskNode;
 import org.netbeans.cubeon.local.repository.*;
-import org.netbeans.cubeon.local.ui.BasicAttributeHandler;
+import org.netbeans.cubeon.local.ui.BasicAttributeHandlerImpl;
 import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
+import org.netbeans.cubeon.tasks.spi.TaskEditorProvider;
+import org.netbeans.cubeon.tasks.spi.TaskEditorProvider.BasicAttributeHandler;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
 import org.netbeans.cubeon.tasks.spi.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.TaskRepository;
+import org.netbeans.cubeon.tasks.spi.TaskStatus;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.Lookups;
 
@@ -38,6 +42,8 @@ public class LocalTask implements TaskElement {
     private LocalTaskRepository taskRepository;
     private LocalTaskNode node;
     private TaskPriority priority = LocalTaskPriorityProvider.P3;//default priority  is p3
+    private TaskStatus status = LocalTaskStatusProvider.INCOMPLETE;
+    private final TaskEditorProvider editorProvider;
 
     public LocalTask(String id, String name, String description,
             LocalTaskRepository taskRepository) {
@@ -45,9 +51,10 @@ public class LocalTask implements TaskElement {
         this.name = name;
         this.description = description;
         this.taskRepository = taskRepository;
+        editorProvider = new TaskEditorProviderImpl(this);
         node = new LocalTaskNode(this);
     }
-
+    
     public String getId() {
         return id;
     }
@@ -75,16 +82,12 @@ public class LocalTask implements TaskElement {
     }
 
     public Lookup getLookup() {
-        return Lookups.fixed(this, node);
+        return Lookups.fixed(this, node, editorProvider);
     }
 
     public void open() {
         TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
         factory.createTaskEditor(this);
-    }
-
-    public TaskBasicAttributeHandler createAttributeHandler() {
-        return new BasicAttributeHandler(this);
     }
 
     public TaskPriority getPriority() {
@@ -94,4 +97,14 @@ public class LocalTask implements TaskElement {
     public void setPriority(TaskPriority priority) {
         this.priority = priority;
     }
+
+    public TaskStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(TaskStatus status) {
+        this.status = status;
+    }
+    
+    
 }

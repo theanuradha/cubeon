@@ -29,7 +29,6 @@ import org.openide.util.Utilities;
  */
 public class LocalTaskPriorityProvider implements TaskPriorityProvider {
 
-    private static final List<TaskPriority> prioritys = new ArrayList<TaskPriority>();
     public static final LocalTaskPriority P1 = new LocalTaskPriority("P1", -10000,
             Utilities.loadImage("org/netbeans/cubeon/local/p1.png"));
     public static final LocalTaskPriority P2 = new LocalTaskPriority("P2", 1000,
@@ -42,19 +41,20 @@ public class LocalTaskPriorityProvider implements TaskPriorityProvider {
             Utilities.loadImage("org/netbeans/cubeon/local/p5.png"));
 
     public LocalTaskPriorityProvider() {
+    }
+
+    public List<TaskPriority> getTaskPrioritys() {
+        List<TaskPriority> prioritys = new ArrayList<TaskPriority>();
         prioritys.add(P1);
         prioritys.add(P2);
         prioritys.add(P3);
         prioritys.add(P4);
         prioritys.add(P5);
-    }
-
-    public List<TaskPriority> getTaskPrioritys() {
         return new ArrayList<TaskPriority>(prioritys);
     }
 
     public TaskPriority getTaskPriorityById(String id) {
-        for (TaskPriority tp : prioritys) {
+        for (TaskPriority tp : getTaskPrioritys()) {
             if (id.equals(tp.getId())) {
                 return tp;
             }
