@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.Set;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.netbeans.cubeon.tasks.spi.TaskElement.TaskBasicAttributeHandler;
+import org.netbeans.cubeon.tasks.spi.TaskEditorProvider.BasicAttributeHandler;
 import org.netbeans.cubeon.tasks.spi.TaskRepository;
 import org.netbeans.cubeon.ui.taskelemet.NewTaskWizardAction.WizardObject;
 import org.openide.WizardDescriptor;
@@ -54,7 +54,7 @@ class TaskAttributesWizard implements WizardDescriptor.Panel<WizardObject> {
     }
 
     public boolean isValid() {
-        TaskBasicAttributeHandler handler = component.getHandler();
+        BasicAttributeHandler handler = component.getHandler();
         return handler != null && handler.isValidConfiguration();
     }
     private final Set<ChangeListener> listeners = new HashSet<ChangeListener>(1); // or can use ChangeSupport in NB 6.0
@@ -93,7 +93,7 @@ class TaskAttributesWizard implements WizardDescriptor.Panel<WizardObject> {
     }
 
     public void storeSettings(WizardObject settings) {
-        TaskBasicAttributeHandler handler = component.getHandler();
+        BasicAttributeHandler handler = component.getHandler();
         assert handler != null;
         settings.setTaskElement(handler.getTaskElement());
     }

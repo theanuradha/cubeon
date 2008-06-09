@@ -6,15 +6,16 @@ package org.netbeans.cubeon.ui.taskelemet;
 
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
+import org.netbeans.cubeon.tasks.spi.TaskEditorProvider;
+import org.netbeans.cubeon.tasks.spi.TaskEditorProvider.BasicAttributeHandler;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
-import org.netbeans.cubeon.tasks.spi.TaskElement.TaskBasicAttributeHandler;
 import org.netbeans.cubeon.ui.taskelemet.NewTaskWizardAction.WizardObject;
 import org.openide.util.NbBundle;
 
 final class TaskAttributes extends JPanel {
 
     private TaskElement taskElement;
-    private TaskElement.TaskBasicAttributeHandler handler;
+    private BasicAttributeHandler handler;
 
     /** Creates new form TaskAttributes */
     TaskAttributes() {
@@ -31,7 +32,7 @@ final class TaskAttributes extends JPanel {
         this.taskElement = object.getRepository().createTaskElement();
         assert taskElement != null;
 
-        handler = taskElement.createAttributeHandler();
+        handler = taskElement.getLookup().lookup(TaskEditorProvider.class).createBasicAttributeHandler();
         lblMainHeader.setText(NbBundle.getMessage(TaskAttributes.class,
                 "LBL_Create_New", object.getRepository().getName()));
         lblSubHeader.setText(NbBundle.getMessage(TaskAttributes.class,
@@ -46,7 +47,7 @@ final class TaskAttributes extends JPanel {
         return taskElement;
     }
 
-    TaskBasicAttributeHandler getHandler() {
+    BasicAttributeHandler getHandler() {
         return handler;
     }
 
