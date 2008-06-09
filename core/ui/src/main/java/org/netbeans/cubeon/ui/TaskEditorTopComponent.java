@@ -4,6 +4,7 @@
  */
 package org.netbeans.cubeon.ui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
@@ -11,15 +12,25 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.beans.BeanInfo;
 
+import java.io.IOException;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import org.netbeans.cubeon.tasks.spi.TaskEditorProvider;
+import org.netbeans.cubeon.tasks.spi.TaskEditorProvider.EditorAttributeHandler;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
 import org.netbeans.cubeon.tasks.spi.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.TaskRepositoryType;
 import org.netbeans.cubeon.ui.util.PaintUtils;
+import org.openide.cookies.SaveCookie;
+import org.openide.nodes.AbstractNode;
+import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.util.Lookup;
+import org.openide.util.lookup.Lookups;
+import org.openide.util.lookup.ProxyLookup;
 import org.openide.windows.TopComponent;
 
 /**
@@ -34,6 +45,8 @@ final class TaskEditorTopComponent extends TopComponent {
     private static final RenderingHints hints;
     private final static GradientPaint GRADIENT_HEADER_LARGE = new GradientPaint(0, 0,
             Color.WHITE, 0, 33, c);
+    private TaskElement element;
+    private final EditorNode editorNode;
     
 
     static {
@@ -43,23 +56,45 @@ final class TaskEditorTopComponent extends TopComponent {
                 RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         hints.put(RenderingHints.KEY_RENDERING,
                 RenderingHints.VALUE_RENDER_QUALITY);
+
+
     }
 
     TaskEditorTopComponent(TaskElement element) {
+        this.element = element;
         initComponents();
-        setName(element.getName());
 
         Lookup lookup = element.getLookup();
-        associateLookup(lookup);
-        Node node = lookup.lookup(Node.class);
 
-        setIcon(node.getIcon(BeanInfo.ICON_MONO_16x16));
+        TaskEditorProvider editorProvider = lookup.lookup(TaskEditorProvider.class);
+        final EditorAttributeHandler eah = editorProvider.createEditorAttributeHandler();
+
+        setName(eah.getName());
+
+        setIcon(eah.getImage());
         TaskRepository taskRepository = element.getTaskRepository();
         TaskRepositoryType repositoryType = taskRepository.getLookup().lookup(TaskRepositoryType.class);
         Node taskRepositoryNode = taskRepository.getLookup().lookup(Node.class);
         lblHeader.setIcon(new ImageIcon(taskRepositoryNode.getIcon(BeanInfo.ICON_MONO_16x16)));
-        lblHeader.setText(element.getName());
+        lblHeader.setText(eah.getDisplayName());
+        base.add(eah.getComponent(), BorderLayout.CENTER);
+        editorNode = new EditorNode(eah);
+        setActivatedNodes(new Node[]{editorNode});
+        eah.addChangeListener(editorNode);
 
+    }
+
+    @Override
+    public Lookup getLookup() {
+        Lookup lookup = element.getLookup();
+        Lookup lookup2 = Lookups.fixed(new SaveCookie() {
+
+            public void save() throws IOException {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+        });
+
+        return new ProxyLookup(lookup, lookup2);
     }
 
     /** This method is called from within the constructor to
@@ -173,5 +208,42 @@ final class TaskEditorTopComponent extends TopComponent {
     @Override
     protected String preferredID() {
         return PREFERRED_ID;
+    }
+
+    private class EditorNode extends AbstractNode implements ChangeListener, SaveCookie {
+
+        private EditorAttributeHandler eah;
+
+        public EditorNode(EditorAttributeHandler eah) {
+            super(Children.LEAF);
+            this.eah = eah;
+
+        }
+
+        @Override
+        public String getName() {
+
+            return eah.getName();
+        }
+
+        @Override
+        public String getDisplayName() {
+            return eah.getDisplayName();
+        }
+
+        @Override
+        public String getShortDescription() {
+            return getShortDescription();
+        }
+
+        public void stateChanged(ChangeEvent e) {
+
+
+            getCookieSet().assign(SaveCookie.class, this);
+        }
+
+        public void save() throws IOException {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
     }
 }
