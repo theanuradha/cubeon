@@ -51,7 +51,7 @@ class PersistenceHandler {
     private static final String TAG_TASK = "task";
     private static final String TAG_NAME = "name";
     private static final String TAG_PRIORITY = "priority";
-    private static final String TAG_STATUS = "priority";
+    private static final String TAG_STATUS = "status";
     private static final String TAG_DESCRIPTION = "description";
     private LocalTaskRepository localTaskRepository;
     private FileObject baseDir;
@@ -73,11 +73,29 @@ class PersistenceHandler {
             tasksElement = document.createElementNS(NAMESPACE, TAG_TASKS);
             root.appendChild(tasksElement);
         }
+        Element taskElement = null;
+        NodeList taskNodes =
+                tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_TASK);
 
-        Element taskElement = document.createElementNS(NAMESPACE, TAG_TASK);
-        tasksElement.appendChild(taskElement);
+        for (int i = 0; i < taskNodes.getLength(); i++) {
+            Node node = taskNodes.item(i);
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element) node;
+                String id = element.getAttributeNS(NAMESPACE, TAG_ID);
+                if (te.getId().equals(id)) {
+                    taskElement = element;
+                    break;
+                }
+            }
+        }
 
-        taskElement.setAttributeNS(NAMESPACE, TAG_ID, te.getId());
+        if (taskElement == null) {
+            taskElement = document.createElementNS(NAMESPACE, TAG_TASK);
+            tasksElement.appendChild(taskElement);
+            taskElement.setAttributeNS(NAMESPACE, TAG_ID, te.getId());   
+        }
+
+        
         taskElement.setAttributeNS(NAMESPACE, TAG_NAME, te.getName());
         taskElement.setAttributeNS(NAMESPACE, TAG_DESCRIPTION, te.getDescription());
         taskElement.setAttributeNS(NAMESPACE, TAG_REPOSITORY, te.getTaskRepository().getId());

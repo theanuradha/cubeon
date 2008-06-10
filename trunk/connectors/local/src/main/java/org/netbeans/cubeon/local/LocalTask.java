@@ -54,7 +54,7 @@ public class LocalTask implements TaskElement {
         editorProvider = new TaskEditorProviderImpl(this);
         node = new LocalTaskNode(this);
     }
-    
+
     public String getId() {
         return id;
     }
@@ -96,6 +96,7 @@ public class LocalTask implements TaskElement {
 
     public void setPriority(TaskPriority priority) {
         this.priority = priority;
+        node.refreshIcon();
     }
 
     public TaskStatus getStatus() {
@@ -104,7 +105,6 @@ public class LocalTask implements TaskElement {
 
     public void setStatus(TaskStatus status) {
         this.status = status;
+        node.refeshDisplayName();
     }
-    
-    
 }
