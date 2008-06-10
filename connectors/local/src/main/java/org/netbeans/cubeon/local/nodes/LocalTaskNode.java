@@ -95,6 +95,7 @@ public class LocalTaskNode extends AbstractNode {
 
         StringBuffer buffer = new StringBuffer("<html>");
         if (localTask.getStatus().equals(LocalTaskStatusProvider.COMPLETED)) {
+            buffer.append("<font color=\"#808080\">");
             buffer.append("<s>");
         }
         buffer.append(getDisplayName());
