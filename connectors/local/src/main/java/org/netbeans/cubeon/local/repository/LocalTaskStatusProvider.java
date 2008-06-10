@@ -29,12 +29,14 @@ import org.netbeans.cubeon.tasks.spi.TaskStatusProvider;
 public class LocalTaskStatusProvider implements TaskStatusProvider {
 
     public static final LocalTaskStatus COMPLETED = new LocalTaskStatus("completed", "Completed");
-    public static final LocalTaskStatus INCOMPLETE = new LocalTaskStatus("incomplete", "Incomplete");
+    public static final LocalTaskStatus NEW = new LocalTaskStatus("new", "New");
+    public static final LocalTaskStatus STARTED = new LocalTaskStatus("started", "Started");
 
     public List<TaskStatus> getStatusList() {
         List<TaskStatus> taskStatuses = new ArrayList<TaskStatus>();
         taskStatuses.add(COMPLETED);
-        taskStatuses.add(INCOMPLETE);
+        taskStatuses.add(STARTED);
+        taskStatuses.add(NEW);
         return taskStatuses;
     }
 
@@ -45,6 +47,6 @@ public class LocalTaskStatusProvider implements TaskStatusProvider {
             }
         }
 
-        return INCOMPLETE;
+        return NEW;
     }
 }
