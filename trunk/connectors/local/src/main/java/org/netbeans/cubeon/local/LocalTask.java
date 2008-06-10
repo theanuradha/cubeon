@@ -42,7 +42,7 @@ public class LocalTask implements TaskElement {
     private LocalTaskRepository taskRepository;
     private LocalTaskNode node;
     private TaskPriority priority = LocalTaskPriorityProvider.P3;//default priority  is p3
-    private TaskStatus status = LocalTaskStatusProvider.INCOMPLETE;
+    private TaskStatus status = LocalTaskStatusProvider.NEW;
     private final TaskEditorProvider editorProvider;
 
     public LocalTask(String id, String name, String description,
