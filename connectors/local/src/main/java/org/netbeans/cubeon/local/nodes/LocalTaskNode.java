@@ -22,6 +22,7 @@ import java.util.Collection;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.netbeans.cubeon.local.LocalTask;
+import org.netbeans.cubeon.local.repository.LocalTaskStatusProvider;
 import org.netbeans.cubeon.tasks.spi.TaskBadgeProvider;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
 import org.openide.nodes.AbstractNode;
@@ -37,6 +38,7 @@ import org.openide.util.lookup.Lookups;
  */
 public class LocalTaskNode extends AbstractNode {
 
+    private LocalTask localTask;
     private final Action openTask = new AbstractAction(
             NbBundle.getMessage(LocalTaskNode.class, "LBL_Open")) {
 
@@ -50,20 +52,21 @@ public class LocalTaskNode extends AbstractNode {
 
     public LocalTaskNode(LocalTask localTask) {
         super(Children.LEAF, Lookups.singleton(localTask));
+        this.localTask = localTask;
         setDisplayName(localTask.getName());
         setShortDescription(localTask.getDescription());
     }
 
     @Override
     public Image getIcon(int arg0) {
-        TaskElement taskElement = getLookup().lookup(TaskElement.class);
+
         Image image = Utilities.loadImage("org/netbeans/cubeon/local/task.png");
         //badging task element with bages
         Collection<? extends TaskBadgeProvider> badgeProviders =
                 Lookup.getDefault().lookupAll(TaskBadgeProvider.class);
 
         for (TaskBadgeProvider provider : badgeProviders) {
-            image = provider.bageTaskIcon(taskElement, image);
+            image = provider.bageTaskIcon(localTask, image);
 
         }
         return image;
@@ -77,5 +80,25 @@ public class LocalTaskNode extends AbstractNode {
     @Override
     public Action[] getActions(boolean arg0) {
         return new Action[]{openTask};
+    }
+
+    public void refreshIcon() {
+        fireIconChange();
+    }
+
+    public void refeshDisplayName() {
+        fireDisplayNameChange(getDisplayName()+"#OLD"/*NOI18N*/, localTask.getName());
+    }
+
+    @Override
+    public String getHtmlDisplayName() {
+
+        StringBuffer buffer = new StringBuffer("<html>");
+        if (localTask.getStatus().equals(LocalTaskStatusProvider.COMPLETED)) {
+            buffer.append("<s>");
+        }
+        buffer.append(getDisplayName());
+        buffer.append("</html>");
+        return buffer.toString();
     }
 }

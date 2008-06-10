@@ -29,14 +29,12 @@ import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.util.Lookup;
-import org.openide.util.lookup.Lookups;
-import org.openide.util.lookup.ProxyLookup;
 import org.openide.windows.TopComponent;
 
 /**
  * Top component which displays something.
  */
-final class TaskEditorTopComponent extends TopComponent implements  SaveCookie {
+final class TaskEditorTopComponent extends TopComponent implements SaveCookie {
 
     private static final String PREFERRED_ID = "TaskEditorTopComponent";
     private static final Color c = UIManager.getDefaults().getColor("InternalFrame.activeTitleGradient");
@@ -47,6 +45,7 @@ final class TaskEditorTopComponent extends TopComponent implements  SaveCookie {
             Color.WHITE, 0, 33, c);
     private TaskElement element;
     private final EditorNode editorNode;
+    private final EditorAttributeHandler eah;
     
 
     static {
@@ -67,7 +66,7 @@ final class TaskEditorTopComponent extends TopComponent implements  SaveCookie {
         Lookup lookup = element.getLookup();
 
         TaskEditorProvider editorProvider = lookup.lookup(TaskEditorProvider.class);
-        final EditorAttributeHandler eah = editorProvider.createEditorAttributeHandler();
+        eah = editorProvider.createEditorAttributeHandler();
 
         setName(eah.getName());
 
@@ -78,7 +77,7 @@ final class TaskEditorTopComponent extends TopComponent implements  SaveCookie {
         lblHeader.setIcon(new ImageIcon(taskRepositoryNode.getIcon(BeanInfo.ICON_MONO_16x16)));
         lblHeader.setText(eah.getDisplayName());
         base.add(eah.getComponent(), BorderLayout.CENTER);
-        
+
         setActivatedNodes(new Node[]{editorNode = new EditorNode(this)});
         eah.addChangeListener(editorNode);
 
@@ -197,17 +196,15 @@ final class TaskEditorTopComponent extends TopComponent implements  SaveCookie {
         return PREFERRED_ID;
     }
 
-    private class EditorNode extends AbstractNode implements ChangeListener{
+    private class EditorNode extends AbstractNode implements ChangeListener {
 
         private SaveCookie cookie;
-         
+
         public EditorNode(SaveCookie cookie) {
             super(Children.LEAF);
             this.cookie = cookie;
 
         }
-
-        
 
         public void setModified(boolean modified) {
 
@@ -223,11 +220,12 @@ final class TaskEditorTopComponent extends TopComponent implements  SaveCookie {
         }
 
         public void stateChanged(ChangeEvent e) {
-           setModified(true);
+            setModified(true);
         }
     }
 
     public void save() throws IOException {
-       editorNode.setModified(false);
+        eah.save();
+        editorNode.setModified(false);
     }
 }
