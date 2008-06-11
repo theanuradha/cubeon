@@ -76,21 +76,23 @@ class PersistenceHandler {
             root.appendChild(tasksElement);
         }
         Element taskElement = null;
-        NodeList taskNodes =
-                tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_TASK);
+         
+        if (localTaskRepository.getTaskElementById(te.getId()) != null) {
+            NodeList taskNodes =
+                    tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_TASK);
 
-        for (int i = 0; i < taskNodes.getLength(); i++) {
-            Node node = taskNodes.item(i);
-            if (node.getNodeType() == Node.ELEMENT_NODE) {
-                Element element = (Element) node;
-                String id = element.getAttributeNS(NAMESPACE, TAG_ID);
-                if (te.getId().equals(id)) {
-                    taskElement = element;
-                    break;
+            for (int i = 0; i < taskNodes.getLength(); i++) {
+                Node node = taskNodes.item(i);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element element = (Element) node;
+                    String id = element.getAttributeNS(NAMESPACE, TAG_ID);
+                    if (te.getId().equals(id)) {
+                        taskElement = element;
+                        break;
+                    }
                 }
             }
         }
-
         if (taskElement == null) {
             taskElement = document.createElementNS(NAMESPACE, TAG_TASK);
             tasksElement.appendChild(taskElement);
@@ -164,7 +166,7 @@ class PersistenceHandler {
                     //read type
                     String type = element.getAttributeNS(NAMESPACE, TAG_TYPE);
                     TaskType taskType = localTaskTypeProvider.getTaskTypeById(type);
-                    
+
                     LocalTask taskElement = new LocalTask(id, name, description, localTaskRepository);
                     taskElement.setPriority(taskPriority);
                     taskElement.setStatus(taskStatus);
