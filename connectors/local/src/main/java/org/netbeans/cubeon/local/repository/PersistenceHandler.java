@@ -25,6 +25,7 @@ import org.netbeans.cubeon.local.LocalTask;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
 import org.netbeans.cubeon.tasks.spi.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.TaskStatus;
+import org.netbeans.cubeon.tasks.spi.TaskType;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
@@ -52,6 +53,7 @@ class PersistenceHandler {
     private static final String TAG_NAME = "name";
     private static final String TAG_PRIORITY = "priority";
     private static final String TAG_STATUS = "status";
+    private static final String TAG_TYPE = "type";
     private static final String TAG_DESCRIPTION = "description";
     private LocalTaskRepository localTaskRepository;
     private FileObject baseDir;
@@ -92,15 +94,16 @@ class PersistenceHandler {
         if (taskElement == null) {
             taskElement = document.createElementNS(NAMESPACE, TAG_TASK);
             tasksElement.appendChild(taskElement);
-            taskElement.setAttributeNS(NAMESPACE, TAG_ID, te.getId());   
+            taskElement.setAttributeNS(NAMESPACE, TAG_ID, te.getId());
         }
 
-        
+
         taskElement.setAttributeNS(NAMESPACE, TAG_NAME, te.getName());
         taskElement.setAttributeNS(NAMESPACE, TAG_DESCRIPTION, te.getDescription());
         taskElement.setAttributeNS(NAMESPACE, TAG_REPOSITORY, te.getTaskRepository().getId());
         taskElement.setAttributeNS(NAMESPACE, TAG_PRIORITY, te.getPriority().getId());
         taskElement.setAttributeNS(NAMESPACE, TAG_STATUS, te.getStatus().getId());
+        taskElement.setAttributeNS(NAMESPACE, TAG_TYPE, te.getType().getId());
 
         save(document);
     }
@@ -144,6 +147,7 @@ class PersistenceHandler {
                     tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_TASK);
             LocalTaskPriorityProvider priorityProvider = localTaskRepository.getLocalTaskPriorityProvider();
             LocalTaskStatusProvider statusProvider = localTaskRepository.getLocalTaskStatusProvider();
+            LocalTaskTypeProvider localTaskTypeProvider = localTaskRepository.getLocalTaskTypeProvider();
             for (int i = 0; i < taskNodes.getLength(); i++) {
                 Node node = taskNodes.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
@@ -151,14 +155,20 @@ class PersistenceHandler {
                     String id = element.getAttributeNS(NAMESPACE, TAG_ID);
                     String name = element.getAttributeNS(NAMESPACE, TAG_NAME);
                     String description = element.getAttributeNS(NAMESPACE, TAG_DESCRIPTION);
+                    //read priority
                     String priority = element.getAttributeNS(NAMESPACE, TAG_PRIORITY);
                     TaskPriority taskPriority = priorityProvider.getTaskPriorityById(priority);
+                    //read status
                     String status = element.getAttributeNS(NAMESPACE, TAG_STATUS);
                     TaskStatus taskStatus = statusProvider.getTaskStatusById(status);
-
+                    //read type
+                    String type = element.getAttributeNS(NAMESPACE, TAG_TYPE);
+                    TaskType taskType = localTaskTypeProvider.getTaskTypeById(type);
+                    
                     LocalTask taskElement = new LocalTask(id, name, description, localTaskRepository);
                     taskElement.setPriority(taskPriority);
                     taskElement.setStatus(taskStatus);
+                    taskElement.setType(taskType);
 
                     taskElements.add(taskElement);
                 }

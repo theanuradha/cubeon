@@ -54,8 +54,6 @@ public interface TaskElement {
      */
     Lookup getLookup();
 
- 
-
     /*--------------------------Priority------------------------*/
     /**
      * 
@@ -72,6 +70,8 @@ public interface TaskElement {
     TaskStatus getStatus();
 
     void setStatus(TaskStatus status);
-    /*-----------------------------------------------------------*/ /*-----------------------Customizer--------------------------*/
 
+    TaskType getType();
+
+    void setType(TaskType type);
 }
