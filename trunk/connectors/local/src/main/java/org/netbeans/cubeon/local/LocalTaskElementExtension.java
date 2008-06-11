@@ -94,6 +94,13 @@ public class LocalTaskElementExtension implements Extension {
         }
     }
 
+    void fireTypeChenged() {
+        Collection<? extends TaskElementChangeAdapter> adapters = lookup.lookupAll(TaskElementChangeAdapter.class);
+        for (TaskElementChangeAdapter adapter : adapters) {
+            adapter.typeChenged();
+        }
+    }
+
     public Lookup getLookup() {
         return lookup;
     }

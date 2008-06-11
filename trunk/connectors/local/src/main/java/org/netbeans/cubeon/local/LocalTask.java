@@ -23,6 +23,7 @@ import org.netbeans.cubeon.tasks.spi.TaskElement;
 import org.netbeans.cubeon.tasks.spi.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.TaskStatus;
+import org.netbeans.cubeon.tasks.spi.TaskType;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.Lookups;
 
@@ -38,6 +39,7 @@ public class LocalTask implements TaskElement {
     private LocalTaskRepository taskRepository;
     private TaskPriority priority = LocalTaskPriorityProvider.P3;//default priority  is p3
     private TaskStatus status = LocalTaskStatusProvider.NEW;
+    private TaskType type = LocalTaskTypeProvider.TASK;
     private final TaskEditorProvider editorProvider;
     private LocalTaskElementExtension extension;
 
@@ -98,5 +100,14 @@ public class LocalTask implements TaskElement {
     public void setStatus(TaskStatus status) {
         this.status = status;
         extension.fireStatusChenged();
+    }
+
+    public TaskType getType() {
+        return type;
+    }
+
+    public void setType(TaskType type) {
+        this.type = type;
+        extension.fireTypeChenged();
     }
 }

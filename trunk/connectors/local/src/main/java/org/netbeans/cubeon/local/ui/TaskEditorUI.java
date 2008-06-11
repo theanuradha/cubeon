@@ -37,10 +37,12 @@ import org.netbeans.cubeon.local.LocalTask;
 import org.netbeans.cubeon.local.repository.LocalTaskPriorityProvider;
 import org.netbeans.cubeon.local.repository.LocalTaskRepository;
 import org.netbeans.cubeon.local.repository.LocalTaskStatusProvider;
+import org.netbeans.cubeon.local.repository.LocalTaskTypeProvider;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
 import org.netbeans.cubeon.tasks.spi.TaskEditorProvider.EditorAttributeHandler;
 import org.netbeans.cubeon.tasks.spi.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.TaskStatus;
+import org.netbeans.cubeon.tasks.spi.TaskType;
 import org.openide.util.NbBundle;
 
 /**
@@ -72,6 +74,15 @@ public class TaskEditorUI extends javax.swing.JPanel implements EditorAttributeH
             cmbStatus.addItem(status);
         }
         cmbStatus.setSelectedItem(localTask.getStatus());
+
+        jComboBox1.removeAllItems();
+
+        LocalTaskTypeProvider localTaskTypeProvider = taskRepository.getLocalTaskTypeProvider();
+        for (TaskType type : localTaskTypeProvider.getTaskTypes()) {
+            jComboBox1.addItem(type);
+        }
+
+        jComboBox1.setSelectedItem(localTask.getType());
         final DocumentListener documentListener = new DocumentListener() {
 
             public void insertUpdate(DocumentEvent arg0) {
@@ -114,6 +125,7 @@ public class TaskEditorUI extends javax.swing.JPanel implements EditorAttributeH
         };
         cmbPriority.addItemListener(itemListener);
         cmbStatus.addItemListener(itemListener);
+        jComboBox1.addItemListener(itemListener);
     }
 
     @Override
@@ -128,7 +140,6 @@ public class TaskEditorUI extends javax.swing.JPanel implements EditorAttributeH
     public String getShortDescription() {
         return localTask.getDescription();
     }
-
 
     public final void addChangeListener(ChangeListener l) {
         synchronized (listeners) {
@@ -159,7 +170,9 @@ public class TaskEditorUI extends javax.swing.JPanel implements EditorAttributeH
         if (!localTask.getDescription().equals(txtDescription.getText().trim())) {
             localTask.setDescription(txtDescription.getText().trim());
         }
-        
+        if (!localTask.getType().equals(jComboBox1.getSelectedItem())) {
+            localTask.setType((TaskType) jComboBox1.getSelectedItem());
+        }
         localTask.getTaskRepository().persist(localTask);
         return localTask;
     }
@@ -192,6 +205,8 @@ public class TaskEditorUI extends javax.swing.JPanel implements EditorAttributeH
         lblDesription = new javax.swing.JLabel();
         spDescription = new javax.swing.JScrollPane();
         txtDescription = new javax.swing.JEditorPane();
+        jLabel1 = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
@@ -199,11 +214,13 @@ public class TaskEditorUI extends javax.swing.JPanel implements EditorAttributeH
 
         lblStatus.setText(NbBundle.getMessage(TaskEditorUI.class, "TaskEditorUI.lblStatus.text")); // NOI18N
 
-        lblDesription.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        lblDesription.setFont(new java.awt.Font("Tahoma", 1, 11));
         lblDesription.setForeground(new java.awt.Color(51, 51, 51));
         lblDesription.setText(NbBundle.getMessage(TaskEditorUI.class, "TaskEditorUI.lblDesription.text")); // NOI18N
 
         spDescription.setViewportView(txtDescription);
+
+        jLabel1.setText(NbBundle.getMessage(TaskEditorUI.class, "TaskEditorUI.jLabel1.text")); // NOI18N
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -214,19 +231,23 @@ public class TaskEditorUI extends javax.swing.JPanel implements EditorAttributeH
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                     .add(org.jdesktop.layout.GroupLayout.LEADING, spDescription)
                     .add(org.jdesktop.layout.GroupLayout.LEADING, txtOutline, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 698, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, lblDesription)
                     .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+                        .add(jLabel1)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 126, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(lblPriority)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                        .add(12, 12, 12)
                         .add(cmbPriority, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 107, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(18, 18, 18)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(lblStatus)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                        .add(cmbStatus, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 121, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, lblDesription))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(cmbStatus, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 121, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 
-        layout.linkSize(new java.awt.Component[] {cmbPriority, cmbStatus}, org.jdesktop.layout.GroupLayout.HORIZONTAL);
+        layout.linkSize(new java.awt.Component[] {cmbPriority, cmbStatus, jComboBox1}, org.jdesktop.layout.GroupLayout.HORIZONTAL);
 
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -235,20 +256,24 @@ public class TaskEditorUI extends javax.swing.JPanel implements EditorAttributeH
                 .add(txtOutline, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(lblPriority)
                     .add(cmbPriority, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jLabel1)
+                    .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(lblPriority)
                     .add(lblStatus)
                     .add(cmbStatus, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .add(18, 18, 18)
                 .add(lblDesription)
                 .add(2, 2, 2)
-                .add(spDescription, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 156, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(176, Short.MAX_VALUE))
+                .add(spDescription, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 206, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(126, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox cmbPriority;
     private javax.swing.JComboBox cmbStatus;
+    private javax.swing.JComboBox jComboBox1;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel lblDesription;
     private javax.swing.JLabel lblPriority;
     private javax.swing.JLabel lblStatus;

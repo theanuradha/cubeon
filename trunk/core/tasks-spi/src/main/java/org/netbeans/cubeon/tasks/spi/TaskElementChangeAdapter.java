@@ -33,4 +33,6 @@ public class TaskElementChangeAdapter {
 
     public void statusChenged() {
     }
+    public void typeChenged() {
+    }
 }
