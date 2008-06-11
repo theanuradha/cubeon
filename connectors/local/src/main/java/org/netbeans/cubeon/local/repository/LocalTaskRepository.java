@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import org.netbeans.cubeon.local.LocalTask;
-import org.netbeans.cubeon.local.nodes.LocalRepositoryNode;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
 import org.netbeans.cubeon.tasks.spi.TaskRepository;
 import org.openide.util.Lookup;
@@ -39,7 +38,9 @@ public class LocalTaskRepository implements TaskRepository {
     private List<LocalTask> localTasks = new ArrayList<LocalTask>();
     private final PersistenceHandler persistenceHandler;
     private final LocalTaskPriorityProvider ltpp = new LocalTaskPriorityProvider();
-    private final LocalTaskStatusProvider ltsp=new LocalTaskStatusProvider();
+    private final LocalTaskStatusProvider ltsp = new LocalTaskStatusProvider();
+    private LocalRepositoryExtension extension;
+
     public LocalTaskRepository(LocalTaskRepositoryProvider provider,
             String id, String name, String description) {
         this.provider = provider;
@@ -47,6 +48,7 @@ public class LocalTaskRepository implements TaskRepository {
         this.name = name;
         this.description = description;
         persistenceHandler = new PersistenceHandler(this, provider.getBaseDir());
+        extension = new LocalRepositoryExtension(this);
         refresh();
     }
 
@@ -64,7 +66,7 @@ public class LocalTaskRepository implements TaskRepository {
 
     public Lookup getLookup() {
         return Lookups.fixed(this,
-                new LocalRepositoryNode(this), provider, persistenceHandler, ltpp,ltsp);
+                extension, provider, persistenceHandler, ltpp, ltsp);
     }
 
     public List<TaskElement> getTaskElements() {
@@ -117,5 +119,4 @@ public class LocalTaskRepository implements TaskRepository {
     public LocalTaskStatusProvider getLocalTaskStatusProvider() {
         return ltsp;
     }
-    
 }

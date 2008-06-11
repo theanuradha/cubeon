@@ -18,15 +18,15 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import org.netbeans.cubeon.tasks.spi.Extension;
 import org.netbeans.cubeon.tasks.spi.TaskEditorProvider;
 import org.netbeans.cubeon.tasks.spi.TaskEditorProvider.EditorAttributeHandler;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
 import org.netbeans.cubeon.tasks.spi.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.TaskRepositoryType;
+import org.netbeans.cubeon.ui.internals.TaskElementNode;
 import org.netbeans.cubeon.ui.util.PaintUtils;
 import org.openide.cookies.SaveCookie;
-import org.openide.nodes.AbstractNode;
-import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.util.Lookup;
 import org.openide.windows.TopComponent;
@@ -34,7 +34,7 @@ import org.openide.windows.TopComponent;
 /**
  * Top component which displays something.
  */
-final class TaskEditorTopComponent extends TopComponent implements SaveCookie {
+final class TaskEditorTopComponent extends TopComponent implements SaveCookie, ChangeListener {
 
     private static final String PREFERRED_ID = "TaskEditorTopComponent";
     private static final Color c = UIManager.getDefaults().getColor("InternalFrame.activeTitleGradient");
@@ -44,7 +44,7 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie {
     private final static GradientPaint GRADIENT_HEADER_LARGE = new GradientPaint(0, 0,
             Color.WHITE, 0, 33, c);
     private TaskElement element;
-    private final EditorNode editorNode;
+    private final TaskElementNode editorNode;
     private final EditorAttributeHandler eah;
     
 
@@ -69,17 +69,17 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie {
         eah = editorProvider.createEditorAttributeHandler();
 
         setName(eah.getName());
-
-        setIcon(eah.getImage());
+        Extension extension = element.getLookup().lookup(Extension.class);
+        setIcon(extension.getImage());
         TaskRepository taskRepository = element.getTaskRepository();
         TaskRepositoryType repositoryType = taskRepository.getLookup().lookup(TaskRepositoryType.class);
-        Node taskRepositoryNode = taskRepository.getLookup().lookup(Node.class);
-        lblHeader.setIcon(new ImageIcon(taskRepositoryNode.getIcon(BeanInfo.ICON_MONO_16x16)));
+        Extension taskRepositoryExtension = taskRepository.getLookup().lookup(Extension.class);
+        lblHeader.setIcon(new ImageIcon(taskRepositoryExtension.getImage()));
         lblHeader.setText(eah.getDisplayName());
         base.add(eah.getComponent(), BorderLayout.CENTER);
 
-        setActivatedNodes(new Node[]{editorNode = new EditorNode(this)});
-        eah.addChangeListener(editorNode);
+        setActivatedNodes(new Node[]{editorNode = TaskElementNode.createNode(element, this)});
+        eah.addChangeListener(this);
 
     }
 
@@ -196,36 +196,21 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie {
         return PREFERRED_ID;
     }
 
-    private class EditorNode extends AbstractNode implements ChangeListener {
-
-        private SaveCookie cookie;
-
-        public EditorNode(SaveCookie cookie) {
-            super(Children.LEAF);
-            this.cookie = cookie;
-
-        }
-
-        public void setModified(boolean modified) {
-
-            if (modified) {
-                getCookieSet().assign(SaveCookie.class, cookie);
-            } else {
-                getCookieSet().assign(SaveCookie.class);
-            }
-        }
-
-        public void save() throws IOException {
-            setModified(false);
-        }
-
-        public void stateChanged(ChangeEvent e) {
-            setModified(true);
-        }
-    }
-
     public void save() throws IOException {
         eah.save();
         editorNode.setModified(false);
+    }
+
+    public void stateChanged(ChangeEvent e) {
+        editorNode.setModified(true);
+    }
+
+    @Override
+    protected void componentClosed() {
+        try {
+            editorNode.destroy();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 }

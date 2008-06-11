@@ -17,12 +17,8 @@
 package org.netbeans.cubeon.local;
 
 import org.netbeans.cubeon.local.internals.TaskEditorProviderImpl;
-import org.netbeans.cubeon.local.nodes.LocalTaskNode;
 import org.netbeans.cubeon.local.repository.*;
-import org.netbeans.cubeon.local.ui.BasicAttributeHandlerImpl;
-import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
 import org.netbeans.cubeon.tasks.spi.TaskEditorProvider;
-import org.netbeans.cubeon.tasks.spi.TaskEditorProvider.BasicAttributeHandler;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
 import org.netbeans.cubeon.tasks.spi.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.TaskRepository;
@@ -40,10 +36,10 @@ public class LocalTask implements TaskElement {
     private String name;
     private String description;
     private LocalTaskRepository taskRepository;
-    private LocalTaskNode node;
     private TaskPriority priority = LocalTaskPriorityProvider.P3;//default priority  is p3
     private TaskStatus status = LocalTaskStatusProvider.NEW;
     private final TaskEditorProvider editorProvider;
+    private LocalTaskElementExtension extension;
 
     public LocalTask(String id, String name, String description,
             LocalTaskRepository taskRepository) {
@@ -51,8 +47,9 @@ public class LocalTask implements TaskElement {
         this.name = name;
         this.description = description;
         this.taskRepository = taskRepository;
+        extension = new LocalTaskElementExtension(this);
         editorProvider = new TaskEditorProviderImpl(this);
-        node = new LocalTaskNode(this);
+
     }
 
     public String getId() {
@@ -65,7 +62,7 @@ public class LocalTask implements TaskElement {
 
     public void setName(String name) {
         this.name = name;
-        node.setDisplayName(name);
+        extension.fireNameChenged();
     }
 
     public String getDescription() {
@@ -74,7 +71,7 @@ public class LocalTask implements TaskElement {
 
     public void setDescription(String description) {
         this.description = description;
-        node.setShortDescription(description);
+        extension.fireDescriptionChenged();
     }
 
     public TaskRepository getTaskRepository() {
@@ -82,12 +79,7 @@ public class LocalTask implements TaskElement {
     }
 
     public Lookup getLookup() {
-        return Lookups.fixed(this, node, editorProvider);
-    }
-
-    public void open() {
-        TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
-        factory.createTaskEditor(this);
+        return Lookups.fixed(this, editorProvider, extension);
     }
 
     public TaskPriority getPriority() {
@@ -96,7 +88,7 @@ public class LocalTask implements TaskElement {
 
     public void setPriority(TaskPriority priority) {
         this.priority = priority;
-        node.refreshIcon();
+        extension.firePriorityChenged();
     }
 
     public TaskStatus getStatus() {
@@ -105,6 +97,6 @@ public class LocalTask implements TaskElement {
 
     public void setStatus(TaskStatus status) {
         this.status = status;
-        node.refeshDisplayName();
+        extension.fireStatusChenged();
     }
 }

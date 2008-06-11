@@ -78,8 +78,6 @@ public interface TaskEditorProvider {
 
         String getShortDescription();
 
-        Image getImage();
-
         /**
          * 
          * @param changeListener

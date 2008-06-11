@@ -17,73 +17,88 @@
 package org.netbeans.cubeon.ui.internals;
 
 import java.io.IOException;
+import org.openide.cookies.SaveCookie;
 import org.openide.filesystems.FileObject;
 import org.openide.loaders.DataFolder;
 import org.openide.loaders.DataLoader;
 import org.openide.loaders.DataObject;
 import org.openide.loaders.DataObjectExistsException;
+import org.openide.nodes.Node;
 import org.openide.util.HelpCtx;
 
 /**
  *
  * @author Anuradha
  */
-public class TaskElementDataObject extends DataObject {
+public class TaskElementDataObject extends DataObject implements SaveCookie {
 
-    private TaskElementFileObject fileObject;
-
-    public TaskElementDataObject(TaskElementFileObject fileObject, DataLoader dataLoader) throws DataObjectExistsException {
+    public TaskElementDataObject(FileObject fileObject, DataLoader dataLoader) throws DataObjectExistsException {
         super(fileObject, dataLoader);
-        this.fileObject = fileObject;
+
     }
 
-    @Override
+ 
     public boolean isDeleteAllowed() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return false;
     }
 
     @Override
     public boolean isCopyAllowed() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return false;
     }
 
     @Override
     public boolean isMoveAllowed() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return false;
     }
 
     @Override
     public boolean isRenameAllowed() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return false;
     }
 
     @Override
     public HelpCtx getHelpCtx() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return HelpCtx.DEFAULT_HELP;
     }
 
     @Override
     protected DataObject handleCopy(DataFolder arg0) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return null;
     }
 
     @Override
     protected void handleDelete() throws IOException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //DONOTHING
     }
 
     @Override
     protected FileObject handleRename(String arg0) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return null;
     }
 
     @Override
     protected FileObject handleMove(DataFolder arg0) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return null;
     }
 
     @Override
     protected DataObject handleCreateFromTemplate(DataFolder arg0, String arg1) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return null;
+    }
+
+    /**
+     * Creates the node for this data object which is used for display purposes
+     *
+     * @return node
+     */
+    @Override
+    protected Node createNodeDelegate() {
+        return ((TaskElementFileObject) getPrimaryFile()).getNode();
+    }
+
+    public void save() throws IOException {
+        SaveCookie cookie = ((TaskElementFileObject) getPrimaryFile()).getNode().getCookie(SaveCookie.class);
+        cookie.save();
     }
 }
