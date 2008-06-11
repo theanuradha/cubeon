@@ -119,6 +119,11 @@ public class TaskElementNode extends AbstractNode {
             }
 
             @Override
+            public void typeChenged() {
+                fireIconChange();
+            }
+            
+            @Override
             public void statusChenged() {
                 fireDisplayNameChange(getDisplayName() + "_#", element.getName());
             }
