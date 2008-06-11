@@ -10,7 +10,6 @@ import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.beans.BeanInfo;
 
 import java.io.IOException;
 import javax.swing.ImageIcon;
@@ -22,6 +21,7 @@ import org.netbeans.cubeon.tasks.spi.Extension;
 import org.netbeans.cubeon.tasks.spi.TaskEditorProvider;
 import org.netbeans.cubeon.tasks.spi.TaskEditorProvider.EditorAttributeHandler;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
+import org.netbeans.cubeon.tasks.spi.TaskElementChangeAdapter;
 import org.netbeans.cubeon.tasks.spi.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.TaskRepositoryType;
 import org.netbeans.cubeon.ui.internals.TaskElementNode;
@@ -46,6 +46,9 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
     private TaskElement element;
     private final TaskElementNode editorNode;
     private final EditorAttributeHandler eah;
+    private final Extension extension;
+    private final Extension taskRepositoryExtension;
+    private final TaskElementChangeAdapter changeAdapter;
     
 
     static {
@@ -69,18 +72,24 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
         eah = editorProvider.createEditorAttributeHandler();
 
         setName(eah.getName());
-        Extension extension = element.getLookup().lookup(Extension.class);
+        extension = element.getLookup().lookup(Extension.class);
         setIcon(extension.getImage());
         TaskRepository taskRepository = element.getTaskRepository();
         TaskRepositoryType repositoryType = taskRepository.getLookup().lookup(TaskRepositoryType.class);
-        Extension taskRepositoryExtension = taskRepository.getLookup().lookup(Extension.class);
+        taskRepositoryExtension = taskRepository.getLookup().lookup(Extension.class);
         lblHeader.setIcon(new ImageIcon(taskRepositoryExtension.getImage()));
         lblHeader.setText(eah.getDisplayName());
         base.add(eah.getComponent(), BorderLayout.CENTER);
 
         setActivatedNodes(new Node[]{editorNode = TaskElementNode.createNode(element, this)});
         eah.addChangeListener(this);
+        changeAdapter = new TaskElementChangeAdapter() {
 
+            @Override
+            public void nameChenged() {
+                setName(eah.getName());
+            }
+        };
     }
 
     /** This method is called from within the constructor to
