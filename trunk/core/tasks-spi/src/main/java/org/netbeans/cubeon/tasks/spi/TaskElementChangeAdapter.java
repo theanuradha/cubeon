@@ -16,22 +16,21 @@
  */
 package org.netbeans.cubeon.tasks.spi;
 
-import java.awt.Image;
-import org.openide.util.Lookup;
-
 /**
  *
- * @author Anuradha G
+ * @author Anuradha
  */
-public interface Extension {
+public class TaskElementChangeAdapter {
 
-    String getHtmlDisplayName();
+    public void nameChenged() {
+    }
 
-    Image getImage();
+    public void descriptionChenged() {
+    }
 
-    void remove(Object inst);
+    public void priorityChenged() {
+    }
 
-    void add(Object inst);
-
-    Lookup getLookup();
+    public void statusChenged() {
+    }
 }
