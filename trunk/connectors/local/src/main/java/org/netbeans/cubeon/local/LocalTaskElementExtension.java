@@ -19,6 +19,7 @@ package org.netbeans.cubeon.local;
 import java.awt.Image;
 import java.util.Collection;
 import org.netbeans.cubeon.local.repository.LocalTaskStatusProvider;
+import org.netbeans.cubeon.local.repository.LocalTaskTypeProvider;
 import org.netbeans.cubeon.tasks.spi.Extension;
 import org.netbeans.cubeon.tasks.spi.TaskElementChangeAdapter;
 import org.openide.util.Lookup;
@@ -62,7 +63,18 @@ public class LocalTaskElementExtension implements Extension {
     }
 
     public Image getImage() {
-        return Utilities.loadImage("org/netbeans/cubeon/local/nodes/task.png");
+        Image image = Utilities.loadImage("org/netbeans/cubeon/local/nodes/task.png");
+        if (LocalTaskTypeProvider.BUG.equals(localTask.getType())) {
+            image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_defact.png"), 0, 0);
+        } else if (LocalTaskTypeProvider.ENHANCEMENT.equals(localTask.getType())) {
+            image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_enhancement.png"), 0, 0);
+        } else if (LocalTaskTypeProvider.FEATURE.equals(localTask.getType())) {
+            image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_feature.png"), 0, 0);
+        } else {
+            image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_task.png"), 0, 0);
+        }
+
+        return image;
     }
     //events---------------------------
     void fireNameChenged() {

@@ -6,6 +6,7 @@ package org.netbeans.cubeon.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.EventQueue;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -87,8 +88,26 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
 
             @Override
             public void nameChenged() {
-                setName(eah.getName());
-                lblHeader.setText(eah.getDisplayName());
+                EventQueue.invokeLater(new Runnable() {
+
+                    public void run() {
+                        setName(eah.getName());
+                        lblHeader.setText(eah.getDisplayName());
+                    }
+                });
+
+            }
+
+            @Override
+            public void typeChenged() {
+                EventQueue.invokeLater(new Runnable() {
+
+                    public void run() {
+                        setName(eah.getName());
+                        setIcon(extension.getImage());
+                    }
+                });
+
             }
         };
         extension.add(changeAdapter);
