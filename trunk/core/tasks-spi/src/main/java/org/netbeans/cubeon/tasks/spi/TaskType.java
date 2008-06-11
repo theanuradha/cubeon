@@ -14,41 +14,32 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.local;
-
-import java.awt.Image;
-import org.netbeans.cubeon.tasks.spi.TaskPriority;
+package org.netbeans.cubeon.tasks.spi;
 
 /**
  *
- * @author Anuradha G
+ * @author Anuradha
  */
-public class LocalTaskPriority implements TaskPriority {
+public class  TaskType {
 
-    private final String id;
-    private final int priority;
-    private final Image image;
+    private String id;
+    private String text;
 
-    public LocalTaskPriority(String id, int priority, Image image) {
+    public TaskType(String id, String text) {
         this.id = id;
-        this.priority = priority;
-        this.image = image;
+        this.text = text;
+    }
+
+    public String getText() {
+        return text;
     }
 
     public String getId() {
         return id;
     }
 
-    public int getPriority() {
-        return priority;
-    }
-
-    public Image getImage() {
-        return image;
-    }
-
     @Override
     public String toString() {
-        return id;
+        return getText();
     }
 }

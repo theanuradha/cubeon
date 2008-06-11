@@ -16,30 +16,18 @@
  */
 package org.netbeans.cubeon.tasks.spi;
 
+import java.util.List;
+
 /**
  *
  * @author Anuradha G
  */
-public class TaskStatus {
+public interface TaskTypeProvider {
 
-    private String id;
-    private String text;
-
-    public TaskStatus(String id, String text) {
-        this.id = id;
-        this.text = text;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    @Override
-    public String toString() {
-        return getText();
-    }
+    /**
+     * 
+     * @return list of TaskStatus that support by 
+     * providing repository implementation
+     */
+    List<TaskType> getTaskTypes();
 }

@@ -22,23 +22,32 @@ import java.awt.Image;
  *
  * @author Anuradha G
  */
-public interface TaskPriority {
+public class TaskPriority {
 
-    /**
-     * 
-     * @return Unique Priority ID
-     */
-    String getId();
+    private final String id;
+    private final int priority;
+    private final Image image;
 
-    /**
-     *  
-     * @return Int value of Priority  Ex. 1000 for Nomal and 10000 for Very High
-     */
-    int getPriority();
+    public TaskPriority(String id, int priority, Image image) {
+        this.id = id;
+        this.priority = priority;
+        this.image = image;
+    }
 
-    /**
-     * 
-     * @return Image 
-     */
-    Image getImage();
+    public String getId() {
+        return id;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public Image getImage() {
+        return image;
+    }
+
+    @Override
+    public String toString() {
+        return id;
+    }
 }
