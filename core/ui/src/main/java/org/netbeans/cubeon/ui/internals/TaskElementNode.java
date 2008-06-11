@@ -26,6 +26,7 @@ import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
 import org.netbeans.cubeon.tasks.spi.TaskBadgeProvider;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
 import org.netbeans.cubeon.tasks.spi.Extension;
+import org.netbeans.cubeon.tasks.spi.TaskElementChangeAdapter;
 import org.openide.cookies.SaveCookie;
 import org.openide.filesystems.FileObject;
 import org.openide.loaders.DataLoader;
@@ -49,7 +50,7 @@ public class TaskElementNode extends AbstractNode {
     private SaveCookie cookie;
     private InstanceContent content;
     private DataObject dataObject;
-    private final Extension.ChangeAdapter changeAdapter;
+    private final TaskElementChangeAdapter changeAdapter;
 
     public static TaskElementNode createNode(final TaskElement element) {
         InstanceContent content = new InstanceContent();
@@ -100,7 +101,7 @@ public class TaskElementNode extends AbstractNode {
                 setModified(false);
             }
         };
-        changeAdapter = new Extension.ChangeAdapter() {
+        changeAdapter = new TaskElementChangeAdapter() {
 
             @Override
             public void nameChenged() {
@@ -122,13 +123,13 @@ public class TaskElementNode extends AbstractNode {
                 fireDisplayNameChange(getDisplayName() + "_#", element.getName());
             }
         };
-        extension.addChangeAdapter(changeAdapter);
+        extension.add(changeAdapter);
     }
 
     @Override
     public void destroy() throws IOException {
         super.destroy();
-        extension.removeChangeAdapter(changeAdapter);
+        extension.remove(changeAdapter);
     }
 
     public void setModified(boolean modified) {

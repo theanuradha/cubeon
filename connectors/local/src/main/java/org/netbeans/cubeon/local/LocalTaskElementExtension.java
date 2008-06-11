@@ -17,12 +17,14 @@
 package org.netbeans.cubeon.local;
 
 import java.awt.Image;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.Collection;
 import org.netbeans.cubeon.local.repository.LocalTaskStatusProvider;
 import org.netbeans.cubeon.tasks.spi.Extension;
+import org.netbeans.cubeon.tasks.spi.TaskElementChangeAdapter;
+import org.openide.util.Lookup;
 import org.openide.util.Utilities;
+import org.openide.util.lookup.AbstractLookup;
+import org.openide.util.lookup.InstanceContent;
 
 /**
  *
@@ -30,11 +32,22 @@ import org.openide.util.Utilities;
  */
 public class LocalTaskElementExtension implements Extension {
 
-    private final Set<ChangeAdapter> listeners = new HashSet<ChangeAdapter>(5);
     private LocalTask localTask;
+    private InstanceContent content;
+    private Lookup lookup;
 
     public LocalTaskElementExtension(LocalTask localTask) {
         this.localTask = localTask;
+        content = new InstanceContent();
+        lookup = new AbstractLookup(content);
+    }
+
+    public final void remove(Object inst) {
+        content.remove(inst);
+    }
+
+    public final void add(Object inst) {
+        content.add(inst);
     }
 
     public String getHtmlDisplayName() {
@@ -48,63 +61,40 @@ public class LocalTaskElementExtension implements Extension {
         return buffer.toString();
     }
 
-    public void addChangeAdapter(ChangeAdapter adapter) {
-        synchronized (listeners) {
-            listeners.add(adapter);
-        }
-    }
-
-    public void removeChangeAdapter(ChangeAdapter adapter) {
-        synchronized (listeners) {
-            listeners.remove(adapter);
-        }
-    }
-
     public Image getImage() {
-       return Utilities.loadImage("org/netbeans/cubeon/local/nodes/task.png");
+        return Utilities.loadImage("org/netbeans/cubeon/local/nodes/task.png");
     }
     //events---------------------------
     void fireNameChenged() {
-        Iterator<ChangeAdapter> it;
-        synchronized (listeners) {
-            it = new HashSet<ChangeAdapter>(listeners).iterator();
+        Collection<? extends TaskElementChangeAdapter> adapters = lookup.lookupAll(TaskElementChangeAdapter.class);
+        for (TaskElementChangeAdapter adapter : adapters) {
+            adapter.nameChenged();
         }
 
-        while (it.hasNext()) {
-            it.next().nameChenged();
-        }
     }
 
     void fireDescriptionChenged() {
-        Iterator<ChangeAdapter> it;
-        synchronized (listeners) {
-            it = new HashSet<ChangeAdapter>(listeners).iterator();
-        }
-
-        while (it.hasNext()) {
-            it.next().descriptionChenged();
+        Collection<? extends TaskElementChangeAdapter> adapters = lookup.lookupAll(TaskElementChangeAdapter.class);
+        for (TaskElementChangeAdapter adapter : adapters) {
+            adapter.descriptionChenged();
         }
     }
 
     void firePriorityChenged() {
-        Iterator<ChangeAdapter> it;
-        synchronized (listeners) {
-            it = new HashSet<ChangeAdapter>(listeners).iterator();
-        }
-
-        while (it.hasNext()) {
-            it.next().priorityChenged();
+        Collection<? extends TaskElementChangeAdapter> adapters = lookup.lookupAll(TaskElementChangeAdapter.class);
+        for (TaskElementChangeAdapter adapter : adapters) {
+            adapter.priorityChenged();
         }
     }
 
     void fireStatusChenged() {
-        Iterator<ChangeAdapter> it;
-        synchronized (listeners) {
-            it = new HashSet<ChangeAdapter>(listeners).iterator();
+        Collection<? extends TaskElementChangeAdapter> adapters = lookup.lookupAll(TaskElementChangeAdapter.class);
+        for (TaskElementChangeAdapter adapter : adapters) {
+            adapter.statusChenged();
         }
+    }
 
-        while (it.hasNext()) {
-            it.next().statusChenged();
-        }
+    public Lookup getLookup() {
+        return lookup;
     }
 }
