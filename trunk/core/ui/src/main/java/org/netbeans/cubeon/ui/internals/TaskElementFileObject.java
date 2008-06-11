@@ -30,6 +30,7 @@ import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileStateInvalidException;
 import org.openide.filesystems.FileSystem;
+import org.openide.nodes.Node;
 
 /**
  *
@@ -39,9 +40,15 @@ public class TaskElementFileObject extends FileObject {
 
     Map<String, Object> map = new HashMap<String, Object>();
     private TaskElement element;
+    private Node node;
 
-    public TaskElementFileObject(TaskElement element) {
+    public TaskElementFileObject(TaskElement element, Node node) {
         this.element = element;
+        this.node = node;
+    }
+
+    public Node getNode() {
+        return node;
     }
 
     @Override

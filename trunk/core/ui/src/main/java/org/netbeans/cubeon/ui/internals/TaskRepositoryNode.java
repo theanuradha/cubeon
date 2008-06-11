@@ -14,39 +14,46 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.local.nodes;
+package org.netbeans.cubeon.ui.internals;
 
 import java.awt.Image;
 import javax.swing.Action;
-import org.netbeans.cubeon.local.repository.LocalTaskRepository;
+import org.netbeans.cubeon.tasks.spi.Extension;
+import org.netbeans.cubeon.tasks.spi.TaskRepository;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
-import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 
 /**
  *
- * @author Anuradha G
+ * @author Anuradha
  */
-public class LocalRepositoryNode extends AbstractNode {
+public class TaskRepositoryNode extends AbstractNode {
 
-    public LocalRepositoryNode(LocalTaskRepository repository) {
+    private TaskRepository repository;
+    private Extension extension;
+
+    public TaskRepositoryNode(TaskRepository repository) {
         super(Children.LEAF, Lookups.singleton(repository));
+        this.repository = repository;
         setDisplayName(repository.getName());
         setShortDescription(repository.getDescription());
-        
+        extension = repository.getLookup().lookup(Extension.class);
     }
 
     @Override
     public Image getIcon(int arg0) {
- 
-        return Utilities.loadImage("org/netbeans/cubeon/local/nodes/local-repository.png");
+
+        return extension.getImage();
     }
 
     @Override
     public Action[] getActions(boolean arg0) {
         return new Action[0];
     }
-    
-    
+
+    @Override
+    public String getHtmlDisplayName() {
+        return extension.getHtmlDisplayName();
+    }
 }

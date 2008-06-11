@@ -12,6 +12,7 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import org.netbeans.cubeon.tasks.core.api.CubeonContext;
+import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
 import org.netbeans.cubeon.tasks.core.api.TaskFolder;
 import org.netbeans.cubeon.tasks.core.api.TaskFolderRefreshable;
 import org.netbeans.cubeon.tasks.core.api.TaskRepositoryHandler;
@@ -34,13 +35,13 @@ public final class NewTaskWizardAction extends AbstractAction {
         init(name);
     }
 
-    public NewTaskWizardAction(String name,TaskFolder taskFolder) {
+    public NewTaskWizardAction(String name, TaskFolder taskFolder) {
         this.taskFolder = taskFolder;
         init(name);
     }
 
     private void init(String name) {
-        putValue(NAME,name);
+        putValue(NAME, name);
     }
 
     /**
@@ -126,7 +127,8 @@ public final class NewTaskWizardAction extends AbstractAction {
             assert refreshable != null;
             refreshable.refreshContent();
             //open newly created Task 
-            element.open();
+            TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
+            factory.createTaskEditor(element);
         }
     }
 

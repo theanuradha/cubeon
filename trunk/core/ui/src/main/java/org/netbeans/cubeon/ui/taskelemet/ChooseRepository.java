@@ -9,12 +9,14 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 import javax.swing.Action;
+import org.netbeans.cubeon.tasks.core.api.TaskNodeFactory;
 import org.netbeans.cubeon.tasks.spi.TaskRepository;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.BeanTreeView;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
@@ -25,9 +27,9 @@ final class ChooseRepository extends javax.swing.JPanel implements ExplorerManag
 
     private final BeanTreeView taskTreeView = new BeanTreeView();
     private final transient ExplorerManager explorerManager = new ExplorerManager();
-     
+
     /** Creates new form ChooseRepository */
-    ChooseRepository(final ChooseRepositoryWizard wizard,List<TaskRepository> repositorys) {
+    ChooseRepository(final ChooseRepositoryWizard wizard, List<TaskRepository> repositorys) {
         initComponents();
         taskTreeView.setRootVisible(false);
         taskTreeView.setPopupAllowed(false);
@@ -66,14 +68,14 @@ final class ChooseRepository extends javax.swing.JPanel implements ExplorerManag
     }
 
     private void loadRepositorys(List<TaskRepository> repositorys) {
-        
+
         Children.Array array = new Children.Array();
 
         Node[] nodes = new Node[repositorys.size()];
-
+        TaskNodeFactory factory = Lookup.getDefault().lookup(TaskNodeFactory.class);
         for (int i = 0; i < repositorys.size(); i++) {
             final TaskRepository repository = repositorys.get(i);
-            nodes[i] = repository.getLookup().lookup(Node.class);
+            nodes[i] = factory.createTaskRepositoryNode(repository);
         }
         array.add(nodes);
         Node node = new AbstractNode(array) {

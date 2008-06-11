@@ -16,12 +16,16 @@
  */
 package org.netbeans.cubeon.tasks.core.internals;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.netbeans.cubeon.tasks.core.api.TaskFolder;
+import org.netbeans.cubeon.tasks.core.api.TaskNodeFactory;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
+import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -37,7 +41,15 @@ class TaskFolderChildren extends Children.Array {
     }
 
     void clear() {
-        remove(getNodes());
+        Node[] ns = getNodes();
+        for (Node node : ns) {
+            try {
+                node.destroy();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        remove(ns);
 
     }
 
@@ -56,8 +68,9 @@ class TaskFolderChildren extends Children.Array {
         }
         List<TaskElement> elements = folder.getTaskElements();
         //todo add Comparator
+        TaskNodeFactory factory = Lookup.getDefault().lookup(TaskNodeFactory.class);
         for (TaskElement taskElement : elements) {
-            Node node = taskElement.getLookup().lookup(Node.class);
+            Node node = factory.createTaskElementNode(taskElement);
 
             assert node != null;
             newNodes.add(node);

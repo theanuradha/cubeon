@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import javax.swing.Action;
 import org.netbeans.cubeon.tasks.core.api.CubeonContext;
+import org.netbeans.cubeon.tasks.core.api.TaskNodeFactory;
 import org.netbeans.cubeon.tasks.core.api.TaskRepositoryHandler;
 import org.netbeans.cubeon.tasks.core.spi.RepositorysViewActionsProvider;
 import org.netbeans.cubeon.tasks.spi.TaskRepository;
@@ -97,9 +98,10 @@ final class TaskRepositoriesTopComponent extends TopComponent implements Explore
         assert repositoryHandler != null : "TaskRepositoryHandler can't be null";
 
         List<TaskRepository> repositorys = repositoryHandler.getTaskRepositorys();
+        TaskNodeFactory factory = Lookup.getDefault().lookup(TaskNodeFactory.class);
         for (TaskRepository tr : repositorys) {
             //get task repository lookup and find node from it
-            Node repositoryNode = tr.getLookup().lookup(Node.class);
+            Node repositoryNode = factory.createTaskRepositoryNode(tr);
             //repository node can not be null
             assert repositoryNode != null;
             array.add(new Node[]{repositoryNode});

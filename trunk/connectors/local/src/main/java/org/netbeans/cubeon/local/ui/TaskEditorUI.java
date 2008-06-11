@@ -23,7 +23,6 @@
 package org.netbeans.cubeon.local.ui;
 
 import java.awt.EventQueue;
-import java.awt.Image;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.HashSet;
@@ -43,7 +42,6 @@ import org.netbeans.cubeon.tasks.spi.TaskEditorProvider.EditorAttributeHandler;
 import org.netbeans.cubeon.tasks.spi.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.TaskStatus;
 import org.openide.util.NbBundle;
-import org.openide.util.Utilities;
 
 /**
  *
@@ -131,9 +129,6 @@ public class TaskEditorUI extends javax.swing.JPanel implements EditorAttributeH
         return localTask.getDescription();
     }
 
-    public Image getImage() {
-        return Utilities.loadImage("org/netbeans/cubeon/local/task.png");
-    }
 
     public final void addChangeListener(ChangeListener l) {
         synchronized (listeners) {

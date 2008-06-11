@@ -16,8 +16,6 @@
  */
 package org.netbeans.cubeon.tasks.spi;
 
-import javax.swing.JComponent;
-import javax.swing.event.ChangeListener;
 import org.openide.util.Lookup;
 
 /**
@@ -56,10 +54,7 @@ public interface TaskElement {
      */
     Lookup getLookup();
 
-    /**
-     * 
-     */
-    public void open();
+ 
 
     /*--------------------------Priority------------------------*/
     /**
