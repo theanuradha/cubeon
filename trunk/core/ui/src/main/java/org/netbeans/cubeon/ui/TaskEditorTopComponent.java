@@ -90,6 +90,7 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
                 setName(eah.getName());
             }
         };
+        extension.add(changeAdapter);
     }
 
     /** This method is called from within the constructor to
@@ -216,6 +217,7 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
 
     @Override
     protected void componentClosed() {
+        extension.remove(changeAdapter);
         try {
             editorNode.destroy();
         } catch (IOException ex) {
