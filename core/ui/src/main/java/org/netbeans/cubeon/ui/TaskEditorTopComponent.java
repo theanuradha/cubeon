@@ -88,6 +88,7 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
             @Override
             public void nameChenged() {
                 setName(eah.getName());
+                lblHeader.setText(eah.getDisplayName());
             }
         };
         extension.add(changeAdapter);
