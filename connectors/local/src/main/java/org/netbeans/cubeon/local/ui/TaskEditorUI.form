@@ -20,27 +20,28 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="1" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="spDescription" alignment="0" max="32767" attributes="0"/>
-                  <Component id="txtOutline" alignment="0" pref="698" max="32767" attributes="0"/>
-                  <Component id="lblDesription" alignment="0" min="-2" max="-2" attributes="0"/>
+          <Group type="102" attributes="0">
+              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="10" pref="10" max="10" attributes="0"/>
                       <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="jComboBox1" linkSize="1" min="-2" pref="126" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
                       <Component id="lblPriority" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="cmbPriority" linkSize="1" min="-2" pref="107" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
                       <Component id="lblStatus" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="cmbStatus" linkSize="1" min="-2" pref="121" max="-2" attributes="0"/>
                   </Group>
+                  <Component id="txtOutline" alignment="0" pref="698" max="32767" attributes="0"/>
+                  <Component id="lblDesription" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="spDescription" alignment="0" pref="698" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -49,20 +50,20 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Component id="txtOutline" min="-2" max="-2" attributes="0"/>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="cmbPriority" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jComboBox1" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="lblPriority" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="cmbPriority" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="lblStatus" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="cmbStatus" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
               <Component id="lblDesription" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
-              <Component id="spDescription" min="-2" pref="206" max="-2" attributes="0"/>
-              <EmptySpace pref="126" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
+              <Component id="spDescription" min="-2" pref="153" max="-2" attributes="0"/>
+              <EmptySpace pref="177" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
