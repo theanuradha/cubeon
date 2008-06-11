@@ -18,7 +18,6 @@ package org.netbeans.cubeon.local.repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.netbeans.cubeon.local.LocalTaskStatus;
 import org.netbeans.cubeon.tasks.spi.TaskStatus;
 import org.netbeans.cubeon.tasks.spi.TaskStatusProvider;
 
@@ -28,9 +27,9 @@ import org.netbeans.cubeon.tasks.spi.TaskStatusProvider;
  */
 public class LocalTaskStatusProvider implements TaskStatusProvider {
 
-    public static final LocalTaskStatus COMPLETED = new LocalTaskStatus("completed", "Completed");
-    public static final LocalTaskStatus NEW = new LocalTaskStatus("new", "New");
-    public static final LocalTaskStatus STARTED = new LocalTaskStatus("started", "Started");
+    public static final TaskStatus COMPLETED = new TaskStatus("completed", "Completed");
+    public static final TaskStatus NEW = new TaskStatus("new", "New");
+    public static final TaskStatus STARTED = new TaskStatus("started", "Started");
 
     public List<TaskStatus> getStatusList() {
         List<TaskStatus> taskStatuses = new ArrayList<TaskStatus>();
