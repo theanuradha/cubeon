@@ -123,14 +123,34 @@ public final class TaskExplorerTopComponent extends TopComponent implements Expl
     }
 
     public void expand() {
-        Task task = RequestProcessor.getDefault().create(new Runnable() {
+        EventQueue.invokeLater(new Runnable() {
 
             public void run() {
 
-                taskTreeView.expandAll();
+                taskTreeView.setAutoscrolls(false);
+                Children children = explorerManager.getRootContext().getChildren();
+                final Node[] nodes = children.getNodes();
+                for (Node n : nodes) {
+                    taskTreeView.expandNode(n);
+                }
+                if (nodes.length > 0) {
+                    Task task = RequestProcessor.getDefault().create(new Runnable() {
+
+                        public void run() {
+                            try {
+                                explorerManager.setSelectedNodes(new Node[]{nodes[0]});
+                            } catch (PropertyVetoException ex) {
+                                //ignore
+                                Logger.getLogger(getClass().getName()).log(Level.WARNING, ex.getMessage(), ex);
+                            }
+                        }
+                    });
+                    task.schedule(200);
+                }
+                taskTreeView.setAutoscrolls(true);
+
             }
         });
-        task.schedule(200);
     }
 
     /** This method is called from within the constructor to
@@ -272,18 +292,7 @@ private void refreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
 
     @Override
     public void componentOpened() {
-        Task task = RequestProcessor.getDefault().create(new Runnable() {
-
-            public void run() {
-                EventQueue.invokeLater(new Runnable() {
-
-                    public void run() {
-                        loadView();
-                    }
-                });
-            }
-        });
-        task.schedule(200);
+        loadView();
     }
 
     private void loadView() {
