@@ -75,7 +75,7 @@ public class TaskElementChilren extends Children.Keys<TaskElement> implements Re
 
     @Override
     protected void addNotify() {
-         System.out.println(folder.getName() );
+        System.out.println(folder.getName() );
 
         List<TaskElement> elements = new ArrayList<TaskElement>();
         List<TaskElementFilter> filters = new ArrayList<TaskElementFilter>();
