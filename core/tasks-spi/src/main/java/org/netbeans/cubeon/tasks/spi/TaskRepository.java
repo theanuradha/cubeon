@@ -16,6 +16,7 @@
  */
 package org.netbeans.cubeon.tasks.spi;
 
+import java.awt.Image;
 import java.util.List;
 import org.openide.util.Lookup;
 
@@ -79,4 +80,6 @@ public interface TaskRepository {
      * @param element 
      */
     void reset(TaskElement element);
+    
+    Image getImage();
 }

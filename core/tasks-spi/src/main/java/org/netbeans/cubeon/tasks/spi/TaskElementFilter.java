@@ -14,17 +14,34 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.tasks.core.api;
+package org.netbeans.cubeon.tasks.spi;
 
 /**
  *
  * @author Anuradha G
  */
-public interface TaskFolderRefreshable {
+public interface TaskElementFilter {
 
-    void synchronize();
+    String getName();
 
-    void refeshNode();
+    String getDescription();
 
-    void refreshContent();
+    /**
+     * 
+     * @return true if this filter enabled
+     */
+    boolean isEnable();
+
+    /**
+     * 
+     * @param b 
+     */
+    void setEnable(boolean b);
+
+    /**
+     * 
+     * @param element
+     * @return true if task match the filterd criteria  
+     */
+    boolean isFiltered(TaskElement element);
 }

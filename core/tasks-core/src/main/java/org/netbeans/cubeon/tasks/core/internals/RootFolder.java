@@ -67,7 +67,7 @@ class RootFolder extends TaskFolderImpl {
         persistenceHandler.refresh();
         folderChildren = new TaskFolderChildren(this);
 
-        folderNode = new AbstractNode(folderChildren, Lookups.singleton(this)) {
+        folderNode = new AbstractNode(folderChildren.getChildren(), Lookups.singleton(this)) {
 
             @Override
             public Action[] getActions(boolean arg0) {
@@ -124,8 +124,15 @@ class RootFolder extends TaskFolderImpl {
                 taskFolders.add(new TaskFolderImpl(this, cname, fo, cdescription));
             }
         }
-        defaultFolder.refreshContent();
+        defaultFolder.refreshFolders();
     }
+
+    @Override
+    public void refeshNode() {
+        super.refeshNode();
+        refeshNodeInner(defaultFolder);
+    }
+    
     //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     private class NewActions extends AbstractAction implements Presenter.Popup {
 
@@ -186,4 +193,8 @@ class RootFolder extends TaskFolderImpl {
             return menu;
         }
     }
+
+ 
+
+  
 }

@@ -43,24 +43,25 @@ public class TaskExplorerViewActions implements TaskExplorerViewActionsProvider 
     }
 
     public Action[] getActions() {
-     
+
         return new Action[]{
                     new RefreshTaskFolderAction(taskFolder),
                     null,
+                    new FilterCompletedAction(taskFolder),
+                    null,
                     new TaskRepositoriesAction(NbBundle.getMessage(TaskExplorerViewActions.class,
-                            "LBL_Show_Repository")),
+                    "LBL_Show_Repository")),
                     null
-                            
                 };
     }
 
     public Action[] getNewActions() {
-        
+
 
         return new Action[]{
                     new AddTaskFolderAction(taskFolder),
                     new NewTaskWizardAction(NbBundle.getMessage(TaskExplorerViewActions.class,
-                            "LBL_Task"))
+                    "LBL_Task"))
                 };
     }
 }

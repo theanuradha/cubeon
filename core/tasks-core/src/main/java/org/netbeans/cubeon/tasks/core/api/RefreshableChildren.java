@@ -16,15 +16,13 @@
  */
 package org.netbeans.cubeon.tasks.core.api;
 
+import org.openide.nodes.Children;
+
 /**
  *
- * @author Anuradha G
+ * @author Anuradha
  */
-public interface TaskFolderRefreshable {
-
-    void synchronize();
-
-    void refeshNode();
-
+public interface RefreshableChildren {
+    Children getChildren();
     void refreshContent();
 }

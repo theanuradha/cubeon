@@ -30,7 +30,7 @@ public class TaskFolderActions implements TaskFolderActionsProvider {
 
     public Action[] getNewActions(final TaskFolder taskFolder) {
         return new Action[]{
-                    new AddTaskFolderAction(taskFolder),
+                    
                     new NewTaskWizardAction(NbBundle.getMessage(TaskFolderActions.class,
                             "LBL_Task"),taskFolder)
                 };

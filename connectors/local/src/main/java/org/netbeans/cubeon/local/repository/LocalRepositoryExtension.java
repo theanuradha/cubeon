@@ -39,10 +39,7 @@ public class LocalRepositoryExtension implements Extension {
         lookup = new AbstractLookup(content);
     }
 
-    public String getHtmlDisplayName() {
 
-        return repository.getName();
-    }
 
     public final void remove(Object inst) {
         content.remove(inst);
@@ -52,9 +49,7 @@ public class LocalRepositoryExtension implements Extension {
         content.add(inst);
     }
 
-    public Image getImage() {
-        return Utilities.loadImage("org/netbeans/cubeon/local/nodes/local-repository.png");
-    }
+
 
     public Lookup getLookup() {
         return lookup;

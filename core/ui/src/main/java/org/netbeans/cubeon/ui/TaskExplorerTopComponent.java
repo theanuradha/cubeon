@@ -16,6 +16,7 @@
  */
 package org.netbeans.cubeon.ui;
 
+import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyVetoException;
 import java.io.Serializable;
@@ -29,8 +30,10 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
+import org.netbeans.cubeon.tasks.core.api.TasksFileSystem;
 import org.netbeans.cubeon.tasks.core.spi.TaskNodeView;
 import org.netbeans.cubeon.ui.taskelemet.NewTaskWizardAction;
+import org.netbeans.cubeon.ui.taskfolder.RefreshTaskFolderAction;
 import org.openide.awt.DropDownButtonFactory;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.BeanTreeView;
@@ -48,7 +51,7 @@ import org.openide.util.Utilities;
 /**
  * Top component which displays Tasks
  */
-final class TaskExplorerTopComponent extends TopComponent implements ExplorerManager.Provider {
+public final class TaskExplorerTopComponent extends TopComponent implements ExplorerManager.Provider {
 
     private static TaskExplorerTopComponent instance;
     private static final String SELECTED_VIEW = "SELECTED_VIEW";
@@ -108,6 +111,7 @@ final class TaskExplorerTopComponent extends TopComponent implements ExplorerMan
             item.setEnabled(views.size() > 1);
             viewMenu.add(item);
         }
+
     }
 
     private synchronized void selectView(final TaskNodeView view) {
@@ -115,10 +119,14 @@ final class TaskExplorerTopComponent extends TopComponent implements ExplorerMan
         preferences.put(SELECTED_VIEW, view.getId());
         final Node node = view.createRootContext();
         explorerManager.setRootContext(node);
-        Task task = RequestProcessor.getDefault().create(new Runnable() {
+        expand();
+    }
+
+    public void expand() {
+        EventQueue.invokeLater(new Runnable() {
 
             public void run() {
-                Children children = node.getChildren();
+                Children children = explorerManager.getRootContext().getChildren();
                 Node[] nodes = children.getNodes();
                 for (Node n : nodes) {
                     taskTreeView.expandNode(n);
@@ -133,7 +141,6 @@ final class TaskExplorerTopComponent extends TopComponent implements ExplorerMan
                 }
             }
         });
-        task.schedule(200);
     }
 
     /** This method is called from within the constructor to
@@ -181,6 +188,11 @@ final class TaskExplorerTopComponent extends TopComponent implements ExplorerMan
         refresh.setFocusable(false);
         refresh.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         refresh.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        refresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refreshActionPerformed(evt);
+            }
+        });
         mainToolBar.add(refresh);
 
         taskView.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/cubeon/ui/view.png"))); // NOI18N
@@ -216,6 +228,11 @@ final class TaskExplorerTopComponent extends TopComponent implements ExplorerMan
 private void newTaskActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newTaskActionPerformed
     new NewTaskWizardAction("").actionPerformed(evt);
 }//GEN-LAST:event_newTaskActionPerformed
+
+private void refreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshActionPerformed
+    TasksFileSystem fileSystem = Lookup.getDefault().lookup(TasksFileSystem.class);
+    new RefreshTaskFolderAction(fileSystem.getRootTaskFolder()).actionPerformed(evt);
+}//GEN-LAST:event_refreshActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton downMenu;
     private javax.swing.JButton focas;

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import org.netbeans.cubeon.tasks.core.api.RefreshableChildren;
 import org.netbeans.cubeon.tasks.core.api.TaskFolder;
 import org.netbeans.cubeon.tasks.core.api.TaskFolderOparations;
 import org.netbeans.cubeon.tasks.core.api.TaskFolderRefreshable;
@@ -44,7 +45,7 @@ class TaskFolderImpl implements TaskFolder, TaskFolderOparations, TaskFolderRefr
     protected FileObject fileObject;
     protected TaskFolder parent;
     protected Node folderNode;
-    protected TaskFolderChildren folderChildren;
+    protected RefreshableChildren folderChildren;
     protected final List<TaskFolderImpl> taskFolders = new ArrayList<TaskFolderImpl>();
     protected final List<TaskElement> taskElements = new ArrayList<TaskElement>();
     protected final PersistenceHandler persistenceHandler;
@@ -61,8 +62,8 @@ class TaskFolderImpl implements TaskFolder, TaskFolderOparations, TaskFolderRefr
         if (!basic) {
             refreshFolders();
             persistenceHandler.refresh();
-            folderChildren = new TaskFolderChildren(this);
-            folderNode = new TaskFolderNode(this, folderChildren);
+            folderChildren = new TaskElementChilren(this);
+            folderNode = new TaskFolderNode(this, folderChildren.getChildren());
         }
     }
 
@@ -123,7 +124,7 @@ class TaskFolderImpl implements TaskFolder, TaskFolderOparations, TaskFolderRefr
             FileObject fo = fileObject.createFolder(name);
             fo.setAttribute(DefaultFileSystem.DESCRIPTION_TAG, description);
             TaskFolderImpl impl = new TaskFolderImpl(this, name, fo, description);
-
+            taskFolders.add(impl);
             return impl;
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
@@ -135,7 +136,7 @@ class TaskFolderImpl implements TaskFolder, TaskFolderOparations, TaskFolderRefr
         try {
             TaskFolderImpl folderImpl = folder.getLookup().lookup(TaskFolderImpl.class);
             folderImpl.getFileObject().delete();
-
+            taskFolders.remove(folderImpl);
             return true;
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
@@ -196,11 +197,13 @@ class TaskFolderImpl implements TaskFolder, TaskFolderOparations, TaskFolderRefr
 
     public TaskElement addTaskElement(TaskElement element) {
         persistenceHandler.addTaskElement(element);
+        taskElements.add(element);
         return element;
     }
 
     public boolean removeTaskElement(TaskElement element) {
         persistenceHandler.removeTaskElement(element);
+        taskElements.remove(element);
         return true;
     }
 
@@ -217,8 +220,7 @@ class TaskFolderImpl implements TaskFolder, TaskFolderOparations, TaskFolderRefr
     public void refreshContent() {
         synchronized (this) {
             refreshFolders();
-            persistenceHandler.refresh();
-            folderChildren.refreshContent();
+            synchronize();
         }
     }
 
@@ -226,9 +228,24 @@ class TaskFolderImpl implements TaskFolder, TaskFolderOparations, TaskFolderRefr
         for (TaskFolderImpl taskFolder : impl.taskFolders) {
             clearFolder(taskFolder);
         }
-        if (impl.folderChildren != null) {
-            impl.folderChildren.clear();
-        }
+
         impl.taskFolders.clear();
+    }
+
+    public void synchronize() {
+        persistenceHandler.refresh();
+        refeshNode();
+    }
+
+    public void refeshNode() {
+        refeshNodeInner(this);
+    }
+
+    protected void refeshNodeInner(TaskFolderImpl impl) {
+        for (TaskFolderImpl taskFolder : impl.taskFolders) {
+            refeshNodeInner(taskFolder);
+        }
+
+        impl.folderChildren.refreshContent();
     }
 }

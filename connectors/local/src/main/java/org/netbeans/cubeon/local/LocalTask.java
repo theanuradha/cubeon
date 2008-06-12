@@ -16,6 +16,7 @@
  */
 package org.netbeans.cubeon.local;
 
+import java.awt.Image;
 import org.netbeans.cubeon.local.internals.TaskEditorProviderImpl;
 import org.netbeans.cubeon.local.repository.*;
 import org.netbeans.cubeon.tasks.spi.TaskEditorProvider;
@@ -25,6 +26,7 @@ import org.netbeans.cubeon.tasks.spi.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.TaskStatus;
 import org.netbeans.cubeon.tasks.spi.TaskType;
 import org.openide.util.Lookup;
+import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 
 /**
@@ -109,5 +111,24 @@ public class LocalTask implements TaskElement {
     public void setType(TaskType type) {
         this.type = type;
         extension.fireTypeChenged();
+    }
+
+    public boolean isCompleted() {
+        return LocalTaskStatusProvider.COMPLETED.equals(getStatus());
+    }
+
+    public Image getImage() {
+        Image image = Utilities.loadImage("org/netbeans/cubeon/local/nodes/task.png");
+        if (LocalTaskTypeProvider.BUG.equals(getType())) {
+            image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_defact.png"), 0, 0);
+        } else if (LocalTaskTypeProvider.ENHANCEMENT.equals(getType())) {
+            image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_enhancement.png"), 0, 0);
+        } else if (LocalTaskTypeProvider.FEATURE.equals(getType())) {
+            image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_feature.png"), 0, 0);
+        } else {
+            image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_task.png"), 0, 0);
+        }
+
+        return image;
     }
 }

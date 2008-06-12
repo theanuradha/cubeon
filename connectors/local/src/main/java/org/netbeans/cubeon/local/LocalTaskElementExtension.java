@@ -16,14 +16,10 @@
  */
 package org.netbeans.cubeon.local;
 
-import java.awt.Image;
 import java.util.Collection;
-import org.netbeans.cubeon.local.repository.LocalTaskStatusProvider;
-import org.netbeans.cubeon.local.repository.LocalTaskTypeProvider;
 import org.netbeans.cubeon.tasks.spi.Extension;
 import org.netbeans.cubeon.tasks.spi.TaskElementChangeAdapter;
 import org.openide.util.Lookup;
-import org.openide.util.Utilities;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
 
@@ -51,31 +47,7 @@ public class LocalTaskElementExtension implements Extension {
         content.add(inst);
     }
 
-    public String getHtmlDisplayName() {
-        StringBuffer buffer = new StringBuffer("<html>");
-        if (localTask.getStatus().equals(LocalTaskStatusProvider.COMPLETED)) {
-            buffer.append("<font color=\"#808080\">");
-            buffer.append("<s>");
-        }
-        buffer.append(localTask.getName());
-        buffer.append("</html>");
-        return buffer.toString();
-    }
 
-    public Image getImage() {
-        Image image = Utilities.loadImage("org/netbeans/cubeon/local/nodes/task.png");
-        if (LocalTaskTypeProvider.BUG.equals(localTask.getType())) {
-            image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_defact.png"), 0, 0);
-        } else if (LocalTaskTypeProvider.ENHANCEMENT.equals(localTask.getType())) {
-            image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_enhancement.png"), 0, 0);
-        } else if (LocalTaskTypeProvider.FEATURE.equals(localTask.getType())) {
-            image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_feature.png"), 0, 0);
-        } else {
-            image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_task.png"), 0, 0);
-        }
-
-        return image;
-    }
     //events---------------------------
     void fireNameChenged() {
         Collection<? extends TaskElementChangeAdapter> adapters = lookup.lookupAll(TaskElementChangeAdapter.class);
@@ -111,6 +83,7 @@ public class LocalTaskElementExtension implements Extension {
         for (TaskElementChangeAdapter adapter : adapters) {
             adapter.typeChenged();
         }
+        
     }
 
     public Lookup getLookup() {

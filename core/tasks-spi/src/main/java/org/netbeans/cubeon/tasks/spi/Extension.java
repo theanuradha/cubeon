@@ -16,7 +16,6 @@
  */
 package org.netbeans.cubeon.tasks.spi;
 
-import java.awt.Image;
 import org.openide.util.Lookup;
 
 /**
@@ -24,10 +23,6 @@ import org.openide.util.Lookup;
  * @author Anuradha G
  */
 public interface Extension {
-
-    String getHtmlDisplayName();
-
-    Image getImage();
 
     void remove(Object inst);
 

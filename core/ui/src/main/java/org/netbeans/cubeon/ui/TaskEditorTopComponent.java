@@ -63,7 +63,7 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
 
     }
 
-    TaskEditorTopComponent(TaskElement element) {
+    TaskEditorTopComponent(final TaskElement element) {
         this.element = element;
         initComponents();
 
@@ -74,11 +74,11 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
 
         setName(eah.getName());
         extension = element.getLookup().lookup(Extension.class);
-        setIcon(extension.getImage());
+        setIcon(element.getImage());
         TaskRepository taskRepository = element.getTaskRepository();
         TaskRepositoryType repositoryType = taskRepository.getLookup().lookup(TaskRepositoryType.class);
         taskRepositoryExtension = taskRepository.getLookup().lookup(Extension.class);
-        lblHeader.setIcon(new ImageIcon(taskRepositoryExtension.getImage()));
+        lblHeader.setIcon(new ImageIcon(taskRepository.getImage()));
         lblHeader.setText(eah.getDisplayName());
         base.add(eah.getComponent(), BorderLayout.CENTER);
 
@@ -104,7 +104,7 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
 
                     public void run() {
                         setName(eah.getName());
-                        setIcon(extension.getImage());
+                        setIcon(element.getImage());
                     }
                 });
 

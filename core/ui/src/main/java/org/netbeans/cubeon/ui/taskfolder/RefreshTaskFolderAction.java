@@ -21,6 +21,7 @@ import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
 import org.netbeans.cubeon.tasks.core.api.TaskFolder;
 import org.netbeans.cubeon.tasks.core.api.TaskFolderRefreshable;
+import org.netbeans.cubeon.ui.TaskExplorerTopComponent;
 import org.openide.util.NbBundle;
 
 /**
@@ -35,7 +36,7 @@ public class RefreshTaskFolderAction extends AbstractAction {
         this.folder = folder;
         putValue(NAME, NbBundle.getMessage(RefreshTaskFolderAction.class, "LBL_Refresh_Folder"));
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke("F5"));//NOI18N
-        
+
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -44,5 +45,9 @@ public class RefreshTaskFolderAction extends AbstractAction {
         TaskFolderRefreshable refreshProvider = folder.getLookup().lookup(TaskFolderRefreshable.class);
         assert refreshProvider != null;
         refreshProvider.refreshContent();
+        if (folder.getParent() == null) {
+            //folder.getParent() guess as root
+            TaskExplorerTopComponent.findInstance().expand();
+        }
     }
 }
