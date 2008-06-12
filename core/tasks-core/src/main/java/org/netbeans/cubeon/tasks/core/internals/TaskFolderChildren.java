@@ -36,6 +36,7 @@ class TaskFolderChildren extends Children.Keys<TaskFolder> implements Refreshabl
     }
 
     public void refreshContent() {
+         System.out.println(folder.getName() );
         addNotify();
     }
 

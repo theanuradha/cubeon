@@ -56,25 +56,7 @@ public class TaskElementChilren extends Children.Keys<TaskElement> implements Re
     }
 
     public void refreshContent() {
-        //clear();
-
-        List<TaskElement> elements = new ArrayList<TaskElement>();
-        List<TaskElementFilter> filters = new ArrayList<TaskElementFilter>();
-        for (TaskElementFilter taskElementFilter : Lookup.getDefault().lookupAll(TaskElementFilter.class)) {
-            if (taskElementFilter.isEnable()) {
-                filters.add(taskElementFilter);
-            }
-        }
-        //todo add Comparator
-
-
-        for (TaskElement taskElement : folder.getTaskElements()) {
-            if (isFilterd(taskElement, filters)) {
-                continue;
-            }
-            elements.add(taskElement);
-        }
-        setKeys(elements);
+       addNotify();
     }
 
     private static boolean isFilterd(TaskElement element, List<TaskElementFilter> filters) {
@@ -95,7 +77,25 @@ public class TaskElementChilren extends Children.Keys<TaskElement> implements Re
 
     @Override
     protected void addNotify() {
-        refreshContent();
+         System.out.println(folder.getName() );
+
+        List<TaskElement> elements = new ArrayList<TaskElement>();
+        List<TaskElementFilter> filters = new ArrayList<TaskElementFilter>();
+        for (TaskElementFilter taskElementFilter : Lookup.getDefault().lookupAll(TaskElementFilter.class)) {
+            if (taskElementFilter.isEnable()) {
+                filters.add(taskElementFilter);
+            }
+        }
+        //todo add Comparator
+
+
+        for (TaskElement taskElement : folder.getTaskElements()) {
+            if (isFilterd(taskElement, filters)) {
+                continue;
+            }
+            elements.add(taskElement);
+        }
+        setKeys(elements);
     }
 
     public Children getChildren() {
