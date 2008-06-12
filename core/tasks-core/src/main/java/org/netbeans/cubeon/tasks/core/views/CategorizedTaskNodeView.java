@@ -16,20 +16,11 @@
  */
 package org.netbeans.cubeon.tasks.core.views;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.swing.Action;
-import org.netbeans.cubeon.tasks.core.api.RefreshableChildren;
-import org.netbeans.cubeon.tasks.core.api.TaskFolder;
 import org.netbeans.cubeon.tasks.core.api.TasksFileSystem;
-import org.netbeans.cubeon.tasks.core.internals.TaskFolderNode;
-import org.netbeans.cubeon.tasks.core.spi.TaskExplorerViewActionsProvider;
 import org.netbeans.cubeon.tasks.core.spi.TaskNodeView;
-import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Node;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
-import org.openide.util.lookup.Lookups;
 
 /**
  *
@@ -53,39 +44,6 @@ public class CategorizedTaskNodeView implements TaskNodeView {
 
         TasksFileSystem fileSystem = Lookup.getDefault().lookup(TasksFileSystem.class);
         assert fileSystem!=null;
-        final TaskFolder folder = fileSystem.getRootTaskFolder();
-        RefreshableChildren rc = folder.getLookup().lookup(RefreshableChildren.class);
-        return new AbstractNode(rc.getChildren(), Lookups.singleton(folder)) {
-
-            @Override
-            public Action[] getActions(boolean arg0) {
-                List<Action> actions = new ArrayList<Action>();
-                actions.add(new TaskFolderNode.NewActions(folder));
-                actions.add(null);
-                final List<TaskExplorerViewActionsProvider> providers =
-                        new ArrayList<TaskExplorerViewActionsProvider>(
-                        Lookup.getDefault().lookupAll(TaskExplorerViewActionsProvider.class));
-                boolean sepetatorAdded = false;
-                for (TaskExplorerViewActionsProvider tevap : providers) {
-                    Action[] as = tevap.getActions();
-                    for (Action action : as) {
-                        //check null and addSeparator 
-                        if (action == null) {
-                            //check sepetatorAdd to prevent adding duplicate Separators 
-                            if (!sepetatorAdded) {
-                                //mark sepetatorAdd to true
-                                sepetatorAdded = true;
-                                actions.add(action);
-
-                            }
-                            continue;
-                        }
-                        actions.add(action);
-                        sepetatorAdded = false;
-                    }
-                }
-                return actions.toArray(new Action[0]);
-            }
-        };
+        return fileSystem.getRootTaskFolder().getLookup().lookup(Node.class);
     }
 }
