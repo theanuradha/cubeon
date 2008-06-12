@@ -241,7 +241,7 @@ class TaskFolderImpl implements TaskFolder, TaskFolderOparations, TaskFolderRefr
         refeshNodeInner(this);
     }
 
-    protected void refeshNodeInner(TaskFolderImpl impl) {
+    protected static  void refeshNodeInner(TaskFolderImpl impl) {
         for (TaskFolderImpl taskFolder : impl.taskFolders) {
             refeshNodeInner(taskFolder);
         }

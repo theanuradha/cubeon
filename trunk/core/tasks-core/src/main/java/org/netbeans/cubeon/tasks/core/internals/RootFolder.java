@@ -128,7 +128,7 @@ class RootFolder extends TaskFolderImpl {
     }
 
     @Override
-    public void refeshNode() {
+    public void refeshNode() {      
         super.refeshNode();
         refeshNodeInner(defaultFolder);
     }

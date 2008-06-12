@@ -27,9 +27,10 @@ import org.netbeans.cubeon.ui.UIPreferences;
 public class TaskCompletedFilter implements TaskElementFilter {
 
     private static final String KEY_CFILTER = "c_filter";
+    private boolean enable;
 
     public TaskCompletedFilter() {
-        System.out.println("");
+        enable = UIPreferences.getPreferences().getBoolean(KEY_CFILTER, false);
     }
 
     public String getName() {
@@ -41,11 +42,12 @@ public class TaskCompletedFilter implements TaskElementFilter {
     }
 
     public boolean isEnable() {
-        return UIPreferences.getPreferences().getBoolean(KEY_CFILTER, false);
+        return enable;
     }
 
     public void setEnable(boolean b) {
         UIPreferences.getPreferences().putBoolean(KEY_CFILTER, b);
+        enable = b;
     }
 
     public boolean isFiltered(TaskElement element) {
