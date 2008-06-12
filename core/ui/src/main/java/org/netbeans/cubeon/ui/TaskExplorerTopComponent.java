@@ -18,10 +18,8 @@ package org.netbeans.cubeon.ui;
 
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
-import java.beans.PropertyVetoException;
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.AbstractAction;
@@ -42,8 +40,6 @@ import org.openide.nodes.Node;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
-import org.openide.util.RequestProcessor;
-import org.openide.util.RequestProcessor.Task;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 import org.openide.util.Utilities;
@@ -133,20 +129,7 @@ public final class TaskExplorerTopComponent extends TopComponent implements Expl
                 for (Node n : nodes) {
                     taskTreeView.expandNode(n);
                 }
-                if (nodes.length > 0) {
-                    Task task = RequestProcessor.getDefault().create(new Runnable() {
 
-                        public void run() {
-                            try {
-                                explorerManager.setSelectedNodes(new Node[]{nodes[0]});
-                            } catch (PropertyVetoException ex) {
-                                //ignore
-                                Logger.getLogger(getClass().getName()).log(Level.WARNING, ex.getMessage(), ex);
-                            }
-                        }
-                    });
-                    task.schedule(200);
-                }
                 taskTreeView.setAutoscrolls(true);
 
             }
@@ -292,7 +275,12 @@ private void refreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
 
     @Override
     public void componentOpened() {
-        loadView();
+        EventQueue.invokeLater(new Runnable() {
+
+            public void run() {
+                loadView();
+            }
+        });
     }
 
     private void loadView() {
