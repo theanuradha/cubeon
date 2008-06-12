@@ -127,24 +127,7 @@ public final class TaskExplorerTopComponent extends TopComponent implements Expl
 
             public void run() {
 
-                taskTreeView.setAutoscrolls(false);
-                Children children = explorerManager.getRootContext().getChildren();
-                final Node[] nodes = children.getNodes();
-                for (Node n : nodes) {
-                    taskTreeView.expandNode(n);
-                }
-                if (nodes.length > 0) {
-                    try {
-                        explorerManager.setSelectedNodes(new Node[]{nodes[0]});
-                    } catch (PropertyVetoException ex) {
-                        //ignore
-                        Logger.getLogger(getClass().getName()).log(Level.WARNING, ex.getMessage(), ex);
-                    }
-
-
-
-                }
-                taskTreeView.setAutoscrolls(true);
+                taskTreeView.expandAll();
             }
         });
         task.schedule(200);
