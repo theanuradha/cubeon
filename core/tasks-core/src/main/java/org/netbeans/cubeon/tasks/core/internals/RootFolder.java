@@ -31,12 +31,10 @@ import org.netbeans.cubeon.tasks.core.spi.TaskExplorerViewActionsProvider;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.filesystems.Repository;
-import org.openide.nodes.AbstractNode;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.actions.Presenter;
-import org.openide.util.lookup.Lookups;
 
 /**
  *
@@ -67,38 +65,7 @@ class RootFolder extends TaskFolderImpl {
         persistenceHandler.refresh();
         folderChildren = new TaskFolderChildren(this);
 
-        folderNode = new AbstractNode(folderChildren.getChildren(), Lookups.singleton(this)) {
-
-            @Override
-            public Action[] getActions(boolean arg0) {
-                List<Action> actions = new ArrayList<Action>();
-                actions.add(new NewActions());
-                actions.add(null);
-                final List<TaskExplorerViewActionsProvider> providers =
-                        new ArrayList<TaskExplorerViewActionsProvider>(
-                        Lookup.getDefault().lookupAll(TaskExplorerViewActionsProvider.class));
-                boolean sepetatorAdded = false;
-                for (TaskExplorerViewActionsProvider tevap : providers) {
-                    Action[] as = tevap.getActions();
-                    for (Action action : as) {
-                        //check null and addSeparator 
-                        if (action == null) {
-                            //check sepetatorAdd to prevent adding duplicate Separators 
-                            if (!sepetatorAdded) {
-                                //mark sepetatorAdd to true
-                                sepetatorAdded = true;
-                                actions.add(action);
-
-                            }
-                            continue;
-                        }
-                        actions.add(action);
-                        sepetatorAdded = false;
-                    }
-                }
-                return actions.toArray(new Action[0]);
-            }
-        };
+        
     }
 
     public TaskFolderImpl getDefaultFolder() {
@@ -128,11 +95,14 @@ class RootFolder extends TaskFolderImpl {
     }
 
     @Override
-    public void refeshNode() {      
-        super.refeshNode();
-        refeshNodeInner(defaultFolder);
+    public void refeshNode() {
+        final List<TaskFolderImpl> folderImpls = new ArrayList<TaskFolderImpl>(taskFolders);
+        folderImpls.add(defaultFolder);
+        folderChildren.refreshContent();
+        
+                refeshNodeInner(folderImpls);
+      
     }
-    
     //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     private class NewActions extends AbstractAction implements Presenter.Popup {
 
@@ -193,8 +163,4 @@ class RootFolder extends TaskFolderImpl {
             return menu;
         }
     }
-
- 
-
-  
 }

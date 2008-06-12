@@ -29,7 +29,6 @@ import org.netbeans.cubeon.tasks.spi.TaskElement;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-import org.openide.nodes.Node;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.Lookups;
@@ -44,7 +43,7 @@ class TaskFolderImpl implements TaskFolder, TaskFolderOparations, TaskFolderRefr
     private String description;
     protected FileObject fileObject;
     protected TaskFolder parent;
-    protected Node folderNode;
+
     protected RefreshableChildren folderChildren;
     protected final List<TaskFolderImpl> taskFolders = new ArrayList<TaskFolderImpl>();
     protected final List<TaskElement> taskElements = new ArrayList<TaskElement>();
@@ -63,7 +62,7 @@ class TaskFolderImpl implements TaskFolder, TaskFolderOparations, TaskFolderRefr
             refreshFolders();
             persistenceHandler.refresh();
             folderChildren = new TaskElementChilren(this);
-            folderNode = new TaskFolderNode(this, folderChildren.getChildren());
+            
         }
     }
 
@@ -98,7 +97,7 @@ class TaskFolderImpl implements TaskFolder, TaskFolderOparations, TaskFolderRefr
             //release lock after rename 
             lock.releaseLock();
             this.name = name;
-            folderNode.setDisplayName(name);
+            
             return true;
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
@@ -108,14 +107,14 @@ class TaskFolderImpl implements TaskFolder, TaskFolderOparations, TaskFolderRefr
 
     public void setDescription(String description) {
         this.description = description;
-        folderNode.setShortDescription(description);
+        
     }
 
     public Lookup getLookup() {
         /**
          * lookup contain Node implementation , TaskFolderOparations,RefreshProvider
          */
-        return Lookups.fixed(folderNode, this);
+        return Lookups.fixed(folderChildren, this);
     }
 
     public TaskFolder addNewFolder(String name, String description) {
@@ -238,14 +237,21 @@ class TaskFolderImpl implements TaskFolder, TaskFolderOparations, TaskFolderRefr
     }
 
     public void refeshNode() {
-        refeshNodeInner(this);
+        folderChildren.refreshContent();
+
+        refeshNodeInner(taskFolders);
+
     }
 
-    protected static  void refeshNodeInner(TaskFolderImpl impl) {
-        for (TaskFolderImpl taskFolder : impl.taskFolders) {
-            refeshNodeInner(taskFolder);
+    protected static void refeshNodeInner(final List<TaskFolderImpl> taskFolders) {
+
+
+        for (TaskFolderImpl taskFolder : taskFolders) {
+            taskFolder.folderChildren.refreshContent();
+            refeshNodeInner(taskFolder.taskFolders);
         }
 
-        impl.folderChildren.refreshContent();
+
+
     }
 }

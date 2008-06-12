@@ -75,9 +75,11 @@ public class TaskElementChilren extends Children.Keys<TaskElement> implements Re
 
     @Override
     protected void addNotify() {
+        List<TaskElement> elements = new ArrayList<TaskElement>();
+
         System.out.println(folder.getName() );
 
-        List<TaskElement> elements = new ArrayList<TaskElement>();
+        
         List<TaskElementFilter> filters = new ArrayList<TaskElementFilter>();
         for (TaskElementFilter taskElementFilter : Lookup.getDefault().lookupAll(TaskElementFilter.class)) {
             if (taskElementFilter.isEnable()) {

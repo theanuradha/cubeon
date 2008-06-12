@@ -42,7 +42,8 @@ class TaskFolderChildren extends Children.Keys<TaskFolder> implements Refreshabl
 
     @Override
     protected Node[] createNodes(TaskFolder taskFolder) {
-        return new Node[]{taskFolder.getLookup().lookup(Node.class)};
+        RefreshableChildren rc = taskFolder.getLookup().lookup(RefreshableChildren.class);
+        return new Node[]{new TaskFolderNode(taskFolder, rc.getChildren())};
     }
 
     @Override
