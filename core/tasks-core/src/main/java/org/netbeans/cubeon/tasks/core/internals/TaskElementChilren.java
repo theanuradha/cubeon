@@ -39,7 +39,7 @@ public class TaskElementChilren extends Children.Keys<TaskElement> implements Re
 
     TaskElementChilren(TaskFolder folder) {
         this.folder = folder;
-       
+
     }
 
     public void clear() {
@@ -59,13 +59,17 @@ public class TaskElementChilren extends Children.Keys<TaskElement> implements Re
         //clear();
 
         List<TaskElement> elements = new ArrayList<TaskElement>();
-
-
+        List<TaskElementFilter> filters = new ArrayList<TaskElementFilter>();
+        for (TaskElementFilter taskElementFilter : Lookup.getDefault().lookupAll(TaskElementFilter.class)) {
+            if (taskElementFilter.isEnable()) {
+                filters.add(taskElementFilter);
+            }
+        }
         //todo add Comparator
 
 
         for (TaskElement taskElement : folder.getTaskElements()) {
-            if (isFilterd(taskElement)) {
+            if (isFilterd(taskElement, filters)) {
                 continue;
             }
             elements.add(taskElement);
@@ -73,17 +77,13 @@ public class TaskElementChilren extends Children.Keys<TaskElement> implements Re
         setKeys(elements);
     }
 
-    private static boolean isFilterd(TaskElement element) {
-        Collection<? extends TaskElementFilter> collection =
-                Lookup.getDefault().lookupAll(TaskElementFilter.class);
+    private static boolean isFilterd(TaskElement element, List<TaskElementFilter> filters) {
 
-        for (TaskElementFilter filter : collection) {
-            if (filter.isEnable()) {
 
+        for (TaskElementFilter filter : filters) {
                 if (filter.isFiltered(element)) {
                     return true;
                 }
-            }
         }
         return false;
     }
@@ -99,6 +99,6 @@ public class TaskElementChilren extends Children.Keys<TaskElement> implements Re
     }
 
     public Children getChildren() {
-       return this;
+        return this;
     }
 }

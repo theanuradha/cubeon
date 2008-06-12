@@ -126,6 +126,7 @@ public final class TaskExplorerTopComponent extends TopComponent implements Expl
         EventQueue.invokeLater(new Runnable() {
 
             public void run() {
+                taskTreeView.setAutoscrolls(false);
                 Children children = explorerManager.getRootContext().getChildren();
                 Node[] nodes = children.getNodes();
                 for (Node n : nodes) {
@@ -139,6 +140,7 @@ public final class TaskExplorerTopComponent extends TopComponent implements Expl
                         Logger.getLogger(getClass().getName()).log(Level.WARNING, ex.getMessage(), ex);
                     }
                 }
+                taskTreeView.setAutoscrolls(true);
             }
         });
     }
