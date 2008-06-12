@@ -44,7 +44,7 @@ import org.openide.util.lookup.InstanceContent;
  * @author Anuradha G
  */
 public class TaskElementNode extends AbstractNode {
-
+    private static final String TAG="<font color=\"#808080\"> <s> ";
     private final TaskElement element;
     private final Extension extension;
     private SaveCookie cookie;
@@ -166,14 +166,15 @@ public class TaskElementNode extends AbstractNode {
 
     @Override
     public String getHtmlDisplayName() {
-        StringBuffer buffer = new StringBuffer("<html>");
         if (element.isCompleted()) {
-            buffer.append("<font color=\"#808080\">");
-            buffer.append("<s>");
+
+
+            String html =TAG;
+           
+            return html.concat( element.getName());
         }
-        buffer.append(getDisplayName());
-        buffer.append("</html>");
-        return buffer.toString();
+
+        return getDisplayName();
     }
 
     @Override
