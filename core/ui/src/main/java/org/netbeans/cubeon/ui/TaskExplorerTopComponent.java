@@ -18,8 +18,13 @@ package org.netbeans.cubeon.ui;
 
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
+import java.beans.PropertyVetoException;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.AbstractAction;
@@ -40,6 +45,8 @@ import org.openide.nodes.Node;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
+import org.openide.util.RequestProcessor;
+import org.openide.util.RequestProcessor.Task;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 import org.openide.util.Utilities;
@@ -119,17 +126,34 @@ public final class TaskExplorerTopComponent extends TopComponent implements Expl
     }
 
     public void expand() {
-        EventQueue.invokeLater(new Runnable() {
+        Task task = RequestProcessor.getDefault().create(new Runnable() {
 
             public void run() {
 
                 taskTreeView.setAutoscrolls(false);
-                taskTreeView.expandAll();
+                Children children = explorerManager.getRootContext().getChildren();
+                final Node[] nodes = children.getNodes();
+                List<Node> list = Arrays.asList(nodes);
+               // Collections.reverse(list);
+                for (Node n : list) {
+                    taskTreeView.expandNode(n);
+                }
+                if (nodes.length > 0) {
+                    try {
+                        explorerManager.setSelectedNodes(new Node[]{nodes[0]});
+                    } catch (PropertyVetoException ex) {
+                        //ignore
+                        Logger.getLogger(getClass().getName()).log(Level.WARNING, ex.getMessage(), ex);
+                    }
 
+
+
+                }
                 taskTreeView.setAutoscrolls(true);
-
             }
         });
+        task.schedule(200);
+
     }
 
     /** This method is called from within the constructor to
