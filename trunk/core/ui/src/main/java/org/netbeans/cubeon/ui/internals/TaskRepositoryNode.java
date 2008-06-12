@@ -44,16 +44,17 @@ public class TaskRepositoryNode extends AbstractNode {
     @Override
     public Image getIcon(int arg0) {
 
-        return extension.getImage();
+        return repository.getImage();
     }
 
     @Override
     public Action[] getActions(boolean arg0) {
         return new Action[0];
     }
-
+    /**
     @Override
     public String getHtmlDisplayName() {
-        return extension.getHtmlDisplayName();
+    return extension.getHtmlDisplayName();
     }
+     **/
 }

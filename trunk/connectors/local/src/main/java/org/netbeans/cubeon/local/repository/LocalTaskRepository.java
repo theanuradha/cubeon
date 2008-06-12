@@ -16,6 +16,7 @@
  */
 package org.netbeans.cubeon.local.repository;
 
+import java.awt.Image;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -23,6 +24,7 @@ import org.netbeans.cubeon.local.LocalTask;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
 import org.netbeans.cubeon.tasks.spi.TaskRepository;
 import org.openide.util.Lookup;
+import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 
 /**
@@ -39,7 +41,7 @@ public class LocalTaskRepository implements TaskRepository {
     private final PersistenceHandler persistenceHandler;
     private final LocalTaskPriorityProvider ltpp = new LocalTaskPriorityProvider();
     private final LocalTaskStatusProvider ltsp = new LocalTaskStatusProvider();
-    private final LocalTaskTypeProvider lttp=new LocalTaskTypeProvider();
+    private final LocalTaskTypeProvider lttp = new LocalTaskTypeProvider();
     private LocalRepositoryExtension extension;
 
     public LocalTaskRepository(LocalTaskRepositoryProvider provider,
@@ -67,7 +69,7 @@ public class LocalTaskRepository implements TaskRepository {
 
     public Lookup getLookup() {
         return Lookups.fixed(this,
-                extension, provider, persistenceHandler, ltpp, ltsp,lttp);
+                extension, provider, persistenceHandler, ltpp, ltsp, lttp);
     }
 
     public List<TaskElement> getTaskElements() {
@@ -124,6 +126,8 @@ public class LocalTaskRepository implements TaskRepository {
     public LocalTaskTypeProvider getLocalTaskTypeProvider() {
         return lttp;
     }
-    
-    
+
+    public Image getImage() {
+        return Utilities.loadImage("org/netbeans/cubeon/local/nodes/local-repository.png");
+    }
 }

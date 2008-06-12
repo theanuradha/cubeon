@@ -16,65 +16,41 @@
  */
 package org.netbeans.cubeon.tasks.core.internals;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+import org.netbeans.cubeon.tasks.core.api.RefreshableChildren;
 import org.netbeans.cubeon.tasks.core.api.TaskFolder;
-import org.netbeans.cubeon.tasks.core.api.TaskNodeFactory;
-import org.netbeans.cubeon.tasks.spi.TaskElement;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
-import org.openide.util.Exceptions;
-import org.openide.util.Lookup;
 
 /**
  *
  * @author Anuradha G
  */
-class TaskFolderChildren extends Children.Array {
+class TaskFolderChildren extends Children.Keys<TaskFolder> implements RefreshableChildren {
 
     private final TaskFolder folder;
 
     TaskFolderChildren(TaskFolder folder) {
         this.folder = folder;
-        refreshContent();
-    }
-
-    void clear() {
-        Node[] ns = getNodes();
-        for (Node node : ns) {
-            try {
-                node.destroy();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
-        remove(ns);
 
     }
 
-    void refreshContent() {
-        clear();
-        List<Node> newNodes = new ArrayList<Node>();
+    public void refreshContent() {
+        addNotify();
+    }
 
+    @Override
+    protected Node[] createNodes(TaskFolder taskFolder) {
+        return new Node[]{taskFolder.getLookup().lookup(Node.class)};
+    }
+
+    @Override
+    protected void addNotify() {
         List<TaskFolder> subFolders = folder.getSubFolders();
+        setKeys(subFolders);
+    }
 
-
-        for (TaskFolder taskFolder : subFolders) {
-            Node node = taskFolder.getLookup().lookup(Node.class);
-
-            assert node != null;
-            newNodes.add(node);
-        }
-        List<TaskElement> elements = folder.getTaskElements();
-        //todo add Comparator
-        TaskNodeFactory factory = Lookup.getDefault().lookup(TaskNodeFactory.class);
-        for (TaskElement taskElement : elements) {
-            Node node = factory.createTaskElementNode(taskElement);
-
-            assert node != null;
-            newNodes.add(node);
-        }
-        add(newNodes.toArray(new Node[0]));
+    public Children getChildren() {
+        return this;
     }
 }

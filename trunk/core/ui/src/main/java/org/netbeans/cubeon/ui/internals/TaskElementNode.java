@@ -122,7 +122,7 @@ public class TaskElementNode extends AbstractNode {
             public void typeChenged() {
                 fireIconChange();
             }
-            
+
             @Override
             public void statusChenged() {
                 fireDisplayNameChange(getDisplayName() + "_#", element.getName());
@@ -166,15 +166,20 @@ public class TaskElementNode extends AbstractNode {
 
     @Override
     public String getHtmlDisplayName() {
-
-        return extension.getHtmlDisplayName();
+        StringBuffer buffer = new StringBuffer("<html>");
+        if (element.isCompleted()) {
+            buffer.append("<font color=\"#808080\">");
+            buffer.append("<s>");
+        }
+        buffer.append(getDisplayName());
+        buffer.append("</html>");
+        return buffer.toString();
     }
 
     @Override
-    public Image getIcon(
-            int arg0) {
+    public Image getIcon(int arg0) {
 
-        Image image = extension.getImage();
+        Image image = element.getImage();
         //badging task element with bages
         Collection<? extends TaskBadgeProvider> badgeProviders =
                 Lookup.getDefault().lookupAll(TaskBadgeProvider.class);

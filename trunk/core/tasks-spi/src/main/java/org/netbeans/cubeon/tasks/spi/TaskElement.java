@@ -16,6 +16,7 @@
  */
 package org.netbeans.cubeon.tasks.spi;
 
+import java.awt.Image;
 import org.openide.util.Lookup;
 
 /**
@@ -54,7 +55,8 @@ public interface TaskElement {
      */
     Lookup getLookup();
 
-    /*--------------------------Priority------------------------*/
+    boolean isCompleted();
+
     /**
      * 
      * @return
@@ -74,4 +76,7 @@ public interface TaskElement {
     TaskType getType();
 
     void setType(TaskType type);
+    
+    
+    Image getImage();
 }

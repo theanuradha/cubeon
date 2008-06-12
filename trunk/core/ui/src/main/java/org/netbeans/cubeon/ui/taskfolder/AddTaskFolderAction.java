@@ -58,7 +58,7 @@ public class AddTaskFolderAction extends AbstractAction {
             folder.addNewFolder(atf.getFolderName(), atf.getFolderDescription());
             TaskFolderRefreshable refreshProvider = folder.getLookup().lookup(TaskFolderRefreshable.class);
             assert refreshProvider != null;
-            refreshProvider.refreshContent();
+            refreshProvider.refeshNode();
         }
     }
 }

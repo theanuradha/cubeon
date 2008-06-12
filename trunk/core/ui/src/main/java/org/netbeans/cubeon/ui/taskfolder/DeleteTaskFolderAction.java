@@ -44,6 +44,6 @@ public class DeleteTaskFolderAction extends AbstractAction {
         parent.removeFolder(folder);
         TaskFolderRefreshable refreshProvider = parent.getLookup().lookup(TaskFolderRefreshable.class);
         assert refreshProvider != null;
-        refreshProvider.refreshContent();
+        refreshProvider.refeshNode();
     }
 }

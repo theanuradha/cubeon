@@ -14,17 +14,21 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.tasks.core.api;
+package org.netbeans.cubeon.ui;
+
+import java.util.prefs.Preferences;
+import org.openide.util.NbPreferences;
 
 /**
  *
- * @author Anuradha G
+ * @author Anuradha
  */
-public interface TaskFolderRefreshable {
+public class UIPreferences {
 
-    void synchronize();
+    private UIPreferences() {
+    }
 
-    void refeshNode();
-
-    void refreshContent();
+    public static Preferences getPreferences() {
+        return NbPreferences.root().node("org/netbeans/cubeon/ui"); //NOI18N
+    }
 }
