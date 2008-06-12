@@ -128,11 +128,13 @@ class RootFolder extends TaskFolderImpl {
     }
 
     @Override
-    public void refeshNode() {      
-        super.refeshNode();
-        refeshNodeInner(defaultFolder);
+    public void refeshNode() {
+        folderChildren.refreshContent();
+        defaultFolder.folderChildren.refreshContent();
+        for (TaskFolderImpl impl : taskFolders) {
+            impl.folderChildren.refreshContent();
+        }
     }
-    
     //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     private class NewActions extends AbstractAction implements Presenter.Popup {
 
@@ -193,8 +195,4 @@ class RootFolder extends TaskFolderImpl {
             return menu;
         }
     }
-
- 
-
-  
 }
