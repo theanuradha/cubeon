@@ -57,7 +57,6 @@ public class FilterCompletedAction extends AbstractAction implements Menu, Popup
     public void actionPerformed(ActionEvent e) {
         boolean b = !filter.isEnable();
         filter.setEnable(b);
-        item.setSelected(b);
         TaskFolderRefreshable refreshProvider = folder.getLookup().lookup(TaskFolderRefreshable.class);
         assert refreshProvider != null;
         refreshProvider.refeshNode();
