@@ -168,10 +168,6 @@ public class TaskElementNode extends AbstractNode {
     @Override
     public String getHtmlDisplayName() {
         if (element.isCompleted()) {
-
-
-
-
             return TAG + element.getName();
         }
 
