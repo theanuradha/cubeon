@@ -66,7 +66,7 @@ public class TaskFolderNode extends AbstractNode {
     @Override
     public Action[] getActions(boolean b) {
         List<Action> actions = new ArrayList<Action>();
-        actions.add(new NewActions());
+        actions.add(new NewActions(folder));
         actions.add(null);
         final List<TaskFolderActionsProvider> providers =
                 new ArrayList<TaskFolderActionsProvider>(
@@ -93,9 +93,10 @@ public class TaskFolderNode extends AbstractNode {
         return actions.toArray(new Action[0]);
     }
 
-    private class NewActions extends AbstractAction implements Presenter.Popup {
-
-        public NewActions() {
+    public  static class NewActions extends AbstractAction implements Presenter.Popup {
+        private TaskFolder folder;
+        public NewActions(TaskFolder folder) {
+            this.folder=folder;
             putValue(NAME, NbBundle.getMessage(TaskFolderNode.class, "LBL_NEW"));
         }
 
