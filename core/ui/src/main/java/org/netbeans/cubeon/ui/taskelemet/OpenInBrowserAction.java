@@ -18,9 +18,8 @@ package org.netbeans.cubeon.ui.taskelemet;
 
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
-import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
-import org.openide.util.Lookup;
+import org.openide.awt.HtmlBrowser.URLDisplayer;
 
 /**
  *
@@ -36,7 +35,11 @@ public class OpenInBrowserAction extends AbstractAction {
     }
 
     public void actionPerformed(ActionEvent e) {
-        TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
-        factory.createTaskEditor(element);
+        URLDisplayer.getDefault().showURL(element.getUrl());
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return element.getUrl() != null;
     }
 }
