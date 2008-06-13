@@ -18,7 +18,6 @@ package org.netbeans.cubeon.tasks.core.api;
 
 import java.util.List;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
-import org.openide.filesystems.FileObject;
 import org.openide.util.Lookup;
 
 /**
@@ -32,7 +31,6 @@ public interface TaskFolder {
      * @return Name of the folder
      */
     String getName();
-
 
     /**
      * 
@@ -53,15 +51,17 @@ public interface TaskFolder {
      */
     Lookup getLookup();
 
-    TaskFolder addNewFolder(String name,String description);
+    TaskFolder addNewFolder(String name, String description);
 
     boolean removeFolder(TaskFolder folder);
 
     List<TaskFolder> getSubFolders();
-    
+
     TaskElement addTaskElement(TaskElement element);
 
     boolean removeTaskElement(TaskElement element);
-    
+
     List<TaskElement> getTaskElements();
+
+    boolean contains(TaskElement element);
 }

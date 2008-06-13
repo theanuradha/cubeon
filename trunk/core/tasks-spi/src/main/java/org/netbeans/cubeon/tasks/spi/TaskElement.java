@@ -17,6 +17,7 @@
 package org.netbeans.cubeon.tasks.spi;
 
 import java.awt.Image;
+import java.net.URL;
 import org.openide.util.Lookup;
 
 /**
@@ -79,4 +80,6 @@ public interface TaskElement {
     
     
     Image getImage();
+    
+    URL getUrl(); 
 }
