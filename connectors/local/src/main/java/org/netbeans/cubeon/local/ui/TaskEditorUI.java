@@ -28,6 +28,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -69,6 +71,7 @@ public class TaskEditorUI extends javax.swing.JPanel implements EditorAttributeH
         txtOutline.setText(localTask.getName());
         txtDescription.setText(localTask.getDescription());
         txtUrl.setText(localTask.getUrlString());
+        loadDates(localTask);
         cmbPriority.removeAllItems();
         LocalTaskRepository taskRepository = localTask.getTaskRepository().getLookup().lookup(LocalTaskRepository.class);
         LocalTaskPriorityProvider ltpp = taskRepository.getLocalTaskPriorityProvider();
@@ -185,6 +188,7 @@ public class TaskEditorUI extends javax.swing.JPanel implements EditorAttributeH
         }
         localTask.setUrlString(txtUrl.getText().trim());
         localTask.getTaskRepository().persist(localTask);
+        loadDates(localTask);
         return localTask;
     }
 
@@ -197,6 +201,19 @@ public class TaskEditorUI extends javax.swing.JPanel implements EditorAttributeH
         while (it.hasNext()) {
             it.next().stateChanged(ev);
         }
+    }
+
+    private void loadDates(LocalTask localTask) {
+        DateFormat dateFormat = SimpleDateFormat.getDateInstance();
+        if (localTask.getCreated() != null) {
+            String message = NbBundle.getMessage(TaskEditorUI.class, "TaskEditorUI.lblCreated.text", dateFormat.format(localTask.getCreated()));
+            lblCreated.setText(message);
+        }
+        if (localTask.getUpdated() != null) {
+            String message = NbBundle.getMessage(TaskEditorUI.class, "TaskEditorUI.lblUpdated.text", dateFormat.format(localTask.getUpdated()));
+            lblUpdated.setText(message);
+        }
+
     }
 
     private void showURL() {
@@ -243,8 +260,8 @@ public class TaskEditorUI extends javax.swing.JPanel implements EditorAttributeH
         cmbPriority = new javax.swing.JComboBox();
         cmbStatus = new javax.swing.JComboBox();
         lblStatus = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        lblCreated = new javax.swing.JLabel();
+        lblUpdated = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
@@ -280,11 +297,11 @@ public class TaskEditorUI extends javax.swing.JPanel implements EditorAttributeH
 
         lblStatus.setText(NbBundle.getMessage(TaskEditorUI.class, "TaskEditorUI.lblStatus.text")); // NOI18N
 
-        jLabel2.setForeground(new java.awt.Color(102, 102, 102));
-        jLabel2.setText(NbBundle.getMessage(TaskEditorUI.class, "TaskEditorUI.jLabel2.text")); // NOI18N
+        lblCreated.setForeground(new java.awt.Color(102, 102, 102));
+        lblCreated.setText(NbBundle.getMessage(TaskEditorUI.class, "TaskEditorUI.lblCreated.text","-")); // NOI18N
 
-        jLabel3.setForeground(new java.awt.Color(102, 102, 102));
-        jLabel3.setText(NbBundle.getMessage(TaskEditorUI.class, "TaskEditorUI.jLabel3.text")); // NOI18N
+        lblUpdated.setForeground(new java.awt.Color(102, 102, 102));
+        lblUpdated.setText(NbBundle.getMessage(TaskEditorUI.class, "TaskEditorUI.lblUpdated.text","-")); // NOI18N
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -330,9 +347,9 @@ public class TaskEditorUI extends javax.swing.JPanel implements EditorAttributeH
                         .add(lblDesription))
                     .add(layout.createSequentialGroup()
                         .add(16, 16, 16)
-                        .add(jLabel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 211, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(lblCreated, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 211, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                        .add(jLabel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 229, Short.MAX_VALUE)
+                        .add(lblUpdated, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 229, Short.MAX_VALUE)
                         .add(218, 218, 218)))
                 .addContainerGap())
         );
@@ -346,8 +363,8 @@ public class TaskEditorUI extends javax.swing.JPanel implements EditorAttributeH
                 .add(txtOutline, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jLabel3)
-                    .add(jLabel2))
+                    .add(lblUpdated)
+                    .add(lblCreated))
                 .add(7, 7, 7)
                 .add(jLabel1)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -384,12 +401,12 @@ public class TaskEditorUI extends javax.swing.JPanel implements EditorAttributeH
     private javax.swing.JComboBox cmbStatus;
     private javax.swing.JComboBox cmbType;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel lblCreated;
     private javax.swing.JLabel lblDesription;
     private javax.swing.JLabel lblPriority;
     private javax.swing.JLabel lblStatus;
     private javax.swing.JLabel lblType;
+    private javax.swing.JLabel lblUpdated;
     private javax.swing.JLabel lblUrl;
     private javax.swing.JScrollPane spDescription;
     private javax.swing.JEditorPane txtDescription;
