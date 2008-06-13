@@ -87,15 +87,6 @@ public class TaskElementNode extends AbstractNode {
         setDisplayName(element.getName());
         setShortDescription(element.getDescription());
         extension = element.getLookup().lookup(Extension.class);
-        try {
-            FileObject file = new TaskElementFileObject(element, this);
-            //set preferred  loader to our one 
-            DataLoaderPool.setPreferredLoader(file, DataLoader.getLoader(TaskElementLoader.class));
-            dataObject = DataObject.find(file);
-            assert dataObject != null;
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
-        }
 
         this.cookie = new SaveCookie() {
 
@@ -141,7 +132,7 @@ public class TaskElementNode extends AbstractNode {
 
     public void setModified(boolean modified) {
         setDisplayName(element.getName() + (modified ? "*" : ""));
-        dataObject.setModified(modified);
+        getDataObject().setModified(modified);
         if (modified) {
             content.add(cookie);
         } else {
@@ -205,6 +196,23 @@ public class TaskElementNode extends AbstractNode {
         }
 
         return image;
+    }
+
+    private DataObject getDataObject() {
+        synchronized (this) {
+            if (dataObject == null) {
+                try {
+                    FileObject file = new TaskElementFileObject(element, this);
+                    //set preferred  loader to our one 
+                    DataLoaderPool.setPreferredLoader(file, DataLoader.getLoader(TaskElementLoader.class));
+                    dataObject = DataObject.find(file);
+                    assert dataObject != null;
+                } catch (IOException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
+            }
+        }
+        return dataObject;
     }
 }
 
