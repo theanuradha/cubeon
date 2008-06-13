@@ -196,7 +196,7 @@
             <Property name="verticalTextPosition" type="int" value="3"/>
           </Properties>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="        new JButton(new AbstractAction() {&#xd;&#xa;&#xd;&#xa;            public void actionPerformed(ActionEvent evt) {&#xd;&#xa;                URLDisplayer.getDefault().showURL(localTask.getUrl());&#xd;&#xa;            }&#xd;&#xa;&#xd;&#xa;            public boolean isEnabled() {&#xd;&#xa;                return localTask.getUrl()!=null;&#xd;&#xa;            }&#xd;&#xa;        });"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="        new JButton(new AbstractAction() {&#xd;&#xa;&#xd;&#xa;            public void actionPerformed(ActionEvent evt) {&#xd;&#xa;&#xd;&#xa;               showURL();&#xd;&#xa;&#xd;&#xa;            }&#xd;&#xa;        });"/>
           </AuxValues>
         </Component>
       </SubComponents>
