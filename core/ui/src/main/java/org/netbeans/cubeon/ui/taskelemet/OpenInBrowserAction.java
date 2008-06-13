@@ -14,29 +14,29 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.ui.taskfolder;
+package org.netbeans.cubeon.ui.taskelemet;
 
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
-import javax.swing.KeyStroke;
-import org.netbeans.cubeon.tasks.core.api.TaskFolder;
-import org.openide.util.NbBundle;
+import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
+import org.netbeans.cubeon.tasks.spi.TaskElement;
+import org.openide.util.Lookup;
 
 /**
  *
- * @author Anuradha G
+ * @author Anuradha
  */
-public class CopyToTaskFolderAction extends AbstractAction {
+public class OpenInBrowserAction extends AbstractAction {
 
-    private TaskFolder folder;
+    private TaskElement element;
 
-    public CopyToTaskFolderAction(TaskFolder folder) {
-        this.folder = folder;
-        putValue(NAME, NbBundle.getMessage(CopyToTaskFolderAction.class, "LBL_CopyTo_Folder"));
-        putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke("control C"));//NOI18N
+    public OpenInBrowserAction(TaskElement element) {
+        this.element = element;
+        putValue(NAME, "Open with Browser");
     }
 
     public void actionPerformed(ActionEvent e) {
-
+        TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
+        factory.createTaskEditor(element);
     }
 }

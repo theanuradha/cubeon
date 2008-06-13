@@ -17,6 +17,8 @@
 package org.netbeans.cubeon.local;
 
 import java.awt.Image;
+import java.net.MalformedURLException;
+import java.net.URL;
 import org.netbeans.cubeon.local.internals.TaskEditorProviderImpl;
 import org.netbeans.cubeon.local.repository.*;
 import org.netbeans.cubeon.tasks.spi.TaskEditorProvider;
@@ -25,6 +27,7 @@ import org.netbeans.cubeon.tasks.spi.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.TaskStatus;
 import org.netbeans.cubeon.tasks.spi.TaskType;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
@@ -38,6 +41,7 @@ public class LocalTask implements TaskElement {
     private final String id;
     private String name;
     private String description;
+    private String urlString;
     private LocalTaskRepository taskRepository;
     private TaskPriority priority = LocalTaskPriorityProvider.P3;//default priority  is p3
     private TaskStatus status = LocalTaskStatusProvider.NEW;
@@ -130,5 +134,25 @@ public class LocalTask implements TaskElement {
         }
 
         return image;
+    }
+
+    public String getUrlString() {
+        return urlString;
+    }
+
+    public void setUrlString(String urlString) {
+        this.urlString = urlString;
+    }
+
+    public URL getUrl() {
+        if (urlString != null) {
+            try {
+                return new URL(urlString);
+            } catch (MalformedURLException ex) {
+                ex.printStackTrace();
+            }
+
+        }
+        return null;
     }
 }

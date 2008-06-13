@@ -241,5 +241,9 @@ class TaskFolderImpl implements TaskFolder, TaskFolderOparations, TaskFolderRefr
         folderChildren.refreshContent();
     }
 
+    public boolean contains(TaskElement element) {
+        return taskElements.contains(element);
+    }
+
 
 }

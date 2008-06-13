@@ -17,16 +17,17 @@
 package org.netbeans.cubeon.ui.internals;
 
 import java.awt.Image;
-import java.awt.event.ActionEvent;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
-import javax.swing.AbstractAction;
+import java.util.List;
 import javax.swing.Action;
-import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
 import org.netbeans.cubeon.tasks.spi.TaskBadgeProvider;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
 import org.netbeans.cubeon.tasks.spi.Extension;
+import org.netbeans.cubeon.tasks.spi.TaskElementActionsProvider;
 import org.netbeans.cubeon.tasks.spi.TaskElementChangeAdapter;
+import org.netbeans.cubeon.ui.taskelemet.OpenAction;
 import org.openide.cookies.SaveCookie;
 import org.openide.filesystems.FileObject;
 import org.openide.loaders.DataLoader;
@@ -150,19 +151,35 @@ public class TaskElementNode extends AbstractNode {
 
     @Override
     public Action getPreferredAction() {
-        return new AbstractAction() {
-
-            public void actionPerformed(ActionEvent e) {
-                TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
-                factory.createTaskEditor(element);
-            }
-        };
+        return new OpenAction(element);
     }
 
     @Override
     public Action[] getActions(boolean arg0) {
-        return new Action[]{//TODO
-                };
+        List<Action> actions = new ArrayList<Action>();
+        final List<TaskElementActionsProvider> providers =
+                new ArrayList<TaskElementActionsProvider>(
+                Lookup.getDefault().lookupAll(TaskElementActionsProvider.class));
+        boolean sepetatorAdded = false;
+        for (TaskElementActionsProvider provider : providers) {
+            Action[] as = provider.getActions(element);
+            for (Action action : as) {
+                //check null and addSeparator 
+                if (action == null) {
+                    //check sepetatorAdd to prevent adding duplicate Separators 
+                    if (!sepetatorAdded) {
+                        //mark sepetatorAdd to true
+                        sepetatorAdded = true;
+                        actions.add(action);
+
+                    }
+                    continue;
+                }
+                actions.add(action);
+                sepetatorAdded = false;
+            }
+        }
+        return actions.toArray(new Action[0]);
     }
 
     @Override

@@ -53,6 +53,7 @@ class PersistenceHandler {
     private static final String TAG_NAME = "name";
     private static final String TAG_PRIORITY = "priority";
     private static final String TAG_STATUS = "status";
+    private static final String TAG_URL = "url";
     private static final String TAG_TYPE = "type";
     private static final String TAG_DESCRIPTION = "description";
     private LocalTaskRepository localTaskRepository;
@@ -76,7 +77,7 @@ class PersistenceHandler {
             root.appendChild(tasksElement);
         }
         Element taskElement = null;
-         
+
         if (localTaskRepository.getTaskElementById(te.getId()) != null) {
             NodeList taskNodes =
                     tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_TASK);
@@ -99,13 +100,16 @@ class PersistenceHandler {
             taskElement.setAttributeNS(NAMESPACE, TAG_ID, te.getId());
         }
 
-
+        LocalTask localTask = te.getLookup().lookup(LocalTask.class);
         taskElement.setAttributeNS(NAMESPACE, TAG_NAME, te.getName());
         taskElement.setAttributeNS(NAMESPACE, TAG_DESCRIPTION, te.getDescription());
         taskElement.setAttributeNS(NAMESPACE, TAG_REPOSITORY, te.getTaskRepository().getId());
         taskElement.setAttributeNS(NAMESPACE, TAG_PRIORITY, te.getPriority().getId());
         taskElement.setAttributeNS(NAMESPACE, TAG_STATUS, te.getStatus().getId());
         taskElement.setAttributeNS(NAMESPACE, TAG_TYPE, te.getType().getId());
+        if (localTask.getUrlString() != null) {
+            taskElement.setAttributeNS(NAMESPACE, TAG_URL, localTask.getUrlString());
+        }
 
         save(document);
     }
@@ -167,12 +171,15 @@ class PersistenceHandler {
                     String type = element.getAttributeNS(NAMESPACE, TAG_TYPE);
                     TaskType taskType = localTaskTypeProvider.getTaskTypeById(type);
 
+                    String url = element.getAttributeNS(NAMESPACE, TAG_URL);
+
                     LocalTask taskElement = new LocalTask(id, name, description, localTaskRepository);
                     taskElement.setPriority(taskPriority);
                     taskElement.setStatus(taskStatus);
                     taskElement.setType(taskType);
-
+                    taskElement.setUrlString(url);
                     taskElements.add(taskElement);
+
                 }
             }
             localTaskRepository.setTaskElements(taskElements);
