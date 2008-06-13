@@ -26,6 +26,8 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -46,6 +48,8 @@ import org.netbeans.cubeon.tasks.spi.TaskEditorProvider.EditorAttributeHandler;
 import org.netbeans.cubeon.tasks.spi.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.TaskStatus;
 import org.netbeans.cubeon.tasks.spi.TaskType;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.awt.HtmlBrowser.URLDisplayer;
 import org.openide.util.NbBundle;
 
@@ -195,6 +199,19 @@ public class TaskEditorUI extends javax.swing.JPanel implements EditorAttributeH
         }
     }
 
+    private void showURL() {
+        try {
+            URLDisplayer.getDefault().showURL(new URL(txtUrl.getText()));
+
+        } catch (MalformedURLException ex) {
+            NotifyDescriptor d =
+                    new NotifyDescriptor.Message(NbBundle.getMessage(TaskEditorUI.class,
+                    "LBL_Open_Url_Error",
+                    txtUrl.getText()), NotifyDescriptor.INFORMATION_MESSAGE);
+            DialogDisplayer.getDefault().notify(d);
+        }
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -214,11 +231,9 @@ public class TaskEditorUI extends javax.swing.JPanel implements EditorAttributeH
         Open =         new JButton(new AbstractAction() {
 
             public void actionPerformed(ActionEvent evt) {
-                URLDisplayer.getDefault().showURL(localTask.getUrl());
-            }
 
-            public boolean isEnabled() {
-                return localTask.getUrl()!=null;
+                showURL();
+
             }
         });
         lblType = new javax.swing.JLabel();
