@@ -20,7 +20,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import org.netbeans.cubeon.local.LocalTask;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
 import org.netbeans.cubeon.tasks.spi.TaskPriority;
@@ -55,6 +58,8 @@ class PersistenceHandler {
     private static final String TAG_STATUS = "status";
     private static final String TAG_URL = "url";
     private static final String TAG_TYPE = "type";
+    private static final String TAG_CREATED_DATE = "cdate";
+    private static final String TAG_UPDATE_DATE = "udate";
     private static final String TAG_DESCRIPTION = "description";
     private LocalTaskRepository localTaskRepository;
     private FileObject baseDir;
@@ -110,6 +115,18 @@ class PersistenceHandler {
         if (localTask.getUrlString() != null) {
             taskElement.setAttributeNS(NAMESPACE, TAG_URL, localTask.getUrlString());
         }
+        Date now = new Date();
+
+        if (localTask.getCreated() == null) {
+            localTask.setCreated(now);
+        } else {
+            localTask.setUpdated(now);
+        }
+
+        taskElement.setAttributeNS(NAMESPACE, TAG_CREATED_DATE, String.valueOf(localTask.getCreated().getTime()));
+        if (localTask.getUpdated() != null) {
+            taskElement.setAttributeNS(NAMESPACE, TAG_UPDATE_DATE, String.valueOf(localTask.getUpdated().getTime()));
+        }
 
         save(document);
     }
@@ -154,6 +171,7 @@ class PersistenceHandler {
             LocalTaskPriorityProvider priorityProvider = localTaskRepository.getLocalTaskPriorityProvider();
             LocalTaskStatusProvider statusProvider = localTaskRepository.getLocalTaskStatusProvider();
             LocalTaskTypeProvider localTaskTypeProvider = localTaskRepository.getLocalTaskTypeProvider();
+            Calendar calendar = Calendar.getInstance(Locale.getDefault());
             for (int i = 0; i < taskNodes.getLength(); i++) {
                 Node node = taskNodes.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
@@ -173,11 +191,29 @@ class PersistenceHandler {
 
                     String url = element.getAttributeNS(NAMESPACE, TAG_URL);
 
+                    Date createdDate = null;
+                    Date updatedDate = null;
+                    String created = element.getAttributeNS(NAMESPACE, TAG_CREATED_DATE);
+                    if (created != null && created.trim().length()!=0) {
+
+                        calendar.setTimeInMillis(Long.parseLong(created));
+                        createdDate = calendar.getTime();
+                    } else {
+                        createdDate = new Date();
+                    }
+                    String updated = element.getAttributeNS(NAMESPACE, TAG_UPDATE_DATE);
+                    if (updated != null && updated.trim().length()!=0) {
+                        calendar.setTimeInMillis(Long.parseLong(updated));
+                        updatedDate = calendar.getTime();
+                    }
+
                     LocalTask taskElement = new LocalTask(id, name, description, localTaskRepository);
                     taskElement.setPriority(taskPriority);
                     taskElement.setStatus(taskStatus);
                     taskElement.setType(taskType);
                     taskElement.setUrlString(url);
+                    taskElement.setCreated(createdDate);
+                    taskElement.setUpdated(updatedDate);
                     taskElements.add(taskElement);
 
                 }
