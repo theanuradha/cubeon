@@ -23,11 +23,14 @@
 package org.netbeans.cubeon.local.ui;
 
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import javax.swing.AbstractAction;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -43,6 +46,7 @@ import org.netbeans.cubeon.tasks.spi.TaskEditorProvider.EditorAttributeHandler;
 import org.netbeans.cubeon.tasks.spi.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.TaskStatus;
 import org.netbeans.cubeon.tasks.spi.TaskType;
+import org.openide.awt.HtmlBrowser.URLDisplayer;
 import org.openide.util.NbBundle;
 
 /**
@@ -207,7 +211,16 @@ public class TaskEditorUI extends javax.swing.JPanel implements EditorAttributeH
         lblDesription = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         UrlTools = new javax.swing.JToolBar();
-        Open = new javax.swing.JButton();
+        Open =         new JButton(new AbstractAction() {
+
+            public void actionPerformed(ActionEvent evt) {
+                URLDisplayer.getDefault().showURL(localTask.getUrl());
+            }
+
+            public boolean isEnabled() {
+                return localTask.getUrl()!=null;
+            }
+        });
         lblType = new javax.swing.JLabel();
         txtUrl = new javax.swing.JTextField();
         cmbType = new javax.swing.JComboBox();
@@ -334,17 +347,21 @@ public class TaskEditorUI extends javax.swing.JPanel implements EditorAttributeH
                     .add(cmbPriority, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .add(26, 26, 26)
                 .add(lblUrl)
-                .add(11, 11, 11)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                    .add(UrlTools, 0, 0, Short.MAX_VALUE)
-                    .add(txtUrl))
-                .add(18, 18, 18)
-                .add(lblDesription)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(layout.createSequentialGroup()
+                        .add(11, 11, 11)
+                        .add(txtUrl, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(18, 18, 18)
+                        .add(lblDesription))
+                    .add(layout.createSequentialGroup()
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(UrlTools, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 33, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                 .add(5, 5, 5)
                 .add(spDescription, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Open;
     private javax.swing.JToolBar UrlTools;
