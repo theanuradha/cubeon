@@ -39,6 +39,8 @@ public class TaskElementActionsProviderImpl implements TaskElementActionsProvide
         actions.add(null);
         actions.add(new MoveToAction(element));
         actions.add(new MarkAsAction(element));
+        actions.add(null);
+        actions.add(new MoveToDefault(element));
 
         return actions.toArray(new Action[actions.size()]);
     }
