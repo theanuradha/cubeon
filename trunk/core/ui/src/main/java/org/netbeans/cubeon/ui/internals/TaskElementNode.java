@@ -175,11 +175,14 @@ public class TaskElementNode extends AbstractNode {
 
     @Override
     public String getHtmlDisplayName() {
+        StringBuffer buffer = new StringBuffer("<html>");
         if (element.isCompleted()) {
-            return TAG + element.getName();
-        }
 
-        return getDisplayName();
+            buffer.append(TAG);
+        }
+        buffer.append(element.getName());
+        buffer.append("</html>");
+        return buffer.toString();
     }
 
     @Override

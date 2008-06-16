@@ -155,6 +155,7 @@ public class TaskElementFileObject extends FileObject {
     }
 
     @Override
+    @Deprecated
     public void setImportant(boolean b) {
         //DONOTHING
     }
@@ -180,6 +181,7 @@ public class TaskElementFileObject extends FileObject {
     }
 
     @Override
+    @Deprecated
     public boolean isReadOnly() {
         return false;
     }

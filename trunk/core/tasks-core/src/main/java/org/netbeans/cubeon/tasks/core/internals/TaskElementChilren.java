@@ -19,8 +19,10 @@ package org.netbeans.cubeon.tasks.core.internals;
 import org.netbeans.cubeon.tasks.core.api.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
+import org.netbeans.cubeon.tasks.spi.TaskElementComparator;
 import org.netbeans.cubeon.tasks.spi.TaskElementFilter;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
@@ -54,16 +56,16 @@ public class TaskElementChilren extends Children.Keys<TaskElement> implements Re
     }
 
     public void refreshContent() {
-       addNotify();
+        addNotify();
     }
 
     private static boolean isFilterd(TaskElement element, List<TaskElementFilter> filters) {
 
 
         for (TaskElementFilter filter : filters) {
-                if (filter.isFiltered(element)) {
-                    return true;
-                }
+            if (filter.isFiltered(element)) {
+                return true;
+            }
         }
         return false;
     }
@@ -75,7 +77,7 @@ public class TaskElementChilren extends Children.Keys<TaskElement> implements Re
 
     @Override
     protected void addNotify() {
-        System.out.println(folder.getName() );
+        System.out.println(folder.getName());
 
         List<TaskElement> elements = new ArrayList<TaskElement>();
         List<TaskElementFilter> filters = new ArrayList<TaskElementFilter>();
@@ -84,14 +86,17 @@ public class TaskElementChilren extends Children.Keys<TaskElement> implements Re
                 filters.add(taskElementFilter);
             }
         }
-        //todo add Comparator
-
 
         for (TaskElement taskElement : folder.getTaskElements()) {
             if (isFilterd(taskElement, filters)) {
                 continue;
             }
             elements.add(taskElement);
+        }
+        for (TaskElementComparator comparator : Lookup.getDefault().lookupAll(TaskElementComparator.class)) {
+            if (comparator.isEnable()) {
+                Collections.sort(elements, comparator.getComparator());
+            }
         }
         setKeys(elements);
     }

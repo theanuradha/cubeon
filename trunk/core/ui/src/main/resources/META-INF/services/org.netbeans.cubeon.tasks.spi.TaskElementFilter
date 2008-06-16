@@ -1,1 +1,2 @@
 org.netbeans.cubeon.ui.filters.TaskCompletedFilter
+org.netbeans.cubeon.ui.filters.PriorityFilter

@@ -18,8 +18,8 @@ package org.netbeans.cubeon.local.repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.netbeans.cubeon.tasks.spi.TaskPriority;
-import org.netbeans.cubeon.tasks.spi.TaskPriorityProvider;
+import org.netbeans.cubeon.tasks.spi.priority.TaskPriority;
+import org.netbeans.cubeon.tasks.spi.priority.TaskPriorityProvider;
 import org.openide.util.Utilities;
 
 /**
@@ -28,37 +28,32 @@ import org.openide.util.Utilities;
  */
 public class LocalTaskPriorityProvider implements TaskPriorityProvider {
 
-    public static final TaskPriority P1 = new TaskPriority("P1", -10000,
-            Utilities.loadImage("org/netbeans/cubeon/local/p1.png"));
-    public static final TaskPriority P2 = new TaskPriority("P2", 1000,
-            Utilities.loadImage("org/netbeans/cubeon/local/p2.png"));
-    public static final TaskPriority P3 = new TaskPriority("P3", 0,
-            Utilities.loadImage("org/netbeans/cubeon/local/p3.gif"));
-    public static final TaskPriority P4 = new TaskPriority("P4", -1000,
-            Utilities.loadImage("org/netbeans/cubeon/local/p4.png"));
-    public static final TaskPriority P5 = new TaskPriority("P5", -10000,
-            Utilities.loadImage("org/netbeans/cubeon/local/p5.png"));
-
     public LocalTaskPriorityProvider() {
     }
 
     public List<TaskPriority> getTaskPrioritys() {
         List<TaskPriority> prioritys = new ArrayList<TaskPriority>();
-        prioritys.add(P1);
-        prioritys.add(P2);
-        prioritys.add(P3);
-        prioritys.add(P4);
-        prioritys.add(P5);
+        prioritys.add(TaskPriority.createPriority(TaskPriority.PRIORITY.P1, "P1"));
+        prioritys.add(TaskPriority.createPriority(TaskPriority.PRIORITY.P2, "P2"));
+        prioritys.add(TaskPriority.createPriority(TaskPriority.PRIORITY.P3, "P3"));
+        prioritys.add(TaskPriority.createPriority(TaskPriority.PRIORITY.P4, "P4"));
+        prioritys.add(TaskPriority.createPriority(TaskPriority.PRIORITY.P5, "P5"));
+
         return new ArrayList<TaskPriority>(prioritys);
     }
 
-    public TaskPriority getTaskPriorityById(String id) {
+    public TaskPriority getTaskPriorityById(TaskPriority.PRIORITY priority) {
         for (TaskPriority tp : getTaskPrioritys()) {
-            if (id.equals(tp.getId())) {
+            if (priority==tp.getId()) {
                 return tp;
             }
         }
         // returning P3 if Priority not found
-        return P3;
+        return getDefaultPriority();
+    }
+
+    public TaskPriority getDefaultPriority() {
+
+        return TaskPriority.createPriority(TaskPriority.PRIORITY.P3, "P3");
     }
 }

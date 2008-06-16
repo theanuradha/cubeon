@@ -7,6 +7,11 @@
             <file name="org-netbeans-cubeon-ui-TaskRepositoriesAction.instance"/>
         </folder>
     </folder>
+    <folder name="Shortcuts">
+        <file name="D-9.shadow">
+            <attr name="originalFile" stringvalue="Actions/Window/org-netbeans-cubeon-ui-TaskExplorerAction.instance"/>
+        </file>
+    </folder>
     <folder name="Menu">
         <folder name="Window">
             <folder name="Cube°n">

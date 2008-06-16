@@ -19,7 +19,6 @@ package org.netbeans.cubeon.local.repository;
 import java.awt.Image;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import org.netbeans.cubeon.local.LocalTask;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
 import org.netbeans.cubeon.tasks.spi.TaskRepository;
@@ -43,6 +42,7 @@ public class LocalTaskRepository implements TaskRepository {
     private final LocalTaskStatusProvider ltsp = new LocalTaskStatusProvider();
     private final LocalTaskTypeProvider lttp = new LocalTaskTypeProvider();
     private LocalRepositoryExtension extension;
+    private int nextId;
 
     public LocalTaskRepository(LocalTaskRepositoryProvider provider,
             String id, String name, String description) {
@@ -50,9 +50,18 @@ public class LocalTaskRepository implements TaskRepository {
         this.id = id;
         this.name = name;
         this.description = description;
-        persistenceHandler = new PersistenceHandler(this, provider.getBaseDir());
+
         extension = new LocalRepositoryExtension(this);
-        refresh();
+        persistenceHandler = new PersistenceHandler(this, provider.getBaseDir());
+    }
+
+    public int getNextId() {
+
+        return nextId;
+    }
+
+    void setNextId(int nextId) {
+        this.nextId = nextId;
     }
 
     public String getId() {
@@ -93,7 +102,7 @@ public class LocalTaskRepository implements TaskRepository {
     }
 
     public TaskElement createTaskElement() {
-        LocalTask localTask = new LocalTask(UUID.randomUUID().toString(),
+        LocalTask localTask = new LocalTask(persistenceHandler.nextTaskId(),
                 "New Task", "", this);
 
         return localTask;
@@ -125,6 +134,10 @@ public class LocalTaskRepository implements TaskRepository {
 
     public LocalTaskTypeProvider getLocalTaskTypeProvider() {
         return lttp;
+    }
+
+    public void validate(TaskElement element) {
+        persistenceHandler.vaidate(element);
     }
 
     public Image getImage() {

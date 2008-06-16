@@ -40,7 +40,7 @@ public class CategorizedTaskNodeView implements TaskNodeView {
         return NbBundle.getMessage(CategorizedTaskNodeView.class, "LBL_Categorized_Description");
     }
 
-    public Node createRootContext() {
+    public Node getRootContext() {
 
         TasksFileSystem fileSystem = Lookup.getDefault().lookup(TasksFileSystem.class);
         assert fileSystem!=null;
