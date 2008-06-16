@@ -25,15 +25,28 @@ public class  TaskType {
     private String id;
     private String text;
 
+    /**
+     * 
+     * @param id
+     * @param text
+     */
     public TaskType(String id, String text) {
         this.id = id;
         this.text = text;
     }
 
+    /**
+     * 
+     * @return
+     */
     public String getText() {
         return text;
     }
 
+    /**
+     * 
+     * @return
+     */
     public String getId() {
         return id;
     }

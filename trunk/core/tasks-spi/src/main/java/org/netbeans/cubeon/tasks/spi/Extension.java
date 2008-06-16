@@ -24,9 +24,21 @@ import org.openide.util.Lookup;
  */
 public interface Extension {
 
+    /**
+     * 
+     * @param inst
+     */
     void remove(Object inst);
 
+    /**
+     * 
+     * @param inst
+     */
     void add(Object inst);
 
+    /**
+     * 
+     * @return
+     */
     Lookup getLookup();
 }

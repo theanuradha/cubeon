@@ -32,6 +32,10 @@ public interface TaskEditorProvider {
      */
     BasicAttributeHandler createBasicAttributeHandler();
 
+    /**
+     * 
+     * @return
+     */
     EditorAttributeHandler createEditorAttributeHandler();
 
     /**
@@ -70,12 +74,27 @@ public interface TaskEditorProvider {
         TaskElement getTaskElement();
     }
 
+    /**
+     * 
+     */
     public interface EditorAttributeHandler {
 
+        /**
+         * 
+         * @return
+         */
         String getName();
 
+        /**
+         * 
+         * @return
+         */
         String getDisplayName();
 
+        /**
+         * 
+         * @return
+         */
         String getShortDescription();
 
         /**

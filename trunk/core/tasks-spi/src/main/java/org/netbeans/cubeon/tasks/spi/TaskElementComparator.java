@@ -24,8 +24,16 @@ import java.util.Comparator;
  */
 public interface TaskElementComparator {
 
+    /**
+     * 
+     * @return
+     */
     String getName();
 
+    /**
+     * 
+     * @return
+     */
     String getDescription();
 
     /**
@@ -40,9 +48,21 @@ public interface TaskElementComparator {
      */
     void setEnable(boolean b);
 
+    /**
+     * 
+     * @return
+     */
     boolean isAscending();
 
+    /**
+     * 
+     * @param b
+     */
     void setAscending(boolean b);
 
+    /**
+     * 
+     * @return
+     */
     Comparator<TaskElement> getComparator();
 }

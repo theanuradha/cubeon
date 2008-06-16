@@ -29,9 +29,31 @@ public final class TaskPriority {
     private final Image image;
     private String text;
 
+    /**
+     * 
+     */
     public enum PRIORITY {
 
-        P1, P2, P3, P4, P5
+        /**
+         * 
+         */
+        P1,
+        /**
+         * 
+         */
+        P2,
+        /**
+         * 
+         */
+        P3,
+        /**
+         * 
+         */
+        P4,
+        /**
+         * 
+         */
+        P5
     }
 
     private TaskPriority(PRIORITY id, Image image, String text) {
@@ -40,14 +62,28 @@ public final class TaskPriority {
         this.text = text;
     }
 
+    /**
+     * 
+     * @param priority
+     * @param text
+     * @return
+     */
     public static TaskPriority createPriority(PRIORITY priority, String text) {
         return new TaskPriority(priority, getImage(priority), text);
     }
 
+    /**
+     * 
+     * @return
+     */
     public PRIORITY getId() {
         return id;
     }
 
+    /**
+     * 
+     * @return
+     */
     public Image getImage() {
         return image;
     }
@@ -79,6 +115,11 @@ public final class TaskPriority {
         return hash;
     }
 
+    /**
+     * 
+     * @param priority
+     * @return
+     */
     public static Image getImage(PRIORITY priority) {
 
         switch (priority) {
