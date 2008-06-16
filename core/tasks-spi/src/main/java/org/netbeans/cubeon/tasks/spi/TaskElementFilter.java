@@ -22,8 +22,16 @@ package org.netbeans.cubeon.tasks.spi;
  */
 public interface TaskElementFilter {
 
+    /**
+     * 
+     * @return
+     */
     String getName();
 
+    /**
+     * 
+     * @return
+     */
     String getDescription();
 
     /**

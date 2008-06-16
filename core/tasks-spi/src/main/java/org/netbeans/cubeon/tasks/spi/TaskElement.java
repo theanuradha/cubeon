@@ -57,6 +57,10 @@ public interface TaskElement {
      */
     Lookup getLookup();
 
+    /**
+     * 
+     * @return
+     */
     boolean isCompleted();
 
     /**
@@ -71,16 +75,40 @@ public interface TaskElement {
      */
     void setPriority(TaskPriority priority);
 
+    /**
+     * 
+     * @return
+     */
     TaskStatus getStatus();
 
+    /**
+     * 
+     * @param status
+     */
     void setStatus(TaskStatus status);
 
+    /**
+     * 
+     * @return
+     */
     TaskType getType();
 
+    /**
+     * 
+     * @param type
+     */
     void setType(TaskType type);
     
     
+    /**
+     * 
+     * @return
+     */
     Image getImage();
     
-    URL getUrl(); 
+    /**
+     * 
+     * @return
+     */
+    URL getUrl();
 }

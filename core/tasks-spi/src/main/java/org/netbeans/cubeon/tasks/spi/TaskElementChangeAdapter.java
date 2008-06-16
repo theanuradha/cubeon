@@ -22,17 +22,32 @@ package org.netbeans.cubeon.tasks.spi;
  */
 public class TaskElementChangeAdapter {
 
+    /**
+     * 
+     */
     public void nameChenged() {
     }
 
+    /**
+     * 
+     */
     public void descriptionChenged() {
     }
 
+    /**
+     * 
+     */
     public void priorityChenged() {
     }
 
+    /**
+     * 
+     */
     public void statusChenged() {
     }
+    /**
+     * 
+     */
     public void typeChenged() {
     }
 }

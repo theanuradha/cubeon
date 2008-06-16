@@ -33,6 +33,7 @@ public interface TaskRepositoryActionsProvider {
     /**
      *  Actions
      * 
+     * @param repository 
      * @return Actions that show in top level
      */
     Action[] getActions(TaskRepository repository);
