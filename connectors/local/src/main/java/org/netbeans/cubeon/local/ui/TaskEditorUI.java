@@ -47,7 +47,7 @@ import org.netbeans.cubeon.local.repository.LocalTaskStatusProvider;
 import org.netbeans.cubeon.local.repository.LocalTaskTypeProvider;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
 import org.netbeans.cubeon.tasks.spi.TaskEditorProvider.EditorAttributeHandler;
-import org.netbeans.cubeon.tasks.spi.TaskPriority;
+import org.netbeans.cubeon.tasks.spi.priority.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.TaskStatus;
 import org.netbeans.cubeon.tasks.spi.TaskType;
 import org.openide.DialogDisplayer;
@@ -147,11 +147,11 @@ public class TaskEditorUI extends javax.swing.JPanel implements EditorAttributeH
     }
 
     public String getDisplayName() {
-        return localTask.getName();
+        return localTask.getId();
     }
 
     public String getShortDescription() {
-        return localTask.getDescription();
+        return localTask.getName();
     }
 
     public final void addChangeListener(ChangeListener l) {

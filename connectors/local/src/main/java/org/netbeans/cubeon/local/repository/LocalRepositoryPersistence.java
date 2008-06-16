@@ -49,7 +49,7 @@ class LocalRepositoryPersistence {
     private LocalTaskRepositoryProvider provider;
     private FileObject baseDir;
 
-    LocalRepositoryPersistence(LocalTaskRepositoryProvider provider,FileObject baseDir) {
+    LocalRepositoryPersistence(LocalTaskRepositoryProvider provider, FileObject baseDir) {
         this.provider = provider;
         this.baseDir = baseDir;
     }
@@ -106,7 +106,7 @@ class LocalRepositoryPersistence {
             Node node = repositoryNodes.item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element) node;
-                String id = element.getAttributeNS(NAMESPACE,TAG_ID);
+                String id = element.getAttributeNS(NAMESPACE, TAG_ID);
                 if (repository.getId().equals(id)) {
                     repositoryElement = element;
                     break;
@@ -139,9 +139,15 @@ class LocalRepositoryPersistence {
                     String id = element.getAttribute(TAG_ID);
                     String name = element.getAttribute(TAG_NAME);
                     String description = element.getAttribute(TAG_DESCRIPTION);
-                     repositorys.add(new LocalTaskRepository(provider,id, name, description));
+                    repositorys.add(new LocalTaskRepository(provider, id, name, description));
                 }
             }
+        } else {
+            LocalTaskRepository localTaskRepository =
+                    new LocalTaskRepository(provider, "local", "Local", 
+                    "Default Local Repository");
+            addRepository(localTaskRepository);
+            repositorys.add(localTaskRepository);
         }
 
         return repositorys;
@@ -238,7 +244,6 @@ class LocalRepositoryPersistence {
 
     }
 
-   
     private static Element findElement(Element parent, String name, String namespace) {
         Element result = null;
         NodeList l = parent.getChildNodes();
@@ -247,8 +252,7 @@ class LocalRepositoryPersistence {
             if (l.item(i).getNodeType() == Node.ELEMENT_NODE) {
                 Element el = (Element) l.item(i);
                 if (name.equals(el.getLocalName()) &&
-                        ((namespace == el.getNamespaceURI()) /*check both namespaces are null*/ 
-                        || (namespace != null && namespace.equals(el.getNamespaceURI())))) {
+                        ((namespace == el.getNamespaceURI()) /*check both namespaces are null*/ || (namespace != null && namespace.equals(el.getNamespaceURI())))) {
                     if (result == null) {
                         result = el;
                     } else {
@@ -259,5 +263,4 @@ class LocalRepositoryPersistence {
         }
         return result;
     }
-
 }

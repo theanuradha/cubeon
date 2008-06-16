@@ -24,7 +24,7 @@ import org.netbeans.cubeon.local.internals.TaskEditorProviderImpl;
 import org.netbeans.cubeon.local.repository.*;
 import org.netbeans.cubeon.tasks.spi.TaskEditorProvider;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
-import org.netbeans.cubeon.tasks.spi.TaskPriority;
+import org.netbeans.cubeon.tasks.spi.priority.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.TaskStatus;
 import org.netbeans.cubeon.tasks.spi.TaskType;
@@ -43,12 +43,11 @@ public class LocalTask implements TaskElement {
     private String description;
     private String urlString;
     private LocalTaskRepository taskRepository;
-    private TaskPriority priority = LocalTaskPriorityProvider.P3;//default priority  is p3
+    private TaskPriority priority;
     private TaskStatus status = LocalTaskStatusProvider.NEW;
     private TaskType type = LocalTaskTypeProvider.TASK;
     private Date created;
     private Date updated;
-    
     private final TaskEditorProvider editorProvider;
     private LocalTaskElementExtension extension;
 
@@ -60,12 +59,13 @@ public class LocalTask implements TaskElement {
         this.taskRepository = taskRepository;
         extension = new LocalTaskElementExtension(this);
         editorProvider = new TaskEditorProviderImpl(this);
-
+        priority = taskRepository.getLocalTaskPriorityProvider().getDefaultPriority();
     }
 
     public String getId() {
         return id;
     }
+
 
     public String getName() {
         return name;
@@ -152,7 +152,7 @@ public class LocalTask implements TaskElement {
             try {
                 return new URL(urlString);
             } catch (MalformedURLException ex) {
-                ex.printStackTrace();
+                //ignore
             }
 
         }
@@ -174,6 +174,4 @@ public class LocalTask implements TaskElement {
     public void setUpdated(Date updated) {
         this.updated = updated;
     }
-    
-    
 }

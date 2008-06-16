@@ -47,6 +47,8 @@ public class TaskExplorerViewActions implements TaskExplorerViewActionsProvider 
         return new Action[]{
                     new RefreshTaskFolderAction(taskFolder),
                     null,
+                    new ComparatorAction(taskFolder),
+                    new FilterByPriorityAction(taskFolder),
                     new FilterCompletedAction(taskFolder),
                     null,
                     new TaskRepositoriesAction(NbBundle.getMessage(TaskExplorerViewActions.class,

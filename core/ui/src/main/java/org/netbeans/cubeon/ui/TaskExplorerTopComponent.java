@@ -20,10 +20,7 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyVetoException;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
@@ -33,6 +30,7 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
+import org.netbeans.cubeon.tasks.core.api.TaskFolder;
 import org.netbeans.cubeon.tasks.core.api.TasksFileSystem;
 import org.netbeans.cubeon.tasks.core.spi.TaskNodeView;
 import org.netbeans.cubeon.ui.taskelemet.NewTaskWizardAction;
@@ -120,36 +118,57 @@ public final class TaskExplorerTopComponent extends TopComponent implements Expl
     private synchronized void selectView(final TaskNodeView view) {
         selectedView = view;
         preferences.put(SELECTED_VIEW, view.getId());
-        final Node node = view.createRootContext();
+        final Node node = view.getRootContext();
         explorerManager.setRootContext(node);
+
         expand();
     }
 
+    public void goInto(TaskFolder folder) {
+        if(selectedView==null){
+         loadView();
+        }
+        
+        Children children = selectedView.getRootContext().getChildren();
+        final Node[] nodes = children.getNodes();
+        for (Node node : nodes) {
+            TaskFolder tf = node.getLookup().lookup(TaskFolder.class);
+            if(folder.equals(tf)){
+              explorerManager.setRootContext(node);
+              break;
+            }
+        }
+    }
+    public void goToRoot(){
+       if(selectedView==null){
+         loadView();
+        }
+        explorerManager.setRootContext(selectedView.getRootContext());
+        expand();
+    }
     public void expand() {
         Task task = RequestProcessor.getDefault().create(new Runnable() {
 
             public void run() {
 
-                taskTreeView.setAutoscrolls(false);
+
                 Children children = explorerManager.getRootContext().getChildren();
                 final Node[] nodes = children.getNodes();
-                List<Node> list = Arrays.asList(nodes);
-               // Collections.reverse(list);
-                for (Node n : list) {
+
+                for (Node n : nodes) {
                     taskTreeView.expandNode(n);
                 }
                 if (nodes.length > 0) {
+                    Node n = nodes[0];
                     try {
-                        explorerManager.setSelectedNodes(new Node[]{nodes[0]});
+                        explorerManager.setExploredContextAndSelection(n, new Node[]{n});
                     } catch (PropertyVetoException ex) {
-                        //ignore
                         Logger.getLogger(getClass().getName()).log(Level.WARNING, ex.getMessage(), ex);
                     }
 
 
-
                 }
-                taskTreeView.setAutoscrolls(true);
+
             }
         });
         task.schedule(200);
@@ -230,6 +249,11 @@ public final class TaskExplorerTopComponent extends TopComponent implements Expl
         downMenu.setFocusable(false);
         downMenu.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         downMenu.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        downMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                downMenuActionPerformed(evt);
+            }
+        });
         subToolbar.add(downMenu);
 
         mainToolbarHolder.add(subToolbar, java.awt.BorderLayout.EAST);
@@ -246,6 +270,12 @@ private void refreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
     TasksFileSystem fileSystem = Lookup.getDefault().lookup(TasksFileSystem.class);
     new RefreshTaskFolderAction(fileSystem.getRootTaskFolder()).actionPerformed(evt);
 }//GEN-LAST:event_refreshActionPerformed
+
+private void downMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downMenuActionPerformed
+    Node node = selectedView.getRootContext();
+    JPopupMenu contextMenu = node.getContextMenu();
+    contextMenu.show(downMenu, 0, downMenu.getHeight());
+}//GEN-LAST:event_downMenuActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton downMenu;
     private javax.swing.JButton focas;

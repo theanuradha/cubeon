@@ -14,40 +14,20 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.tasks.spi;
+package org.netbeans.cubeon.tasks.spi.priority;
 
-import java.awt.Image;
+import java.util.List;
 
 /**
  *
  * @author Anuradha G
  */
-public class TaskPriority {
+public interface TaskPriorityProvider {
 
-    private final String id;
-    private final int priority;
-    private final Image image;
-
-    public TaskPriority(String id, int priority, Image image) {
-        this.id = id;
-        this.priority = priority;
-        this.image = image;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public int getPriority() {
-        return priority;
-    }
-
-    public Image getImage() {
-        return image;
-    }
-
-    @Override
-    public String toString() {
-        return id;
-    }
+    /**
+     * 
+     * @return list of TaskPriority that support by 
+     * providing repository implementation
+     */
+    List<TaskPriority> getTaskPrioritys();
 }

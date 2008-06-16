@@ -67,7 +67,7 @@ class PersistenceHandler {
             tasksElement = document.createElementNS(NAMESPACE, TAG_TASKS);
             root.appendChild(tasksElement);
         }
-        
+
         Element taskElement = document.createElementNS(NAMESPACE, TAG_TASK);
         tasksElement.appendChild(taskElement);
 
@@ -129,7 +129,6 @@ class PersistenceHandler {
 
                     TaskElement taskElement = taskRepository.getTaskElementById(id);
                     assert taskElement != null;
-
                     taskElements.add(taskElement);
                 }
             }

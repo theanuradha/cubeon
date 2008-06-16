@@ -82,4 +82,6 @@ public interface TaskRepository {
     void reset(TaskElement element);
     
     Image getImage();
+    
+    void validate(TaskElement element);
 }

@@ -19,6 +19,7 @@ package org.netbeans.cubeon.ui.taskfolder;
 import javax.swing.Action;
 import org.netbeans.cubeon.tasks.core.api.TaskFolder;
 import org.netbeans.cubeon.tasks.core.spi.TaskFolderActionsProvider;
+import org.netbeans.cubeon.ui.NavigateFromHereAction;
 import org.netbeans.cubeon.ui.taskelemet.NewTaskWizardAction;
 import org.openide.util.NbBundle;
 
@@ -47,6 +48,7 @@ public class TaskFolderActions implements TaskFolderActionsProvider {
                     
                     new EditTaskFolderAction(taskFolder),
                     new DeleteTaskFolderAction(taskFolder),
+                    new NavigateFromHereAction(taskFolder),
                     null,
                     new RefreshTaskFolderAction(taskFolder)
                 };

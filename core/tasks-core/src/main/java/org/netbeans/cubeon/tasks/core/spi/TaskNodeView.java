@@ -30,5 +30,5 @@ public interface TaskNodeView {
 
     String getDescription();
 
-    Node createRootContext();
+    Node getRootContext();
 }

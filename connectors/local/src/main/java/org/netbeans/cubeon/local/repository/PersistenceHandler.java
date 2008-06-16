@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Locale;
 import org.netbeans.cubeon.local.LocalTask;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
-import org.netbeans.cubeon.tasks.spi.TaskPriority;
+import org.netbeans.cubeon.tasks.spi.priority.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.TaskStatus;
 import org.netbeans.cubeon.tasks.spi.TaskType;
 import org.openide.filesystems.FileLock;
@@ -52,6 +52,7 @@ class PersistenceHandler {
     private static final String TAG_REPOSITORY = "repository";
     private static final String TAG_ID = "id";
     private static final String TAG_TASKS = "tasks";
+    private static final String TAG_NEXT_ID = "next";
     private static final String TAG_TASK = "task";
     private static final String TAG_NAME = "name";
     private static final String TAG_PRIORITY = "priority";
@@ -63,27 +64,91 @@ class PersistenceHandler {
     private static final String TAG_DESCRIPTION = "description";
     private LocalTaskRepository localTaskRepository;
     private FileObject baseDir;
+    private int lastId;
+    private static final Object LOCK = new Object();
 
     PersistenceHandler(LocalTaskRepository localTaskRepository, FileObject fileObject) {
         this.localTaskRepository = localTaskRepository;
         this.baseDir = fileObject;
+        refresh();
+    }
 
-
+    void vaidate(TaskElement element) {
+        //do validations changes here
+       
 
     }
 
-    void addTaskElement(TaskElement te) {
-        Document document = getDocument();
-        Element root = getRootElement(document);
-        Element tasksElement = findElement(root, TAG_TASKS, NAMESPACE);
-        //check tasksElement null and create element
-        if (tasksElement == null) {
-            tasksElement = document.createElementNS(NAMESPACE, TAG_TASKS);
-            root.appendChild(tasksElement);
-        }
-        Element taskElement = null;
 
-        if (localTaskRepository.getTaskElementById(te.getId()) != null) {
+    
+    void addTaskElement(TaskElement te) {
+        synchronized (LOCK) {
+            Document document = getDocument();
+            Element root = getRootElement(document);
+            Element tasksElement = findElement(root, TAG_TASKS, NAMESPACE);
+            //check tasksElement null and create element
+            if (tasksElement == null) {
+                tasksElement = document.createElementNS(NAMESPACE, TAG_TASKS);
+                root.appendChild(tasksElement);
+            }
+            Element taskElement = null;
+
+            if (localTaskRepository.getTaskElementById(te.getId()) != null) {
+                NodeList taskNodes =
+                        tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_TASK);
+
+                for (int i = 0; i < taskNodes.getLength(); i++) {
+                    Node node = taskNodes.item(i);
+                    if (node.getNodeType() == Node.ELEMENT_NODE) {
+                        Element element = (Element) node;
+                        String id = element.getAttributeNS(NAMESPACE, TAG_ID);
+                        if (te.getId().equals(id)) {
+                            taskElement = element;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (taskElement == null) {
+                taskElement = document.createElementNS(NAMESPACE, TAG_TASK);
+                tasksElement.appendChild(taskElement);
+                taskElement.setAttributeNS(NAMESPACE, TAG_ID, te.getId());
+            }
+
+            LocalTask localTask = te.getLookup().lookup(LocalTask.class);
+            taskElement.setAttributeNS(NAMESPACE, TAG_NAME, te.getName());
+            taskElement.setAttributeNS(NAMESPACE, TAG_DESCRIPTION, te.getDescription());
+            taskElement.setAttributeNS(NAMESPACE, TAG_REPOSITORY, te.getTaskRepository().getId());
+            taskElement.setAttributeNS(NAMESPACE, TAG_PRIORITY, te.getPriority().getId().toString());
+            taskElement.setAttributeNS(NAMESPACE, TAG_STATUS, te.getStatus().getId());
+            taskElement.setAttributeNS(NAMESPACE, TAG_TYPE, te.getType().getId());
+            if (localTask.getUrlString() != null) {
+                taskElement.setAttributeNS(NAMESPACE, TAG_URL, localTask.getUrlString());
+            }
+            Date now = new Date();
+
+            if (localTask.getCreated() == null) {
+                localTask.setCreated(now);
+            } else {
+                localTask.setUpdated(now);
+            }
+
+            taskElement.setAttributeNS(NAMESPACE, TAG_CREATED_DATE, String.valueOf(localTask.getCreated().getTime()));
+            if (localTask.getUpdated() != null) {
+                taskElement.setAttributeNS(NAMESPACE, TAG_UPDATE_DATE, String.valueOf(localTask.getUpdated().getTime()));
+            }
+
+            save(document);
+        }
+    }
+
+    void removeTaskElement(TaskElement te) {
+        synchronized (LOCK) {
+            Document document = getDocument();
+            Element root = getRootElement(document);
+            Element tasksElement = findElement(root, TAG_TASKS, NAMESPACE);
+            Element taskElement = null;
+
             NodeList taskNodes =
                     tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_TASK);
 
@@ -98,127 +163,98 @@ class PersistenceHandler {
                     }
                 }
             }
-        }
-        if (taskElement == null) {
-            taskElement = document.createElementNS(NAMESPACE, TAG_TASK);
-            tasksElement.appendChild(taskElement);
-            taskElement.setAttributeNS(NAMESPACE, TAG_ID, te.getId());
-        }
+            assert taskElement != null;
 
-        LocalTask localTask = te.getLookup().lookup(LocalTask.class);
-        taskElement.setAttributeNS(NAMESPACE, TAG_NAME, te.getName());
-        taskElement.setAttributeNS(NAMESPACE, TAG_DESCRIPTION, te.getDescription());
-        taskElement.setAttributeNS(NAMESPACE, TAG_REPOSITORY, te.getTaskRepository().getId());
-        taskElement.setAttributeNS(NAMESPACE, TAG_PRIORITY, te.getPriority().getId());
-        taskElement.setAttributeNS(NAMESPACE, TAG_STATUS, te.getStatus().getId());
-        taskElement.setAttributeNS(NAMESPACE, TAG_TYPE, te.getType().getId());
-        if (localTask.getUrlString() != null) {
-            taskElement.setAttributeNS(NAMESPACE, TAG_URL, localTask.getUrlString());
-        }
-        Date now = new Date();
+            tasksElement.removeChild(taskElement);
 
-        if (localTask.getCreated() == null) {
-            localTask.setCreated(now);
-        } else {
-            localTask.setUpdated(now);
+            save(document);
         }
-
-        taskElement.setAttributeNS(NAMESPACE, TAG_CREATED_DATE, String.valueOf(localTask.getCreated().getTime()));
-        if (localTask.getUpdated() != null) {
-            taskElement.setAttributeNS(NAMESPACE, TAG_UPDATE_DATE, String.valueOf(localTask.getUpdated().getTime()));
-        }
-
-        save(document);
     }
 
-    void removeTaskElement(TaskElement te) {
-        Document document = getDocument();
-        Element root = getRootElement(document);
-        Element tasksElement = findElement(root, TAG_TASKS, NAMESPACE);
-        Element taskElement = null;
-
-        NodeList taskNodes =
-                tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_TASK);
-
-        for (int i = 0; i < taskNodes.getLength(); i++) {
-            Node node = taskNodes.item(i);
-            if (node.getNodeType() == Node.ELEMENT_NODE) {
-                Element element = (Element) node;
-                String id = element.getAttributeNS(NAMESPACE, TAG_ID);
-                if (te.getId().equals(id)) {
-                    taskElement = element;
-                    break;
-                }
+    String nextTaskId() {
+        String id = localTaskRepository.getId().toUpperCase();
+        synchronized (LOCK) {
+            Document document = getDocument();
+            Element root = getRootElement(document);
+            Element nextElement = findElement(root, TAG_NEXT_ID, NAMESPACE);
+            int nextID = 0;
+            if (nextElement == null) {
+                nextElement = document.createElementNS(NAMESPACE, TAG_NEXT_ID);
+                nextElement.setAttribute(TAG_ID, String.valueOf(++nextID));
+                root.appendChild(nextElement);
+            } else {
+                nextID = Integer.parseInt(nextElement.getAttribute(TAG_ID));
+                nextElement.setAttribute(TAG_ID, String.valueOf(++nextID));
             }
+            save(document);
+            id = id + "-" + nextID;
         }
-        assert taskElement != null;
+        return id;
 
-        tasksElement.removeChild(taskElement);
-
-        save(document);
     }
 
     void refresh() {
+        synchronized (LOCK) {
+            List<LocalTask> taskElements = new ArrayList<LocalTask>();
+            Document document = getDocument();
+            Element root = getRootElement(document);
+            Element tasksElement = findElement(root, TAG_TASKS, NAMESPACE);
 
-        List<LocalTask> taskElements = new ArrayList<LocalTask>();
-        Document document = getDocument();
-        Element root = getRootElement(document);
-        Element tasksElement = findElement(root, TAG_TASKS, NAMESPACE);
+            if (tasksElement != null) {
+                NodeList taskNodes =
+                        tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_TASK);
+                LocalTaskPriorityProvider priorityProvider = localTaskRepository.getLocalTaskPriorityProvider();
+                LocalTaskStatusProvider statusProvider = localTaskRepository.getLocalTaskStatusProvider();
+                LocalTaskTypeProvider localTaskTypeProvider = localTaskRepository.getLocalTaskTypeProvider();
+                Calendar calendar = Calendar.getInstance(Locale.getDefault());
+                for (int i = 0; i < taskNodes.getLength(); i++) {
+                    Node node = taskNodes.item(i);
+                    if (node.getNodeType() == Node.ELEMENT_NODE) {
+                        Element element = (Element) node;
+                        String id = element.getAttributeNS(NAMESPACE, TAG_ID);
+                        String name = element.getAttributeNS(NAMESPACE, TAG_NAME);
+                        String description = element.getAttributeNS(NAMESPACE, TAG_DESCRIPTION);
+                        //read priority
+                        String priority = element.getAttributeNS(NAMESPACE, TAG_PRIORITY);
+                        TaskPriority taskPriority = priorityProvider.getTaskPriorityById(TaskPriority.PRIORITY.valueOf(priority));
+                        //read status
+                        String status = element.getAttributeNS(NAMESPACE, TAG_STATUS);
+                        TaskStatus taskStatus = statusProvider.getTaskStatusById(status);
+                        //read type
+                        String type = element.getAttributeNS(NAMESPACE, TAG_TYPE);
+                        TaskType taskType = localTaskTypeProvider.getTaskTypeById(type);
 
-        if (tasksElement != null) {
-            NodeList taskNodes =
-                    tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_TASK);
-            LocalTaskPriorityProvider priorityProvider = localTaskRepository.getLocalTaskPriorityProvider();
-            LocalTaskStatusProvider statusProvider = localTaskRepository.getLocalTaskStatusProvider();
-            LocalTaskTypeProvider localTaskTypeProvider = localTaskRepository.getLocalTaskTypeProvider();
-            Calendar calendar = Calendar.getInstance(Locale.getDefault());
-            for (int i = 0; i < taskNodes.getLength(); i++) {
-                Node node = taskNodes.item(i);
-                if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    Element element = (Element) node;
-                    String id = element.getAttributeNS(NAMESPACE, TAG_ID);
-                    String name = element.getAttributeNS(NAMESPACE, TAG_NAME);
-                    String description = element.getAttributeNS(NAMESPACE, TAG_DESCRIPTION);
-                    //read priority
-                    String priority = element.getAttributeNS(NAMESPACE, TAG_PRIORITY);
-                    TaskPriority taskPriority = priorityProvider.getTaskPriorityById(priority);
-                    //read status
-                    String status = element.getAttributeNS(NAMESPACE, TAG_STATUS);
-                    TaskStatus taskStatus = statusProvider.getTaskStatusById(status);
-                    //read type
-                    String type = element.getAttributeNS(NAMESPACE, TAG_TYPE);
-                    TaskType taskType = localTaskTypeProvider.getTaskTypeById(type);
+                        String url = element.getAttributeNS(NAMESPACE, TAG_URL);
 
-                    String url = element.getAttributeNS(NAMESPACE, TAG_URL);
+                        Date createdDate = null;
+                        Date updatedDate = null;
+                        String created = element.getAttributeNS(NAMESPACE, TAG_CREATED_DATE);
+                        if (created != null && created.trim().length() != 0) {
 
-                    Date createdDate = null;
-                    Date updatedDate = null;
-                    String created = element.getAttributeNS(NAMESPACE, TAG_CREATED_DATE);
-                    if (created != null && created.trim().length()!=0) {
+                            calendar.setTimeInMillis(Long.parseLong(created));
+                            createdDate = calendar.getTime();
+                        } else {
+                            createdDate = new Date();
+                        }
+                        String updated = element.getAttributeNS(NAMESPACE, TAG_UPDATE_DATE);
+                        if (updated != null && updated.trim().length() != 0) {
+                            calendar.setTimeInMillis(Long.parseLong(updated));
+                            updatedDate = calendar.getTime();
+                        }
 
-                        calendar.setTimeInMillis(Long.parseLong(created));
-                        createdDate = calendar.getTime();
-                    } else {
-                        createdDate = new Date();
+                        LocalTask taskElement = new LocalTask(id, name, description, localTaskRepository);
+                        taskElement.setPriority(taskPriority);
+                        taskElement.setStatus(taskStatus);
+                        taskElement.setType(taskType);
+                        taskElement.setUrlString(url);
+                        taskElement.setCreated(createdDate);
+                        taskElement.setUpdated(updatedDate);
+                        taskElements.add(taskElement);
+
                     }
-                    String updated = element.getAttributeNS(NAMESPACE, TAG_UPDATE_DATE);
-                    if (updated != null && updated.trim().length()!=0) {
-                        calendar.setTimeInMillis(Long.parseLong(updated));
-                        updatedDate = calendar.getTime();
-                    }
-
-                    LocalTask taskElement = new LocalTask(id, name, description, localTaskRepository);
-                    taskElement.setPriority(taskPriority);
-                    taskElement.setStatus(taskStatus);
-                    taskElement.setType(taskType);
-                    taskElement.setUrlString(url);
-                    taskElement.setCreated(createdDate);
-                    taskElement.setUpdated(updatedDate);
-                    taskElements.add(taskElement);
-
                 }
+                localTaskRepository.setTaskElements(taskElements);
             }
-            localTaskRepository.setTaskElements(taskElements);
         }
     }
 
