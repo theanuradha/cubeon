@@ -49,11 +49,11 @@ public class PriorityFilter implements TaskElementFilter {
     }
 
     public String getName() {
-        return "Filter Priority";
+        return "Filter By Priority";
     }
 
     public String getDescription() {
-        return "Filter Priority";
+        return "Filter By Priority";
     }
 
     public boolean isEnable() {
