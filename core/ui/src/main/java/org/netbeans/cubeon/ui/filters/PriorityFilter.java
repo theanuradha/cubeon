@@ -65,7 +65,7 @@ public class PriorityFilter implements TaskElementFilter {
     }
 
     public boolean isFiltered(TaskElement element) {
-        return contains(element.getPriority().getId());
+        return !contains(element.getPriority().getId());
     }
 
     public Set<PRIORITY> getFilters() {
