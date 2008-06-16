@@ -62,23 +62,23 @@ public class FilterByPriorityAction extends AbstractAction implements Menu, Popu
     public JMenuItem getMenuPresenter() {
         JMenu menu = new JMenu(this);
         JCheckBoxMenuItem p1 = new JCheckBoxMenuItem(new Filter(TaskPriority.PRIORITY.P1));
-        p1.setSelected(!filter.contains(TaskPriority.PRIORITY.P1));
+        p1.setSelected(filter.contains(TaskPriority.PRIORITY.P1));
         menu.add(p1);
         //--------------------------------------------------------------------------------
         JCheckBoxMenuItem p2 = new JCheckBoxMenuItem(new Filter(TaskPriority.PRIORITY.P2));
-        p2.setSelected(!filter.contains(TaskPriority.PRIORITY.P2));
+        p2.setSelected(filter.contains(TaskPriority.PRIORITY.P2));
         menu.add(p2);
         //--------------------------------------------------------------------------------
         JCheckBoxMenuItem p3 = new JCheckBoxMenuItem(new Filter(TaskPriority.PRIORITY.P3));
-        p3.setSelected(!filter.contains(TaskPriority.PRIORITY.P3));
+        p3.setSelected(filter.contains(TaskPriority.PRIORITY.P3));
         menu.add(p3);
         //--------------------------------------------------------------------------------
         JCheckBoxMenuItem p4 = new JCheckBoxMenuItem(new Filter(TaskPriority.PRIORITY.P4));
-        p4.setSelected(!filter.contains(TaskPriority.PRIORITY.P4));
+        p4.setSelected(filter.contains(TaskPriority.PRIORITY.P4));
         menu.add(p4);
         //--------------------------------------------------------------------------------
         JCheckBoxMenuItem p5 = new JCheckBoxMenuItem(new Filter(TaskPriority.PRIORITY.P5));
-        p5.setSelected(!filter.contains(TaskPriority.PRIORITY.P5));
+        p5.setSelected(filter.contains(TaskPriority.PRIORITY.P5));
         menu.add(p5);
         //--------------------------------------------------------------------------------
         return menu;
