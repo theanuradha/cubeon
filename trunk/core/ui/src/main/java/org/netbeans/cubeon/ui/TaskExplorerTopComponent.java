@@ -17,6 +17,7 @@
 package org.netbeans.cubeon.ui;
 
 import java.awt.EventQueue;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyVetoException;
 import java.io.Serializable;
@@ -25,11 +26,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
+import org.netbeans.cubeon.tasks.core.api.NodeUtils;
 import org.netbeans.cubeon.tasks.core.api.TaskFolder;
 import org.netbeans.cubeon.tasks.core.api.TasksFileSystem;
 import org.netbeans.cubeon.tasks.core.spi.TaskNodeView;
@@ -120,44 +123,43 @@ public final class TaskExplorerTopComponent extends TopComponent implements Expl
         preferences.put(SELECTED_VIEW, view.getId());
         final Node node = view.getRootContext();
         explorerManager.setRootContext(node);
-
+          
         expand();
     }
 
     public void goInto(TaskFolder folder) {
-        if(selectedView==null){
-         loadView();
+        if (selectedView == null) {
+            loadView();
         }
-        
+
         Children children = selectedView.getRootContext().getChildren();
         final Node[] nodes = children.getNodes();
         for (Node node : nodes) {
             TaskFolder tf = node.getLookup().lookup(TaskFolder.class);
-            if(folder.equals(tf)){
-              explorerManager.setRootContext(node);
-              break;
+            if (folder.equals(tf)) {
+                explorerManager.setRootContext(node);
+                break;
             }
         }
+        goBackToRoot.setAction(new GoBack());
     }
-    public void goToRoot(){
-       if(selectedView==null){
-         loadView();
+
+    public void goToRoot() {
+        if (selectedView == null) {
+            loadView();
         }
         explorerManager.setRootContext(selectedView.getRootContext());
         expand();
+        goBackToRoot.setAction(null);
     }
+
     public void expand() {
+        taskTreeView.expandAll();
         Task task = RequestProcessor.getDefault().create(new Runnable() {
 
             public void run() {
-
-
                 Children children = explorerManager.getRootContext().getChildren();
                 final Node[] nodes = children.getNodes();
-
-                for (Node n : nodes) {
-                    taskTreeView.expandNode(n);
-                }
                 if (nodes.length > 0) {
                     Node n = nodes[0];
                     try {
@@ -165,10 +167,7 @@ public final class TaskExplorerTopComponent extends TopComponent implements Expl
                     } catch (PropertyVetoException ex) {
                         Logger.getLogger(getClass().getName()).log(Level.WARNING, ex.getMessage(), ex);
                     }
-
-
                 }
-
             }
         });
         task.schedule(200);
@@ -191,6 +190,7 @@ public final class TaskExplorerTopComponent extends TopComponent implements Expl
         taskView = DropDownButtonFactory.createDropDownButton((new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/ui/view.png"))), viewMenu);
         javax.swing.JToolBar.Separator sep = new javax.swing.JToolBar.Separator();
         focas = new javax.swing.JButton();
+        goBackToRoot = new javax.swing.JButton();
         subToolbar = new javax.swing.JToolBar();
         downMenu = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
@@ -240,6 +240,11 @@ public final class TaskExplorerTopComponent extends TopComponent implements Expl
         focas.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         mainToolBar.add(focas);
 
+        goBackToRoot.setFocusable(false);
+        goBackToRoot.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        goBackToRoot.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        mainToolBar.add(goBackToRoot);
+
         mainToolbarHolder.add(mainToolBar, java.awt.BorderLayout.CENTER);
 
         subToolbar.setFloatable(false);
@@ -279,6 +284,7 @@ private void downMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton downMenu;
     private javax.swing.JButton focas;
+    private javax.swing.JButton goBackToRoot;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JToolBar mainToolBar;
     private javax.swing.JPanel mainToolbarHolder;
@@ -325,7 +331,7 @@ private void downMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
     @Override
     public void componentOpened() {
-        EventQueue.invokeLater(new Runnable() {
+        WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
 
             public void run() {
                 loadView();
@@ -376,6 +382,22 @@ private void downMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
         public Object readResolve() {
             return TaskExplorerTopComponent.getDefault();
+        }
+    }
+
+    private class GoBack extends AbstractAction {
+
+        public GoBack() {
+            putValue(SHORT_DESCRIPTION, "Go back to Root");
+            Image image = NodeUtils.getTreeFolderIcon(false);
+            Image badge = Utilities.loadImage("org/netbeans/cubeon/ui/goBack.png");
+            Image mergeImages = Utilities.mergeImages(image, badge, 7, 0);
+            putValue(SMALL_ICON, new ImageIcon(mergeImages));
+        }
+
+        public void actionPerformed(ActionEvent e) {
+
+            goToRoot();
         }
     }
 }

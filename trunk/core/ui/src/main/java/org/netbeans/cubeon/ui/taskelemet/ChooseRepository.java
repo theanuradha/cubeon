@@ -46,7 +46,7 @@ final class ChooseRepository extends javax.swing.JPanel implements ExplorerManag
 
     @Override
     public String getName() {
-        return "Step #1";
+        return "Select Repository";
     }
 
     public boolean isTaskRepositorySelected() {

@@ -23,7 +23,7 @@ final class RepositorySettings extends JPanel {
 
     @Override
     public String getName() {
-        return "Step #2";
+        return "Configure";
     }
 
     void setWizardObject(WizardObject object) {

@@ -24,7 +24,6 @@ import org.netbeans.cubeon.tasks.spi.TaskEditorProvider.EditorAttributeHandler;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
 import org.netbeans.cubeon.tasks.spi.TaskElementChangeAdapter;
 import org.netbeans.cubeon.tasks.spi.TaskRepository;
-import org.netbeans.cubeon.tasks.spi.TaskRepositoryType;
 import org.netbeans.cubeon.ui.internals.TaskElementNode;
 import org.netbeans.cubeon.ui.util.PaintUtils;
 import org.openide.cookies.SaveCookie;
@@ -48,7 +47,6 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
     private final TaskElementNode editorNode;
     private final EditorAttributeHandler eah;
     private final Extension extension;
-    private final Extension taskRepositoryExtension;
     private final TaskElementChangeAdapter changeAdapter;
     
 
@@ -65,6 +63,7 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
 
     TaskEditorTopComponent(final TaskElement element) {
         this.element = element;
+
         initComponents();
 
         Lookup lookup = element.getLookup();
@@ -76,8 +75,7 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
         extension = element.getLookup().lookup(Extension.class);
         setIcon(element.getImage());
         TaskRepository taskRepository = element.getTaskRepository();
-        TaskRepositoryType repositoryType = taskRepository.getLookup().lookup(TaskRepositoryType.class);
-        taskRepositoryExtension = taskRepository.getLookup().lookup(Extension.class);
+
         lblHeader.setIcon(new ImageIcon(taskRepository.getImage()));
         lblHeader.setText(eah.getDisplayName());
         base.add(eah.getComponent(), BorderLayout.CENTER);
