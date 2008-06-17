@@ -17,10 +17,16 @@
 package org.netbeans.cubeon.ui.taskfolder;
 
 import java.awt.event.ActionEvent;
+import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
 import org.netbeans.cubeon.tasks.core.api.TaskFolder;
 import org.netbeans.cubeon.tasks.core.api.TaskFolderRefreshable;
+import org.netbeans.cubeon.tasks.core.api.TasksFileSystem;
+import org.netbeans.cubeon.tasks.spi.TaskElement;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
@@ -35,15 +41,38 @@ public class DeleteTaskFolderAction extends AbstractAction {
         this.folder = folder;
         putValue(NAME, NbBundle.getMessage(DeleteTaskFolderAction.class, "LBL_Delete_Folder"));
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke("DELETE"));//NOI18N
-        
+
     }
 
     public void actionPerformed(ActionEvent e) {
-        //TODO Add comnformation and
-        TaskFolder parent = folder.getParent();
-        parent.removeFolder(folder);
-        TaskFolderRefreshable refreshProvider = parent.getLookup().lookup(TaskFolderRefreshable.class);
-        assert refreshProvider != null;
-        refreshProvider.refeshNode();
+        NotifyDescriptor d =
+                new NotifyDescriptor.Confirmation(
+                "Yes to Delete Folder and move Tasks to Uncategorized.\n" +
+                "No to Delete Folder and all contaning Tasks.", "Delete Task Folder : " + folder.getName(),
+                NotifyDescriptor.YES_NO_CANCEL_OPTION);
+        Object notify = DialogDisplayer.getDefault().notify(d);
+        if (notify == NotifyDescriptor.YES_OPTION) {
+            TasksFileSystem fileSystem = Lookup.getDefault().lookup(TasksFileSystem.class);
+            TaskFolder defaultFolder = fileSystem.getDefaultFolder();
+            TaskFolder parent = folder.getParent();
+            List<TaskElement> taskElements = folder.getTaskElements();
+            for (TaskElement taskElement : taskElements) {
+                folder.removeTaskElement(taskElement);
+                defaultFolder.addTaskElement(taskElement);
+            }
+            parent.removeFolder(folder);
+            TaskFolderRefreshable refreshProvider = fileSystem.getRootTaskFolder().getLookup().lookup(TaskFolderRefreshable.class);
+            assert refreshProvider != null;
+            refreshProvider.refeshNode();
+        } else if (notify == NotifyDescriptor.NO_OPTION) {
+            TaskFolder parent = folder.getParent();
+            parent.removeFolder(folder);
+            TaskFolderRefreshable refreshProvider = parent.getLookup().lookup(TaskFolderRefreshable.class);
+            assert refreshProvider != null;
+            refreshProvider.refeshNode();
+
+
+        }
+
     }
 }

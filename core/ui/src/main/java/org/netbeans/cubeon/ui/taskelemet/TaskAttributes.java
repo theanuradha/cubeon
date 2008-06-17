@@ -24,7 +24,7 @@ final class TaskAttributes extends JPanel {
 
     @Override
     public String getName() {
-        return "Step #2";
+        return "Attributes";
     }
 
     void setWizardObject(WizardObject object) {

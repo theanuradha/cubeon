@@ -48,7 +48,7 @@ final class ChooseRepositoryProvider extends javax.swing.JPanel implements Explo
 
     @Override
     public String getName() {
-        return "Step #1";
+        return "Choose Repository Type";
     }
 
     public boolean isTypeSelected() {
