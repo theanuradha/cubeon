@@ -14,49 +14,15 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.tasks.core.api;
+package org.netbeans.cubeon.tasks.spi;
 
 import java.util.List;
-import org.netbeans.cubeon.tasks.spi.TaskElement;
-import org.netbeans.cubeon.tasks.spi.TaskContainer;
-import org.openide.util.Lookup;
 
 /**
  *
  * @author Anuradha G
  */
-public interface TaskFolder extends TaskContainer {
-
-    /**
-     * 
-     * @return Name of the folder
-     */
-    String getName();
-
-    /**
-     * 
-     * @return Description of folder
-     */
-    String getDescription();
-
-    /**
-     * 
-     * @return Parent Folder 
-     */
-    TaskFolder getParent();
-
-    /**
-     * 
-     * @return Lookup instance contain feature provided like  
-     * @link TaskFolderOparations, Node 
-     */
-    Lookup getLookup();
-
-    TaskFolder addNewFolder(String name, String description);
-
-    boolean removeFolder(TaskFolder folder);
-
-    List<TaskFolder> getSubFolders();
+public interface TaskContainer {
 
     TaskElement addTaskElement(TaskElement element);
 
