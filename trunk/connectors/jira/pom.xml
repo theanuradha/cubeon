@@ -7,7 +7,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>cubeon-jira-connecter</artifactId>
-    <packaging>nbm</packaging>
+    <packaging>pom</packaging>
     <name>Cube°n Jira Connecter</name>
     <description>Jira Connecter for the Cube°n </description>
     <version>${cubeon.release}</version>
@@ -19,31 +19,4 @@
             </plugin>
         </plugins>
     </build>
-    <dependencies>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-nodes</artifactId>
-            <version>${netbeans.release}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.netbeans.cubeon</groupId>
-            <artifactId>cubeon-tasks-spi</artifactId>
-            <version>${cubeon.release}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.netbeans.cubeon</groupId>
-            <artifactId>cubeon-context</artifactId>
-            <version>${cubeon.release}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-util</artifactId>
-            <version>${netbeans.release}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-filesystems</artifactId>
-            <version>${netbeans.release}</version>
-        </dependency>
-    </dependencies>
 </project>
