@@ -204,7 +204,7 @@ public class TaskEditorUI extends javax.swing.JPanel implements EditorAttributeH
     }
 
     private void loadDates(LocalTask localTask) {
-        DateFormat dateFormat = SimpleDateFormat.getDateInstance();
+        DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();
         if (localTask.getCreated() != null) {
             String message = NbBundle.getMessage(TaskEditorUI.class, "TaskEditorUI.lblCreated.text", dateFormat.format(localTask.getCreated()));
             lblCreated.setText(message);

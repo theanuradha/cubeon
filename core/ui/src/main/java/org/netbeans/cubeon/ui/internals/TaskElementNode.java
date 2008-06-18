@@ -85,7 +85,7 @@ public class TaskElementNode extends AbstractNode {
         super(Children.LEAF, new AbstractLookup(content));
         this.element = element;
         setDisplayName(element.getName());
-        setShortDescription(element.getDescription());
+        setShortDescription(extractTaskDescription(element));
         extension = element.getLookup().lookup(Extension.class);
 
         this.cookie = new SaveCookie() {
@@ -99,6 +99,7 @@ public class TaskElementNode extends AbstractNode {
             @Override
             public void nameChenged() {
                 setDisplayName(element.getName());
+                setShortDescription(extractTaskDescription(element));
             }
 
             @Override
@@ -109,19 +110,35 @@ public class TaskElementNode extends AbstractNode {
             @Override
             public void priorityChenged() {
                 fireIconChange();
+                setShortDescription(extractTaskDescription(element));
             }
 
             @Override
             public void typeChenged() {
                 fireIconChange();
+                setShortDescription(extractTaskDescription(element));
             }
 
             @Override
             public void statusChenged() {
                 fireDisplayNameChange(getDisplayName() + "_#", element.getName());
+                setShortDescription(extractTaskDescription(element));
             }
         };
         extension.add(changeAdapter);
+    }
+
+    private static String extractTaskDescription(TaskElement element) {
+        StringBuffer buffer = new StringBuffer("<html>");
+        buffer.append("<b>").append(element.getId()).append(" :</b> ");
+        buffer.append(element.getName()).append("<p>");
+        // buffer.append("<img src=\"").append("ADDURL").append("\" width=\"7\" height=\"16\" />");
+        buffer.append(element.getPriority().toString()).append(", ").
+                append(element.getType().getText());
+        buffer.append("<p>").append(element.getStatus().getText());
+        buffer.append("</html>");
+        return buffer.toString();
+
     }
 
     @Override

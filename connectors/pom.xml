@@ -12,7 +12,7 @@
     <description>Connectors for Cube°n </description>
     <version>${cubeon.release}</version>
     <modules>
-        <!--module>jira</module-->
+        <module>jira</module>
         <module>local</module>
     </modules>
     <build>
