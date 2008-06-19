@@ -21,6 +21,7 @@ import org.netbeans.cubeon.tasks.core.api.TaskFolder;
 import org.netbeans.cubeon.tasks.core.api.TasksFileSystem;
 import org.netbeans.cubeon.tasks.core.spi.TaskExplorerViewActionsProvider;
 import org.netbeans.cubeon.ui.TaskRepositoriesAction;
+import org.netbeans.cubeon.ui.query.NewQueryWizardAction;
 import org.netbeans.cubeon.ui.taskelemet.NewTaskWizardAction;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -63,7 +64,8 @@ public class TaskExplorerViewActions implements TaskExplorerViewActionsProvider 
         return new Action[]{
                     new AddTaskFolderAction(taskFolder),
                     new NewTaskWizardAction(NbBundle.getMessage(TaskExplorerViewActions.class,
-                    "LBL_Task"))
+                    "LBL_Task")),
+                    new NewQueryWizardAction("Query")
                 };
     }
 }

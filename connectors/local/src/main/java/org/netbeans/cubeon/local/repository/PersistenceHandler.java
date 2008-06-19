@@ -64,7 +64,7 @@ class PersistenceHandler {
     private static final String TAG_DESCRIPTION = "description";
     private LocalTaskRepository localTaskRepository;
     private FileObject baseDir;
-    private int lastId;
+
     private static final Object LOCK = new Object();
 
     PersistenceHandler(LocalTaskRepository localTaskRepository, FileObject fileObject) {

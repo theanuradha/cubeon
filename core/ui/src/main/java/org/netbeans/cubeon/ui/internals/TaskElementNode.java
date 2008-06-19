@@ -102,10 +102,6 @@ public class TaskElementNode extends AbstractNode {
                 setShortDescription(extractTaskDescription(element));
             }
 
-            @Override
-            public void descriptionChenged() {
-                setShortDescription(element.getDescription());
-            }
 
             @Override
             public void priorityChenged() {

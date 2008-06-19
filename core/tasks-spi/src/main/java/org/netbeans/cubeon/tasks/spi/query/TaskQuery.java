@@ -14,9 +14,9 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.tasks.spi;
+package org.netbeans.cubeon.tasks.spi.query;
 
-import java.awt.Image;
+import org.netbeans.cubeon.tasks.spi.*;
 import java.util.List;
 import org.openide.util.Lookup;
 
@@ -24,75 +24,38 @@ import org.openide.util.Lookup;
  *
  * @author Anuradha G
  */
-public interface TaskRepository {
+public interface TaskQuery {
+
+   
 
     /**
-     * 
-     * @return
-     */
-    String getId();
-
-    /**
-     * 
+     *
      * @return
      */
     String getName();
 
-    /**
-     * 
-     * @return
-     */
-    String getDescription();
+  
 
     /**
-     * 
+     *
+     * @return
+     */
+    TaskRepository getTaskRepository();
+
+    /**
+     *
      * @return
      */
     Lookup getLookup();
 
     /**
      *
-     * @return
      */
-    Image getImage();
+    void synchronize();
 
     /**
      *
-     * @param element
-     */
-    void validate(TaskElement element);
-
-    /*Task Element related */
-    /**
-     * 
-     * @return
-     */
-    TaskElement createTaskElement();
-
-    /**
-     * 
      * @return
      */
     List<TaskElement> getTaskElements();
-
-    /**
-     * 
-     * @param id
-     * @return
-     */
-    TaskElement getTaskElementById(String id);
-
-    /**
-     * save modifid attributes
-     * @param element 
-     */
-    void persist(TaskElement element);
-
-    /**
-     * reset modifid attributes
-     * @param element 
-     */
-    void reset(TaskElement element);
-
-
 }
