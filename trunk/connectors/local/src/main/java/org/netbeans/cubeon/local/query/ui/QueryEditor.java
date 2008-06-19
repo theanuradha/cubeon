@@ -22,13 +22,16 @@
  */
 package org.netbeans.cubeon.local.query.ui;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import org.netbeans.cubeon.local.query.LocalQuery;
 import org.netbeans.cubeon.local.repository.LocalTaskPriorityProvider;
 import org.netbeans.cubeon.local.repository.LocalTaskRepository;
 import org.netbeans.cubeon.local.repository.LocalTaskStatusProvider;
@@ -47,17 +50,44 @@ import org.openide.util.NbBundle;
 public class QueryEditor extends javax.swing.JPanel implements TaskQuerySupportProvider.ConfigurationHandler {
 
     private LocalTaskRepository repository;
-    private TaskQuery query;
+    private LocalQuery localQuery;
     private final String TAG_ALL = "All";
 
     /** Creates new form QueryEditor */
     public QueryEditor(TaskQuery query, LocalTaskRepository repository) {
-        this.query = query;
+        this.localQuery = query.getLookup().lookup(LocalQuery.class);
+        assert query != null;
         this.repository = repository;
         initComponents();
         loadAttributes(repository);
-        txtName.setText(query.getName());
+        loadTaskQuery(this.localQuery);
 
+    }
+
+    private void loadTaskQuery(LocalQuery query) {
+        txtName.setText(query.getName());
+        List<TaskPriority> priorities = query.getPriorities();
+        for (TaskPriority tp : priorities) {
+            lstPriority.setSelectedValue(tp, false);
+        }
+        if (priorities.size() == 0) {
+            lstPriority.setSelectedValue(TAG_ALL, false);
+        }
+
+        List<TaskType> types = query.getTypes();
+        for (TaskType type : types) {
+            lstType.setSelectedValue(type, false);
+        }
+        if (types.size() == 0) {
+            lstType.setSelectedValue(TAG_ALL, false);
+        }
+        List<TaskStatus> status = query.getStates();
+        for (TaskStatus ts : status) {
+            lstStatus.setSelectedValue(ts, false);
+        }
+        if (status.size() == 0) {
+            lstStatus.setSelectedValue(TAG_ALL, false);
+        }
     }
 
     private void loadAttributes(LocalTaskRepository repository) {
@@ -68,7 +98,7 @@ public class QueryEditor extends javax.swing.JPanel implements TaskQuerySupportP
             priorityModel.addElement(priority);
         }
         lstPriority.setModel(priorityModel);
-        lstPriority.setSelectedValue(TAG_ALL, false);
+
         DefaultListModel typeModel = new DefaultListModel();
         LocalTaskTypeProvider lttp = repository.getLocalTaskTypeProvider();
         typeModel.addElement(TAG_ALL);
@@ -76,7 +106,7 @@ public class QueryEditor extends javax.swing.JPanel implements TaskQuerySupportP
             typeModel.addElement(type);
         }
         lstType.setModel(typeModel);
-        lstType.setSelectedValue(TAG_ALL, false);
+
 
         DefaultListModel statusModel = new DefaultListModel();
         LocalTaskStatusProvider ltsp = repository.getLocalTaskStatusProvider();
@@ -85,13 +115,47 @@ public class QueryEditor extends javax.swing.JPanel implements TaskQuerySupportP
             statusModel.addElement(status);
         }
         lstStatus.setModel(statusModel);
-        lstStatus.setSelectedValue(TAG_ALL, false);
+
 
 
     }
 
     public TaskQuery getTaskQuery() {
-        return query;
+        localQuery.setName(txtName.getName());
+
+        Object[] selectedValues = lstPriority.getSelectedValues();
+        List<TaskPriority> prioritys = new ArrayList<TaskPriority>();
+        for (Object object : selectedValues) {
+            if (object.equals(TAG_ALL)) {
+                prioritys.clear();
+                break;
+            }
+            prioritys.add((TaskPriority) object);
+        }
+        localQuery.setPriorities(prioritys);
+
+        List<TaskStatus> states = new ArrayList<TaskStatus>();
+        selectedValues = lstStatus.getSelectedValues();
+        for (Object object : selectedValues) {
+            if (object.equals(TAG_ALL)) {
+                states.clear();
+                break;
+            }
+            states.add((TaskStatus) object);
+        }
+        localQuery.setStates(states);
+
+        List<TaskType> types = new ArrayList<TaskType>();
+        selectedValues = lstType.getSelectedValues();
+        for (Object object : selectedValues) {
+            if (object.equals(TAG_ALL)) {
+                types.clear();
+                break;
+            }
+            types.add((TaskType) object);
+        }
+        localQuery.setTypes(types);
+        return localQuery;
     }
 
     public JComponent getComponent() {
