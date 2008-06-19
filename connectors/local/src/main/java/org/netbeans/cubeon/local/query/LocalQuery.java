@@ -58,6 +58,6 @@ public class LocalQuery implements TaskQuery {
     public List<TaskElement> getTaskElements() {
 
 
-        return new ArrayList<TaskElement>();
+        return repository.getTaskElements();//FIXME
     }
 }
