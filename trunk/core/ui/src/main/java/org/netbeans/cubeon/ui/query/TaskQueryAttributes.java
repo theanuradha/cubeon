@@ -31,10 +31,14 @@ final class TaskQueryAttributes extends JPanel {
     void setWizardObject(WizardObject object) {
         TaskQuerySupportProvider tqsp = object.getRepository().getLookup().lookup(TaskQuerySupportProvider.class);
 
-        this.query = tqsp.createTaskQuery();
-        assert query != null;
 
-        handler = tqsp.createConfigurationHandler();
+        query = object.getQuery();
+        if (query == null) {
+            this.query = tqsp.createTaskQuery();
+            object.setQuery(query);
+        }
+
+        handler = tqsp.createConfigurationHandler(query);
         lblMainHeader.setText(NbBundle.getMessage(TaskQueryAttributes.class,
                 "LBL_Create_New", object.getRepository().getName()));
         lblSubHeader.setText(NbBundle.getMessage(TaskQueryAttributes.class,
@@ -44,8 +48,6 @@ final class TaskQueryAttributes extends JPanel {
         pnlHolder.repaint();
         pnlHolder.updateUI();
     }
-
-    
 
     ConfigurationHandler getHandler() {
         return handler;

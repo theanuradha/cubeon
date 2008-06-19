@@ -41,15 +41,18 @@ import org.openide.util.NbBundle;
 public class QueryEditor extends javax.swing.JPanel implements TaskQuerySupportProvider.ConfigurationHandler {
 
     private LocalTaskRepository repository;
+    private TaskQuery query;
 
     /** Creates new form QueryEditor */
-    public QueryEditor(LocalTaskRepository repository) {
+    public QueryEditor(TaskQuery query, LocalTaskRepository repository) {
+        this.query = query;
         this.repository = repository;
         initComponents();
+
     }
 
     public TaskQuery getTaskQuery() {
-       return  new LocalQuery(jTextField1.getText().trim(), repository);
+        return query;
     }
 
     public JComponent getComponent() {
@@ -95,53 +98,53 @@ public class QueryEditor extends javax.swing.JPanel implements TaskQuerySupportP
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
+        lblName = new javax.swing.JLabel();
+        txtName = new javax.swing.JTextField();
+        lblPriority = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
-        jLabel3 = new javax.swing.JLabel();
+        lstPriority = new javax.swing.JList();
+        lblType = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jList2 = new javax.swing.JList();
-        jLabel4 = new javax.swing.JLabel();
+        lstType = new javax.swing.JList();
+        lblStatus = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jList3 = new javax.swing.JList();
-        jTextField2 = new javax.swing.JTextField();
-        jCheckBox1 = new javax.swing.JCheckBox();
-        jCheckBox2 = new javax.swing.JCheckBox();
+        lstStatus = new javax.swing.JList();
+        txtContains = new javax.swing.JTextField();
+        chkSummery = new javax.swing.JCheckBox();
+        chkDescription = new javax.swing.JCheckBox();
 
-        jLabel1.setText(NbBundle.getMessage(QueryEditor.class, "QueryEditor.jLabel1.text","-")); // NOI18N
+        lblName.setText(NbBundle.getMessage(QueryEditor.class, "QueryEditor.lblName.text","-")); // NOI18N
 
-        jLabel2.setText(NbBundle.getMessage(QueryEditor.class, "QueryEditor.jLabel2.text","-")); // NOI18N
+        lblPriority.setText(NbBundle.getMessage(QueryEditor.class, "QueryEditor.lblPriority.text","-")); // NOI18N
 
-        jList1.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+        lstPriority.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "All" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
-        jScrollPane1.setViewportView(jList1);
+        jScrollPane1.setViewportView(lstPriority);
 
-        jLabel3.setText(NbBundle.getMessage(QueryEditor.class, "QueryEditor.jLabel3.text","-")); // NOI18N
+        lblType.setText(NbBundle.getMessage(QueryEditor.class, "QueryEditor.lblType.text","-")); // NOI18N
 
-        jList2.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+        lstType.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "All" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
-        jScrollPane2.setViewportView(jList2);
+        jScrollPane2.setViewportView(lstType);
 
-        jLabel4.setText(NbBundle.getMessage(QueryEditor.class, "QueryEditor.jLabel4.text","-")); // NOI18N
+        lblStatus.setText(NbBundle.getMessage(QueryEditor.class, "QueryEditor.lblStatus.text","-")); // NOI18N
 
-        jList3.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+        lstStatus.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "All" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
-        jScrollPane3.setViewportView(jList3);
+        jScrollPane3.setViewportView(lstStatus);
 
-        jCheckBox1.setText(NbBundle.getMessage(QueryEditor.class, "QueryEditor.jCheckBox1.text","-")); // NOI18N
+        chkSummery.setText(NbBundle.getMessage(QueryEditor.class, "QueryEditor.chkSummery.text","-")); // NOI18N
 
-        jCheckBox2.setText(NbBundle.getMessage(QueryEditor.class, "QueryEditor.jCheckBox2.text","-")); // NOI18N
+        chkDescription.setText(NbBundle.getMessage(QueryEditor.class, "QueryEditor.chkDescription.text","-")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -151,32 +154,32 @@ public class QueryEditor extends javax.swing.JPanel implements TaskQuerySupportP
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jCheckBox1)
+                        .addComponent(chkSummery)
                         .addGap(18, 18, 18)
-                        .addComponent(jCheckBox2))
-                    .addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 392, Short.MAX_VALUE)
+                        .addComponent(chkDescription))
+                    .addComponent(txtContains, javax.swing.GroupLayout.DEFAULT_SIZE, 374, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 64, Short.MAX_VALUE)
+                                .addComponent(lblPriority, javax.swing.GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE)
                                 .addGap(63, 63, 63))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 54, Short.MAX_VALUE)
+                                .addComponent(lblType, javax.swing.GroupLayout.DEFAULT_SIZE, 48, Short.MAX_VALUE)
                                 .addGap(73, 73, 73))
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 55, Short.MAX_VALUE)
+                                .addComponent(lblStatus, javax.swing.GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)
                                 .addGap(71, 71, 71))
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)))
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE)))
+                        .addComponent(lblName)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtName, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -184,13 +187,13 @@ public class QueryEditor extends javax.swing.JPanel implements TaskQuerySupportP
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lblName)
+                    .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel4))
+                    .addComponent(lblPriority)
+                    .addComponent(lblType)
+                    .addComponent(lblStatus))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jScrollPane3, 0, 0, Short.MAX_VALUE)
@@ -200,28 +203,28 @@ public class QueryEditor extends javax.swing.JPanel implements TaskQuerySupportP
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                 .addGap(18, 18, 18)
-                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtContains, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jCheckBox1)
-                    .addComponent(jCheckBox2))
+                    .addComponent(chkSummery)
+                    .addComponent(chkDescription))
                 .addGap(69, 69, 69))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JCheckBox jCheckBox2;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JList jList1;
-    private javax.swing.JList jList2;
-    private javax.swing.JList jList3;
+    private javax.swing.JCheckBox chkDescription;
+    private javax.swing.JCheckBox chkSummery;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
+    private javax.swing.JLabel lblName;
+    private javax.swing.JLabel lblPriority;
+    private javax.swing.JLabel lblStatus;
+    private javax.swing.JLabel lblType;
+    private javax.swing.JList lstPriority;
+    private javax.swing.JList lstStatus;
+    private javax.swing.JList lstType;
+    private javax.swing.JTextField txtContains;
+    private javax.swing.JTextField txtName;
     // End of variables declaration//GEN-END:variables
 }

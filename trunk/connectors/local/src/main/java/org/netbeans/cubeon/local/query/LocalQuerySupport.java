@@ -59,8 +59,9 @@ public class LocalQuerySupport implements TaskQuerySupportProvider {
         throw new UnsupportedOperationException();
     }
 
-    public ConfigurationHandler createConfigurationHandler() {
-        return new QueryEditor(repository);
+    public ConfigurationHandler createConfigurationHandler(TaskQuery query) {
+
+        return new QueryEditor(query, repository);
     }
 
     public TaskRepository getTaskRepository() {
