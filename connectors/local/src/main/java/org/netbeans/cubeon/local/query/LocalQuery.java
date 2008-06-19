@@ -21,6 +21,9 @@ import java.util.List;
 import org.netbeans.cubeon.local.repository.LocalTaskRepository;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
 import org.netbeans.cubeon.tasks.spi.TaskRepository;
+import org.netbeans.cubeon.tasks.spi.TaskStatus;
+import org.netbeans.cubeon.tasks.spi.TaskType;
+import org.netbeans.cubeon.tasks.spi.priority.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.Lookups;
@@ -33,6 +36,9 @@ public class LocalQuery implements TaskQuery {
 
     private String name;
     private LocalTaskRepository repository;
+    private List<TaskPriority> priorities = new ArrayList<TaskPriority>();
+    private List<TaskType> types = new ArrayList<TaskType>();
+    private List<TaskStatus> states = new ArrayList<TaskStatus>();
 
     public LocalQuery(String name, LocalTaskRepository repository) {
         this.name = name;
@@ -41,6 +47,10 @@ public class LocalQuery implements TaskQuery {
 
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public TaskRepository getTaskRepository() {
@@ -53,6 +63,38 @@ public class LocalQuery implements TaskQuery {
 
     public void synchronize() {
         //TODO
+    }
+
+    public List<TaskPriority> getPriorities() {
+        return priorities;
+    }
+
+    public void setPriorities(List<TaskPriority> priorities) {
+        this.priorities = new ArrayList<TaskPriority>(priorities);
+    }
+
+    public LocalTaskRepository getRepository() {
+        return repository;
+    }
+
+    public void setRepository(LocalTaskRepository repository) {
+        this.repository = repository;
+    }
+
+    public List<TaskStatus> getStates() {
+        return states;
+    }
+
+    public void setStates(List<TaskStatus> states) {
+        this.states = new ArrayList<TaskStatus>(states);
+    }
+
+    public List<TaskType> getTypes() {
+        return types;
+    }
+
+    public void setTypes(List<TaskType> types) {
+        this.types = new ArrayList<TaskType>(types);
     }
 
     public List<TaskElement> getTaskElements() {

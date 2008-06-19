@@ -86,7 +86,7 @@ class PersistenceHandler {
                 tasksElement.appendChild(taskElement);
 
             }
-            taskElement.setAttributeNS(NAMESPACE, TAG_QUERY, tq.getName());
+            taskElement.setAttributeNS(NAMESPACE, TAG_NAME, tq.getName());
 
             save(document);
         }
