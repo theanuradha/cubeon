@@ -61,7 +61,7 @@ public interface TaskQuerySupportProvider {
      *
      * @return
      */
-    ConfigurationHandler createConfigurationHandler();
+    ConfigurationHandler createConfigurationHandler(TaskQuery query);
 
     /**
      *
