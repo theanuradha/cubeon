@@ -16,7 +16,6 @@
  */
 package org.netbeans.cubeon.tasks.spi;
 
-import java.awt.Image;
 import javax.swing.JComponent;
 import javax.swing.event.ChangeListener;
 

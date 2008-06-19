@@ -124,7 +124,7 @@ public class LocalTaskRepositoryProvider implements TaskRepositoryType {
         return new ConfigurationHandlerImpl(this);
     }
 
-    FileObject getBaseDir() {
+    public FileObject getBaseDir() {
         return baseDir;
     }
     

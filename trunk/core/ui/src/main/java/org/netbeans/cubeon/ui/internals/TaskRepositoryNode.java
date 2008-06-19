@@ -18,10 +18,13 @@ package org.netbeans.cubeon.ui.internals;
 
 import java.awt.Image;
 import javax.swing.Action;
-import org.netbeans.cubeon.tasks.spi.Extension;
 import org.netbeans.cubeon.tasks.spi.TaskRepository;
+import org.netbeans.cubeon.tasks.spi.query.TaskQuerySupportProvider;
+import org.netbeans.cubeon.ui.query.TaskQueriesNode;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
+import org.openide.nodes.Node;
+import org.openide.util.Lookup;
 import org.openide.util.lookup.Lookups;
 
 /**
@@ -31,14 +34,13 @@ import org.openide.util.lookup.Lookups;
 public class TaskRepositoryNode extends AbstractNode {
 
     private TaskRepository repository;
-    private Extension extension;
 
     public TaskRepositoryNode(TaskRepository repository) {
-        super(Children.LEAF, Lookups.singleton(repository));
+        super(getRepositoryChildren(repository), Lookups.singleton(repository));
         this.repository = repository;
         setDisplayName(repository.getName());
         setShortDescription(repository.getDescription());
-        extension = repository.getLookup().lookup(Extension.class);
+
     }
 
     @Override
@@ -48,13 +50,24 @@ public class TaskRepositoryNode extends AbstractNode {
     }
 
     @Override
+    public Image getOpenedIcon(int arg0) {
+        return getIcon(arg0);
+    }
+
+    @Override
     public Action[] getActions(boolean arg0) {
         return new Action[0];
     }
-    /**
-    @Override
-    public String getHtmlDisplayName() {
-    return extension.getHtmlDisplayName();
+
+    private static Children getRepositoryChildren(TaskRepository repository) {
+        Children.Array array = new Children.Array();
+
+        Lookup lookup = repository.getLookup();
+        TaskQuerySupportProvider provider = lookup.lookup(TaskQuerySupportProvider.class);
+        if (provider != null) {
+            array.add(new Node[]{new TaskQueriesNode(provider)});
+        }
+        return array;
+
     }
-     **/
 }
