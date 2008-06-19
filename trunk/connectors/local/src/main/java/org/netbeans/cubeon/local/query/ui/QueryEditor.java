@@ -25,11 +25,17 @@ package org.netbeans.cubeon.local.query.ui;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.netbeans.cubeon.local.query.LocalQuery;
+import org.netbeans.cubeon.local.repository.LocalTaskPriorityProvider;
 import org.netbeans.cubeon.local.repository.LocalTaskRepository;
+import org.netbeans.cubeon.local.repository.LocalTaskStatusProvider;
+import org.netbeans.cubeon.local.repository.LocalTaskTypeProvider;
+import org.netbeans.cubeon.tasks.spi.TaskStatus;
+import org.netbeans.cubeon.tasks.spi.TaskType;
+import org.netbeans.cubeon.tasks.spi.priority.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuerySupportProvider;
 import org.openide.util.NbBundle;
@@ -42,12 +48,45 @@ public class QueryEditor extends javax.swing.JPanel implements TaskQuerySupportP
 
     private LocalTaskRepository repository;
     private TaskQuery query;
+    private final String TAG_ALL = "All";
 
     /** Creates new form QueryEditor */
     public QueryEditor(TaskQuery query, LocalTaskRepository repository) {
         this.query = query;
         this.repository = repository;
         initComponents();
+        loadAttributes(repository);
+        txtName.setText(query.getName());
+
+    }
+
+    private void loadAttributes(LocalTaskRepository repository) {
+        DefaultListModel priorityModel = new DefaultListModel();
+        priorityModel.addElement(TAG_ALL);
+        LocalTaskPriorityProvider ltpp = repository.getLocalTaskPriorityProvider();
+        for (TaskPriority priority : ltpp.getTaskPrioritys()) {
+            priorityModel.addElement(priority);
+        }
+        lstPriority.setModel(priorityModel);
+        lstPriority.setSelectedValue(TAG_ALL, false);
+        DefaultListModel typeModel = new DefaultListModel();
+        LocalTaskTypeProvider lttp = repository.getLocalTaskTypeProvider();
+        typeModel.addElement(TAG_ALL);
+        for (TaskType type : lttp.getTaskTypes()) {
+            typeModel.addElement(type);
+        }
+        lstType.setModel(typeModel);
+        lstType.setSelectedValue(TAG_ALL, false);
+
+        DefaultListModel statusModel = new DefaultListModel();
+        LocalTaskStatusProvider ltsp = repository.getLocalTaskStatusProvider();
+        statusModel.addElement(TAG_ALL);
+        for (TaskStatus status : ltsp.getStatusList()) {
+            statusModel.addElement(status);
+        }
+        lstStatus.setModel(statusModel);
+        lstStatus.setSelectedValue(TAG_ALL, false);
+
 
     }
 

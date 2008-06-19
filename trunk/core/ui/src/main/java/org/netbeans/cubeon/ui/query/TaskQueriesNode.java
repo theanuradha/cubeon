@@ -18,9 +18,9 @@ package org.netbeans.cubeon.ui.query;
 
 import java.awt.Image;
 import javax.swing.Action;
+import org.netbeans.cubeon.tasks.core.api.NodeUtils;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuerySupportProvider;
 import org.openide.nodes.AbstractNode;
-import org.openide.util.Utilities;
 
 /**
  *
@@ -43,11 +43,13 @@ public class TaskQueriesNode extends AbstractNode {
 
     @Override
     public Image getIcon(int arg0) {
-        return Utilities.loadImage("org/netbeans/cubeon/ui/queries.png");
+
+        return NodeUtils.getTreeFolderIcon(false);
     }
 
     @Override
     public Image getOpenedIcon(int arg0) {
-        return getIcon(arg0);
+
+        return NodeUtils.getTreeFolderIcon(true);
     }
 }

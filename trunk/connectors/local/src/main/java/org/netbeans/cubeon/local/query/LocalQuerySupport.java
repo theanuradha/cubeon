@@ -38,9 +38,7 @@ public class LocalQuerySupport implements TaskQuerySupportProvider {
         this.repository = repository;
         handler = new PersistenceHandler(this, repository.getProvider().getBaseDir());
         handler.refresh();
-        if (taskQuerys.size() == 0) {
-            taskQuerys.add(new LocalQuery("All Tasks", repository));//TODO
-        }
+        
     }
 
     public TaskQuery createTaskQuery() {

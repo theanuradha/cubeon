@@ -16,10 +16,8 @@
  */
 package org.netbeans.cubeon.local.repository;
 
-import java.awt.Image;
 import org.netbeans.cubeon.tasks.spi.Extension;
 import org.openide.util.Lookup;
-import org.openide.util.Utilities;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
 
