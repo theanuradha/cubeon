@@ -17,6 +17,7 @@
 package org.netbeans.cubeon.tasks.core.api;
 
 import java.util.List;
+import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.task.TaskContainer;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 
@@ -66,4 +67,8 @@ public interface TaskFolder extends TaskContainer {
     List<TaskElement> getTaskElements();
 
     boolean contains(TaskElement element);
+
+    void setTaskQuery(TaskQuery query);
+
+    TaskQuery getTaskQuery();
 }

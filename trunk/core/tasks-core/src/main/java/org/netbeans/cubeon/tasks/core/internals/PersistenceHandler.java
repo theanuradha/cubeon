@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.netbeans.cubeon.tasks.core.api.CubeonContext;
 import org.netbeans.cubeon.tasks.core.api.TaskRepositoryHandler;
+import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
+import org.netbeans.cubeon.tasks.spi.query.TaskQuerySupportProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.openide.filesystems.FileLock;
@@ -49,9 +51,9 @@ class PersistenceHandler {
     private static final String TAG_REPOSITORY = "repository";
     private static final String TAG_ID = "id";
     private static final String TAG_TASKS = "tasks";
+    private static final String TAG_QUERY = "query";
     private static final String TAG_TASK = "task";
     private static final String TAG_NAME = "name";
-    private static final String TAG_DESCRIPTION = "description";
     private TaskFolderImpl folderImpl;
 
     PersistenceHandler(TaskFolderImpl folderImpl) {
@@ -102,6 +104,51 @@ class PersistenceHandler {
         tasksElement.removeChild(taskElement);
 
         save(document);
+    }
+
+    void setTaskQuery(TaskQuery query) {
+        Document document = getDocument();
+        Element root = getRootElement(document);
+        Element taskQuery = findElement(root, TAG_QUERY, NAMESPACE);
+        //check tasksElement null and create element
+        if (taskQuery == null) {
+            taskQuery = document.createElementNS(NAMESPACE, TAG_QUERY);
+            root.appendChild(taskQuery);
+        }
+
+        taskQuery.setAttribute(TAG_NAME, query.getName());
+        taskQuery.setAttribute(TAG_REPOSITORY, query.getTaskRepository().getId());
+        save(document);
+    }
+
+    void removeTaskQuery() {
+        Document document = getDocument();
+        Element root = getRootElement(document);
+        Element taskQuery = findElement(root, TAG_QUERY, NAMESPACE);
+
+        if (taskQuery != null) {
+
+            root.removeChild(taskQuery);
+            save(document);
+        }
+    }
+
+    TaskQuery getTaskQuery() {
+        Document document = getDocument();
+        Element root = getRootElement(document);
+        Element taskQuery = findElement(root, TAG_QUERY, NAMESPACE);
+
+        if (taskQuery != null) {
+            CubeonContext context = Lookup.getDefault().lookup(CubeonContext.class);
+            TaskRepositoryHandler repositoryHandler = context.getLookup().
+                    lookup(TaskRepositoryHandler.class);
+            String name = taskQuery.getAttribute(TAG_NAME);
+            String repository = taskQuery.getAttribute(TAG_REPOSITORY);
+            TaskRepository taskRepository = repositoryHandler.getTaskRepositoryById(repository);
+            TaskQuerySupportProvider provider = taskRepository.getLookup().lookup(TaskQuerySupportProvider.class);
+            return provider.findTaskQueryByName(name);
+        }
+        return null;
     }
 
     void refresh() {
