@@ -36,12 +36,12 @@ public class LocalQuerySupport implements TaskQuerySupportProvider {
     private LocalRepositoryExtension extension;
     private PersistenceHandler handler;
 
-    public LocalQuerySupport(LocalTaskRepository repository,LocalRepositoryExtension extension) {
+    public LocalQuerySupport(LocalTaskRepository repository, LocalRepositoryExtension extension) {
         this.repository = repository;
         this.extension = extension;
         handler = new PersistenceHandler(this, repository.getProvider().getBaseDir());
         handler.refresh();
-        
+
     }
 
     public TaskQuery createTaskQuery() {
@@ -50,12 +50,6 @@ public class LocalQuerySupport implements TaskQuerySupportProvider {
 
     public List<TaskQuery> getTaskQuerys() {
         return new ArrayList<TaskQuery>(taskQuerys);
-    }
-
-    public void persist(TaskQuery query) {
-        handler.addTaskQuery(query);
-        taskQuerys.add(query);
-        extension.fireQueryAdded();
     }
 
     public void reset(TaskQuery query) {
@@ -77,5 +71,21 @@ public class LocalQuerySupport implements TaskQuerySupportProvider {
 
     void setTaskQuery(List<LocalQuery> localQuerys) {
         taskQuerys = new ArrayList<TaskQuery>(localQuerys);
+    }
+
+    public void addTaskQuery(TaskQuery query) {
+        handler.addTaskQuery(query);
+        taskQuerys.add(query);
+
+        extension.fireQueryAdded(query);
+    }
+
+    public void modifyTaskQuery(TaskQuery query) {
+        handler.addTaskQuery(query);
+    }
+
+    public void removeTaskQuery(TaskQuery query) {
+        handler.removeTaskQuery(query);
+        extension.fireQueryRemoved(query);
     }
 }

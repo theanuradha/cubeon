@@ -43,7 +43,19 @@ public interface TaskQuerySupportProvider {
      * save modifid attributes
      * @param query
      */
-    void persist(TaskQuery query);
+    void addTaskQuery(TaskQuery query);
+
+    /**
+     *
+     * @param query
+     */
+    void modifyTaskQuery(TaskQuery query);
+
+    /**
+     *
+     * @param query
+     */
+    void removeTaskQuery(TaskQuery query);
 
     /**
      * reset modifid attributes

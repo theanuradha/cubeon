@@ -16,6 +16,8 @@
  */
 package org.netbeans.cubeon.tasks.spi.repository;
 
+import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
+
 /**
  *
  * @author Anuradha G
@@ -34,12 +36,9 @@ public class RepositoryEventAdapter {
     public void descriptionChenged() {
     }
 
-    public void queryAdded() {
+    public void queryAdded(TaskQuery query) {
     }
 
-    public void queryUpdated() {
-    }
-
-    public void queryRemoved() {
+    public void queryRemoved(TaskQuery query) {
     }
 }

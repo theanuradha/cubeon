@@ -20,6 +20,7 @@ import java.awt.Image;
 import java.io.IOException;
 import javax.swing.Action;
 import org.netbeans.cubeon.tasks.spi.Extension;
+import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuerySupportProvider;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.repository.RepositoryEventAdapter;
@@ -56,17 +57,12 @@ public class TaskRepositoryNode extends AbstractNode {
                 }
 
                 @Override
-                public void queryAdded() {
+                public void queryAdded(TaskQuery query) {
                     childern.refreshNodes();
                 }
 
                 @Override
-                public void queryUpdated() {
-                    childern.refreshNodes();
-                }
-
-                @Override
-                public void queryRemoved() {
+                public void queryRemoved(TaskQuery query) {
                     childern.refreshNodes();
                 }
             };
