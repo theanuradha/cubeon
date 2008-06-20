@@ -34,14 +34,7 @@ public class TaskElementActionsProviderImpl implements TaskElementActionsProvide
 
     public Action[] getActions(TaskElement element) {
         List<Action> actions = new ArrayList<Action>();
-        actions.add(new OpenAction(element));
-        actions.add(new OpenInBrowserAction(element));
-        actions.add(null);
-        actions.add(new CopyDetailsAction(element));
-        //actions.add(new MoveToDefault(element));
-        actions.add(null);
-        //actions.add(new MoveToAction(element));
-        actions.add(new MarkAsAction(element));
+       //TODO ADD ATIONS
 
         return actions.toArray(new Action[actions.size()]);
     }

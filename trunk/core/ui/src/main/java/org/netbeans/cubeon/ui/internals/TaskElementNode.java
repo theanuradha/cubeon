@@ -25,9 +25,15 @@ import javax.swing.Action;
 import org.netbeans.cubeon.tasks.spi.task.TaskBadgeProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.Extension;
+import org.netbeans.cubeon.tasks.spi.task.TaskContainer;
 import org.netbeans.cubeon.tasks.spi.task.TaskElementActionsProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElementChangeAdapter;
+import org.netbeans.cubeon.ui.taskelemet.CopyDetailsAction;
+import org.netbeans.cubeon.ui.taskelemet.MarkAsAction;
+import org.netbeans.cubeon.ui.taskelemet.MoveToAction;
+import org.netbeans.cubeon.ui.taskelemet.MoveToDefault;
 import org.netbeans.cubeon.ui.taskelemet.OpenAction;
+import org.netbeans.cubeon.ui.taskelemet.OpenInBrowserAction;
 import org.openide.cookies.SaveCookie;
 import org.openide.filesystems.FileObject;
 import org.openide.loaders.DataLoader;
@@ -53,11 +59,13 @@ public class TaskElementNode extends AbstractNode {
     private InstanceContent content;
     private DataObject dataObject;
     private final TaskElementChangeAdapter changeAdapter;
+    private TaskContainer container;
 
-    public static TaskElementNode createNode(final TaskElement element) {
+    public static TaskElementNode createNode(final TaskContainer container, final TaskElement element) {
+
         InstanceContent content = new InstanceContent();
         content.add(element);
-        final TaskElementNode node = new TaskElementNode(element, content);
+        final TaskElementNode node = new TaskElementNode(container, element, content);
 
         node.content = content;
         node.cookie = new SaveCookie() {
@@ -72,7 +80,7 @@ public class TaskElementNode extends AbstractNode {
     public static TaskElementNode createNode(final TaskElement element, SaveCookie cookie) {
         InstanceContent content = new InstanceContent();
         content.add(element);
-        final TaskElementNode node = new TaskElementNode(element, content);
+        final TaskElementNode node = new TaskElementNode(null, element, content);
 
         node.content = content;
         node.cookie = cookie;
@@ -81,8 +89,9 @@ public class TaskElementNode extends AbstractNode {
         return node;
     }
 
-    private TaskElementNode(final TaskElement element, InstanceContent content) {
+    private TaskElementNode(final TaskContainer container, final TaskElement element, InstanceContent content) {
         super(Children.LEAF, new AbstractLookup(content));
+        this.container = container;
         this.element = element;
         setDisplayName(element.getName());
         setShortDescription(extractTaskDescription(element));
@@ -101,7 +110,6 @@ public class TaskElementNode extends AbstractNode {
                 setDisplayName(element.getName());
                 setShortDescription(extractTaskDescription(element));
             }
-
 
             @Override
             public void priorityChenged() {
@@ -161,6 +169,20 @@ public class TaskElementNode extends AbstractNode {
     @Override
     public Action[] getActions(boolean arg0) {
         List<Action> actions = new ArrayList<Action>();
+        actions.add(new OpenAction(element));
+        actions.add(new OpenInBrowserAction(element));
+        actions.add(null);
+        actions.add(new CopyDetailsAction(element));
+        if (container != null) {
+            actions.add(new MoveToDefault(container, element));
+        }
+        actions.add(null);
+        if (container != null) {
+            actions.add(new MoveToAction(container, element));
+        }
+        actions.add(new MarkAsAction(element));
+
+
         final List<TaskElementActionsProvider> providers =
                 new ArrayList<TaskElementActionsProvider>(
                 Lookup.getDefault().lookupAll(TaskElementActionsProvider.class));

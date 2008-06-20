@@ -17,6 +17,7 @@
 package org.netbeans.cubeon.ui.internals;
 
 import org.netbeans.cubeon.tasks.core.api.TaskNodeFactory;
+import org.netbeans.cubeon.tasks.spi.task.TaskContainer;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.openide.nodes.Node;
@@ -28,10 +29,14 @@ import org.openide.nodes.Node;
 public class TaskNodeFactoryImpl implements TaskNodeFactory {
 
     public Node createTaskElementNode(TaskElement element, boolean withChildern) {
-        return TaskElementNode.createNode(element);
+        return TaskElementNode.createNode(null, element);
     }
 
     public Node createTaskRepositoryNode(TaskRepository repository, boolean withChildern) {
         return TaskRepositoryNode.createTaskRepositoryNode(repository, withChildern);
+    }
+
+    public Node createTaskElementNode(TaskContainer container, TaskElement element, boolean withChildern) {
+        return TaskElementNode.createNode(container, element);
     }
 }

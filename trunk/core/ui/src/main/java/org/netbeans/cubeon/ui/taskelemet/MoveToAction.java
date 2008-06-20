@@ -26,6 +26,7 @@ import org.netbeans.cubeon.tasks.core.api.NodeUtils;
 import org.netbeans.cubeon.tasks.core.api.TaskFolder;
 import org.netbeans.cubeon.tasks.core.api.TaskFolderRefreshable;
 import org.netbeans.cubeon.tasks.core.api.TasksFileSystem;
+import org.netbeans.cubeon.tasks.spi.task.TaskContainer;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.ui.taskfolder.AddTaskFolder;
 import org.openide.DialogDescriptor;
@@ -42,9 +43,11 @@ import org.openide.util.actions.Presenter.Popup;
 public class MoveToAction extends AbstractAction implements Menu, Popup {
 
     private TaskElement element;
+    private TaskContainer container;
 
-    public MoveToAction(TaskElement element) {
+    public MoveToAction(TaskContainer container, TaskElement element) {
         this.element = element;
+        this.container = container;
         putValue(NAME, NbBundle.getMessage(MoveToAction.class, "LBL_Move_To"));
     }
 
@@ -80,12 +83,14 @@ public class MoveToAction extends AbstractAction implements Menu, Popup {
         }
 
         public void actionPerformed(ActionEvent e) {
-            TaskFolder old = findContainTaskFolder(element);
-            if (old != null) {
-                old.removeTaskElement(element);
-                TaskFolderRefreshable oldTfr = old.getLookup().lookup(TaskFolderRefreshable.class);
-                oldTfr.refeshNode();
+            if (container != null) {
+                container.removeTaskElement(element);
+                TaskFolderRefreshable oldTfr = container.getLookup().lookup(TaskFolderRefreshable.class);
+                if (oldTfr != null) {
+                    oldTfr.refeshNode();
+                }
             }
+
             folder.addTaskElement(element);
             TaskFolderRefreshable newTfr = folder.getLookup().lookup(TaskFolderRefreshable.class);
             newTfr.refeshNode();
@@ -118,10 +123,13 @@ public class MoveToAction extends AbstractAction implements Menu, Popup {
                     });
             Object ret = DialogDisplayer.getDefault().notify(dd);
             if (atf.getOKButton() == ret) {
-                TaskFolder old = findContainTaskFolder(element);
-                if (old != null) {
-                    old.removeTaskElement(element);
 
+                if (container != null) {
+                    container.removeTaskElement(element);
+                    TaskFolderRefreshable oldTfr = container.getLookup().lookup(TaskFolderRefreshable.class);
+                    if (oldTfr != null) {
+                        oldTfr.refeshNode();
+                    }
                 }
                 TaskFolder newFolder = folder.addNewFolder(atf.getFolderName(), atf.getFolderDescription());
                 newFolder.addTaskElement(element);
@@ -131,17 +139,5 @@ public class MoveToAction extends AbstractAction implements Menu, Popup {
 
             }
         }
-    }
-
-    private TaskFolder findContainTaskFolder(TaskElement element) {
-        TasksFileSystem fileSystem = Lookup.getDefault().lookup(TasksFileSystem.class);
-        List<TaskFolder> folders = fileSystem.getRootTaskFolder().getSubFolders();
-        for (TaskFolder taskFolder : folders) {
-            if (taskFolder.contains(element)) {
-                return taskFolder;
-            }
-
-        }
-        return null;
     }
 }
