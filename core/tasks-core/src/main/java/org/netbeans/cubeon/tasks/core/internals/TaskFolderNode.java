@@ -33,6 +33,7 @@ import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.util.Utilities;
 import org.openide.util.actions.Presenter;
 import org.openide.util.actions.Presenter.Popup;
 import org.openide.util.lookup.Lookups;
@@ -55,12 +56,22 @@ public class TaskFolderNode extends AbstractNode {
 
     @Override
     public Image getIcon(int i) {
-        return NodeUtils.getTreeFolderIcon(false);
+        Image image = NodeUtils.getTreeFolderIcon(false);
+        if (folder.getTaskQuery() != null) {
+            image = Utilities.mergeImages(image,
+                    Utilities.loadImage("org/netbeans/cubeon/tasks/core/badge_repository.png"), 12, 0);
+        }
+        return image;
     }
 
     @Override
     public Image getOpenedIcon(int i) {
-        return NodeUtils.getTreeFolderIcon(true);
+        Image image = NodeUtils.getTreeFolderIcon(true);
+        if (folder.getTaskQuery() != null) {
+            image = Utilities.mergeImages(image,
+                    Utilities.loadImage("org/netbeans/cubeon/tasks/core/badge_repository.png"), 12, 0);
+        }
+        return image;
     }
 
     @Override
@@ -109,9 +120,12 @@ public class TaskFolderNode extends AbstractNode {
                     new ArrayList<TaskFolderActionsProvider>(
                     Lookup.getDefault().lookupAll(TaskFolderActionsProvider.class));
 
-            Collections.sort(providers, new Comparator<TaskFolderActionsProvider>() {
+            Collections.sort(providers, new Comparator<TaskFolderActionsProvider
 
-                public int compare(TaskFolderActionsProvider o1,
+
+                      > () {
+
+                         public int compare(TaskFolderActionsProvider o1,
                         TaskFolderActionsProvider o2) {
                     if (o1.getPosition() == o2.getPosition()) {
                         return 0;
@@ -152,4 +166,8 @@ public class TaskFolderNode extends AbstractNode {
             return menu;
         }
     }
+    void refreshIcon(){
+     fireIconChange();
+    }
+
 }
