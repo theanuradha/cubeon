@@ -48,7 +48,7 @@ public class DeleteTaskFolderAction extends AbstractAction {
         NotifyDescriptor d =
                 new NotifyDescriptor.Confirmation(
                 "Yes to Delete Folder and move Tasks to Uncategorized.\n" +
-                "No to Delete Folder and all contaning Tasks.", "Delete Task Folder : " + folder.getName(),
+                "No to Delete Folder and remove all contaning Tasks.", "Delete Task Folder : " + folder.getName(),
                 NotifyDescriptor.YES_NO_CANCEL_OPTION);
         Object notify = DialogDisplayer.getDefault().notify(d);
         if (notify == NotifyDescriptor.YES_OPTION) {
