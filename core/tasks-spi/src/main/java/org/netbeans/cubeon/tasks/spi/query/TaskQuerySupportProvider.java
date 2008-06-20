@@ -35,6 +35,13 @@ public interface TaskQuerySupportProvider {
 
     /**
      *
+     * @param name
+     * @return
+     */
+    TaskQuery findTaskQueryByName(String name);
+
+    /**
+     *
      * @return
      */
     List<TaskQuery> getTaskQuerys();

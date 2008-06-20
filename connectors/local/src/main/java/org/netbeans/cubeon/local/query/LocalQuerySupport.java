@@ -88,4 +88,13 @@ public class LocalQuerySupport implements TaskQuerySupportProvider {
         handler.removeTaskQuery(query);
         extension.fireQueryRemoved(query);
     }
+
+    public TaskQuery findTaskQueryByName(String name) {
+        for (TaskQuery query : getTaskQuerys()) {
+            if (name.equals(query.getName())) {
+                return query;
+            }
+        }
+        return null;
+    }
 }
