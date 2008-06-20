@@ -17,15 +17,15 @@
 package org.netbeans.cubeon.ui.internals;
 
 import java.awt.Image;
+import java.io.IOException;
 import javax.swing.Action;
-import org.netbeans.cubeon.tasks.spi.TaskRepository;
+import org.netbeans.cubeon.tasks.spi.Extension;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuerySupportProvider;
-import org.netbeans.cubeon.ui.query.TaskQueriesNode;
+import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
+import org.netbeans.cubeon.tasks.spi.repository.RepositoryEventAdapter;
+import org.netbeans.cubeon.ui.query.TaskQueryChildern;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
-import org.openide.nodes.Node;
-import org.openide.util.Lookup;
-import org.openide.util.lookup.Lookups;
 
 /**
  *
@@ -34,12 +34,70 @@ import org.openide.util.lookup.Lookups;
 public class TaskRepositoryNode extends AbstractNode {
 
     private TaskRepository repository;
+    private final Extension extension;
+    private RepositoryEventAdapter eventAdapter;
 
-    public TaskRepositoryNode(TaskRepository repository) {
-        super(getRepositoryChildren(repository), Lookups.singleton(repository));
+    public static TaskRepositoryNode createTaskRepositoryNode(final TaskRepository repository, boolean withChildern) {
+        final TaskRepositoryNode node;
+
+        if (withChildern && repository.getLookup().lookup(TaskQuerySupportProvider.class) != null) {
+            final TaskQueryChildern childern = new TaskQueryChildern(repository);
+            node = new TaskRepositoryNode(childern, repository);
+            node.eventAdapter = new RepositoryEventAdapter() {
+
+                @Override
+                public void nameChenged() {
+                    node.setDisplayName(repository.getName());
+                }
+
+                @Override
+                public void descriptionChenged() {
+                    node.setShortDescription(repository.getDescription());
+                }
+
+                @Override
+                public void queryAdded() {
+                    childern.refreshNodes();
+                }
+
+                @Override
+                public void queryUpdated() {
+                    childern.refreshNodes();
+                }
+
+                @Override
+                public void queryRemoved() {
+                    childern.refreshNodes();
+                }
+            };
+            node.extension.add(node.eventAdapter);
+        } else {
+            node = new TaskRepositoryNode(Children.LEAF, repository);
+
+            node.eventAdapter = new RepositoryEventAdapter() {
+
+                @Override
+                public void nameChenged() {
+                    node.setDisplayName(repository.getName());
+                }
+
+                @Override
+                public void descriptionChenged() {
+                    node.setShortDescription(repository.getDescription());
+                }
+            };
+            node.extension.add(node.eventAdapter);
+        }
+        return node;
+    }
+
+    private TaskRepositoryNode(Children children, final TaskRepository repository) {
+        super(children);
+        extension = repository.getLookup().lookup(Extension.class);
         this.repository = repository;
         setDisplayName(repository.getName());
         setShortDescription(repository.getDescription());
+
 
     }
 
@@ -59,15 +117,9 @@ public class TaskRepositoryNode extends AbstractNode {
         return new Action[0];
     }
 
-    private static Children getRepositoryChildren(TaskRepository repository) {
-        Children.Array array = new Children.Array();
-
-        Lookup lookup = repository.getLookup();
-        TaskQuerySupportProvider provider = lookup.lookup(TaskQuerySupportProvider.class);
-        if (provider != null) {
-            array.add(new Node[]{new TaskQueriesNode(provider)});
-        }
-        return array;
-
+    @Override
+    public void destroy() throws IOException {
+        super.destroy();
+        extension.remove(eventAdapter);
     }
 }

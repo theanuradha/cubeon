@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.netbeans.cubeon.local.repository.LocalTaskRepository;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
-import org.netbeans.cubeon.tasks.spi.TaskRepository;
+import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.TaskStatus;
 import org.netbeans.cubeon.tasks.spi.TaskType;
 import org.netbeans.cubeon.tasks.spi.priority.TaskPriority;
@@ -39,6 +39,9 @@ public class LocalQuery implements TaskQuery {
     private List<TaskPriority> priorities = new ArrayList<TaskPriority>();
     private List<TaskType> types = new ArrayList<TaskType>();
     private List<TaskStatus> states = new ArrayList<TaskStatus>();
+    private String contain;
+    private boolean summary;
+    private boolean description;
 
     public LocalQuery(String name, LocalTaskRepository repository) {
         this.name = name;
@@ -101,5 +104,29 @@ public class LocalQuery implements TaskQuery {
 
 
         return repository.getTaskElements();//FIXME
+    }
+
+    public String getContain() {
+        return contain;
+    }
+
+    public void setContain(String contain) {
+        this.contain = contain;
+    }
+
+    public boolean isDescription() {
+        return description;
+    }
+
+    public void setDescription(boolean description) {
+        this.description = description;
+    }
+
+    public boolean isSummary() {
+        return summary;
+    }
+
+    public void setSummary(boolean summary) {
+        this.summary = summary;
     }
 }

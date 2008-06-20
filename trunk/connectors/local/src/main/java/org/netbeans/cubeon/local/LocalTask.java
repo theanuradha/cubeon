@@ -25,7 +25,7 @@ import org.netbeans.cubeon.local.repository.*;
 import org.netbeans.cubeon.tasks.spi.TaskEditorProvider;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
 import org.netbeans.cubeon.tasks.spi.priority.TaskPriority;
-import org.netbeans.cubeon.tasks.spi.TaskRepository;
+import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.TaskStatus;
 import org.netbeans.cubeon.tasks.spi.TaskType;
 import org.openide.util.Lookup;

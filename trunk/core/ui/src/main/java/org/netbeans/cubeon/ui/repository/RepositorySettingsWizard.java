@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.Set;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.netbeans.cubeon.tasks.spi.TaskRepositoryType.ConfigurationHandler;
+import org.netbeans.cubeon.tasks.spi.repository.TaskRepositoryType.ConfigurationHandler;
 import org.netbeans.cubeon.ui.repository.NewRepositoryWizardAction.WizardObject;
 import org.openide.WizardDescriptor;
 import org.openide.util.HelpCtx;

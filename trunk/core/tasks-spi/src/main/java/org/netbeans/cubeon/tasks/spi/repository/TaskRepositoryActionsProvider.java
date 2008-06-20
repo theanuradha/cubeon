@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.netbeans.cubeon.tasks.spi;
+package org.netbeans.cubeon.tasks.spi.repository;
 
 import javax.swing.Action;
 

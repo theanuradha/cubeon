@@ -88,6 +88,10 @@ public class QueryEditor extends javax.swing.JPanel implements TaskQuerySupportP
         if (status.size() == 0) {
             lstStatus.setSelectedValue(TAG_ALL, false);
         }
+
+        txtContains.setText(query.getContain());
+        chkSummery.setSelected(query.isSummary());
+        chkDescription.setSelected(query.isDescription());
     }
 
     private void loadAttributes(LocalTaskRepository repository) {
@@ -118,10 +122,11 @@ public class QueryEditor extends javax.swing.JPanel implements TaskQuerySupportP
 
 
 
+
     }
 
     public TaskQuery getTaskQuery() {
-        localQuery.setName(txtName.getName());
+        localQuery.setName(txtName.getText().trim());
 
         Object[] selectedValues = lstPriority.getSelectedValues();
         List<TaskPriority> prioritys = new ArrayList<TaskPriority>();
@@ -155,6 +160,10 @@ public class QueryEditor extends javax.swing.JPanel implements TaskQuerySupportP
             types.add((TaskType) object);
         }
         localQuery.setTypes(types);
+
+        localQuery.setContain(txtContains.getText().trim());
+        localQuery.setSummary(chkSummery.isSelected());
+        localQuery.setDescription(chkDescription.isSelected());
         return localQuery;
     }
 

@@ -16,6 +16,7 @@
  */
 package org.netbeans.cubeon.tasks.spi.query;
 
+import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.*;
 import java.util.List;
 import org.openide.util.Lookup;

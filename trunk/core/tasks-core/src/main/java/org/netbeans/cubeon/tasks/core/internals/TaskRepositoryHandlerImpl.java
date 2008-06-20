@@ -19,8 +19,8 @@ package org.netbeans.cubeon.tasks.core.internals;
 import java.util.ArrayList;
 import java.util.List;
 import org.netbeans.cubeon.tasks.core.api.TaskRepositoryHandler;
-import org.netbeans.cubeon.tasks.spi.TaskRepository;
-import org.netbeans.cubeon.tasks.spi.TaskRepositoryType;
+import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
+import org.netbeans.cubeon.tasks.spi.repository.TaskRepositoryType;
 import org.openide.util.Lookup;
 
 /**

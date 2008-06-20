@@ -12,7 +12,7 @@ import java.util.List;
 import javax.swing.Action;
 import org.netbeans.cubeon.tasks.core.api.CubeonContext;
 import org.netbeans.cubeon.tasks.core.api.TaskRepositoryHandler;
-import org.netbeans.cubeon.tasks.spi.TaskRepositoryType;
+import org.netbeans.cubeon.tasks.spi.repository.TaskRepositoryType;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.BeanTreeView;
 import org.openide.nodes.AbstractNode;

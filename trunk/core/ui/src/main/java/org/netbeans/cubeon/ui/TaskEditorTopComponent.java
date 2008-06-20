@@ -23,7 +23,7 @@ import org.netbeans.cubeon.tasks.spi.TaskEditorProvider;
 import org.netbeans.cubeon.tasks.spi.TaskEditorProvider.EditorAttributeHandler;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
 import org.netbeans.cubeon.tasks.spi.TaskElementChangeAdapter;
-import org.netbeans.cubeon.tasks.spi.TaskRepository;
+import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.ui.internals.TaskElementNode;
 import org.netbeans.cubeon.ui.util.PaintUtils;
 import org.openide.cookies.SaveCookie;

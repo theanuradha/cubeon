@@ -16,6 +16,7 @@
  */
 package org.netbeans.cubeon.tasks.spi;
 
+import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.priority.TaskPriority;
 import java.awt.Image;
 import java.net.URL;
