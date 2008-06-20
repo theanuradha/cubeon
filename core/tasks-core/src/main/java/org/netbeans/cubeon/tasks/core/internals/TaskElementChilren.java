@@ -72,7 +72,7 @@ public class TaskElementChilren extends Children.Keys<TaskElement> implements Re
 
     @Override
     protected Node[] createNodes(TaskElement element) {
-        return new Node[]{factory.createTaskElementNode(element,true)};
+        return new Node[]{factory.createTaskElementNode(folder,element,true)};
     }
 
     @Override

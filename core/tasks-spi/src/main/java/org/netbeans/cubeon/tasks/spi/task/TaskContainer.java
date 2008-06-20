@@ -17,12 +17,15 @@
 package org.netbeans.cubeon.tasks.spi.task;
 
 import java.util.List;
+import org.openide.util.Lookup;
 
 /**
  *
  * @author Anuradha G
  */
 public interface TaskContainer {
+
+    public Lookup getLookup();
 
     TaskElement addTaskElement(TaskElement element);
 

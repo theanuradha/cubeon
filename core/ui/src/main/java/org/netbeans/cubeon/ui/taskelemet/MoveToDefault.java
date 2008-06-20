@@ -18,6 +18,8 @@ package org.netbeans.cubeon.ui.taskelemet;
 
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
+import org.netbeans.cubeon.tasks.core.api.TaskFolderRefreshable;
+import org.netbeans.cubeon.tasks.spi.task.TaskContainer;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 
 /**
@@ -26,21 +28,26 @@ import org.netbeans.cubeon.tasks.spi.task.TaskElement;
  */
 public class MoveToDefault extends AbstractAction {
 
-
+    private TaskContainer container;
     private TaskElement element;
 
-    public MoveToDefault(TaskElement taskElement) {
+    public MoveToDefault(TaskContainer container, TaskElement taskElement) {
+        this.container = container;
         this.element = taskElement;
-        
+
         putValue(NAME, "Remove Task");
     }
 
     public void actionPerformed(ActionEvent e) {
+        if (container != null) {
+            container.removeTaskElement(element);
+            TaskFolderRefreshable oldTfr = container.getLookup().lookup(TaskFolderRefreshable.class);
+            if (oldTfr != null) {
+                oldTfr.refeshNode();
+            }
+        }
 
 
-        
 
     }
-
-   
 }
