@@ -25,6 +25,7 @@ import org.netbeans.cubeon.tasks.core.api.RefreshableChildren;
 import org.netbeans.cubeon.tasks.core.api.TaskFolder;
 import org.netbeans.cubeon.tasks.core.api.TaskFolderOparations;
 import org.netbeans.cubeon.tasks.core.api.TaskFolderRefreshable;
+import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
@@ -49,6 +50,7 @@ class TaskFolderImpl implements TaskFolder, TaskFolderOparations, TaskFolderRefr
     protected final List<TaskFolderImpl> taskFolders = new ArrayList<TaskFolderImpl>();
     protected final List<TaskElement> taskElements = new ArrayList<TaskElement>();
     protected final PersistenceHandler persistenceHandler;
+    private TaskQuery taskQuery;
 
     protected TaskFolderImpl(TaskFolderImpl parent, String name,
             FileObject fileObject, String description, boolean basic) {
@@ -64,6 +66,10 @@ class TaskFolderImpl implements TaskFolder, TaskFolderOparations, TaskFolderRefr
             persistenceHandler.refresh();
             folderChildren = new TaskElementChilren(this);
             folderNode = new TaskFolderNode(this, folderChildren.getChildren());
+        }
+        taskQuery=persistenceHandler.getTaskQuery();
+        if(taskQuery!=null){
+          //todo Add
         }
     }
 
@@ -246,4 +252,12 @@ class TaskFolderImpl implements TaskFolder, TaskFolderOparations, TaskFolderRefr
     }
 
 
+    public void setTaskQuery(TaskQuery query) {
+        this.taskQuery = query;
+       persistenceHandler.setTaskQuery(query);
+    }
+
+    public TaskQuery getTaskQuery() {
+        return taskQuery;
+    }
 }
