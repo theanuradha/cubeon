@@ -37,14 +37,16 @@ public class TaskQueryNode extends AbstractNode {
         setDisplayName(query.getName());
     }
 
-     @Override
+    @Override
     public Action[] getActions(boolean arg0) {
-        return new Action[]{new SynchronizeWithAction(query)};
+        return new Action[]{new SynchronizeWithAction(query),
+                    null,
+                    new SynchronizeQuery(query)
+                };
     }
 
     @Override
     public Image getIcon(int arg0) {
         return Utilities.loadImage("org/netbeans/cubeon/ui/query.png");
     }
-
 }

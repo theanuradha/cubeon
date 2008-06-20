@@ -14,33 +14,17 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.ui.taskelemet;
-
-import java.awt.event.ActionEvent;
-import javax.swing.AbstractAction;
-import org.netbeans.cubeon.tasks.spi.task.TaskElement;
+package org.netbeans.cubeon.tasks.spi.query;
 
 /**
  *
  * @author Anuradha G
  */
-public class MoveToDefault extends AbstractAction {
+public class TaskQueryEventAdapter {
 
-
-    private TaskElement element;
-
-    public MoveToDefault(TaskElement taskElement) {
-        this.element = taskElement;
-        
-        putValue(NAME, "Remove Task");
+    public void atributesupdated() {
     }
 
-    public void actionPerformed(ActionEvent e) {
-
-
-        
-
+    public void querySynchronized() {
     }
-
-   
 }
