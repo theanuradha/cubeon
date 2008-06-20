@@ -14,24 +14,42 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.ui.internals;
-
-import org.netbeans.cubeon.tasks.core.api.TaskNodeFactory;
-import org.netbeans.cubeon.tasks.spi.task.TaskElement;
-import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
-import org.openide.nodes.Node;
+package org.netbeans.cubeon.tasks.spi.task;
 
 /**
  *
  * @author Anuradha G
  */
-public class TaskNodeFactoryImpl implements TaskNodeFactory {
+public interface TaskElementFilter {
 
-    public Node createTaskElementNode(TaskElement element, boolean withChildern) {
-        return TaskElementNode.createNode(element);
-    }
+    /**
+     * 
+     * @return
+     */
+    String getName();
 
-    public Node createTaskRepositoryNode(TaskRepository repository, boolean withChildern) {
-        return TaskRepositoryNode.createTaskRepositoryNode(repository, withChildern);
-    }
+    /**
+     * 
+     * @return
+     */
+    String getDescription();
+
+    /**
+     * 
+     * @return true if this filter enabled
+     */
+    boolean isEnable();
+
+    /**
+     * 
+     * @param b 
+     */
+    void setEnable(boolean b);
+
+    /**
+     * 
+     * @param element
+     * @return true if task match the filterd criteria  
+     */
+    boolean isFiltered(TaskElement element);
 }

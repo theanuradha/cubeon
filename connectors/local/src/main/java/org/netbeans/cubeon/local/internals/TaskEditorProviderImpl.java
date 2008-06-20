@@ -19,7 +19,7 @@ package org.netbeans.cubeon.local.internals;
 import org.netbeans.cubeon.local.LocalTask;
 import org.netbeans.cubeon.local.ui.BasicAttributeHandlerImpl;
 import org.netbeans.cubeon.local.ui.TaskEditorUI;
-import org.netbeans.cubeon.tasks.spi.TaskEditorProvider;
+import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider;
 
 /**
  *

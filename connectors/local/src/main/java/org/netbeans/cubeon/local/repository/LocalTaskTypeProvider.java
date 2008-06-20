@@ -18,8 +18,8 @@ package org.netbeans.cubeon.local.repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.netbeans.cubeon.tasks.spi.TaskType;
-import org.netbeans.cubeon.tasks.spi.TaskTypeProvider;
+import org.netbeans.cubeon.tasks.spi.task.TaskType;
+import org.netbeans.cubeon.tasks.spi.repository.TaskTypeProvider;
 
 /**
  *

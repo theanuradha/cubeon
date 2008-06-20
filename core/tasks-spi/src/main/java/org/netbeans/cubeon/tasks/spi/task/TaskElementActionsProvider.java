@@ -14,45 +14,27 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.tasks.spi;
+
+package org.netbeans.cubeon.tasks.spi.task;
+
+import javax.swing.Action;
 
 /**
  *
  * @author Anuradha
  */
-public class  TaskType {
-
-    private String id;
-    private String text;
+public interface TaskElementActionsProvider{
+   /**
+     * Use to sort number 
+     * @return Number 
+     */
+    int getPosition();
 
     /**
+     *  Actions
      * 
-     * @param id
-     * @param text
+     * @param element 
+     * @return Actions that show in top level
      */
-    public TaskType(String id, String text) {
-        this.id = id;
-        this.text = text;
-    }
-
-    /**
-     * 
-     * @return
-     */
-    public String getText() {
-        return text;
-    }
-
-    /**
-     * 
-     * @return
-     */
-    public String getId() {
-        return id;
-    }
-
-    @Override
-    public String toString() {
-        return getText();
-    }
+    Action[] getActions(TaskElement element);
 }

@@ -16,8 +16,8 @@
  */
 package org.netbeans.cubeon.ui.filters;
 
-import org.netbeans.cubeon.tasks.spi.TaskElement;
-import org.netbeans.cubeon.tasks.spi.TaskElementFilter;
+import org.netbeans.cubeon.tasks.spi.task.TaskElement;
+import org.netbeans.cubeon.tasks.spi.task.TaskElementFilter;
 import org.netbeans.cubeon.ui.UIPreferences;
 
 /**

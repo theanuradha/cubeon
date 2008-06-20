@@ -24,7 +24,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import org.netbeans.cubeon.tasks.core.api.TaskFolder;
 import org.netbeans.cubeon.tasks.core.api.TaskFolderRefreshable;
-import org.netbeans.cubeon.tasks.spi.TaskElementComparator;
+import org.netbeans.cubeon.tasks.spi.task.TaskElementComparator;
 import org.netbeans.cubeon.ui.TaskExplorerTopComponent;
 import org.openide.util.Lookup;
 import org.openide.util.actions.Presenter.Menu;

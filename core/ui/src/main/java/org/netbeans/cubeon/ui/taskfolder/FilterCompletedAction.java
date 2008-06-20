@@ -23,7 +23,7 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenuItem;
 import org.netbeans.cubeon.tasks.core.api.TaskFolder;
 import org.netbeans.cubeon.tasks.core.api.TaskFolderRefreshable;
-import org.netbeans.cubeon.tasks.spi.TaskElementFilter;
+import org.netbeans.cubeon.tasks.spi.task.TaskElementFilter;
 import org.netbeans.cubeon.ui.TaskExplorerTopComponent;
 import org.netbeans.cubeon.ui.filters.TaskCompletedFilter;
 import org.openide.util.Lookup;

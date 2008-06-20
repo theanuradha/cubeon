@@ -19,7 +19,7 @@ package org.netbeans.cubeon.ui.taskelemet;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
-import org.netbeans.cubeon.tasks.spi.TaskElement;
+import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.util.Lookup;
 
 /**

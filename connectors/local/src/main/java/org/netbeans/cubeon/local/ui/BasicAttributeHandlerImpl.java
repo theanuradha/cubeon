@@ -23,8 +23,8 @@ import javax.swing.JComponent;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.netbeans.cubeon.local.LocalTask;
-import org.netbeans.cubeon.tasks.spi.TaskEditorProvider;
-import org.netbeans.cubeon.tasks.spi.TaskElement;
+import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider;
+import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.util.NbBundle;
 
 /**

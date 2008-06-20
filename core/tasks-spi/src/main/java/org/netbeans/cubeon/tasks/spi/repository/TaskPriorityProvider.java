@@ -14,40 +14,21 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.tasks.spi;
+package org.netbeans.cubeon.tasks.spi.repository;
+
+import org.netbeans.cubeon.tasks.spi.task.*;
+import java.util.List;
 
 /**
  *
- * @author Anuradha
+ * @author Anuradha G
  */
-public class TaskElementChangeAdapter {
+public interface TaskPriorityProvider {
 
     /**
      * 
+     * @return list of TaskPriority that support by 
+     * providing repository implementation
      */
-    public void nameChenged() {
-    }
-
-    /**
-     * 
-     */
-    public void descriptionChenged() {
-    }
-
-    /**
-     * 
-     */
-    public void priorityChenged() {
-    }
-
-    /**
-     * 
-     */
-    public void statusChenged() {
-    }
-    /**
-     * 
-     */
-    public void typeChenged() {
-    }
+    List<TaskPriority> getTaskPrioritys();
 }

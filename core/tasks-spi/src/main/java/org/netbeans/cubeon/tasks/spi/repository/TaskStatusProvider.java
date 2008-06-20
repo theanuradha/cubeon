@@ -14,45 +14,21 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.tasks.spi;
+package org.netbeans.cubeon.tasks.spi.repository;
+
+import org.netbeans.cubeon.tasks.spi.task.*;
+import java.util.List;
 
 /**
  *
  * @author Anuradha G
  */
-public class TaskStatus {
-
-    private String id;
-    private String text;
+public interface TaskStatusProvider {
 
     /**
      * 
-     * @param id
-     * @param text
+     * @return list of TaskStatus that support by 
+     * providing repository implementation
      */
-    public TaskStatus(String id, String text) {
-        this.id = id;
-        this.text = text;
-    }
-
-    /**
-     * 
-     * @return
-     */
-    public String getText() {
-        return text;
-    }
-
-    /**
-     * 
-     * @return
-     */
-    public String getId() {
-        return id;
-    }
-
-    @Override
-    public String toString() {
-        return getText();
-    }
+    List<TaskStatus> getStatusList();
 }

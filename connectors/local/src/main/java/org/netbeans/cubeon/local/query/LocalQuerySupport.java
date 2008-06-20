@@ -38,6 +38,7 @@ public class LocalQuerySupport implements TaskQuerySupportProvider {
 
     public LocalQuerySupport(LocalTaskRepository repository,LocalRepositoryExtension extension) {
         this.repository = repository;
+        this.extension = extension;
         handler = new PersistenceHandler(this, repository.getProvider().getBaseDir());
         handler.refresh();
         

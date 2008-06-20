@@ -6,9 +6,9 @@ package org.netbeans.cubeon.ui.taskelemet;
 
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
-import org.netbeans.cubeon.tasks.spi.TaskEditorProvider;
-import org.netbeans.cubeon.tasks.spi.TaskEditorProvider.BasicAttributeHandler;
-import org.netbeans.cubeon.tasks.spi.TaskElement;
+import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider;
+import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider.BasicAttributeHandler;
+import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.ui.taskelemet.NewTaskWizardAction.WizardObject;
 import org.openide.util.NbBundle;
 

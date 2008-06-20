@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.netbeans.cubeon.local.LocalTask;
 import org.netbeans.cubeon.local.query.LocalQuerySupport;
-import org.netbeans.cubeon.tasks.spi.TaskElement;
+import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.openide.util.Lookup;
 import org.openide.util.Utilities;
