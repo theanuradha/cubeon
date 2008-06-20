@@ -16,6 +16,7 @@
  */
 package org.netbeans.cubeon.tasks.spi.query;
 
+import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.*;
 import java.util.List;

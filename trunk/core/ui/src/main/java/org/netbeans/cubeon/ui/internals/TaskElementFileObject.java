@@ -24,7 +24,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import org.netbeans.cubeon.tasks.spi.TaskElement;
+import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.filesystems.FileChangeListener;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;

@@ -18,9 +18,9 @@ package org.netbeans.cubeon.local.internals;
 
 import java.awt.Image;
 import org.netbeans.cubeon.local.LocalTask;
-import org.netbeans.cubeon.tasks.spi.TaskBadgeProvider;
-import org.netbeans.cubeon.tasks.spi.TaskElement;
-import org.netbeans.cubeon.tasks.spi.priority.TaskPriority;
+import org.netbeans.cubeon.tasks.spi.task.TaskBadgeProvider;
+import org.netbeans.cubeon.tasks.spi.task.TaskElement;
+import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
 import org.openide.util.Utilities;
 
 /**

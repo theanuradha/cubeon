@@ -18,7 +18,7 @@ package org.netbeans.cubeon.local;
 
 import java.util.Collection;
 import org.netbeans.cubeon.tasks.spi.Extension;
-import org.netbeans.cubeon.tasks.spi.TaskElementChangeAdapter;
+import org.netbeans.cubeon.tasks.spi.task.TaskElementChangeAdapter;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;

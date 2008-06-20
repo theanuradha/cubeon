@@ -25,7 +25,7 @@ import org.netbeans.cubeon.tasks.core.api.RefreshableChildren;
 import org.netbeans.cubeon.tasks.core.api.TaskFolder;
 import org.netbeans.cubeon.tasks.core.api.TaskFolderOparations;
 import org.netbeans.cubeon.tasks.core.api.TaskFolderRefreshable;
-import org.netbeans.cubeon.tasks.spi.TaskElement;
+import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;

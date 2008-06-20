@@ -26,7 +26,7 @@ import org.netbeans.cubeon.tasks.core.api.NodeUtils;
 import org.netbeans.cubeon.tasks.core.api.TaskFolder;
 import org.netbeans.cubeon.tasks.core.api.TaskFolderRefreshable;
 import org.netbeans.cubeon.tasks.core.api.TasksFileSystem;
-import org.netbeans.cubeon.tasks.spi.TaskElement;
+import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.ui.taskfolder.AddTaskFolder;
 import org.netbeans.cubeon.ui.taskfolder.AddTaskFolderAction;
 import org.openide.DialogDescriptor;

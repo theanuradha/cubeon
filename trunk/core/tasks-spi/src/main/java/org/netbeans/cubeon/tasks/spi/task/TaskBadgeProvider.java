@@ -14,21 +14,21 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.tasks.spi;
+package org.netbeans.cubeon.tasks.spi.task;
 
-import java.util.List;
+import java.awt.Image;
 
 /**
  *
  * @author Anuradha G
  */
-public interface TaskContainer {
+public interface TaskBadgeProvider {
 
-    TaskElement addTaskElement(TaskElement element);
-
-    boolean removeTaskElement(TaskElement element);
-
-    List<TaskElement> getTaskElements();
-
-    boolean contains(TaskElement element);
+    /**
+     * 
+     * @param element
+     * @param image
+     * @return
+     */
+    Image bageTaskIcon(TaskElement element,Image image);
 }

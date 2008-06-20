@@ -17,8 +17,9 @@
 package org.netbeans.cubeon.tasks.core.api;
 
 import java.util.List;
-import org.netbeans.cubeon.tasks.spi.TaskElement;
-import org.netbeans.cubeon.tasks.spi.TaskContainer;
+import org.netbeans.cubeon.tasks.spi.task.TaskContainer;
+import org.netbeans.cubeon.tasks.spi.task.TaskElement;
+
 import org.openide.util.Lookup;
 
 /**

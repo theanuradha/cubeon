@@ -17,8 +17,8 @@
 package org.netbeans.cubeon.ui.taskelemet;
 
 import java.util.Comparator;
-import org.netbeans.cubeon.tasks.spi.TaskElement;
-import org.netbeans.cubeon.tasks.spi.TaskElementComparator;
+import org.netbeans.cubeon.tasks.spi.task.TaskElement;
+import org.netbeans.cubeon.tasks.spi.task.TaskElementComparator;
 import org.netbeans.cubeon.ui.UIPreferences;
 
 /**

@@ -19,8 +19,8 @@ package org.netbeans.cubeon.ui.taskelemet;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.Action;
-import org.netbeans.cubeon.tasks.spi.TaskElement;
-import org.netbeans.cubeon.tasks.spi.TaskElementActionsProvider;
+import org.netbeans.cubeon.tasks.spi.task.TaskElement;
+import org.netbeans.cubeon.tasks.spi.task.TaskElementActionsProvider;
 
 /**
  *

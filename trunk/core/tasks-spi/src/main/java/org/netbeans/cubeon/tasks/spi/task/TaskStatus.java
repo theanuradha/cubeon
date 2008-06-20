@@ -14,55 +14,45 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.tasks.spi;
-
-import java.util.Comparator;
+package org.netbeans.cubeon.tasks.spi.task;
 
 /**
  *
  * @author Anuradha G
  */
-public interface TaskElementComparator {
+public class TaskStatus {
+
+    private String id;
+    private String text;
+
+    /**
+     * 
+     * @param id
+     * @param text
+     */
+    public TaskStatus(String id, String text) {
+        this.id = id;
+        this.text = text;
+    }
 
     /**
      * 
      * @return
      */
-    String getName();
+    public String getText() {
+        return text;
+    }
 
     /**
      * 
      * @return
      */
-    String getDescription();
+    public String getId() {
+        return id;
+    }
 
-    /**
-     * 
-     * @return true if this filter enabled
-     */
-    boolean isEnable();
-
-    /**
-     * 
-     * @param b 
-     */
-    void setEnable(boolean b);
-
-    /**
-     * 
-     * @return
-     */
-    boolean isAscending();
-
-    /**
-     * 
-     * @param b
-     */
-    void setAscending(boolean b);
-
-    /**
-     * 
-     * @return
-     */
-    Comparator<TaskElement> getComparator();
+    @Override
+    public String toString() {
+        return getText();
+    }
 }

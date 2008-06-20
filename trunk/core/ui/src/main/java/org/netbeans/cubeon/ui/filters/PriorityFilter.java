@@ -19,10 +19,10 @@ package org.netbeans.cubeon.ui.filters;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
-import org.netbeans.cubeon.tasks.spi.TaskElement;
-import org.netbeans.cubeon.tasks.spi.TaskElementFilter;
-import org.netbeans.cubeon.tasks.spi.priority.TaskPriority;
-import org.netbeans.cubeon.tasks.spi.priority.TaskPriority.PRIORITY;
+import org.netbeans.cubeon.tasks.spi.task.TaskElement;
+import org.netbeans.cubeon.tasks.spi.task.TaskElementFilter;
+import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
+import org.netbeans.cubeon.tasks.spi.task.TaskPriority.PRIORITY;
 import org.netbeans.cubeon.ui.UIPreferences;
 
 /**

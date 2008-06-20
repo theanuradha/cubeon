@@ -18,8 +18,8 @@ package org.netbeans.cubeon.local.repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.netbeans.cubeon.tasks.spi.priority.TaskPriority;
-import org.netbeans.cubeon.tasks.spi.priority.TaskPriorityProvider;
+import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
+import org.netbeans.cubeon.tasks.spi.repository.TaskPriorityProvider;
 import org.openide.util.Utilities;
 
 /**

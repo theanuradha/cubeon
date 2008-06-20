@@ -14,42 +14,45 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.tasks.spi;
+package org.netbeans.cubeon.tasks.spi.task;
 
 /**
  *
- * @author Anuradha G
+ * @author Anuradha
  */
-public interface TaskElementFilter {
+public class  TaskType {
+
+    private String id;
+    private String text;
+
+    /**
+     * 
+     * @param id
+     * @param text
+     */
+    public TaskType(String id, String text) {
+        this.id = id;
+        this.text = text;
+    }
 
     /**
      * 
      * @return
      */
-    String getName();
+    public String getText() {
+        return text;
+    }
 
     /**
      * 
      * @return
      */
-    String getDescription();
+    public String getId() {
+        return id;
+    }
 
-    /**
-     * 
-     * @return true if this filter enabled
-     */
-    boolean isEnable();
-
-    /**
-     * 
-     * @param b 
-     */
-    void setEnable(boolean b);
-
-    /**
-     * 
-     * @param element
-     * @return true if task match the filterd criteria  
-     */
-    boolean isFiltered(TaskElement element);
+    @Override
+    public String toString() {
+        return getText();
+    }
 }

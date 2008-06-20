@@ -14,20 +14,55 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.tasks.spi;
+package org.netbeans.cubeon.tasks.spi.task;
 
-import java.util.List;
+import java.util.Comparator;
 
 /**
  *
  * @author Anuradha G
  */
-public interface TaskTypeProvider {
+public interface TaskElementComparator {
 
     /**
      * 
-     * @return list of TaskStatus that support by 
-     * providing repository implementation
+     * @return
      */
-    List<TaskType> getTaskTypes();
+    String getName();
+
+    /**
+     * 
+     * @return
+     */
+    String getDescription();
+
+    /**
+     * 
+     * @return true if this filter enabled
+     */
+    boolean isEnable();
+
+    /**
+     * 
+     * @param b 
+     */
+    void setEnable(boolean b);
+
+    /**
+     * 
+     * @return
+     */
+    boolean isAscending();
+
+    /**
+     * 
+     * @param b
+     */
+    void setAscending(boolean b);
+
+    /**
+     * 
+     * @return
+     */
+    Comparator<TaskElement> getComparator();
 }

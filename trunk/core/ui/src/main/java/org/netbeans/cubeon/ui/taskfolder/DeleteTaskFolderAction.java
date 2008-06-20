@@ -23,7 +23,7 @@ import javax.swing.KeyStroke;
 import org.netbeans.cubeon.tasks.core.api.TaskFolder;
 import org.netbeans.cubeon.tasks.core.api.TaskFolderRefreshable;
 import org.netbeans.cubeon.tasks.core.api.TasksFileSystem;
-import org.netbeans.cubeon.tasks.spi.TaskElement;
+import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.Lookup;

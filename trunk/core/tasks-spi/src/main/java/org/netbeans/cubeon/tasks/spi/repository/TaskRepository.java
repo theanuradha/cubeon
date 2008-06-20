@@ -16,6 +16,7 @@
  */
 package org.netbeans.cubeon.tasks.spi.repository;
 
+import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.*;
 import java.awt.Image;
 import java.util.List;

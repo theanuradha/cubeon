@@ -16,7 +16,7 @@
  */
 package org.netbeans.cubeon.tasks.core.api;
 
-import org.netbeans.cubeon.tasks.spi.TaskElement;
+import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 
 /**
  *

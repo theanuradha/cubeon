@@ -17,7 +17,7 @@
 package org.netbeans.cubeon.ui;
 
 import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
-import org.netbeans.cubeon.tasks.spi.TaskElement;
+import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 
 /**
  *

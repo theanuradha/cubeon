@@ -14,7 +14,7 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.tasks.spi;
+package org.netbeans.cubeon.tasks.spi.task;
 
 import javax.swing.JComponent;
 import javax.swing.event.ChangeListener;
