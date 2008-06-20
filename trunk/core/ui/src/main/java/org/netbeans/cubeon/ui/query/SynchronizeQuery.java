@@ -14,20 +14,26 @@
  *  limitations under the License.
  *  under the License.
  */
-
 package org.netbeans.cubeon.ui.query;
 
+import java.awt.event.ActionEvent;
+import javax.swing.AbstractAction;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 
 /**
  *
  * @author Anuradha
  */
-public class SynchronizeQuery {
- private TaskQuery query;
+public class SynchronizeQuery extends AbstractAction {
+
+    private TaskQuery query;
 
     public SynchronizeQuery(TaskQuery query) {
         this.query = query;
+        putValue(NAME, "Synchronize");
     }
 
+    public void actionPerformed(ActionEvent e) {
+        query.synchronize();
+    }
 }

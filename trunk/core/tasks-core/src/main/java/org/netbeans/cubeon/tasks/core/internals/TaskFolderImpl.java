@@ -26,6 +26,7 @@ import org.netbeans.cubeon.tasks.core.api.TaskFolder;
 import org.netbeans.cubeon.tasks.core.api.TaskFolderOparations;
 import org.netbeans.cubeon.tasks.core.api.TaskFolderRefreshable;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
+import org.netbeans.cubeon.tasks.spi.query.TaskQueryEventAdapter;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
@@ -33,6 +34,7 @@ import org.openide.filesystems.FileUtil;
 import org.openide.nodes.Node;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
+import org.openide.util.RequestProcessor;
 import org.openide.util.lookup.Lookups;
 
 /**
@@ -51,6 +53,7 @@ class TaskFolderImpl implements TaskFolder, TaskFolderOparations, TaskFolderRefr
     protected final List<TaskElement> taskElements = new ArrayList<TaskElement>();
     protected final PersistenceHandler persistenceHandler;
     private TaskQuery taskQuery;
+    private TaskQueryEventAdapter eventAdapter;
 
     protected TaskFolderImpl(TaskFolderImpl parent, String name,
             FileObject fileObject, String description, boolean basic) {
@@ -67,10 +70,27 @@ class TaskFolderImpl implements TaskFolder, TaskFolderOparations, TaskFolderRefr
             folderChildren = new TaskElementChilren(this);
             folderNode = new TaskFolderNode(this, folderChildren.getChildren());
         }
-        taskQuery=persistenceHandler.getTaskQuery();
-        if(taskQuery!=null){
-          //todo Add
-        }
+        eventAdapter = new TaskQueryEventAdapter() {
+
+            @Override
+            public void querySynchronized() {
+                RequestProcessor.getDefault().post(new Runnable() {
+
+                    public void run() {
+                        assert taskQuery != null;
+                        List<TaskElement> taskElements = taskQuery.getTaskElements();
+                        for (TaskElement taskElement : taskElements) {
+                            if (!contains(taskElement)) {
+                                addTaskElement(taskElement);
+                            }
+                        }
+                        refeshNode();
+                    }
+                });
+            }
+        };
+        taskQuery = persistenceHandler.getTaskQuery();
+        registerEventAdapter();
     }
 
     TaskFolderImpl(TaskFolderImpl parent, String name,
@@ -251,13 +271,28 @@ class TaskFolderImpl implements TaskFolder, TaskFolderOparations, TaskFolderRefr
         return taskElements.contains(element);
     }
 
-
     public void setTaskQuery(TaskQuery query) {
+        deregisterEventAdapter();
         this.taskQuery = query;
-       persistenceHandler.setTaskQuery(query);
+        persistenceHandler.setTaskQuery(query);
+        registerEventAdapter();
     }
 
     public TaskQuery getTaskQuery() {
         return taskQuery;
+    }
+
+    private void registerEventAdapter() {
+        if (taskQuery != null) {
+            taskQuery.getExtension().add(eventAdapter);
+        }
+    }
+
+    private void deregisterEventAdapter() {
+        if (taskQuery != null) {
+            if (taskQuery != null) {
+                taskQuery.getExtension().remove(eventAdapter);
+            }
+        }
     }
 }

@@ -60,4 +60,6 @@ public interface TaskQuery {
      * @return
      */
     List<TaskElement> getTaskElements();
+
+    Extension getExtension();
 }

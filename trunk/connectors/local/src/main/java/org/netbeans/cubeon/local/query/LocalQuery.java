@@ -19,6 +19,7 @@ package org.netbeans.cubeon.local.query;
 import java.util.ArrayList;
 import java.util.List;
 import org.netbeans.cubeon.local.repository.LocalTaskRepository;
+import org.netbeans.cubeon.tasks.spi.Extension;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
@@ -42,10 +43,12 @@ public class LocalQuery implements TaskQuery {
     private String contain;
     private boolean summary;
     private boolean description;
+    private final QueryExtension extension;
 
     public LocalQuery(String name, LocalTaskRepository repository) {
         this.name = name;
         this.repository = repository;
+        extension = new QueryExtension(this);
     }
 
     public String getName() {
@@ -54,6 +57,7 @@ public class LocalQuery implements TaskQuery {
 
     public void setName(String name) {
         this.name = name;
+
     }
 
     public TaskRepository getTaskRepository() {
@@ -61,11 +65,11 @@ public class LocalQuery implements TaskQuery {
     }
 
     public Lookup getLookup() {
-        return Lookups.fixed(this);
+        return Lookups.fixed(this, extension);
     }
 
     public void synchronize() {
-        //TODO
+        extension.fireSynchronized();
     }
 
     public List<TaskPriority> getPriorities() {
@@ -100,10 +104,34 @@ public class LocalQuery implements TaskQuery {
         this.types = new ArrayList<TaskType>(types);
     }
 
+    private boolean checkContain(TaskElement element) {
+        boolean b = !summary && !description;
+        if (summary) {
+            b = element.getName().contains(contain);
+        }
+        if (!b && description) {
+            b = element.getDescription().contains(contain);
+        }
+        return b;
+    }
+
     public List<TaskElement> getTaskElements() {
+        List<TaskElement> elements = new ArrayList<TaskElement>();
+        for (TaskElement element : repository.getTaskElements()) {
 
 
-        return repository.getTaskElements();//FIXME
+            if (contain == null || contain.trim().length() == 0 || checkContain(element)) {
+                if (priorities.size() == 0 || priorities.contains(element.getPriority())) {
+                    if (types.size() == 0 || types.contains(element.getType())) {
+                        if (states.size() == 0 || states.contains(element.getStatus())) {
+                            elements.add(element);
+                        }
+                    }
+
+                }
+            }
+        }
+        return elements;
     }
 
     public String getContain() {
@@ -128,5 +156,9 @@ public class LocalQuery implements TaskQuery {
 
     public void setSummary(boolean summary) {
         this.summary = summary;
+    }
+
+    public Extension getExtension() {
+        return extension;
     }
 }
