@@ -22,7 +22,7 @@ import java.util.List;
 import org.netbeans.cubeon.local.LocalTask;
 import org.netbeans.cubeon.local.query.LocalQuerySupport;
 import org.netbeans.cubeon.tasks.spi.TaskElement;
-import org.netbeans.cubeon.tasks.spi.TaskRepository;
+import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.openide.util.Lookup;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
@@ -44,7 +44,7 @@ public class LocalTaskRepository implements TaskRepository {
     private final LocalTaskTypeProvider lttp = new LocalTaskTypeProvider();
     private LocalRepositoryExtension extension;
     private LocalQuerySupport querySupport;
-    private int nextId;
+
 
     public LocalTaskRepository(LocalTaskRepositoryProvider provider,
             String id, String name, String description) {
@@ -55,17 +55,10 @@ public class LocalTaskRepository implements TaskRepository {
 
         extension = new LocalRepositoryExtension(this);
         persistenceHandler = new PersistenceHandler(this, provider.getBaseDir());
-        querySupport = new LocalQuerySupport(this);
+        querySupport = new LocalQuerySupport(this,extension);
     }
 
-    public int getNextId() {
 
-        return nextId;
-    }
-
-    void setNextId(int nextId) {
-        this.nextId = nextId;
-    }
 
     public String getId() {
         return id;

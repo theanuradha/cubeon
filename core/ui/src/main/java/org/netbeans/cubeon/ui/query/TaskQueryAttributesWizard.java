@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.Set;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.netbeans.cubeon.tasks.spi.TaskRepository;
+import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 
 import org.netbeans.cubeon.tasks.spi.query.TaskQuerySupportProvider.ConfigurationHandler;
 import org.netbeans.cubeon.ui.query.NewQueryWizardAction.WizardObject;

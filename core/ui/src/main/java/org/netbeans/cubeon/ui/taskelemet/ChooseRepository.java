@@ -10,7 +10,7 @@ import java.beans.PropertyChangeListener;
 import java.util.List;
 import javax.swing.Action;
 import org.netbeans.cubeon.tasks.core.api.TaskNodeFactory;
-import org.netbeans.cubeon.tasks.spi.TaskRepository;
+import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.BeanTreeView;
 import org.openide.nodes.AbstractNode;
@@ -75,7 +75,7 @@ final class ChooseRepository extends javax.swing.JPanel implements ExplorerManag
         TaskNodeFactory factory = Lookup.getDefault().lookup(TaskNodeFactory.class);
         for (int i = 0; i < repositorys.size(); i++) {
             final TaskRepository repository = repositorys.get(i);
-            nodes[i] = factory.createTaskRepositoryNode(repository);
+            nodes[i] = factory.createTaskRepositoryNode(repository,false);
         }
         array.add(nodes);
         Node node = new AbstractNode(array) {

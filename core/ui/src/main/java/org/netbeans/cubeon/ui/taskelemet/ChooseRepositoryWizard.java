@@ -12,7 +12,7 @@ import java.util.Set;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.netbeans.cubeon.tasks.spi.TaskRepository;
+import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.ui.taskelemet.NewTaskWizardAction.WizardObject;
 import org.openide.WizardDescriptor;
 import org.openide.util.HelpCtx;

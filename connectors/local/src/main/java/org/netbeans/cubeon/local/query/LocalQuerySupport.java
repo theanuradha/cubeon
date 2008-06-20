@@ -19,8 +19,9 @@ package org.netbeans.cubeon.local.query;
 import java.util.ArrayList;
 import java.util.List;
 import org.netbeans.cubeon.local.query.ui.QueryEditor;
+import org.netbeans.cubeon.local.repository.LocalRepositoryExtension;
 import org.netbeans.cubeon.local.repository.LocalTaskRepository;
-import org.netbeans.cubeon.tasks.spi.TaskRepository;
+import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuerySupportProvider;
 
@@ -32,9 +33,10 @@ public class LocalQuerySupport implements TaskQuerySupportProvider {
 
     private List<TaskQuery> taskQuerys = new ArrayList<TaskQuery>();
     private LocalTaskRepository repository;
+    private LocalRepositoryExtension extension;
     private PersistenceHandler handler;
 
-    public LocalQuerySupport(LocalTaskRepository repository) {
+    public LocalQuerySupport(LocalTaskRepository repository,LocalRepositoryExtension extension) {
         this.repository = repository;
         handler = new PersistenceHandler(this, repository.getProvider().getBaseDir());
         handler.refresh();
@@ -51,6 +53,8 @@ public class LocalQuerySupport implements TaskQuerySupportProvider {
 
     public void persist(TaskQuery query) {
         handler.addTaskQuery(query);
+        taskQuerys.add(query);
+        extension.fireQueryAdded();
     }
 
     public void reset(TaskQuery query) {

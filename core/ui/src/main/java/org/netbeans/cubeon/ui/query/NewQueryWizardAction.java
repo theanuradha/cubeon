@@ -13,7 +13,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import org.netbeans.cubeon.tasks.core.api.CubeonContext;
 import org.netbeans.cubeon.tasks.core.api.TaskRepositoryHandler;
-import org.netbeans.cubeon.tasks.spi.TaskRepository;
+import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuerySupportProvider;
 import org.openide.DialogDisplayer;
@@ -103,21 +103,6 @@ public final class NewQueryWizardAction extends AbstractAction {
             TaskQuerySupportProvider tqsp = repository.getLookup().lookup(TaskQuerySupportProvider.class);
             tqsp.persist(query);
 
-//            //check null and add to defult folder
-//            if (tf == null) {
-//                TasksFileSystem fileSystem = Lookup.getDefault().lookup(TasksFileSystem.class);
-//                assert fileSystem != null;
-//                tf = fileSystem.getDefaultFolder();
-//
-//            }
-//            tf.addTaskElement(query);
-//
-//            TaskFolderRefreshable refreshable = tf.getLookup().lookup(TaskFolderRefreshable.class);
-//            assert refreshable != null;
-//            refreshable.refeshNode();
-//            //open newly created Task
-//            TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
-//            factory.createTaskEditor(query);
         }
     }
 

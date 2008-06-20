@@ -13,8 +13,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.netbeans.cubeon.local.repository.LocalTaskRepository;
 import org.netbeans.cubeon.local.repository.LocalTaskRepositoryProvider;
-import org.netbeans.cubeon.tasks.spi.TaskRepository;
-import org.netbeans.cubeon.tasks.spi.TaskRepositoryType.ConfigurationHandler;
+import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
+import org.netbeans.cubeon.tasks.spi.repository.TaskRepositoryType.ConfigurationHandler;
 import org.openide.util.NbBundle;
 
 /**

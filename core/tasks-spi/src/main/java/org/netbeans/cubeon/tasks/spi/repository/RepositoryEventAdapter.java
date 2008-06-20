@@ -14,35 +14,32 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.tasks.core.api;
-
-import java.util.List;
-import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
-import org.netbeans.cubeon.tasks.spi.repository.TaskRepositoryType;
+package org.netbeans.cubeon.tasks.spi.repository;
 
 /**
  *
  * @author Anuradha G
  */
-public interface TaskRepositoryHandler {
+public class RepositoryEventAdapter {
 
     /**
-     * Get all Task Repositories
-     * @return list of repositories
+     *
      */
-    List<TaskRepository> getTaskRepositorys();
+    public void nameChenged() {
+    }
 
     /**
-     * Find Task Repository by Id
-     * @param id Repository id
-     * @return matching Task Repository  may return null 
+     *
      */
-    TaskRepository getTaskRepositoryById(String id);
-    
-    List< TaskRepositoryType> getTaskRepositoryTypes();
-    
-    /**
-    void addTaskRepository();
-    void removeTaskRepository(TaskRepository repository);
-     **/
+    public void descriptionChenged() {
+    }
+
+    public void queryAdded() {
+    }
+
+    public void queryUpdated() {
+    }
+
+    public void queryRemoved() {
+    }
 }

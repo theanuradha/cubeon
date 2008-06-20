@@ -18,6 +18,7 @@ package org.netbeans.cubeon.ui.query;
 
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuerySupportProvider;
+import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 
@@ -29,8 +30,9 @@ public class TaskQueryChildern extends Children.Keys<TaskQuery> {
 
     private TaskQuerySupportProvider provider;
 
-    public TaskQueryChildern(TaskQuerySupportProvider provider) {
-        this.provider = provider;
+    public TaskQueryChildern(TaskRepository repository) {
+        this.provider = repository.getLookup().lookup(TaskQuerySupportProvider.class);
+        assert provider != null;
     }
 
     @Override
@@ -40,6 +42,12 @@ public class TaskQueryChildern extends Children.Keys<TaskQuery> {
 
     @Override
     protected void addNotify() {
+
         setKeys(provider.getTaskQuerys());
+
+    }
+
+    public void refreshNodes() {
+        addNotify();
     }
 }

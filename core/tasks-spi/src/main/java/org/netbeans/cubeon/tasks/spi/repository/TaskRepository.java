@@ -14,8 +14,9 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.tasks.spi;
+package org.netbeans.cubeon.tasks.spi.repository;
 
+import org.netbeans.cubeon.tasks.spi.*;
 import java.awt.Image;
 import java.util.List;
 import org.openide.util.Lookup;

@@ -15,7 +15,7 @@ import org.netbeans.cubeon.tasks.core.api.CubeonContext;
 import org.netbeans.cubeon.tasks.core.api.TaskNodeFactory;
 import org.netbeans.cubeon.tasks.core.api.TaskRepositoryHandler;
 import org.netbeans.cubeon.tasks.core.spi.RepositorysViewActionsProvider;
-import org.netbeans.cubeon.tasks.spi.TaskRepository;
+import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.BeanTreeView;
 import org.openide.nodes.AbstractNode;
@@ -101,7 +101,7 @@ final class TaskRepositoriesTopComponent extends TopComponent implements Explore
         TaskNodeFactory factory = Lookup.getDefault().lookup(TaskNodeFactory.class);
         for (TaskRepository tr : repositorys) {
             //get task repository lookup and find node from it
-            Node repositoryNode = factory.createTaskRepositoryNode(tr);
+            Node repositoryNode = factory.createTaskRepositoryNode(tr,true);
             //repository node can not be null
             assert repositoryNode != null;
             array.add(new Node[]{repositoryNode});

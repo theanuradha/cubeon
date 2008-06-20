@@ -16,7 +16,9 @@
  */
 package org.netbeans.cubeon.local.repository;
 
+import java.util.Collection;
 import org.netbeans.cubeon.tasks.spi.Extension;
+import org.netbeans.cubeon.tasks.spi.repository.RepositoryEventAdapter;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
@@ -37,8 +39,6 @@ public class LocalRepositoryExtension implements Extension {
         lookup = new AbstractLookup(content);
     }
 
-
-
     public final void remove(Object inst) {
         content.remove(inst);
     }
@@ -47,10 +47,43 @@ public class LocalRepositoryExtension implements Extension {
         content.add(inst);
     }
 
-
-
     public Lookup getLookup() {
         return lookup;
     }
     //events---------------------------
+    public void fireNameChenged() {
+        Collection<? extends RepositoryEventAdapter> adapters = lookup.lookupAll(RepositoryEventAdapter.class);
+        for (RepositoryEventAdapter adapter : adapters) {
+            adapter.nameChenged();
+        }
+
+    }
+
+    public void fireDescriptionChenged() {
+        Collection<? extends RepositoryEventAdapter> adapters = lookup.lookupAll(RepositoryEventAdapter.class);
+        for (RepositoryEventAdapter adapter : adapters) {
+            adapter.descriptionChenged();
+        }
+    }
+
+    public void fireQueryAdded() {
+        Collection<? extends RepositoryEventAdapter> adapters = lookup.lookupAll(RepositoryEventAdapter.class);
+        for (RepositoryEventAdapter adapter : adapters) {
+            adapter.queryAdded();
+        }
+    }
+
+    public void fireQueryUpdated() {
+        Collection<? extends RepositoryEventAdapter> adapters = lookup.lookupAll(RepositoryEventAdapter.class);
+        for (RepositoryEventAdapter adapter : adapters) {
+            adapter.queryUpdated();
+        }
+    }
+
+    public void fireQueryRemoved() {
+        Collection<? extends RepositoryEventAdapter> adapters = lookup.lookupAll(RepositoryEventAdapter.class);
+        for (RepositoryEventAdapter adapter : adapters) {
+            adapter.queryRemoved();
+        }
+    }
 }

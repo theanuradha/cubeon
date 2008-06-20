@@ -6,8 +6,8 @@ package org.netbeans.cubeon.ui.repository;
 
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
-import org.netbeans.cubeon.tasks.spi.TaskRepositoryType;
-import org.netbeans.cubeon.tasks.spi.TaskRepositoryType.ConfigurationHandler;
+import org.netbeans.cubeon.tasks.spi.repository.TaskRepositoryType;
+import org.netbeans.cubeon.tasks.spi.repository.TaskRepositoryType.ConfigurationHandler;
 import org.netbeans.cubeon.ui.repository.NewRepositoryWizardAction.WizardObject;
 import org.openide.util.NbBundle;
 

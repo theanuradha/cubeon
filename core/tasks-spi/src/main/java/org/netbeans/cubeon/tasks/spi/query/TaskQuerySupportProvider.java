@@ -19,7 +19,7 @@ package org.netbeans.cubeon.tasks.spi.query;
 import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.event.ChangeListener;
-import org.netbeans.cubeon.tasks.spi.TaskRepository;
+import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 
 /**
  *
