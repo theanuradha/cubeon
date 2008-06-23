@@ -91,9 +91,7 @@ class TaskFolderImpl implements TaskFolder, TaskFolderOparations, TaskFolderRefr
 
             @Override
             public void removed() {
-                if (folderNode instanceof TaskFolderNode) {
-                    ((TaskFolderNode) folderNode).refreshIcon();
-                }
+                setTaskQuery(null);
             }
         };
         taskQuery = persistenceHandler.getTaskQuery();
