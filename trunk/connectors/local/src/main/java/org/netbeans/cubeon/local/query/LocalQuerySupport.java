@@ -74,21 +74,23 @@ public class LocalQuerySupport implements TaskQuerySupportProvider {
     }
 
     public void addTaskQuery(TaskQuery query) {
-        handler.addTaskQuery(query);
+         LocalQuery localQuery = query.getLookup().lookup(LocalQuery.class);
+        handler.addTaskQuery(localQuery);
         taskQuerys.add(query);
 
         extension.fireQueryAdded(query);
     }
 
     public void modifyTaskQuery(TaskQuery query) {
-        handler.addTaskQuery(query);
+         LocalQuery localQuery = query.getLookup().lookup(LocalQuery.class);
+        handler.addTaskQuery(localQuery);
     }
 
     public void removeTaskQuery(TaskQuery query) {
+        LocalQuery localQuery = query.getLookup().lookup(LocalQuery.class);
         handler.removeTaskQuery(query);
         extension.fireQueryRemoved(query);
-        QueryExtension qe = query.getExtension().getLookup().lookup(QueryExtension.class);
-        qe.fireRemoved();
+        localQuery.getLocalExtension().fireRemoved();
     }
 
     public TaskQuery findTaskQueryByName(String name) {
