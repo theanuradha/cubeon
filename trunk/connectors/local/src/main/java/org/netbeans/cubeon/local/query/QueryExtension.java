@@ -67,4 +67,11 @@ public class QueryExtension implements Extension {
         }
 
     }
+    void fireRemoved() {
+        Collection<? extends TaskQueryEventAdapter> adapters = lookup.lookupAll(TaskQueryEventAdapter.class);
+        for (TaskQueryEventAdapter adapter : adapters) {
+            adapter.removed();
+        }
+
+    }
 }
