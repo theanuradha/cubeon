@@ -72,6 +72,14 @@ public class LocalTaskRepository implements TaskRepository {
         return description;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Lookup getLookup() {
         return Lookups.fixed(this,
                 extension, provider, persistenceHandler, ltpp, ltsp, lttp, querySupport);
@@ -143,4 +151,14 @@ public class LocalTaskRepository implements TaskRepository {
     public LocalTaskRepositoryProvider getProvider() {
         return provider;
     }
+
+    public LocalRepositoryExtension getExtension() {
+        return extension;
+    }
+
+    public LocalQuerySupport getQuerySupport() {
+        return querySupport;
+    }
+
+
 }

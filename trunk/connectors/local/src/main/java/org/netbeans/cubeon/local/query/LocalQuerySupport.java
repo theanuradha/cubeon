@@ -44,7 +44,7 @@ public class LocalQuerySupport implements TaskQuerySupportProvider {
 
     }
 
-    public TaskQuery createTaskQuery() {
+    public LocalQuery createTaskQuery() {
         return new LocalQuery("New Query", repository);
     }
 

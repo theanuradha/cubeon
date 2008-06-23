@@ -39,13 +39,14 @@ import org.openide.util.lookup.Lookups;
  */
 public class LocalTaskRepositoryProvider implements TaskRepositoryType {
 
-    static final String BASE_PATH = "cubeon/local_repositorys/";
+    static final String BASE_PATH = "cubeon/local_repositories/";
     private List<LocalTaskRepository> taskRepositorys = new ArrayList<LocalTaskRepository>();
     private final LocalRepositoryPersistence persistence;
     private AtomicBoolean initiailzed = new AtomicBoolean(false);
     private FileObject baseDir = null;
+
     public LocalTaskRepositoryProvider() {
-        
+
         try {
             baseDir = FileUtil.createFolder(Repository.getDefault().
                     getDefaultFileSystem().getRoot(), BASE_PATH);
@@ -53,7 +54,7 @@ public class LocalTaskRepositoryProvider implements TaskRepositoryType {
             Exceptions.printStackTrace(ex);
         }
         assert baseDir != null;
-        persistence = new LocalRepositoryPersistence(this,baseDir);
+        persistence = new LocalRepositoryPersistence(this, baseDir);
     }
 
     public String getName() {
@@ -72,14 +73,16 @@ public class LocalTaskRepositoryProvider implements TaskRepositoryType {
         return Utilities.loadImage("org/netbeans/cubeon/local/repository/local-connector.png");
     }
 
-    public TaskRepository addRepository(TaskRepository repository) {
+    public TaskRepository persistRepository(TaskRepository repository) {
 
         LocalTaskRepository localTaskRepository =
                 repository.getLookup().lookup(LocalTaskRepository.class);
         if (localTaskRepository != null) {
             persistence.addRepository(localTaskRepository);
             taskRepositorys.add(localTaskRepository);
-
+            LocalRepositoryExtension extension = localTaskRepository.getExtension();
+            extension.fireNameChenged();
+            extension.fireDescriptionChenged();
             return repository;
         }
 
@@ -127,6 +130,4 @@ public class LocalTaskRepositoryProvider implements TaskRepositoryType {
     public FileObject getBaseDir() {
         return baseDir;
     }
-    
-    
 }

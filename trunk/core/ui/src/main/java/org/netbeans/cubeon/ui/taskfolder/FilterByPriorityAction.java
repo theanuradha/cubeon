@@ -108,7 +108,7 @@ public class FilterByPriorityAction extends AbstractAction implements Menu, Popu
 
             TaskFolderRefreshable refreshProvider = folder.getLookup().lookup(TaskFolderRefreshable.class);
             assert refreshProvider != null;
-            refreshProvider.refeshNode();
+            refreshProvider.refreshNode();
             if (folder.getParent() == null) {
                 //folder.getParent() guess as root
                 TaskExplorerTopComponent.findInstance().expand();

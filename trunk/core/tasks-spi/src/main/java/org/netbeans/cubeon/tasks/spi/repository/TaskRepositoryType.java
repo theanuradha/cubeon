@@ -59,7 +59,7 @@ public interface TaskRepositoryType {
      * @param taskRepository
      * @return
      */
-    TaskRepository addRepository(TaskRepository taskRepository);
+    TaskRepository persistRepository(TaskRepository taskRepository);
 
     /**
      * 

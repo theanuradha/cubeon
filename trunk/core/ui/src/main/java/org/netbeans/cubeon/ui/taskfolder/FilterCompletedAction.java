@@ -59,7 +59,7 @@ public class FilterCompletedAction extends AbstractAction implements Menu, Popup
         filter.setEnable(b);
         TaskFolderRefreshable refreshProvider = folder.getLookup().lookup(TaskFolderRefreshable.class);
         assert refreshProvider != null;
-        refreshProvider.refeshNode();
+        refreshProvider.refreshNode();
         if (folder.getParent() == null) {
             //folder.getParent() guess as root
             TaskExplorerTopComponent.findInstance().expand();

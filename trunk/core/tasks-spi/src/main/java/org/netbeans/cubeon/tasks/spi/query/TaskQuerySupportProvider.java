@@ -29,12 +29,6 @@ public interface TaskQuerySupportProvider {
 
     /**
      *
-     * @return
-     */
-    TaskQuery createTaskQuery();
-
-    /**
-     *
      * @param name
      * @return
      */

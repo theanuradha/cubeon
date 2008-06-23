@@ -82,7 +82,7 @@ public final class NewRepositoryWizardAction extends AbstractAction {
             TaskRepository repository = wizardObject.getRepository();
             assert repository != null;
 
-            type.addRepository(repository);
+            type.persistRepository(repository);
 
             Collection<? extends RepositorysViewRefreshable> refreshables =
                     Lookup.getDefault().lookupAll(RepositorysViewRefreshable.class);

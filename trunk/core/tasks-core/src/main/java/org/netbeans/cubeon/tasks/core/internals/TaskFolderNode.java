@@ -59,7 +59,7 @@ public class TaskFolderNode extends AbstractNode {
         Image image = NodeUtils.getTreeFolderIcon(false);
         if (folder.getTaskQuery() != null) {
             image = Utilities.mergeImages(image,
-                    Utilities.loadImage("org/netbeans/cubeon/tasks/core/badge_repository.png"), 12, 0);
+                    Utilities.loadImage("org/netbeans/cubeon/tasks/core/badge_query.png"), 14, 0);
         }
         return image;
     }
@@ -69,7 +69,7 @@ public class TaskFolderNode extends AbstractNode {
         Image image = NodeUtils.getTreeFolderIcon(true);
         if (folder.getTaskQuery() != null) {
             image = Utilities.mergeImages(image,
-                    Utilities.loadImage("org/netbeans/cubeon/tasks/core/badge_repository.png"), 12, 0);
+                    Utilities.loadImage("org/netbeans/cubeon/tasks/core/badge_query.png"), 14, 0);
         }
         return image;
     }

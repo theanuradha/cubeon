@@ -24,7 +24,7 @@ public interface TaskFolderRefreshable {
 
     void synchronize();
 
-    void refeshNode();
+    void refreshNode();
 
     void refreshContent();
 }

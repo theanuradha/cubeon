@@ -63,13 +63,13 @@ public class DeleteTaskFolderAction extends AbstractAction {
             parent.removeFolder(folder);
             TaskFolderRefreshable refreshProvider = fileSystem.getRootTaskFolder().getLookup().lookup(TaskFolderRefreshable.class);
             assert refreshProvider != null;
-            refreshProvider.refeshNode();
+            refreshProvider.refreshNode();
         } else if (notify == NotifyDescriptor.NO_OPTION) {
             TaskFolder parent = folder.getParent();
             parent.removeFolder(folder);
             TaskFolderRefreshable refreshProvider = parent.getLookup().lookup(TaskFolderRefreshable.class);
             assert refreshProvider != null;
-            refreshProvider.refeshNode();
+            refreshProvider.refreshNode();
 
 
         }

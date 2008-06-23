@@ -24,6 +24,7 @@ import org.openide.util.NbBundle;
 public class ConfigurationHandlerImpl extends javax.swing.JPanel implements ConfigurationHandler {
 
     private LocalTaskRepositoryProvider repositoryProvider;
+    private LocalTaskRepository repository;
 
     /** Creates new form ConfigurationHandlerImpl */
     private ConfigurationHandlerImpl() {
@@ -37,14 +38,21 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
 
     public void setTaskRepository(TaskRepository taskRepository) {
         if (taskRepository != null) {
-            txtId.setText(taskRepository.getId());
+            repository = taskRepository.getLookup().lookup(LocalTaskRepository.class);
             txtName.setText(taskRepository.getName());
             txtDescription.setText(taskRepository.getDescription());
+
         }
     }
 
     public TaskRepository getTaskRepository() {
-        return new LocalTaskRepository(repositoryProvider,txtId.getText().trim(),
+        if (repository != null) {
+            repository.setName(txtName.getText().trim());
+            repository.setDescription(txtDescription.getText().trim());
+            return repository;
+        }
+        return new LocalTaskRepository(repositoryProvider,
+                txtName.getText().trim().toLowerCase(),
                 txtName.getText().trim(), txtDescription.getText().trim());
     }
 
@@ -91,15 +99,13 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        lblRepo_id = new javax.swing.JLabel();
-        txtId = new javax.swing.JTextField();
         lblName = new javax.swing.JLabel();
         txtName = new javax.swing.JTextField();
         lblDecripion = new javax.swing.JLabel();
         scp = new javax.swing.JScrollPane();
         txtDescription = new javax.swing.JTextPane();
 
-        lblRepo_id.setText(NbBundle.getMessage(ConfigurationHandlerImpl.class, "ConfigurationHandlerImpl.lblRepo_id.text")); // NOI18N
+        setNextFocusableComponent(txtName);
 
         lblName.setText(NbBundle.getMessage(ConfigurationHandlerImpl.class, "ConfigurationHandlerImpl.lblName.text")); // NOI18N
 
@@ -111,52 +117,34 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createSequentialGroup()
-                        .add(lblRepo_id, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 319, Short.MAX_VALUE)
-                        .add(71, 71, 71))
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                        .add(txtId, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .add(layout.createSequentialGroup()
-                        .add(lblName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                        .add(txtName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, scp, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
-                            .add(lblDecripion, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE))
-                        .addContainerGap())))
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, scp, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, lblName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+                    .add(txtName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+                    .add(lblDecripion, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(lblRepo_id)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(txtId, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(lblName)
                 .add(4, 4, 4)
                 .add(txtName, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(lblDecripion)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(scp, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 218, Short.MAX_VALUE)
+                .add(scp, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel lblDecripion;
     private javax.swing.JLabel lblName;
-    private javax.swing.JLabel lblRepo_id;
     private javax.swing.JScrollPane scp;
     private javax.swing.JTextPane txtDescription;
-    private javax.swing.JTextField txtId;
     private javax.swing.JTextField txtName;
     // End of variables declaration//GEN-END:variables
 }

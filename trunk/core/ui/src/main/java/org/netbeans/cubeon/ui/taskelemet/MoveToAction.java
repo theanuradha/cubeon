@@ -87,13 +87,13 @@ public class MoveToAction extends AbstractAction implements Menu, Popup {
                 container.removeTaskElement(element);
                 TaskFolderRefreshable oldTfr = container.getLookup().lookup(TaskFolderRefreshable.class);
                 if (oldTfr != null) {
-                    oldTfr.refeshNode();
+                    oldTfr.refreshNode();
                 }
             }
 
             folder.addTaskElement(element);
             TaskFolderRefreshable newTfr = folder.getLookup().lookup(TaskFolderRefreshable.class);
-            newTfr.refeshNode();
+            newTfr.refreshNode();
 
         }
     }
@@ -128,14 +128,14 @@ public class MoveToAction extends AbstractAction implements Menu, Popup {
                     container.removeTaskElement(element);
                     TaskFolderRefreshable oldTfr = container.getLookup().lookup(TaskFolderRefreshable.class);
                     if (oldTfr != null) {
-                        oldTfr.refeshNode();
+                        oldTfr.refreshNode();
                     }
                 }
                 TaskFolder newFolder = folder.addNewFolder(atf.getFolderName(), atf.getFolderDescription());
                 newFolder.addTaskElement(element);
                 TaskFolderRefreshable refreshProvider = folder.getLookup().lookup(TaskFolderRefreshable.class);
                 assert refreshProvider != null;
-                refreshProvider.refeshNode();
+                refreshProvider.refreshNode();
 
             }
         }
