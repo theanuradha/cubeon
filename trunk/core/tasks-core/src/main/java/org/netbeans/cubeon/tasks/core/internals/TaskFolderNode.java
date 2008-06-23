@@ -120,12 +120,9 @@ public class TaskFolderNode extends AbstractNode {
                     new ArrayList<TaskFolderActionsProvider>(
                     Lookup.getDefault().lookupAll(TaskFolderActionsProvider.class));
 
-            Collections.sort(providers, new Comparator<TaskFolderActionsProvider
+            Collections.sort(providers, new Comparator<TaskFolderActionsProvider>() {
 
-
-                      > () {
-
-                         public int compare(TaskFolderActionsProvider o1,
+                public int compare(TaskFolderActionsProvider o1,
                         TaskFolderActionsProvider o2) {
                     if (o1.getPosition() == o2.getPosition()) {
                         return 0;
@@ -166,8 +163,8 @@ public class TaskFolderNode extends AbstractNode {
             return menu;
         }
     }
-    void refreshIcon(){
-     fireIconChange();
-    }
 
+    void refreshIcon() {
+        fireIconChange();
+    }
 }
