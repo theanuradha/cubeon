@@ -115,9 +115,12 @@ class PersistenceHandler {
             taskQuery = document.createElementNS(NAMESPACE, TAG_QUERY);
             root.appendChild(taskQuery);
         }
-
-        taskQuery.setAttribute(TAG_NAME, query.getName());
-        taskQuery.setAttribute(TAG_REPOSITORY, query.getTaskRepository().getId());
+        if (query != null) {
+            taskQuery.setAttribute(TAG_NAME, query.getName());
+            taskQuery.setAttribute(TAG_REPOSITORY, query.getTaskRepository().getId());
+        } else {
+            root.removeChild(taskQuery);
+        }
         save(document);
     }
 

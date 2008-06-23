@@ -278,9 +278,11 @@ class TaskFolderImpl implements TaskFolder, TaskFolderOparations, TaskFolderRefr
 
     public void setTaskQuery(TaskQuery query) {
         deregisterEventAdapter();
+        this.taskQuery = query;
+
+        persistenceHandler.setTaskQuery(query);
         if (query != null) {
-            this.taskQuery = query;
-            persistenceHandler.setTaskQuery(query);
+
             registerEventAdapter();
         }
 
