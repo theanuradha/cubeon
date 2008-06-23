@@ -161,4 +161,9 @@ public class LocalQuery implements TaskQuery {
     public Extension getExtension() {
         return extension;
     }
+
+    public QueryExtension getLocalExtension() {
+        return extension;
+    }
+
 }

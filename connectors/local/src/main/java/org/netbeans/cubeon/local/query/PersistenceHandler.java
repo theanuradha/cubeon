@@ -76,9 +76,9 @@ class PersistenceHandler {
         //do validations changes here
     }
 
-    void addTaskQuery(TaskQuery tq) {
+    void addTaskQuery( LocalQuery localQuery) {
         synchronized (LOCK) {
-            LocalQuery localQuery = tq.getLookup().lookup(LocalQuery.class);
+           
             Document document = getDocument();
             Element root = getRootElement(document);
             Element tasksElement = findElement(root, TAG_QUERYS, NAMESPACE);
@@ -97,7 +97,7 @@ class PersistenceHandler {
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element element = (Element) node;
                     String id = element.getAttributeNS(NAMESPACE, TAG_NAME);
-                    if (tq.getName().equals(id)) {
+                    if (localQuery.getName().equals(id)) {
                         taskQuery = element;
                         break;
                     }
@@ -109,7 +109,7 @@ class PersistenceHandler {
                 tasksElement.appendChild(taskQuery);
 
             }
-            taskQuery.setAttributeNS(NAMESPACE, TAG_NAME, tq.getName());
+            taskQuery.setAttributeNS(NAMESPACE, TAG_NAME, localQuery.getName());
             List<TaskPriority> priorities = localQuery.getPriorities();
 
             Element taskpriorities = getEmptyElement(document, taskQuery, TAG_PRIORITIES);
