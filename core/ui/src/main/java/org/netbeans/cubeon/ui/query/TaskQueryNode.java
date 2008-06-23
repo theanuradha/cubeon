@@ -25,7 +25,7 @@ import org.openide.util.Utilities;
 
 /**
  *
- * @author Anuradha
+ * @author Anuradha G
  */
 public class TaskQueryNode extends AbstractNode {
 
@@ -41,6 +41,8 @@ public class TaskQueryNode extends AbstractNode {
     public Action[] getActions(boolean arg0) {
         return new Action[]{
                     new QueryEditAction(query),
+                    new DeleteTaskQuery(query),
+                    null,
                     new SynchronizeWithAction(query),
                     null,
                     new SynchronizeQuery(query)

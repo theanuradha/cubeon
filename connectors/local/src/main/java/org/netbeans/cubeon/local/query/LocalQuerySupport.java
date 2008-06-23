@@ -87,6 +87,8 @@ public class LocalQuerySupport implements TaskQuerySupportProvider {
     public void removeTaskQuery(TaskQuery query) {
         handler.removeTaskQuery(query);
         extension.fireQueryRemoved(query);
+        QueryExtension qe = query.getExtension().getLookup().lookup(QueryExtension.class);
+        qe.fireRemoved();
     }
 
     public TaskQuery findTaskQueryByName(String name) {

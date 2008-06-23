@@ -27,4 +27,6 @@ public class TaskQueryEventAdapter {
 
     public void querySynchronized() {
     }
+
+    public void removed(){}
 }
