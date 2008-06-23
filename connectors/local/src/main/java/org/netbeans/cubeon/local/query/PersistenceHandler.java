@@ -121,7 +121,7 @@ class PersistenceHandler {
             //---------------------------------------------------------------------------
             Element taskTypes = getEmptyElement(document, taskQuery, TAG_TYPES);
             for (TaskType tt : localQuery.getTypes()) {
-                Element element = document.createElement(TAG_TYPES);
+                Element element = document.createElement(TAG_TYPE);
                 taskTypes.appendChild(element);
                 element.appendChild(document.createTextNode(tt.getId()));
             }

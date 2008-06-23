@@ -125,7 +125,7 @@ public final class NewTaskWizardAction extends AbstractAction {
 
             TaskFolderRefreshable refreshable = tf.getLookup().lookup(TaskFolderRefreshable.class);
             assert refreshable != null;
-            refreshable.refeshNode();
+            refreshable.refreshNode();
             //open newly created Task 
             TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
             factory.createTaskEditor(element);

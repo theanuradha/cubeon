@@ -55,11 +55,16 @@ public class QueryEditor extends javax.swing.JPanel implements TaskQuerySupportP
 
     /** Creates new form QueryEditor */
     public QueryEditor(TaskQuery query, LocalTaskRepository repository) {
-        this.localQuery = query.getLookup().lookup(LocalQuery.class);
-        assert query != null;
+
         this.repository = repository;
         initComponents();
         loadAttributes(repository);
+        if (query != null) {
+            this.localQuery = query.getLookup().lookup(LocalQuery.class);
+            txtName.setEditable(false);
+        } else {
+            this.localQuery = repository.getQuerySupport().createTaskQuery();
+        }
         loadTaskQuery(this.localQuery);
 
     }

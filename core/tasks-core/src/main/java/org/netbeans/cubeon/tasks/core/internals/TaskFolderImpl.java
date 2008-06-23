@@ -84,7 +84,7 @@ class TaskFolderImpl implements TaskFolder, TaskFolderOparations, TaskFolderRefr
                                 addTaskElement(taskElement);
                             }
                         }
-                        refeshNode();
+                        refreshNode();
                     }
                 });
             }
@@ -260,10 +260,10 @@ class TaskFolderImpl implements TaskFolder, TaskFolderOparations, TaskFolderRefr
 
     public void synchronize() {
         persistenceHandler.refresh();
-        refeshNode();
+        refreshNode();
     }
 
-    public void refeshNode() {
+    public void refreshNode() {
         folderChildren.refreshContent();
     }
 

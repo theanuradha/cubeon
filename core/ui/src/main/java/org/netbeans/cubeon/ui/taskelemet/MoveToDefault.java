@@ -43,7 +43,7 @@ public class MoveToDefault extends AbstractAction {
             container.removeTaskElement(element);
             TaskFolderRefreshable oldTfr = container.getLookup().lookup(TaskFolderRefreshable.class);
             if (oldTfr != null) {
-                oldTfr.refeshNode();
+                oldTfr.refreshNode();
             }
         }
 

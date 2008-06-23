@@ -85,7 +85,7 @@ public class EditTaskFolderAction extends AbstractAction {
                 TaskFolderRefreshable refreshProvider = folder.getParent().
                         getLookup().lookup(TaskFolderRefreshable.class);
                 assert refreshProvider != null;
-                refreshProvider.refeshNode();
+                refreshProvider.refreshNode();
             }
         }
     }

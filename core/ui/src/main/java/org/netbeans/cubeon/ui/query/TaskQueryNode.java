@@ -39,10 +39,17 @@ public class TaskQueryNode extends AbstractNode {
 
     @Override
     public Action[] getActions(boolean arg0) {
-        return new Action[]{new SynchronizeWithAction(query),
+        return new Action[]{
+                    new QueryEditAction(query),
+                    new SynchronizeWithAction(query),
                     null,
                     new SynchronizeQuery(query)
                 };
+    }
+
+    @Override
+    public Action getPreferredAction() {
+        return new QueryEditAction(query);
     }
 
     @Override

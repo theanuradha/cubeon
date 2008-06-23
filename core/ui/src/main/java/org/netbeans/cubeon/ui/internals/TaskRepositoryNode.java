@@ -18,15 +18,20 @@ package org.netbeans.cubeon.ui.internals;
 
 import java.awt.Image;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.Action;
 import org.netbeans.cubeon.tasks.spi.Extension;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuerySupportProvider;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.repository.RepositoryEventAdapter;
+import org.netbeans.cubeon.tasks.spi.repository.TaskRepositoryActionsProvider;
 import org.netbeans.cubeon.ui.query.TaskQueryChildern;
+import org.netbeans.cubeon.ui.repository.RepositoryEditAction;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -88,7 +93,7 @@ public class TaskRepositoryNode extends AbstractNode {
     }
 
     private TaskRepositoryNode(Children children, final TaskRepository repository) {
-        super(children);
+        super(children,repository.getLookup());
         extension = repository.getLookup().lookup(Extension.class);
         this.repository = repository;
         setDisplayName(repository.getName());
@@ -110,7 +115,35 @@ public class TaskRepositoryNode extends AbstractNode {
 
     @Override
     public Action[] getActions(boolean arg0) {
-        return new Action[0];
+        List<Action> actions = new ArrayList<Action>();
+        final List<TaskRepositoryActionsProvider> providers =
+                new ArrayList<TaskRepositoryActionsProvider>(
+                Lookup.getDefault().lookupAll(TaskRepositoryActionsProvider.class));
+        boolean sepetatorAdded = false;
+        for (TaskRepositoryActionsProvider provider : providers) {
+            Action[] as = provider.getActions(repository);
+            for (Action action : as) {
+                //check null and addSeparator
+                if (action == null) {
+                    //check sepetatorAdd to prevent adding duplicate Separators
+                    if (!sepetatorAdded) {
+                        //mark sepetatorAdd to true
+                        sepetatorAdded = true;
+                        actions.add(action);
+
+                    }
+                    continue;
+                }
+                actions.add(action);
+                sepetatorAdded = false;
+            }
+        }
+        return actions.toArray(new Action[0]);
+    }
+
+    @Override
+    public Action getPreferredAction() {
+        return new RepositoryEditAction(repository);
     }
 
     @Override

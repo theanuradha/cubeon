@@ -48,7 +48,12 @@ final class TaskRepositoriesTopComponent extends TopComponent implements Explore
         //hide root node
         treeView.setRootVisible(false);
 
-        refresh();
+        WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
+
+            public void run() {
+                refresh();
+            }
+        });
     }
 
     /**
@@ -56,12 +61,16 @@ final class TaskRepositoriesTopComponent extends TopComponent implements Explore
      * load registered Task repositories
      * 
      */
-     void refresh() {
+    void refresh() {
         Children.Array array = new Children.Array();
         explorerManager.setRootContext(
-                new AbstractNode(array) {
+                new AbstractNode
 
-                    @Override
+                      ( array) {
+
+
+
+                           @Override
                     public Action[] getActions(boolean arg0) {
                         List<Action> actions = new ArrayList<Action>();
                         Collection<? extends RepositorysViewActionsProvider> actionsProviders =
@@ -101,7 +110,7 @@ final class TaskRepositoriesTopComponent extends TopComponent implements Explore
         TaskNodeFactory factory = Lookup.getDefault().lookup(TaskNodeFactory.class);
         for (TaskRepository tr : repositorys) {
             //get task repository lookup and find node from it
-            Node repositoryNode = factory.createTaskRepositoryNode(tr,true);
+            Node repositoryNode = factory.createTaskRepositoryNode(tr, true);
             //repository node can not be null
             assert repositoryNode != null;
             array.add(new Node[]{repositoryNode});
@@ -193,7 +202,10 @@ final class TaskRepositoriesTopComponent extends TopComponent implements Explore
      * "< Empty >"
      * this Node will show if no TaskRepositories found
      */
-    private static final Node EMPTY_REPOSITORIES = new AbstractNode(Children.LEAF) {
+    private static final Node EMPTY_REPOSITORIES = new AbstractNode
+
+          ( Children
+             .LEAF) {
 
         @Override
         public Image getIcon(int arg0) {

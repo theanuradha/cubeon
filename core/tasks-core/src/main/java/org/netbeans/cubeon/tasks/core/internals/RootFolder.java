@@ -128,7 +128,7 @@ class RootFolder extends TaskFolderImpl {
     }
 
     @Override
-    public void refeshNode() {
+    public void refreshNode() {
         folderChildren.refreshContent();
         defaultFolder.folderChildren.refreshContent();
         for (TaskFolderImpl impl : taskFolders) {

@@ -1,0 +1,97 @@
+/*
+ *  Copyright 2008 Anuradha.
+ * 
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ * 
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *  under the License.
+ */
+package org.netbeans.cubeon.jira.remote;
+
+import com.dolby.jira.net.soap.jira.JiraSoapService;
+import com.dolby.jira.net.soap.jira.JiraSoapServiceServiceLocator;
+import com.dolby.jira.net.soap.jira.RemoteAuthenticationException;
+import com.dolby.jira.net.soap.jira.RemoteIssueType;
+import com.dolby.jira.net.soap.jira.RemotePriority;
+import com.dolby.jira.net.soap.jira.RemoteResolution;
+import com.dolby.jira.net.soap.jira.RemoteStatus;
+import java.rmi.RemoteException;
+import javax.xml.rpc.ServiceException;
+
+/**
+ *
+ * @author Anuradha G
+ */
+public class JiraSession {
+
+    private String token;
+    private JiraSoapService service;
+
+    public JiraSession(String url, String user, String pass) throws JiraException {
+        try {
+
+
+            JiraSoapServiceServiceLocator fJiraSoapServiceGetter = new JiraSoapServiceServiceLocator();
+
+            String serverURL = url;
+            String endPoint = "/rpc/soap/jirasoapservice-v2";
+            fJiraSoapServiceGetter.setJirasoapserviceV2EndpointAddress(serverURL + endPoint);
+            fJiraSoapServiceGetter.setMaintainSession(true);
+            service = fJiraSoapServiceGetter.getJirasoapserviceV2();
+            try {
+
+                token = service.login(user, pass);
+            } catch (RemoteAuthenticationException ex) {
+                throw new JiraException(ex);
+            } catch (com.dolby.jira.net.soap.jira.RemoteException ex) {
+                throw new JiraException(ex);
+            } catch (RemoteException ex) {
+                throw new JiraException(ex);
+            }
+
+        } catch (ServiceException ex) {
+            throw new JiraException(ex);
+        }
+
+    }
+
+    public RemoteStatus[] getStatuses() throws JiraException {
+        try {
+            return service.getStatuses(token);
+        } catch (Exception ex) {
+            throw new JiraException(ex);
+        }
+    }
+
+    public RemoteResolution[] getResolutions() throws JiraException {
+        try {
+            return service.getResolutions(token);
+        } catch (Exception ex) {
+            throw new JiraException(ex);
+        }
+    }
+
+    public RemotePriority[] getPriorities() throws JiraException {
+        try {
+            return service.getPriorities(token);
+        } catch (Exception ex) {
+            throw new JiraException(ex);
+        }
+    }
+
+    public RemoteIssueType[] getIssueTypes() throws JiraException {
+        try {
+            return service.getIssueTypes(token);
+        } catch (Exception ex) {
+            throw new JiraException(ex);
+        }
+    }
+}

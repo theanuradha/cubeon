@@ -82,7 +82,7 @@ public class SynchronizeWithAction extends AbstractAction implements Menu, Popup
                 }
             }
             TaskFolderRefreshable newTfr = folder.getLookup().lookup(TaskFolderRefreshable.class);
-            newTfr.refeshNode();
+            newTfr.refreshNode();
         }
     }
 }

@@ -8,7 +8,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>cubeon-core</artifactId>
     <packaging>pom</packaging>
-    <name>Cube°n Core</name>
+    <name>Cube°n Core Module</name>
     <description>Core of the Cube°n </description>
     <version>${cubeon.release}</version>
     <modules>

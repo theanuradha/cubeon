@@ -6,6 +6,7 @@ package org.netbeans.cubeon.ui.repository;
 
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
+import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepositoryType;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepositoryType.ConfigurationHandler;
 import org.netbeans.cubeon.ui.repository.NewRepositoryWizardAction.WizardObject;
@@ -31,6 +32,10 @@ final class RepositorySettings extends JPanel {
         this.type = object.getType();
         assert type != null;
         handler = type.createConfigurationHandler();
+        TaskRepository repository = object.getRepository();
+        if (repository != null) {
+            handler.setTaskRepository(repository);
+        }
         lblMainHeader.setText(NbBundle.getMessage(RepositorySettings.class,
                 "LBL_Create_New", type.getName()));
         lblSubHeader.setText(NbBundle.getMessage(RepositorySettings.class,

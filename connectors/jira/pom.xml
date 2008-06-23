@@ -6,11 +6,15 @@
         <version>${cubeon.release}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>cubeon-jira-connecter</artifactId>
+    <artifactId>cubeon-jira-module</artifactId>
     <packaging>pom</packaging>
-    <name>Cube°n Jira Connecter</name>
+    <name>Cube°n Jira Module</name>
     <description>Jira Connecter for the Cube°n </description>
     <version>${cubeon.release}</version>
+    <modules>
+        <module>core</module>
+        <module>lib</module>
+    </modules>
     <build>
         <plugins>
             <plugin>
