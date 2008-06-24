@@ -28,7 +28,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import javax.swing.DefaultListModel;
+import javax.swing.DefaultListSelectionModel;
 import javax.swing.JComponent;
+import javax.swing.JList;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.netbeans.cubeon.local.query.LocalQuery;
@@ -69,27 +72,35 @@ public class QueryEditor extends javax.swing.JPanel implements TaskQuerySupportP
 
     }
 
+    private void selectItems(JList list, List<? extends Object> objects) {
+
+        DefaultListSelectionModel dlsm = (DefaultListSelectionModel) list.getSelectionModel();
+        dlsm.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        dlsm.setLeadAnchorNotificationEnabled(true);
+        //DefaultListModel model = (DefaultListModel) list.getModel();
+
+        for (Object object : objects) {
+           list.setSelectedValue(object, false);
+        }
+    }
+
     private void loadTaskQuery(LocalQuery query) {
         txtName.setText(query.getName());
         List<TaskPriority> priorities = query.getPriorities();
-        for (TaskPriority tp : priorities) {
-            lstPriority.setSelectedValue(tp, false);
-        }
+
+        selectItems(lstPriority, priorities);
+
         if (priorities.size() == 0) {
             lstPriority.setSelectedValue(TAG_ALL, false);
         }
 
         List<TaskType> types = query.getTypes();
-        for (TaskType type : types) {
-            lstType.setSelectedValue(type, false);
-        }
+        selectItems(lstType, types);
         if (types.size() == 0) {
             lstType.setSelectedValue(TAG_ALL, false);
         }
         List<TaskStatus> status = query.getStates();
-        for (TaskStatus ts : status) {
-            lstStatus.setSelectedValue(ts, false);
-        }
+        selectItems(lstStatus, status);
         if (status.size() == 0) {
             lstStatus.setSelectedValue(TAG_ALL, false);
         }
