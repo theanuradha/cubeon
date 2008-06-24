@@ -18,6 +18,8 @@ package org.netbeans.cubeon.ui.query;
 
 import java.awt.Image;
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.swing.Action;
@@ -166,7 +168,15 @@ final class ResultsTopComponent extends TopComponent implements ExplorerManager.
                         public void run() {
                             array.remove(array.getNodes());
                             List<TaskElement> elements = taskQuery.getTaskElements();
-                            queryNode.updateNodeTag(elements.size() +" Tasks Found");
+                            Collections.sort(elements, new Comparator<TaskElement>() {
+
+                                public int compare(TaskElement o1, TaskElement o2) {
+                                    return o1.getName().compareTo(o2.getName());
+                                }
+                            });
+
+
+                            queryNode.updateNodeTag(elements.size() + " Tasks Found");
                             for (TaskElement taskElement : elements) {
                                 array.add(new Node[]{new TaskResultNode(taskElement)});
                             }
