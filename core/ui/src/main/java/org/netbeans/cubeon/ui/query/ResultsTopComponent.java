@@ -16,15 +16,17 @@
  */
 package org.netbeans.cubeon.ui.query;
 
+import java.awt.Image;
 import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Logger;
+import javax.swing.Action;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.query.TaskQueryEventAdapter;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
-import org.netbeans.cubeon.ui.internals.TaskElementNode;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.BeanTreeView;
+import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.util.NbBundle;
@@ -108,7 +110,9 @@ final class ResultsTopComponent extends TopComponent implements ExplorerManager.
 
     @Override
     public void componentOpened() {
-        // TODO add custom code on component opening
+        if (taskQuery == null) {
+            explorerManager.setRootContext(new EmptyNode("No task query seleted to show results"));
+        }
     }
 
     @Override
@@ -148,7 +152,8 @@ final class ResultsTopComponent extends TopComponent implements ExplorerManager.
             }
             final Children.Array array = new Children.Array();
             this.taskQuery = taskQuery;
-            explorerManager.setRootContext(new TaskQueryNode(array, taskQuery, false));
+            final ResultQueryNode queryNode = new ResultQueryNode(array, taskQuery);
+            explorerManager.setRootContext(queryNode);
             adapter = new TaskQueryEventAdapter() {
 
                 @Override
@@ -161,6 +166,7 @@ final class ResultsTopComponent extends TopComponent implements ExplorerManager.
                         public void run() {
                             array.remove(array.getNodes());
                             List<TaskElement> elements = taskQuery.getTaskElements();
+                            queryNode.updateNodeTag(elements.size() +" Tasks Found");
                             for (TaskElement taskElement : elements) {
                                 array.add(new Node[]{new TaskResultNode(taskElement)});
                             }
@@ -179,5 +185,23 @@ final class ResultsTopComponent extends TopComponent implements ExplorerManager.
 
     public ExplorerManager getExplorerManager() {
         return explorerManager;
+    }
+
+    private static class EmptyNode extends AbstractNode {
+
+        public EmptyNode(String name) {
+            super(Children.LEAF);
+            setName(name);
+        }
+
+        @Override
+        public Action[] getActions(boolean arg0) {
+            return new Action[]{};
+        }
+
+        @Override
+        public Image getIcon(int arg0) {
+            return Utilities.loadImage(ICON_PATH);
+        }
     }
 }
