@@ -54,8 +54,6 @@ public class ResultQueryNode extends AbstractNode {
     @Override
     public Action[] getActions(boolean arg0) {
         List<Action> actions = new ArrayList<Action>();
-        actions.add(new ResultsAction(query));
-        actions.add(null);
         actions.add(new QueryEditAction(query));
 
         actions.add(null);
