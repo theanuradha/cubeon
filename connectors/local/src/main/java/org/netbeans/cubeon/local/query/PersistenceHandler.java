@@ -143,7 +143,6 @@ class PersistenceHandler {
     private Element getEmptyElement(Document document, Element root, String tag) {
         Element taskpriorities = findElement(root, tag, NAMESPACE);
         if (taskpriorities != null) {
-            taskpriorities = document.createElementNS(NAMESPACE, tag);
             root.removeChild(taskpriorities);
         }
         taskpriorities = document.createElementNS(NAMESPACE, tag);
