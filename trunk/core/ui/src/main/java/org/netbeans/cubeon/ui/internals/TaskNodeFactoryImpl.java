@@ -29,7 +29,7 @@ import org.openide.nodes.Node;
 public class TaskNodeFactoryImpl implements TaskNodeFactory {
 
     public Node createTaskElementNode(TaskElement element, boolean withChildern) {
-        return TaskElementNode.createNode(null, element);
+        return TaskElementNode.createNode(null, element,true);
     }
 
     public Node createTaskRepositoryNode(TaskRepository repository, boolean withChildern) {
@@ -37,6 +37,6 @@ public class TaskNodeFactoryImpl implements TaskNodeFactory {
     }
 
     public Node createTaskElementNode(TaskContainer container, TaskElement element, boolean withChildern) {
-        return TaskElementNode.createNode(container, element);
+        return TaskElementNode.createNode(container, element,true);
     }
 }

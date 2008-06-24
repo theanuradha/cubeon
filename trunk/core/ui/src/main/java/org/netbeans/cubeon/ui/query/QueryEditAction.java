@@ -56,7 +56,10 @@ public class QueryEditAction extends AbstractAction {
         if (DialogDescriptor.OK_OPTION == ret) {
             TaskRepository repository = query.getTaskRepository();
             TaskQuerySupportProvider provider = repository.getLookup().lookup(TaskQuerySupportProvider.class);
-            provider.modifyTaskQuery(settings.getHandler().getTaskQuery());
+            TaskQuery taskQuery = settings.getHandler().getTaskQuery();
+            provider.modifyTaskQuery(taskQuery);
+            taskQuery.synchronize();
+
         }
     }
 }

@@ -102,6 +102,12 @@ public final class NewQueryWizardAction extends AbstractAction {
             assert repository != null;
             TaskQuerySupportProvider tqsp = repository.getLookup().lookup(TaskQuerySupportProvider.class);
             tqsp.addTaskQuery(query);
+            //open query results view
+            ResultsTopComponent component = ResultsTopComponent.findInstance();
+            component.open();
+            component.requestActive();
+
+            component.showResults(query);
 
         }
     }
