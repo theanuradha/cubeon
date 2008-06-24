@@ -32,7 +32,7 @@ import org.openide.util.Utilities;
 public class TaskQueryNode extends AbstractNode {
 
     private TaskQuery query;
-    private boolean canDelete;
+    private boolean canDelete=true;
 
     public TaskQueryNode(TaskQuery query) {
         super(Children.LEAF);
@@ -66,7 +66,7 @@ public class TaskQueryNode extends AbstractNode {
 
     @Override
     public Action getPreferredAction() {
-        return new QueryEditAction(query);
+        return new ResultsAction(query);
     }
 
     @Override

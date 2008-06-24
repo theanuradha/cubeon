@@ -142,15 +142,12 @@ class PersistenceHandler {
 
     private Element getEmptyElement(Document document, Element root, String tag) {
         Element taskpriorities = findElement(root, tag, NAMESPACE);
-        if (taskpriorities == null) {
+        if (taskpriorities != null) {
             taskpriorities = document.createElementNS(NAMESPACE, tag);
-            root.appendChild(taskpriorities);
-        } else {
-            NodeList childNodes = taskpriorities.getChildNodes();
-            for (int i = 0; i < childNodes.getLength(); i++) {
-                taskpriorities.removeChild(childNodes.item(i));
-            }
+            root.removeChild(taskpriorities);
         }
+        taskpriorities = document.createElementNS(NAMESPACE, tag);
+        root.appendChild(taskpriorities);
         return taskpriorities;
 
     }
