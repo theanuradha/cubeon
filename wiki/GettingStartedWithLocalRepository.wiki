@@ -1,6 +1,0 @@
-#labels Featured
-=== Getting Started With Local Repository.===
-
-Add your content here.
-
-
