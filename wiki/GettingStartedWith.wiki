@@ -1,12 +1,9 @@
 #labels Featured
-#Guide to getting started with Cube°n.
+#Guide to getting started with Cube°n Local Repository.
 
-= Getting Started with Cube°n =
+= Getting Started with Local Repository =
 
- ===Task Management===   
-
-
-= Details =
+=== Details ===
 
 Add your content here.  Format your content with:
   * Text in *bold* or _italic_
