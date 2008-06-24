@@ -60,8 +60,9 @@ public class TaskElementNode extends AbstractNode {
     private DataObject dataObject;
     private final TaskElementChangeAdapter changeAdapter;
     private TaskContainer container;
+    private boolean extendedActions;
 
-    public static TaskElementNode createNode(final TaskContainer container, final TaskElement element) {
+    public static TaskElementNode createNode(final TaskContainer container, final TaskElement element, boolean extendedActions) {
 
         InstanceContent content = new InstanceContent();
         content.add(element);
@@ -74,6 +75,7 @@ public class TaskElementNode extends AbstractNode {
                 node.setModified(false);
             }
         };
+        node.extendedActions = extendedActions;
         return node;
     }
 
@@ -84,7 +86,7 @@ public class TaskElementNode extends AbstractNode {
 
         node.content = content;
         node.cookie = cookie;
-
+        node.extendedActions = true;
 
         return node;
     }
@@ -177,32 +179,34 @@ public class TaskElementNode extends AbstractNode {
             actions.add(new MoveToDefault(container, element));
         }
         actions.add(null);
-        if (container != null) {
-            actions.add(new MoveToAction(container, element));
-        }
-        actions.add(new MarkAsAction(element));
+
+        actions.add(new MoveToAction(container, element));
+
+        if (extendedActions) {
+            actions.add(new MarkAsAction(element));
 
 
-        final List<TaskElementActionsProvider> providers =
-                new ArrayList<TaskElementActionsProvider>(
-                Lookup.getDefault().lookupAll(TaskElementActionsProvider.class));
-        boolean sepetatorAdded = false;
-        for (TaskElementActionsProvider provider : providers) {
-            Action[] as = provider.getActions(element);
-            for (Action action : as) {
-                //check null and addSeparator 
-                if (action == null) {
-                    //check sepetatorAdd to prevent adding duplicate Separators 
-                    if (!sepetatorAdded) {
-                        //mark sepetatorAdd to true
-                        sepetatorAdded = true;
-                        actions.add(action);
+            final List<TaskElementActionsProvider> providers =
+                    new ArrayList<TaskElementActionsProvider>(
+                    Lookup.getDefault().lookupAll(TaskElementActionsProvider.class));
+            boolean sepetatorAdded = false;
+            for (TaskElementActionsProvider provider : providers) {
+                Action[] as = provider.getActions(element);
+                for (Action action : as) {
+                    //check null and addSeparator
+                    if (action == null) {
+                        //check sepetatorAdd to prevent adding duplicate Separators
+                        if (!sepetatorAdded) {
+                            //mark sepetatorAdd to true
+                            sepetatorAdded = true;
+                            actions.add(action);
 
+                        }
+                        continue;
                     }
-                    continue;
+                    actions.add(action);
+                    sepetatorAdded = false;
                 }
-                actions.add(action);
-                sepetatorAdded = false;
             }
         }
         return actions.toArray(new Action[0]);

@@ -48,7 +48,11 @@ public class MoveToAction extends AbstractAction implements Menu, Popup {
     public MoveToAction(TaskContainer container, TaskElement element) {
         this.element = element;
         this.container = container;
-        putValue(NAME, NbBundle.getMessage(MoveToAction.class, "LBL_Move_To"));
+        if (container != null) {
+            putValue(NAME, NbBundle.getMessage(MoveToAction.class, "LBL_Move_To"));
+        } else {
+            putValue(NAME, NbBundle.getMessage(MoveToAction.class, "LBL_Add_To"));
+        }
     }
 
     public void actionPerformed(ActionEvent e) {
