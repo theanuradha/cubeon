@@ -37,18 +37,16 @@ import org.openide.windows.TopComponent;
 final class TaskEditorTopComponent extends TopComponent implements SaveCookie, ChangeListener {
 
     private static final String PREFERRED_ID = "TaskEditorTopComponent";
-    private static final Color c = UIManager.getDefaults().getColor("InternalFrame.activeTitleGradient");
     private static final Color start = new Color(255, 255, 255, 255);
     private static final Color end = new Color(255, 255, 255, 0);
     private static final RenderingHints hints;
-    private final static GradientPaint GRADIENT_HEADER_LARGE = new GradientPaint(0, 0,
-            Color.WHITE, 0, 33, c);
+    private final static GradientPaint GRADIENT_HEADER_LARGE;
     private TaskElement element;
     private final TaskElementNode editorNode;
     private final EditorAttributeHandler eah;
     private final Extension extension;
     private final TaskElementChangeAdapter changeAdapter;
-    
+
 
     static {
         hints = new RenderingHints(RenderingHints.KEY_ANTIALIASING,
@@ -58,7 +56,16 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
         hints.put(RenderingHints.KEY_RENDERING,
                 RenderingHints.VALUE_RENDER_QUALITY);
 
+        Color color = UIManager.getDefaults().getColor("InternalFrame.activeTitleGradient");
 
+        if (color != null) {
+            GRADIENT_HEADER_LARGE = new GradientPaint(0, 0,
+                    Color.WHITE, 0, 33, color);
+        } else {
+
+            GRADIENT_HEADER_LARGE = new GradientPaint(0, 0,
+                    Color.WHITE, 0, 33, Color.WHITE);
+        }
     }
 
     TaskEditorTopComponent(final TaskElement element) {
