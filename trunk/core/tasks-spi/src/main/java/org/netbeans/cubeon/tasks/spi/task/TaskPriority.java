@@ -90,7 +90,7 @@ public final class TaskPriority {
 
     @Override
     public String toString() {
-        return id.toString();
+        return text.toString();
     }
 
     @Override

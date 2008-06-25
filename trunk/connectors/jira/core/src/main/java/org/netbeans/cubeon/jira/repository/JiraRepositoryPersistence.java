@@ -153,6 +153,7 @@ class JiraRepositoryPersistence {
                     jiraTaskRepository.setUserName(user);
                     jiraTaskRepository.setPassword(password);
                     jiraTaskRepository.setURL(url);
+                    jiraTaskRepository.loadAttributes();
                     repositorys.add(jiraTaskRepository);
                 }
             }
