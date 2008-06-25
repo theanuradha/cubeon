@@ -82,6 +82,7 @@ public class JiraTaskRepositoryProvider implements TaskRepositoryType {
             JiraRepositoryExtension extension = jiraTaskRepository.getExtension();
             extension.fireNameChenged();
             extension.fireDescriptionChenged();
+            jiraTaskRepository.updateAttributes();
             return repository;
         }
 
@@ -98,7 +99,7 @@ public class JiraTaskRepositoryProvider implements TaskRepositoryType {
 
             return true;
         }
-
+        
         return false;
 
     }

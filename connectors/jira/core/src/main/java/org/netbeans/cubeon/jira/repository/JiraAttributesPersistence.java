@@ -147,6 +147,7 @@ class JiraAttributesPersistence {
                 configurationsElement.setAttribute(TAG_VOTING, String.valueOf(false));
                 configurationsElement.setAttribute(TAG_WATCHING, String.valueOf(false));
             }
+            save(document);
         }
     }
 
