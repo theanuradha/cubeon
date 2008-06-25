@@ -66,8 +66,8 @@ class JiraAttributesPersistence {
     private static final String TAG_NAME = "name";
     private static final String TAG_CONFIGURATIONS = "Configurations";
     private static final String TAG_VOTING = "voting";
-    private JiraTaskRepository repository;
-    private FileObject baseDir;
+    private final JiraTaskRepository repository;
+    private final FileObject baseDir;
     private static final Object LOCK = new Object();
 
     JiraAttributesPersistence(JiraTaskRepository jiraTaskRepository, FileObject fileObject) {
@@ -230,6 +230,15 @@ class JiraAttributesPersistence {
             }
         }
 
+    }
+
+    public void loadAttributes() {
+        synchronized (LOCK) {
+
+            Document document = getDocument();
+            Element root = getRootElement(document);
+            Element attributes = findElement(root, TAG_ROOT, NAMESPACE);
+        }
     }
 
     private static Element findElement(Element parent, String name, String namespace) {
