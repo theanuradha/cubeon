@@ -44,6 +44,7 @@ public class LocalQuery implements TaskQuery {
     private boolean summary;
     private boolean description;
     private final QueryExtension extension;
+    private MatchType matchType = MatchType.CONTAIN;
 
     public LocalQuery(String name, LocalTaskRepository repository) {
         this.name = name;
@@ -107,12 +108,28 @@ public class LocalQuery implements TaskQuery {
     private boolean checkContain(TaskElement element) {
         boolean b = !summary && !description;
         if (summary) {
-            b = element.getName().contains(contain);
+
+            b = getMatchType(element.getName(), contain);
         }
         if (!b && description) {
-            b = element.getDescription().contains(contain);
+            b = getMatchType(element.getDescription(), contain);
         }
         return b;
+    }
+
+    private boolean getMatchType(String s1, String s2) {
+        switch (matchType) {
+            case CONTAIN:
+                return s1.contains(s2);
+            case STARTS_WITH:
+                return s1.startsWith(s2);
+            case ENDS_WITH:
+                return s1.endsWith(s2);
+            case EQUALS:
+                return s1.equals(s2);
+
+        }
+        return false;
     }
 
     public List<TaskElement> getTaskElements() {
@@ -166,4 +183,11 @@ public class LocalQuery implements TaskQuery {
         return extension;
     }
 
+    public MatchType getMatchType() {
+        return matchType;
+    }
+
+    public void setMatchType(MatchType matchType) {
+        this.matchType = matchType;
+    }
 }

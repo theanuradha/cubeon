@@ -62,6 +62,8 @@ class PersistenceHandler {
     private static final String TAG_STATUS = "status";
     private static final String TAG_TYPES = "types";
     private static final String TAG_TYPE = "type";
+    private static final String TAG_MATCH_TYPE = "match_type";
+
     private LocalQuerySupport localQuerySupport;
     private FileObject baseDir;
     private static final Object LOCK = new Object();
@@ -76,9 +78,9 @@ class PersistenceHandler {
         //do validations changes here
     }
 
-    void addTaskQuery( LocalQuery localQuery) {
+    void addTaskQuery(LocalQuery localQuery) {
         synchronized (LOCK) {
-           
+
             Document document = getDocument();
             Element root = getRootElement(document);
             Element tasksElement = findElement(root, TAG_QUERYS, NAMESPACE);
@@ -89,7 +91,7 @@ class PersistenceHandler {
             }
             Element taskQuery = null;
 
-             NodeList nodeList =
+            NodeList nodeList =
                     tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_QUERY);
 
             for (int i = 0; i < nodeList.getLength(); i++) {
@@ -134,6 +136,7 @@ class PersistenceHandler {
             }
 
             taskQuery.setAttributeNS(NAMESPACE, TAG_CONTAIN, localQuery.getContain());
+            taskQuery.setAttributeNS(NAMESPACE, TAG_MATCH_TYPE, localQuery.getMatchType().name());
             taskQuery.setAttributeNS(NAMESPACE, TAG_SUMMARY, String.valueOf(localQuery.isSummary()));
             taskQuery.setAttributeNS(NAMESPACE, TAG_DESCRIPTION, String.valueOf(localQuery.isDescription()));
             save(document);
@@ -230,6 +233,11 @@ class PersistenceHandler {
                         localQuery.setStates(states);
                         //----------------------------------------------------------------------
                         String content = element.getAttributeNS(NAMESPACE, TAG_CONTAIN);
+                        String match_Type = element.getAttributeNS(NAMESPACE, TAG_MATCH_TYPE);
+                        if (match_Type != null && match_Type.trim().length()>0) {
+                            MatchType matchType = MatchType.valueOf(match_Type);
+                            localQuery.setMatchType(matchType);
+                        }
                         localQuery.setContain(content);
 
                         String summary = element.getAttributeNS(NAMESPACE, TAG_SUMMARY);

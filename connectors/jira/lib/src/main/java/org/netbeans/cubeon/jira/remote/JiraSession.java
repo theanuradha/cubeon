@@ -19,7 +19,9 @@ package org.netbeans.cubeon.jira.remote;
 import com.dolby.jira.net.soap.jira.JiraSoapService;
 import com.dolby.jira.net.soap.jira.JiraSoapServiceServiceLocator;
 import com.dolby.jira.net.soap.jira.RemoteAuthenticationException;
+import com.dolby.jira.net.soap.jira.RemoteConfiguration;
 import com.dolby.jira.net.soap.jira.RemoteIssueType;
+import com.dolby.jira.net.soap.jira.RemotePermissionException;
 import com.dolby.jira.net.soap.jira.RemotePriority;
 import com.dolby.jira.net.soap.jira.RemoteResolution;
 import com.dolby.jira.net.soap.jira.RemoteStatus;
@@ -90,6 +92,14 @@ public class JiraSession {
     public RemoteIssueType[] getIssueTypes() throws JiraException {
         try {
             return service.getIssueTypes(token);
+        } catch (Exception ex) {
+            throw new JiraException(ex);
+        }
+    }
+
+    public RemoteConfiguration getConfiguration() throws JiraException {
+        try {
+            return service.getConfiguration(token);
         } catch (Exception ex) {
             throw new JiraException(ex);
         }
