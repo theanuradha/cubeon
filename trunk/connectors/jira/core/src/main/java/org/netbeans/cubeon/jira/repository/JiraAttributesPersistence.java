@@ -16,9 +16,18 @@
  */
 package org.netbeans.cubeon.jira.repository;
 
+import com.dolby.jira.net.soap.jira.RemoteConfiguration;
+import com.dolby.jira.net.soap.jira.RemoteIssueType;
+import com.dolby.jira.net.soap.jira.RemotePriority;
+import com.dolby.jira.net.soap.jira.RemoteResolution;
+import com.dolby.jira.net.soap.jira.RemoteStatus;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.netbeans.cubeon.jira.remote.JiraException;
+import org.netbeans.cubeon.jira.remote.JiraSession;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
@@ -36,37 +45,124 @@ import org.xml.sax.SAXException;
  */
 class JiraAttributesPersistence {
 
+    private static final String TAG_UNASSIGNED_ISSUES = "unassigned_issues";
+    private static final String TAG_USER_MANAGMENT = "user_managment";
+    private static final String TAG_WATCHING = "watching";
     private static final String FILESYSTEM_FILE_TAG = "-attributes.xml"; //NOI18N
     private static final String NAMESPACE = null;//FIXME add propper namespase
+    private static final String TAG_ATTACHMENTS = "attachments";
+    private static final String TAG_ISSUE_LINKING = "Issue_linking";
     private static final String TAG_ROOT = "attributes";
-
-    private JiraTaskRepository jiraTaskRepository;
+    private static final String TAG_PRIORITIES = "priorites";
+    private static final String TAG_SUB_TASKS = "sub_tasks";
+    private static final String TAG_TYPES = "types";
+    private static final String TAG_STATUSES = "statuses";
+    private static final String TAG_RESOLUTIONS = "resolutions";
+    private static final String TAG_PRIORITY = "priority";
+    private static final String TAG_TYPE = "type";
+    private static final String TAG_STATUS = "status";
+    private static final String TAG_RESOLUTION = "resolution";
+    private static final String TAG_ID = "id";
+    private static final String TAG_NAME = "name";
+    private static final String TAG_CONFIGURATIONS = "Configurations";
+    private static final String TAG_VOTING = "voting";
+    private JiraTaskRepository repository;
     private FileObject baseDir;
-
     private static final Object LOCK = new Object();
 
     JiraAttributesPersistence(JiraTaskRepository jiraTaskRepository, FileObject fileObject) {
-        this.jiraTaskRepository = jiraTaskRepository;
+        this.repository = jiraTaskRepository;
         this.baseDir = fileObject;
-        refresh();
     }
 
-    
-    void refresh() {
+    void refresh() throws JiraException {
         synchronized (LOCK) {
-            
+
             Document document = getDocument();
             Element root = getRootElement(document);
-            Element tasksElement = findElement(root, TAG_ROOT, NAMESPACE);
+            Element attributes = findElement(root, TAG_ROOT, NAMESPACE);
 
-            if (tasksElement != null) {
+            if (attributes == null) {
+                attributes = document.createElement(TAG_ROOT);
+                root.appendChild(attributes);
+            }
 
+            JiraSession session = new JiraSession(repository.getURL(),
+                    repository.getUserName(), repository.getPassword());
+
+            RemotePriority[] priorities = session.getPriorities();
+            Element prioritiesElement = getEmptyElement(document, attributes, TAG_PRIORITIES);
+            for (RemotePriority rp : priorities) {
+                Element priority = document.createElement(TAG_PRIORITY);
+                prioritiesElement.appendChild(priority);
+                priority.setAttribute(TAG_ID, rp.getId());
+                priority.setAttribute(TAG_NAME, rp.getName());
+            }
+            //-----------------------------------------------------------------
+            RemoteIssueType[] issueTypes = session.getIssueTypes();
+            Element typesElement = getEmptyElement(document, attributes, TAG_TYPES);
+            for (RemoteIssueType issueType : issueTypes) {
+                Element type = document.createElement(TAG_TYPE);
+                typesElement.appendChild(type);
+                type.setAttribute(TAG_ID, issueType.getId());
+                type.setAttribute(TAG_NAME, issueType.getName());
+            }
+            //-----------------------------------------------------------------
+            RemoteStatus[] statuses = session.getStatuses();
+            Element statusesElement = getEmptyElement(document, attributes, TAG_STATUSES);
+            for (RemoteStatus rs : statuses) {
+                Element status = document.createElement(TAG_STATUS);
+                statusesElement.appendChild(status);
+                status.setAttribute(TAG_ID, rs.getId());
+                status.setAttribute(TAG_NAME, rs.getName());
+            }
+            //-----------------------------------------------------------------
+            RemoteResolution[] resolutions = session.getResolutions();
+            Element resolutionsElement = getEmptyElement(document, attributes, TAG_RESOLUTIONS);
+            for (RemoteResolution rr : resolutions) {
+                Element resolution = document.createElement(TAG_RESOLUTION);
+                resolutionsElement.appendChild(resolution);
+                resolution.setAttribute(TAG_ID, rr.getId());
+                resolution.setAttribute(TAG_NAME, rr.getName());
+            }
+            //-----------------------------------------------------------------
+            Element configurationsElement = getEmptyElement(document, attributes, TAG_CONFIGURATIONS);
+            try {
+                RemoteConfiguration configuration = session.getConfiguration();
+                configurationsElement.setAttribute(TAG_ATTACHMENTS, String.valueOf(configuration.isAllowAttachments()));
+                configurationsElement.setAttribute(TAG_USER_MANAGMENT, String.valueOf(configuration.isAllowExternalUserManagment()));
+                configurationsElement.setAttribute(TAG_ISSUE_LINKING, String.valueOf(configuration.isAllowIssueLinking()));
+                configurationsElement.setAttribute(TAG_SUB_TASKS, String.valueOf(configuration.isAllowSubTasks()));
+                configurationsElement.setAttribute(TAG_UNASSIGNED_ISSUES, String.valueOf(configuration.isAllowUnassignedIssues()));
+                configurationsElement.setAttribute(TAG_VOTING, String.valueOf(configuration.isAllowVoting()));
+                configurationsElement.setAttribute(TAG_WATCHING, String.valueOf(configuration.isAllowWatching()));
+
+            } catch (JiraException jiraException) {
+                Logger.getLogger(JiraAttributesPersistence.class.getName()).log(Level.WARNING, jiraException.getMessage());
+                configurationsElement.setAttribute(TAG_ATTACHMENTS, String.valueOf(false));
+                configurationsElement.setAttribute(TAG_USER_MANAGMENT, String.valueOf(false));
+                configurationsElement.setAttribute(TAG_ISSUE_LINKING, String.valueOf(false));
+                configurationsElement.setAttribute(TAG_SUB_TASKS, String.valueOf(false));
+                configurationsElement.setAttribute(TAG_UNASSIGNED_ISSUES, String.valueOf(false));
+                configurationsElement.setAttribute(TAG_VOTING, String.valueOf(false));
+                configurationsElement.setAttribute(TAG_WATCHING, String.valueOf(false));
             }
         }
     }
 
+    private Element getEmptyElement(Document document, Element root, String tag) {
+        Element taskpriorities = findElement(root, tag, NAMESPACE);
+        if (taskpriorities != null) {
+            root.removeChild(taskpriorities);
+        }
+        taskpriorities = document.createElementNS(NAMESPACE, tag);
+        root.appendChild(taskpriorities);
+        return taskpriorities;
+
+    }
+
     private Document getDocument() {
-        final FileObject config = baseDir.getFileObject(jiraTaskRepository.getId() + FILESYSTEM_FILE_TAG);
+        final FileObject config = baseDir.getFileObject(repository.getId() + FILESYSTEM_FILE_TAG);
         Document doc = null;
         if (config != null) {
             InputStream in = null;
@@ -107,13 +203,13 @@ class JiraAttributesPersistence {
 
     private void save(Document doc) {
 
-        FileObject config = baseDir.getFileObject(jiraTaskRepository.getId() + FILESYSTEM_FILE_TAG);
+        FileObject config = baseDir.getFileObject(repository.getId() + FILESYSTEM_FILE_TAG);
 
         FileLock lck = null;
         OutputStream out = null;
         try {
             if (config == null) {
-                config = baseDir.createData(jiraTaskRepository.getId() + FILESYSTEM_FILE_TAG);
+                config = baseDir.createData(repository.getId() + FILESYSTEM_FILE_TAG);
             }
             lck = config.lock();
             out = config.getOutputStream(lck);
