@@ -18,9 +18,13 @@ package org.netbeans.cubeon.jira.repository;
 
 import java.awt.Image;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.netbeans.cubeon.jira.remote.JiraException;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.util.Lookup;
+import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 
@@ -40,6 +44,7 @@ public class JiraTaskRepository implements TaskRepository {
     private String password;
     //----------------------------
     private final JiraRepositoryExtension extension;
+    private final JiraAttributesPersistence attributesPersistence;
 
     public JiraTaskRepository(JiraTaskRepositoryProvider provider,
             String id, String name, String description) {
@@ -47,7 +52,8 @@ public class JiraTaskRepository implements TaskRepository {
         this.id = id;
         this.name = name;
         this.description = description;
-        extension=new JiraRepositoryExtension(this);
+        extension = new JiraRepositoryExtension(this);
+        attributesPersistence = new JiraAttributesPersistence(this, provider.getBaseDir());
     }
 
     public String getId() {
@@ -72,7 +78,7 @@ public class JiraTaskRepository implements TaskRepository {
 
     public Lookup getLookup() {
         return Lookups.fixed(this,
-                provider,extension);
+                provider, extension);
     }
 
     public Image getImage() {
@@ -135,6 +141,17 @@ public class JiraTaskRepository implements TaskRepository {
         return extension;
     }
 
+    public void updateAttributes() {
+        RequestProcessor.getDefault().post(new Runnable() {
 
-
+            public void run() {
+                try {
+                    attributesPersistence.refresh();
+                } catch (JiraException ex) {
+                    Logger.getLogger(JiraAttributesPersistence.class.getName()).
+                            log(Level.WARNING, ex.getMessage());
+                }
+            }
+        });
+    }
 }
