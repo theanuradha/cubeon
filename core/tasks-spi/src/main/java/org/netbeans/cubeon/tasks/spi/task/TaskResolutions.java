@@ -14,7 +14,7 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.jira.repository;
+package org.netbeans.cubeon.tasks.spi.task;
 
 /**
  *

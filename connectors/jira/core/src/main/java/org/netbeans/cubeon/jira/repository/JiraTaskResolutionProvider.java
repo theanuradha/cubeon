@@ -16,14 +16,16 @@
  */
 package org.netbeans.cubeon.jira.repository;
 
+import org.netbeans.cubeon.tasks.spi.task.TaskResolutions;
 import java.util.ArrayList;
 import java.util.List;
+import org.netbeans.cubeon.tasks.spi.repository.TaskResolutionProvider;
 
 /**
  *
  * @author Anuradha G
  */
-public class JiraTaskResolutionProvider {
+public class JiraTaskResolutionProvider implements TaskResolutionProvider{
 
     private List<TaskResolutions> taskResolutionses = new ArrayList<TaskResolutions>();
 
