@@ -24,10 +24,17 @@ import com.dolby.jira.net.soap.jira.RemoteStatus;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.netbeans.cubeon.jira.remote.JiraException;
 import org.netbeans.cubeon.jira.remote.JiraSession;
+import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
+import org.netbeans.cubeon.tasks.spi.task.TaskPriority.PRIORITY;
+import org.netbeans.cubeon.tasks.spi.task.TaskResolution;
+import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
+import org.netbeans.cubeon.tasks.spi.task.TaskType;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
@@ -238,6 +245,78 @@ class JiraAttributesPersistence {
             Document document = getDocument();
             Element root = getRootElement(document);
             Element attributes = findElement(root, TAG_ROOT, NAMESPACE);
+
+
+            if (attributes != null) {
+                //-----------------------------------------
+                Element taskpriorities = findElement(attributes, TAG_PRIORITIES, NAMESPACE);
+                NodeList repositoryNodes = taskpriorities.getChildNodes();
+                List<TaskPriority> prioriiesList = new ArrayList<TaskPriority>();
+                for (int i = 0; i < repositoryNodes.getLength(); i++) {
+
+                    Node node = repositoryNodes.item(i);
+                    if (node.getNodeType() == Node.ELEMENT_NODE) {
+                        Element element = (Element) node;
+                        String id = element.getAttribute(TAG_ID);
+                        String name = element.getAttribute(TAG_NAME);
+                        PRIORITY priority = JiraUtils.toJiraPriority(id);
+                        prioriiesList.add(TaskPriority.createPriority(priority, name));
+
+                    }
+                }
+                repository.getJiraTaskPriorityProvider().setPrioritys(prioriiesList);
+                //-----------------------------------------
+                Element taskTypes = findElement(attributes, TAG_TYPES, NAMESPACE);
+                NodeList taskTypeNodes = taskTypes.getChildNodes();
+                List<TaskType> types = new ArrayList<TaskType>();
+                for (int i = 0; i < taskTypeNodes.getLength(); i++) {
+
+                    Node node = taskTypeNodes.item(i);
+                    if (node.getNodeType() == Node.ELEMENT_NODE) {
+                        Element element = (Element) node;
+                        String id = element.getAttribute(TAG_ID);
+                        String name = element.getAttribute(TAG_NAME);
+
+                        types.add(new TaskType(id, name));
+
+                    }
+                }
+                repository.getJiraTaskTypeProvider().setTaskTypes(types);
+                //-----------------------------------------
+                Element taskStatuses = findElement(attributes, TAG_STATUSES, NAMESPACE);
+                NodeList taskStatusNodes = taskStatuses.getChildNodes();
+                List<TaskStatus> statuses = new ArrayList<TaskStatus>();
+                for (int i = 0; i < taskStatusNodes.getLength(); i++) {
+
+                    Node node = taskStatusNodes.item(i);
+                    if (node.getNodeType() == Node.ELEMENT_NODE) {
+                        Element element = (Element) node;
+                        String id = element.getAttribute(TAG_ID);
+                        String name = element.getAttribute(TAG_NAME);
+
+                        statuses.add(new TaskStatus(id, name));
+
+                    }
+                }
+                repository.getJiraTaskStatusProvider().setStatuses(statuses);
+                //-----------------------------------------
+                Element taskResolution = findElement(attributes, TAG_RESOLUTIONS, NAMESPACE);
+                NodeList taskResolutionNodes = taskResolution.getChildNodes();
+                List<TaskResolution> resolutiones = new ArrayList<TaskResolution>();
+                for (int i = 0; i < taskResolutionNodes.getLength(); i++) {
+
+                    Node node = taskResolutionNodes.item(i);
+                    if (node.getNodeType() == Node.ELEMENT_NODE) {
+                        Element element = (Element) node;
+                        String id = element.getAttribute(TAG_ID);
+                        String name = element.getAttribute(TAG_NAME);
+
+                        resolutiones.add(new TaskResolution(id, name));
+
+                    }
+                }
+                repository.getJiraTaskResolutionProvider().setTaskResolutions(resolutiones);
+            }
         }
     }
 

@@ -25,5 +25,5 @@ import java.util.List;
  */
 public interface TaskResolutionProvider {
 
-    public List<TaskResolutions> getTaskResolutionses();
+    public List<TaskResolution> getTaskResolutiones();
 }

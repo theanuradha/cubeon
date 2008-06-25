@@ -16,7 +16,7 @@
  */
 package org.netbeans.cubeon.jira.repository;
 
-import org.netbeans.cubeon.tasks.spi.task.TaskResolutions;
+import org.netbeans.cubeon.tasks.spi.task.TaskResolution;
 import java.util.ArrayList;
 import java.util.List;
 import org.netbeans.cubeon.tasks.spi.repository.TaskResolutionProvider;
@@ -25,17 +25,17 @@ import org.netbeans.cubeon.tasks.spi.repository.TaskResolutionProvider;
  *
  * @author Anuradha G
  */
-public class JiraTaskResolutionProvider implements TaskResolutionProvider{
+public class JiraTaskResolutionProvider implements TaskResolutionProvider {
 
-    private List<TaskResolutions> taskResolutionses = new ArrayList<TaskResolutions>();
+    private List<TaskResolution> taskResolutiones = new ArrayList<TaskResolution>();
 
-    public List<TaskResolutions> getTaskResolutionses() {
+    public List<TaskResolution> getTaskResolutiones() {
 
-        return new ArrayList<TaskResolutions>(taskResolutionses);
+        return new ArrayList<TaskResolution>(taskResolutiones);
     }
 
-    public TaskResolutions getTaskResolutionById(String id) {
-        for (TaskResolutions type : getTaskResolutionses()) {
+    public TaskResolution getTaskResolutionById(String id) {
+        for (TaskResolution type : getTaskResolutiones()) {
             if (type.getId().equals(id)) {
                 return type;
             }
@@ -44,7 +44,7 @@ public class JiraTaskResolutionProvider implements TaskResolutionProvider{
         return null;
     }
 
-    public void setTaskResolutions(List<TaskResolutions> resolutionses) {
-        this.taskResolutionses = new ArrayList<TaskResolutions>(resolutionses);
+    public void setTaskResolutions(List<TaskResolution> resolutionses) {
+        this.taskResolutiones = new ArrayList<TaskResolution>(resolutionses);
     }
 }

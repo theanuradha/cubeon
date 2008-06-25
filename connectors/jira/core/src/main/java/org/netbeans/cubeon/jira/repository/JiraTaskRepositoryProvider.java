@@ -83,6 +83,7 @@ public class JiraTaskRepositoryProvider implements TaskRepositoryType {
             extension.fireNameChenged();
             extension.fireDescriptionChenged();
             jiraTaskRepository.updateAttributes();
+            jiraTaskRepository.loadAttributes();
             return repository;
         }
 

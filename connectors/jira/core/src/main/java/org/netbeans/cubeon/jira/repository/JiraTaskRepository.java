@@ -44,7 +44,11 @@ public class JiraTaskRepository implements TaskRepository {
     private String password;
     //----------------------------
     private final JiraRepositoryExtension extension;
-    private final JiraAttributesPersistence attributesPersistence;
+    private final JiraAttributesPersistence attributesPersistence;    //::::::::::::::::
+    private final JiraTaskPriorityProvider jtpp = new JiraTaskPriorityProvider();
+    private final JiraTaskTypeProvider jttp = new JiraTaskTypeProvider();
+    private final JiraTaskStatusProvider jtsp = new JiraTaskStatusProvider();
+    private final JiraTaskResolutionProvider jtrp = new JiraTaskResolutionProvider();
 
     public JiraTaskRepository(JiraTaskRepositoryProvider provider,
             String id, String name, String description) {
@@ -78,7 +82,7 @@ public class JiraTaskRepository implements TaskRepository {
 
     public Lookup getLookup() {
         return Lookups.fixed(this,
-                provider, extension);
+                provider, extension, jtpp, jtrp, jtsp, jttp);
     }
 
     public Image getImage() {
@@ -153,5 +157,26 @@ public class JiraTaskRepository implements TaskRepository {
                 }
             }
         });
+
+    }
+
+    public void loadAttributes() {
+        attributesPersistence.loadAttributes();
+    }
+
+    public JiraTaskPriorityProvider getJiraTaskPriorityProvider() {
+        return jtpp;
+    }
+
+    public JiraTaskResolutionProvider getJiraTaskResolutionProvider() {
+        return jtrp;
+    }
+
+    public JiraTaskStatusProvider getJiraTaskStatusProvider() {
+        return jtsp;
+    }
+
+    public JiraTaskTypeProvider getJiraTaskTypeProvider() {
+        return jttp;
     }
 }
