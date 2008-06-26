@@ -154,7 +154,6 @@ public final class TaskExplorerTopComponent extends TopComponent implements Expl
     }
 
     public void expand() {
-        taskTreeView.expandAll();
         Task task = RequestProcessor.getDefault().create(new Runnable() {
 
             public void run() {

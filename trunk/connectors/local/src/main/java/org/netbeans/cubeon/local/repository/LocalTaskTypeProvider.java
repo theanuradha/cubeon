@@ -18,6 +18,8 @@ package org.netbeans.cubeon.local.repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.netbeans.cubeon.local.LocalTask;
+import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskType;
 import org.netbeans.cubeon.tasks.spi.repository.TaskTypeProvider;
 
@@ -49,5 +51,17 @@ public class LocalTaskTypeProvider implements TaskTypeProvider {
         }
 
         return TASK;
+    }
+
+    public TaskType getTaskType(TaskElement element) {
+        LocalTask localTask = element.getLookup().lookup(LocalTask.class);
+        assert localTask != null;
+        return localTask.getType();
+    }
+
+    public void setTaskType(TaskElement element, TaskType taskType) {
+        LocalTask localTask = element.getLookup().lookup(LocalTask.class);
+        assert localTask != null;
+        localTask.setType(taskType);
     }
 }

@@ -64,7 +64,6 @@ class PersistenceHandler {
     private static final String TAG_DESCRIPTION = "description";
     private LocalTaskRepository localTaskRepository;
     private FileObject baseDir;
-
     private static final Object LOCK = new Object();
 
     PersistenceHandler(LocalTaskRepository localTaskRepository, FileObject fileObject) {
@@ -75,14 +74,12 @@ class PersistenceHandler {
 
     void vaidate(TaskElement element) {
         //do validations changes here
-       
-
     }
 
-
-    
     void addTaskElement(TaskElement te) {
         synchronized (LOCK) {
+            LocalTask localTask = te.getLookup().lookup(LocalTask.class);
+            assert localTask != null;
             Document document = getDocument();
             Element root = getRootElement(document);
             Element tasksElement = findElement(root, TAG_TASKS, NAMESPACE);
@@ -115,13 +112,13 @@ class PersistenceHandler {
                 taskElement.setAttributeNS(NAMESPACE, TAG_ID, te.getId());
             }
 
-            LocalTask localTask = te.getLookup().lookup(LocalTask.class);
-            taskElement.setAttributeNS(NAMESPACE, TAG_NAME, te.getName());
-            taskElement.setAttributeNS(NAMESPACE, TAG_DESCRIPTION, te.getDescription());
-            taskElement.setAttributeNS(NAMESPACE, TAG_REPOSITORY, te.getTaskRepository().getId());
-            taskElement.setAttributeNS(NAMESPACE, TAG_PRIORITY, te.getPriority().getId().toString());
-            taskElement.setAttributeNS(NAMESPACE, TAG_STATUS, te.getStatus().getId());
-            taskElement.setAttributeNS(NAMESPACE, TAG_TYPE, te.getType().getId());
+
+            taskElement.setAttributeNS(NAMESPACE, TAG_NAME, localTask.getName());
+            taskElement.setAttributeNS(NAMESPACE, TAG_DESCRIPTION, localTask.getDescription());
+            taskElement.setAttributeNS(NAMESPACE, TAG_REPOSITORY, localTask.getTaskRepository().getId());
+            taskElement.setAttributeNS(NAMESPACE, TAG_PRIORITY, localTask.getPriority().getId().toString());
+            taskElement.setAttributeNS(NAMESPACE, TAG_STATUS, localTask.getStatus().getId());
+            taskElement.setAttributeNS(NAMESPACE, TAG_TYPE, localTask.getType().getId());
             if (localTask.getUrlString() != null) {
                 taskElement.setAttributeNS(NAMESPACE, TAG_URL, localTask.getUrlString());
             }

@@ -18,6 +18,10 @@ package org.netbeans.cubeon.ui.query;
 
 import java.awt.Image;
 import javax.swing.Action;
+import org.netbeans.cubeon.tasks.spi.repository.TaskPriorityProvider;
+import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
+import org.netbeans.cubeon.tasks.spi.repository.TaskStatusProvider;
+import org.netbeans.cubeon.tasks.spi.repository.TaskTypeProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.ui.taskelemet.CopyDetailsAction;
 import org.netbeans.cubeon.ui.taskelemet.MoveToAction;
@@ -76,12 +80,22 @@ public class TaskResultNode extends AbstractNode {
         }
         buffer.append("<font color=\"#808080\">");
         buffer.append("  ");
-        buffer.append("Priority :");
-        buffer.append(element.getPriority().toString());
-        buffer.append(", Type :");
-        buffer.append(element.getType().toString());
-        buffer.append(", Status :");
-        buffer.append(element.getStatus().toString());
+        TaskRepository repository = element.getTaskRepository();
+        TaskPriorityProvider tpp = repository.getLookup().lookup(TaskPriorityProvider.class);
+        if (tpp != null) {
+            buffer.append("Priority :");
+            buffer.append(tpp.getTaskPriority(element).toString());
+        }
+        TaskTypeProvider ttp = repository.getLookup().lookup(TaskTypeProvider.class);
+        if (ttp != null) {
+            buffer.append(", Type :");
+            buffer.append(ttp.getTaskType(element).toString());
+        }
+        TaskStatusProvider tsp = repository.getLookup().lookup(TaskStatusProvider.class);
+        if (tsp != null) {
+            buffer.append(", Status :");
+            buffer.append(tsp.getTaskStatus(element).toString());
+        }
         buffer.append("</html>");
         return buffer.toString();
     }

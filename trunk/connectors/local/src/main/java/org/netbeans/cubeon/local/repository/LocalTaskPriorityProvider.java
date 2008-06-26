@@ -18,9 +18,10 @@ package org.netbeans.cubeon.local.repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.netbeans.cubeon.local.LocalTask;
+import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.repository.TaskPriorityProvider;
-import org.openide.util.Utilities;
 
 /**
  *
@@ -55,5 +56,17 @@ public class LocalTaskPriorityProvider implements TaskPriorityProvider {
     public TaskPriority getDefaultPriority() {
 
         return TaskPriority.createPriority(TaskPriority.PRIORITY.P3, "P3");
+    }
+
+    public TaskPriority getTaskPriority(TaskElement element) {
+        LocalTask localTask = element.getLookup().lookup(LocalTask.class);
+        assert localTask!=null;
+        return localTask.getPriority();
+    }
+
+    public void setTaskPriority(TaskElement element, TaskPriority priority) {
+        LocalTask localTask = element.getLookup().lookup(LocalTask.class);
+        assert localTask!=null;
+        localTask.setPriority(priority);
     }
 }

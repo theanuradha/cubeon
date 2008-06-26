@@ -16,6 +16,7 @@
  */
 package org.netbeans.cubeon.jira.repository;
 
+import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskResolution;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,5 +47,13 @@ public class JiraTaskResolutionProvider implements TaskResolutionProvider {
 
     public void setTaskResolutions(List<TaskResolution> resolutionses) {
         this.taskResolutiones = new ArrayList<TaskResolution>(resolutionses);
+    }
+
+    public TaskResolution getTaskResolution(TaskElement element) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setTaskResolution(TaskElement element, TaskResolution resolution) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

@@ -18,9 +18,9 @@ package org.netbeans.cubeon.jira.repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.repository.TaskPriorityProvider;
-import org.openide.util.Utilities;
 
 /**
  *
@@ -28,9 +28,24 @@ import org.openide.util.Utilities;
  */
 public class JiraTaskPriorityProvider implements TaskPriorityProvider {
 
+    public static final TaskPriority BLOCKER =
+            TaskPriority.createPriority(TaskPriority.PRIORITY.P1, "Blocker");
+    public static final TaskPriority CRITICAL =
+            TaskPriority.createPriority(TaskPriority.PRIORITY.P2, "Critical");
+    public static final TaskPriority MAJOR =
+            TaskPriority.createPriority(TaskPriority.PRIORITY.P3, "Major");
+    public static final TaskPriority MINOR =
+            TaskPriority.createPriority(TaskPriority.PRIORITY.P1, "Minor");
+    public static final TaskPriority TRIVIAL =
+            TaskPriority.createPriority(TaskPriority.PRIORITY.P1, "Trivial");
     private List<TaskPriority> prioritys = new ArrayList<TaskPriority>();
 
     public JiraTaskPriorityProvider() {
+        prioritys.add(BLOCKER);
+        prioritys.add(CRITICAL);
+        prioritys.add(MAJOR);
+        prioritys.add(MINOR);
+        prioritys.add(TRIVIAL);
     }
 
     public List<TaskPriority> getTaskPrioritys() {
@@ -43,10 +58,18 @@ public class JiraTaskPriorityProvider implements TaskPriorityProvider {
                 return tp;
             }
         }
-        return null;
+        return MAJOR;
     }
 
     public void setPrioritys(List<TaskPriority> prioritys) {
         this.prioritys = new ArrayList<TaskPriority>(prioritys);
+    }
+
+    public TaskPriority getTaskPriority(TaskElement element) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setTaskPriority(TaskElement element, TaskPriority priority) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

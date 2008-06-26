@@ -17,6 +17,7 @@
 package org.netbeans.cubeon.ui.taskelemet;
 
 import java.util.Comparator;
+import org.netbeans.cubeon.tasks.spi.repository.TaskPriorityProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskElementComparator;
 import org.netbeans.cubeon.ui.UIPreferences;
@@ -59,16 +60,30 @@ public class SortByPriority implements TaskElementComparator {
             return new Comparator<TaskElement>() {
 
                 public int compare(TaskElement o1, TaskElement o2) {
-                    return o1.getPriority().getId().compareTo(o2.getPriority().getId());
+                    return compareTaskElements(o1, o2);
                 }
             };
         }
         return new Comparator<TaskElement>() {
 
             public int compare(TaskElement o1, TaskElement o2) {
-                return o2.getPriority().getId().compareTo(o1.getPriority().getId());
+                return compareTaskElements(o2, o1);
             }
         };
+    }
+
+    private int compareTaskElements(TaskElement o1, TaskElement o2) {
+        TaskPriorityProvider provider1 = o1.getTaskRepository().getLookup().lookup(TaskPriorityProvider.class);
+        if (provider1 != null) {
+
+            TaskPriorityProvider provider2 = o2.getTaskRepository().getLookup().lookup(TaskPriorityProvider.class);
+            if (provider2 != null) {
+                return provider1.getTaskPriority(o1).getId().compareTo(provider2.getTaskPriority(o2).getId());
+            }
+        }
+
+
+        return -1;
     }
 
     public boolean isAscending() {

@@ -18,6 +18,7 @@ package org.netbeans.cubeon.jira.repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
 import org.netbeans.cubeon.tasks.spi.repository.TaskStatusProvider;
 
@@ -27,7 +28,20 @@ import org.netbeans.cubeon.tasks.spi.repository.TaskStatusProvider;
  */
 public class JiraTaskStatusProvider implements TaskStatusProvider {
 
+    public static final TaskStatus OPEN = new TaskStatus("open", "Open");
+    public static final TaskStatus IN_PROGRESS = new TaskStatus("in_progress", "In Progress");
+    public static final TaskStatus REOPEN = new TaskStatus("reopened", "Reopened");
+    public static final TaskStatus RESOLVED = new TaskStatus("resolved", "Resolved");
+    public static final TaskStatus CLOSED = new TaskStatus("closed", "Closed");
     private List<TaskStatus> statuses = new ArrayList<TaskStatus>();
+
+    public JiraTaskStatusProvider() {
+        statuses.add(OPEN);
+        statuses.add(IN_PROGRESS);
+        statuses.add(REOPEN);
+        statuses.add(RESOLVED);
+        statuses.add(CLOSED);
+    }
 
     public List<TaskStatus> getStatusList() {
 
@@ -42,10 +56,15 @@ public class JiraTaskStatusProvider implements TaskStatusProvider {
             }
         }
 
-        return null;
+        return  OPEN;
     }
 
-    public void setStatuses(List<TaskStatus> statuses) {
-        this.statuses = new ArrayList<TaskStatus>(statuses);
+    public TaskStatus getTaskStatus(TaskElement element) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    public void setTaskStatus(TaskElement element, TaskStatus status) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 }

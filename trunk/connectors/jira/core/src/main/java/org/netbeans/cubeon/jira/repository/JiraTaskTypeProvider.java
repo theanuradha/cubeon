@@ -18,6 +18,7 @@ package org.netbeans.cubeon.jira.repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskType;
 import org.netbeans.cubeon.tasks.spi.repository.TaskTypeProvider;
 
@@ -27,7 +28,18 @@ import org.netbeans.cubeon.tasks.spi.repository.TaskTypeProvider;
  */
 public class JiraTaskTypeProvider implements TaskTypeProvider {
 
-    List<TaskType> taskTypes = new ArrayList<TaskType>();
+    public  static final TaskType BUG = new TaskType("bug", "Bug");
+    public static final TaskType IMPROVEMENT = new TaskType("improvement", "Improvement");
+    public static final TaskType FEATURE = new TaskType("new_feature", "New Feature");
+    public static final TaskType TASK = new TaskType("task", "Task");
+    public List<TaskType> taskTypes = new ArrayList<TaskType>();
+
+    public JiraTaskTypeProvider() {
+        taskTypes.add(BUG);
+        taskTypes.add(IMPROVEMENT);
+        taskTypes.add(FEATURE);
+        taskTypes.add(TASK);
+    }
 
     public List<TaskType> getTaskTypes() {
 
@@ -41,10 +53,18 @@ public class JiraTaskTypeProvider implements TaskTypeProvider {
             }
         }
 
-        return null;
+        return BUG;
     }
 
     public void setTaskTypes(List<TaskType> taskTypes) {
         this.taskTypes = new ArrayList<TaskType>(taskTypes);
+    }
+
+    public TaskType getTaskType(TaskElement element) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setTaskType(TaskElement element, TaskType taskType) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

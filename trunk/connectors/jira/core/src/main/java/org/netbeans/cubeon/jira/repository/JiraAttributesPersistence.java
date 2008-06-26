@@ -17,10 +17,7 @@
 package org.netbeans.cubeon.jira.repository;
 
 import com.dolby.jira.net.soap.jira.RemoteConfiguration;
-import com.dolby.jira.net.soap.jira.RemoteIssueType;
-import com.dolby.jira.net.soap.jira.RemotePriority;
 import com.dolby.jira.net.soap.jira.RemoteResolution;
-import com.dolby.jira.net.soap.jira.RemoteStatus;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -30,11 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.netbeans.cubeon.jira.remote.JiraException;
 import org.netbeans.cubeon.jira.remote.JiraSession;
-import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
-import org.netbeans.cubeon.tasks.spi.task.TaskPriority.PRIORITY;
 import org.netbeans.cubeon.tasks.spi.task.TaskResolution;
-import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
-import org.netbeans.cubeon.tasks.spi.task.TaskType;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
@@ -97,32 +90,36 @@ class JiraAttributesPersistence {
             JiraSession session = new JiraSession(repository.getURL(),
                     repository.getUserName(), repository.getPassword());
 
+            /*
             RemotePriority[] priorities = session.getPriorities();
             Element prioritiesElement = getEmptyElement(document, attributes, TAG_PRIORITIES);
             for (RemotePriority rp : priorities) {
-                Element priority = document.createElement(TAG_PRIORITY);
-                prioritiesElement.appendChild(priority);
-                priority.setAttribute(TAG_ID, rp.getId());
-                priority.setAttribute(TAG_NAME, rp.getName());
+            Element priority = document.createElement(TAG_PRIORITY);
+            prioritiesElement.appendChild(priority);
+            priority.setAttribute(TAG_ID, rp.getId());
+            priority.setAttribute(TAG_NAME, rp.getName());
             }
+            
             //-----------------------------------------------------------------
             RemoteIssueType[] issueTypes = session.getIssueTypes();
             Element typesElement = getEmptyElement(document, attributes, TAG_TYPES);
             for (RemoteIssueType issueType : issueTypes) {
-                Element type = document.createElement(TAG_TYPE);
-                typesElement.appendChild(type);
-                type.setAttribute(TAG_ID, issueType.getId());
-                type.setAttribute(TAG_NAME, issueType.getName());
+            Element type = document.createElement(TAG_TYPE);
+            typesElement.appendChild(type);
+            type.setAttribute(TAG_ID, issueType.getId());
+            type.setAttribute(TAG_NAME, issueType.getName());
             }
+            
             //-----------------------------------------------------------------
             RemoteStatus[] statuses = session.getStatuses();
             Element statusesElement = getEmptyElement(document, attributes, TAG_STATUSES);
             for (RemoteStatus rs : statuses) {
-                Element status = document.createElement(TAG_STATUS);
-                statusesElement.appendChild(status);
-                status.setAttribute(TAG_ID, rs.getId());
-                status.setAttribute(TAG_NAME, rs.getName());
+            Element status = document.createElement(TAG_STATUS);
+            statusesElement.appendChild(status);
+            status.setAttribute(TAG_ID, rs.getId());
+            status.setAttribute(TAG_NAME, rs.getName());
             }
+             */
             //-----------------------------------------------------------------
             RemoteResolution[] resolutions = session.getResolutions();
             Element resolutionsElement = getEmptyElement(document, attributes, TAG_RESOLUTIONS);
@@ -248,21 +245,22 @@ class JiraAttributesPersistence {
 
 
             if (attributes != null) {
+                /*
                 //-----------------------------------------
                 Element taskpriorities = findElement(attributes, TAG_PRIORITIES, NAMESPACE);
                 NodeList repositoryNodes = taskpriorities.getChildNodes();
                 List<TaskPriority> prioriiesList = new ArrayList<TaskPriority>();
                 for (int i = 0; i < repositoryNodes.getLength(); i++) {
 
-                    Node node = repositoryNodes.item(i);
-                    if (node.getNodeType() == Node.ELEMENT_NODE) {
-                        Element element = (Element) node;
-                        String id = element.getAttribute(TAG_ID);
-                        String name = element.getAttribute(TAG_NAME);
-                        PRIORITY priority = JiraUtils.toJiraPriority(id);
-                        prioriiesList.add(TaskPriority.createPriority(priority, name));
+                Node node = repositoryNodes.item(i);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element) node;
+                String id = element.getAttribute(TAG_ID);
+                String name = element.getAttribute(TAG_NAME);
+                PRIORITY priority = JiraUtils.toJiraPriority(id);
+                prioriiesList.add(TaskPriority.createPriority(priority, name));
 
-                    }
+                }
                 }
                 repository.getJiraTaskPriorityProvider().setPrioritys(prioriiesList);
                 //-----------------------------------------
@@ -271,15 +269,15 @@ class JiraAttributesPersistence {
                 List<TaskType> types = new ArrayList<TaskType>();
                 for (int i = 0; i < taskTypeNodes.getLength(); i++) {
 
-                    Node node = taskTypeNodes.item(i);
-                    if (node.getNodeType() == Node.ELEMENT_NODE) {
-                        Element element = (Element) node;
-                        String id = element.getAttribute(TAG_ID);
-                        String name = element.getAttribute(TAG_NAME);
+                Node node = taskTypeNodes.item(i);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element) node;
+                String id = element.getAttribute(TAG_ID);
+                String name = element.getAttribute(TAG_NAME);
 
-                        types.add(new TaskType(id, name));
+                types.add(new TaskType(id, name));
 
-                    }
+                }
                 }
                 repository.getJiraTaskTypeProvider().setTaskTypes(types);
                 //-----------------------------------------
@@ -288,17 +286,18 @@ class JiraAttributesPersistence {
                 List<TaskStatus> statuses = new ArrayList<TaskStatus>();
                 for (int i = 0; i < taskStatusNodes.getLength(); i++) {
 
-                    Node node = taskStatusNodes.item(i);
-                    if (node.getNodeType() == Node.ELEMENT_NODE) {
-                        Element element = (Element) node;
-                        String id = element.getAttribute(TAG_ID);
-                        String name = element.getAttribute(TAG_NAME);
+                Node node = taskStatusNodes.item(i);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element) node;
+                String id = element.getAttribute(TAG_ID);
+                String name = element.getAttribute(TAG_NAME);
 
-                        statuses.add(new TaskStatus(id, name));
+                statuses.add(new TaskStatus(id, name));
 
-                    }
+                }
                 }
                 repository.getJiraTaskStatusProvider().setStatuses(statuses);
+                 */
                 //-----------------------------------------
                 Element taskResolution = findElement(attributes, TAG_RESOLUTIONS, NAMESPACE);
                 NodeList taskResolutionNodes = taskResolution.getChildNodes();

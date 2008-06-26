@@ -22,12 +22,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.swing.Action;
+import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskBadgeProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.Extension;
+import org.netbeans.cubeon.tasks.spi.repository.TaskPriorityProvider;
+import org.netbeans.cubeon.tasks.spi.repository.TaskStatusProvider;
+import org.netbeans.cubeon.tasks.spi.repository.TaskTypeProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskContainer;
 import org.netbeans.cubeon.tasks.spi.task.TaskElementActionsProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElementChangeAdapter;
+import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
 import org.netbeans.cubeon.ui.taskelemet.CopyDetailsAction;
 import org.netbeans.cubeon.ui.taskelemet.MarkAsAction;
 import org.netbeans.cubeon.ui.taskelemet.MoveToAction;
@@ -139,9 +144,19 @@ public class TaskElementNode extends AbstractNode {
         buffer.append("<b>").append(element.getId()).append(" :</b> ");
         buffer.append(element.getName()).append("<p>");
         // buffer.append("<img src=\"").append("ADDURL").append("\" width=\"7\" height=\"16\" />");
-        buffer.append(element.getPriority().toString()).append(", ").
-                append(element.getType().getText());
-        buffer.append("<p>").append(element.getStatus().getText());
+        TaskRepository repository = element.getTaskRepository();
+        TaskPriorityProvider tpp = repository.getLookup().lookup(TaskPriorityProvider.class);
+        if (tpp != null) {
+            buffer.append(tpp.getTaskPriority(element).toString()).append(", ");
+        }
+        TaskTypeProvider ttp = repository.getLookup().lookup(TaskTypeProvider.class);
+        if (ttp != null) {
+            buffer.append(ttp.getTaskType(element).toString());
+        }
+        TaskStatusProvider tsp = repository.getLookup().lookup(TaskStatusProvider.class);
+        if (tsp != null) {
+            buffer.append("<p>").append(tsp.getTaskStatus(element).toString());
+        }
         buffer.append("</html>");
         return buffer.toString();
 
