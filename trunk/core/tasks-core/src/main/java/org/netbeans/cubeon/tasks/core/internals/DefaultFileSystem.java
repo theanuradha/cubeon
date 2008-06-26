@@ -19,12 +19,18 @@ package org.netbeans.cubeon.tasks.core.internals;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.netbeans.cubeon.tasks.core.api.CubeonContext;
 import org.netbeans.cubeon.tasks.core.api.TaskFolder;
+import org.netbeans.cubeon.tasks.core.api.TaskRepositoryHandler;
 import org.netbeans.cubeon.tasks.core.api.TasksFileSystem;
+import org.netbeans.cubeon.tasks.spi.Extension;
+import org.netbeans.cubeon.tasks.spi.repository.RepositoryEventAdapter;
+import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.filesystems.Repository;
 import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -55,7 +61,23 @@ public class DefaultFileSystem implements TasksFileSystem {
 
         rootfTaskFolder = new RootFolder(null, name, rfileObject, null);
 
+        CubeonContext context = Lookup.getDefault().lookup(CubeonContext.class);
 
+        RepositoryEventAdapter adapter = new RepositoryEventAdapter() {
+
+            @Override
+            public void taskElementIdChenged(String oldId, String newId) {
+                List<TaskFolder> subFolders = rootfTaskFolder.getSubFolders();
+                for (TaskFolder taskFolder : subFolders) {
+                    //TODO
+                }
+            }
+        };
+        TaskRepositoryHandler handler = context.getLookup().lookup(TaskRepositoryHandler.class);
+        for (TaskRepository repository : handler.getTaskRepositorys()) {
+            Extension extension = repository.getLookup().lookup(Extension.class);
+            extension.add(adapter);
+        }
     }
 
     public TaskFolder getDefaultFolder() {

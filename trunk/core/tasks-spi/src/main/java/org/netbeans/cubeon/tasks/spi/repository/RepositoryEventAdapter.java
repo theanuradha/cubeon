@@ -30,6 +30,9 @@ public class RepositoryEventAdapter {
     public void nameChenged() {
     }
 
+    public void taskElementIdChenged(String oldId, String newId) {
+    }
+
     /**
      *
      */
