@@ -17,6 +17,7 @@
 package org.netbeans.cubeon.jira.repository;
 
 import com.dolby.jira.net.soap.jira.RemoteConfiguration;
+import com.dolby.jira.net.soap.jira.RemoteProject;
 import com.dolby.jira.net.soap.jira.RemoteResolution;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,6 +28,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.netbeans.cubeon.jira.remote.JiraException;
 import org.netbeans.cubeon.jira.remote.JiraSession;
+import org.netbeans.cubeon.jira.repository.attributes.JiraProject;
 import org.netbeans.cubeon.tasks.spi.task.TaskResolution;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
@@ -54,16 +56,20 @@ class JiraAttributesPersistence {
     private static final String TAG_ISSUE_LINKING = "Issue_linking";
     private static final String TAG_ROOT = "attributes";
     private static final String TAG_PRIORITIES = "priorites";
+    private static final String TAG_PROJECTS = "projects";
     private static final String TAG_SUB_TASKS = "sub_tasks";
     private static final String TAG_TYPES = "types";
     private static final String TAG_STATUSES = "statuses";
     private static final String TAG_RESOLUTIONS = "resolutions";
     private static final String TAG_PRIORITY = "priority";
+    private static final String TAG_PROJECT = "project";
     private static final String TAG_TYPE = "type";
     private static final String TAG_STATUS = "status";
     private static final String TAG_RESOLUTION = "resolution";
     private static final String TAG_ID = "id";
     private static final String TAG_NAME = "name";
+    private static final String TAG_DESCRIPTION = "description";
+    private static final String TAG_LEAD = "lead";
     private static final String TAG_CONFIGURATIONS = "Configurations";
     private static final String TAG_VOTING = "voting";
     private final JiraTaskRepository repository;
@@ -89,6 +95,17 @@ class JiraAttributesPersistence {
 
             JiraSession session = new JiraSession(repository.getURL(),
                     repository.getUserName(), repository.getPassword());
+
+            RemoteProject[] projects = session.getProjects();
+            Element projectsElement = getEmptyElement(document, attributes, TAG_PROJECTS);
+            for (RemoteProject rp : projects) {
+                Element project = document.createElement(TAG_PROJECT);
+                projectsElement.appendChild(project);
+                project.setAttribute(TAG_ID, rp.getId());
+                project.setAttribute(TAG_NAME, rp.getName());
+                project.setAttribute(TAG_DESCRIPTION, rp.getDescription());
+                project.setAttribute(TAG_LEAD, rp.getLead());
+            }
 
             /*
             RemotePriority[] priorities = session.getPriorities();
@@ -298,6 +315,29 @@ class JiraAttributesPersistence {
                 }
                 repository.getJiraTaskStatusProvider().setStatuses(statuses);
                  */
+                //-----------------------------------------
+                Element taskProjects = findElement(attributes, TAG_PROJECTS, NAMESPACE);
+                NodeList taskProjectNodes = taskProjects.getChildNodes();
+                List<JiraProject> projects = new ArrayList<JiraProject>();
+                for (int i = 0; i < taskProjectNodes.getLength(); i++) {
+
+                    Node node = taskProjectNodes.item(i);
+                    if (node.getNodeType() == Node.ELEMENT_NODE) {
+                        Element element = (Element) node;
+                        String id = element.getAttribute(TAG_ID);
+                        String name = element.getAttribute(TAG_NAME);
+                        String description = element.getAttribute(TAG_DESCRIPTION);
+                        String lead = element.getAttribute(TAG_LEAD);
+
+                        projects.add(new JiraProject(id, name, description, lead));
+
+                    }
+                }
+                repository.getRepositoryAttributes().setProjects(projects);
+
+
+
+
                 //-----------------------------------------
                 Element taskResolution = findElement(attributes, TAG_RESOLUTIONS, NAMESPACE);
                 NodeList taskResolutionNodes = taskResolution.getChildNodes();
