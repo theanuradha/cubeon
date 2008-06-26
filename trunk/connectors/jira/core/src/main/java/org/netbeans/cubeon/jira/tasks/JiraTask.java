@@ -60,7 +60,7 @@ public class JiraTask implements TaskElement {
         this.description = description;
         this.taskRepository = taskRepository;
         extension = new JiraTaskElementExtension(this);
-    //editorProvider = new TaskEditorProviderImpl(this);
+        editorProvider = new TaskEditorProviderImpl(this);
 
     }
 
