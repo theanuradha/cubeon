@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.netbeans.cubeon.jira.remote.JiraException;
+import org.netbeans.cubeon.jira.tasks.JiraTask;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.util.Lookup;
@@ -95,7 +96,7 @@ public class JiraTaskRepository implements TaskRepository {
     }
 
     public TaskElement createTaskElement() {
-        throw new UnsupportedOperationException();
+       return new JiraTask("new", "New Jira Task", " Task", this);
     }
 
     public List<TaskElement> getTaskElements() {
