@@ -49,6 +49,7 @@ public class JiraTaskRepository implements TaskRepository {
     private final JiraTaskTypeProvider jttp = new JiraTaskTypeProvider();
     private final JiraTaskStatusProvider jtsp = new JiraTaskStatusProvider();
     private final JiraTaskResolutionProvider jtrp = new JiraTaskResolutionProvider();
+    private final JiraRepositoryAttributes repositoryAttributes = new JiraRepositoryAttributes();
 
     public JiraTaskRepository(JiraTaskRepositoryProvider provider,
             String id, String name, String description) {
@@ -178,5 +179,9 @@ public class JiraTaskRepository implements TaskRepository {
 
     public JiraTaskTypeProvider getJiraTaskTypeProvider() {
         return jttp;
+    }
+
+    public JiraRepositoryAttributes getRepositoryAttributes() {
+        return repositoryAttributes;
     }
 }
