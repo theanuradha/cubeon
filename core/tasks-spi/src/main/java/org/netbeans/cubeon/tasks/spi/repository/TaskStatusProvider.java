@@ -31,4 +31,8 @@ public interface TaskStatusProvider {
      * providing repository implementation
      */
     List<TaskStatus> getStatusList();
+
+    TaskStatus getTaskStatus(TaskElement element);
+
+    void setTaskStatus(TaskElement element, TaskStatus status);
 }

@@ -18,6 +18,7 @@ package org.netbeans.cubeon.local.query;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.netbeans.cubeon.local.LocalTask;
 import org.netbeans.cubeon.local.repository.LocalTaskRepository;
 import org.netbeans.cubeon.tasks.spi.Extension;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
@@ -134,7 +135,7 @@ public class LocalQuery implements TaskQuery {
 
     public List<TaskElement> getTaskElements() {
         List<TaskElement> elements = new ArrayList<TaskElement>();
-        for (TaskElement element : repository.getTaskElements()) {
+        for (LocalTask element : repository.getLocalTasks()) {
 
 
             if (contain == null || contain.trim().length() == 0 || checkContain(element)) {

@@ -17,7 +17,6 @@
 package org.netbeans.cubeon.tasks.spi.task;
 
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
-import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
 import java.awt.Image;
 import java.net.URL;
 import org.openide.util.Lookup;
@@ -68,45 +67,8 @@ public interface TaskElement {
      * 
      * @return
      */
-    TaskPriority getPriority();
-
-    /**
-     * 
-     * @param priority
-     */
-    void setPriority(TaskPriority priority);
-
-    /**
-     * 
-     * @return
-     */
-    TaskStatus getStatus();
-
-    /**
-     * 
-     * @param status
-     */
-    void setStatus(TaskStatus status);
-
-    /**
-     * 
-     * @return
-     */
-    TaskType getType();
-
-    /**
-     * 
-     * @param type
-     */
-    void setType(TaskType type);
-    
-    
-    /**
-     * 
-     * @return
-     */
     Image getImage();
-    
+
     /**
      * 
      * @return

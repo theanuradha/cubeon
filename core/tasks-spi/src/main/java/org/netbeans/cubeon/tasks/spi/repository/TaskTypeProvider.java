@@ -31,4 +31,8 @@ public interface TaskTypeProvider {
      * providing repository implementation
      */
     List<TaskType> getTaskTypes();
+
+    TaskType getTaskType(TaskElement element);
+
+    void setTaskType(TaskElement element, TaskType taskType);
 }

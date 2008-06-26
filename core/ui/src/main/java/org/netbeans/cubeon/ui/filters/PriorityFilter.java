@@ -19,6 +19,7 @@ package org.netbeans.cubeon.ui.filters;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
+import org.netbeans.cubeon.tasks.spi.repository.TaskPriorityProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskElementFilter;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
@@ -65,7 +66,8 @@ public class PriorityFilter implements TaskElementFilter {
     }
 
     public boolean isFiltered(TaskElement element) {
-        return !contains(element.getPriority().getId());
+        TaskPriorityProvider tpp = element.getTaskRepository().getLookup().lookup(TaskPriorityProvider.class);
+        return tpp != null && !contains(tpp.getTaskPriority(element).getId());
     }
 
     public Set<PRIORITY> getFilters() {

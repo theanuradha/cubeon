@@ -44,7 +44,7 @@ public class LocalTaskRepository implements TaskRepository {
     private final LocalTaskTypeProvider lttp = new LocalTaskTypeProvider();
     private LocalRepositoryExtension extension;
     private LocalQuerySupport querySupport;
-
+    private final Lookup lookup;
 
     public LocalTaskRepository(LocalTaskRepositoryProvider provider,
             String id, String name, String description) {
@@ -55,10 +55,9 @@ public class LocalTaskRepository implements TaskRepository {
 
         extension = new LocalRepositoryExtension(this);
         persistenceHandler = new PersistenceHandler(this, provider.getBaseDir());
-        querySupport = new LocalQuerySupport(this,extension);
+        querySupport = new LocalQuerySupport(this, extension);
+        lookup = Lookups.fixed(this, extension, provider, persistenceHandler, ltpp, ltsp, lttp, querySupport);
     }
-
-
 
     public String getId() {
         return id;
@@ -81,12 +80,15 @@ public class LocalTaskRepository implements TaskRepository {
     }
 
     public Lookup getLookup() {
-        return Lookups.fixed(this,
-                extension, provider, persistenceHandler, ltpp, ltsp, lttp, querySupport);
+        return lookup;
     }
 
     public List<TaskElement> getTaskElements() {
         return new ArrayList<TaskElement>(localTasks);
+    }
+
+    public List<LocalTask> getLocalTasks() {
+        return localTasks;
     }
 
     public TaskElement getTaskElementById(String id) {
@@ -159,6 +161,4 @@ public class LocalTaskRepository implements TaskRepository {
     public LocalQuerySupport getQuerySupport() {
         return querySupport;
     }
-
-
 }

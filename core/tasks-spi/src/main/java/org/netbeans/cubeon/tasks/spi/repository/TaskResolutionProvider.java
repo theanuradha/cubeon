@@ -26,4 +26,8 @@ import java.util.List;
 public interface TaskResolutionProvider {
 
     public List<TaskResolution> getTaskResolutiones();
+
+    TaskResolution getTaskResolution(TaskElement element);
+
+    void setTaskResolution(TaskElement element, TaskResolution resolution);
 }
