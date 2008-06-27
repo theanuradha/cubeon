@@ -107,9 +107,9 @@ public class LocalTaskRepository implements TaskRepository {
 
     }
 
-    public TaskElement createTaskElement() {
+    public TaskElement createTaskElement(String summery, String description) {
         LocalTask localTask = new LocalTask(persistenceHandler.nextTaskId(),
-                "New Task", "", this);
+                summery, description, this);
 
         return localTask;
     }
@@ -123,7 +123,9 @@ public class LocalTaskRepository implements TaskRepository {
         LocalTask localTask = element.getLookup().lookup(LocalTask.class);
         assert localTask != null;
         persistenceHandler.addTaskElement(localTask);
-        localTasks.add(localTask);
+        if (getTaskElementById(element.getId()) != null) {
+            localTasks.add(localTask);
+        }
     }
 
     public void reset(TaskElement element) {

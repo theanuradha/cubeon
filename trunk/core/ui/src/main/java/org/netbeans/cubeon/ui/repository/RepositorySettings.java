@@ -44,6 +44,7 @@ final class RepositorySettings extends JPanel {
         pnlHolder.add(handler.getComponent(), BorderLayout.CENTER);
         pnlHolder.repaint();
         pnlHolder.updateUI();
+        handler.getComponent().requestFocusInWindow();
     }
 
     ConfigurationHandler getHandler() {

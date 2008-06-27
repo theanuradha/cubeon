@@ -52,6 +52,7 @@ public class JiraTask implements TaskElement {
     private Date updated;
     private TaskEditorProvider editorProvider;
     private JiraTaskElementExtension extension;
+    private boolean local;
 
     public JiraTask(String id, String name, String description,
             JiraTaskRepository taskRepository) {
@@ -174,5 +175,13 @@ public class JiraTask implements TaskElement {
 
     public void setUpdated(Date updated) {
         this.updated = updated;
+    }
+
+    public boolean isLocal() {
+        return local;
+    }
+
+    public void setLocal(boolean local) {
+        this.local = local;
     }
 }

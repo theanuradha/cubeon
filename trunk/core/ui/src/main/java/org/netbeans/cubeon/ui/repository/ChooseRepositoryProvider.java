@@ -8,6 +8,8 @@ package org.netbeans.cubeon.ui.repository;
 import java.awt.Image;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import javax.swing.Action;
 import org.netbeans.cubeon.tasks.core.api.CubeonContext;
@@ -77,7 +79,12 @@ final class ChooseRepositoryProvider extends javax.swing.JPanel implements Explo
         TaskRepositoryHandler repositoryHandler = cubeonContext.getLookup().lookup(TaskRepositoryHandler.class);
 
         List<TaskRepositoryType> providers = repositoryHandler.getTaskRepositoryTypes();
+        Collections.sort(providers, new Comparator<TaskRepositoryType>() {
 
+            public int compare(TaskRepositoryType o1, TaskRepositoryType o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
         Children.Array array = new Children.Array();
 
         Node[] nodes = new Node[providers.size()];

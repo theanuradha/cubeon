@@ -16,6 +16,8 @@
  */
 package org.netbeans.cubeon.ui.taskfolder;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.Action;
 import org.netbeans.cubeon.tasks.core.api.TaskFolder;
 import org.netbeans.cubeon.tasks.core.spi.TaskFolderActionsProvider;
@@ -31,9 +33,8 @@ public class TaskFolderActions implements TaskFolderActionsProvider {
 
     public Action[] getNewActions(final TaskFolder taskFolder) {
         return new Action[]{
-                    
                     new NewTaskWizardAction(NbBundle.getMessage(TaskFolderActions.class,
-                            "LBL_Task"),taskFolder)
+                    "LBL_Task"), taskFolder)
                 };
     }
 
@@ -42,15 +43,19 @@ public class TaskFolderActions implements TaskFolderActionsProvider {
     }
 
     public Action[] getActions(TaskFolder taskFolder) {
-        return new Action[]{
-                    //new CopyToTaskFolderAction(taskFolder),
-                    //new MoveToTaskFolderAction(taskFolder),
-                    
-                    new EditTaskFolderAction(taskFolder),
-                    new DeleteTaskFolderAction(taskFolder),
-                    new NavigateFromHereAction(taskFolder),
-                    null,
-                    new RefreshTaskFolderAction(taskFolder)
-                };
+        List<Action> actions = new ArrayList<Action>();
+        actions.add(new EditTaskFolderAction(taskFolder));
+        actions.add(new DeleteTaskFolderAction(taskFolder));
+        actions.add(new NavigateFromHereAction(taskFolder));
+        if (taskFolder.getTaskQuery() != null) {
+            actions.add(null);
+            actions.add(new RemoveTaskQueryAction(taskFolder));
+
+        }
+        actions.add(null);
+        actions.add(new RefreshTaskFolderAction(taskFolder));
+
+
+        return actions.toArray(new Action[actions.size()]);
     }
 }

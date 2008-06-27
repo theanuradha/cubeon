@@ -8,6 +8,8 @@ import java.awt.Image;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.swing.Action;
@@ -64,13 +66,9 @@ final class TaskRepositoriesTopComponent extends TopComponent implements Explore
     void refresh() {
         Children.Array array = new Children.Array();
         explorerManager.setRootContext(
-                new AbstractNode
+                new AbstractNode(array) {
 
-                      ( array) {
-
-
-
-                           @Override
+                    @Override
                     public Action[] getActions(boolean arg0) {
                         List<Action> actions = new ArrayList<Action>();
                         Collection<? extends RepositorysViewActionsProvider> actionsProviders =
@@ -107,6 +105,12 @@ final class TaskRepositoriesTopComponent extends TopComponent implements Explore
         assert repositoryHandler != null : "TaskRepositoryHandler can't be null";
 
         List<TaskRepository> repositorys = repositoryHandler.getTaskRepositorys();
+        Collections.sort(repositorys, new Comparator<TaskRepository>() {
+
+            public int compare(TaskRepository o1, TaskRepository o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
         TaskNodeFactory factory = Lookup.getDefault().lookup(TaskNodeFactory.class);
         for (TaskRepository tr : repositorys) {
             //get task repository lookup and find node from it
@@ -202,10 +206,7 @@ final class TaskRepositoriesTopComponent extends TopComponent implements Explore
      * "< Empty >"
      * this Node will show if no TaskRepositories found
      */
-    private static final Node EMPTY_REPOSITORIES = new AbstractNode
-
-          ( Children
-             .LEAF) {
+    private static final Node EMPTY_REPOSITORIES = new AbstractNode(Children.LEAF) {
 
         @Override
         public Image getIcon(int arg0) {
