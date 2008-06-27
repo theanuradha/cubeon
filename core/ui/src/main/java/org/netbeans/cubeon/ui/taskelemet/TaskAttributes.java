@@ -29,7 +29,7 @@ final class TaskAttributes extends JPanel {
 
     void setWizardObject(WizardObject object) {
 
-        this.taskElement = object.getRepository().createTaskElement();
+        this.taskElement = object.getRepository().createTaskElement("New Task", "Task Description ");
         assert taskElement != null;
 
         handler = taskElement.getLookup().lookup(TaskEditorProvider.class).createBasicAttributeHandler();

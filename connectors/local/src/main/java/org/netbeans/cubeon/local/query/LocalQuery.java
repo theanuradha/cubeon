@@ -121,13 +121,13 @@ public class LocalQuery implements TaskQuery {
     private boolean getMatchType(String s1, String s2) {
         switch (matchType) {
             case CONTAIN:
-                return s1.contains(s2);
+                return s1.toLowerCase().contains(s2.toLowerCase());
             case STARTS_WITH:
-                return s1.startsWith(s2);
+                return s1.toLowerCase().startsWith(s2.toLowerCase());
             case ENDS_WITH:
-                return s1.endsWith(s2);
+                return s1.toLowerCase().endsWith(s2.toLowerCase());
             case EQUALS:
-                return s1.equals(s2);
+                return s1.equalsIgnoreCase(s2);
 
         }
         return false;
