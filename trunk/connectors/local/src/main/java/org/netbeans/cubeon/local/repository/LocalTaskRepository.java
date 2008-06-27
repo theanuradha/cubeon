@@ -123,7 +123,7 @@ public class LocalTaskRepository implements TaskRepository {
         LocalTask localTask = element.getLookup().lookup(LocalTask.class);
         assert localTask != null;
         persistenceHandler.addTaskElement(localTask);
-        if (getTaskElementById(element.getId()) != null) {
+        if (getTaskElementById(element.getId()) == null) {
             localTasks.add(localTask);
         }
     }
