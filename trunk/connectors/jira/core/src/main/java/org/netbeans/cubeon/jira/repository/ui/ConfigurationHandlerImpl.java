@@ -174,10 +174,10 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
                             .add(txtPassword)))
                     .add(org.jdesktop.layout.GroupLayout.LEADING, txtName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
                     .add(org.jdesktop.layout.GroupLayout.LEADING, btnValidate)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, lblName)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, lblRepo_id)
                     .add(org.jdesktop.layout.GroupLayout.LEADING, txtId, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jLabel1))
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jLabel1)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, lblName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, lblRepo_id, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -221,9 +221,9 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
                 try {
                     new JiraSession(txtId.getText().trim(),
                             txtUiserId.getText().trim(), new String(txtPassword.getPassword()));
-                    lblNotify.setText("Configuration valid.");
+                    lblNotify.setText("Configuration valid.");//GEN-LAST:event_btnValidateActionPerformed
                     lblNotify.setForeground(Color.blue);
-        } catch (JiraException ex) {//GEN-LAST:event_btnValidateActionPerformed
+        } catch (JiraException ex) {                                           
             lblNotify.setText("<html>"+ex.getMessage()+"</html>");
             lblNotify.setForeground(Color.RED);
         }finally{
