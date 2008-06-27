@@ -8,6 +8,8 @@ import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.event.ActionEvent;
 import java.text.MessageFormat;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
@@ -47,7 +49,12 @@ public final class NewQueryWizardAction extends AbstractAction {
             TaskRepositoryHandler repositoryHandler = cubeonContext.getLookup().lookup(TaskRepositoryHandler.class);
 
             List<TaskRepository> repositorys = repositoryHandler.getTaskRepositorys();
+            Collections.sort(repositorys, new Comparator<TaskRepository>() {
 
+                public int compare(TaskRepository o1, TaskRepository o2) {
+                    return o1.getName().compareTo(o2.getName());
+                }
+            });
             if (repositorys.size() == 1) {
                 panels = new WizardDescriptor.Panel[]{new TaskQueryAttributesWizard(repositorys.get(0))};
             } else {

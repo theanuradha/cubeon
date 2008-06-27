@@ -276,6 +276,11 @@ class TaskFolderImpl implements TaskFolder, TaskFolderOparations, TaskFolderRefr
         return taskElements.contains(element);
     }
 
+    public void changeTaskElementId(String oldId,String newId){
+     persistenceHandler.changeTaskElementId(oldId,newId);
+    }
+
+
     public void setTaskQuery(TaskQuery query) {
         deregisterEventAdapter();
         this.taskQuery = query;

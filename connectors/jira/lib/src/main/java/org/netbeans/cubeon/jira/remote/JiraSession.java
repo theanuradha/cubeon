@@ -20,6 +20,7 @@ import com.dolby.jira.net.soap.jira.JiraSoapService;
 import com.dolby.jira.net.soap.jira.JiraSoapServiceServiceLocator;
 import com.dolby.jira.net.soap.jira.RemoteAuthenticationException;
 import com.dolby.jira.net.soap.jira.RemoteConfiguration;
+import com.dolby.jira.net.soap.jira.RemoteIssue;
 import com.dolby.jira.net.soap.jira.RemoteIssueType;
 import com.dolby.jira.net.soap.jira.RemotePermissionException;
 import com.dolby.jira.net.soap.jira.RemotePriority;
@@ -106,13 +107,19 @@ public class JiraSession {
         }
     }
 
-    public RemoteProject[] getProjects() throws JiraException{
-         try {
-        return service.getProjects(token);
-         } catch (Exception ex) {
+    public RemoteProject[] getProjects() throws JiraException {
+        try {
+            return service.getProjects(token);
+        } catch (Exception ex) {
             throw new JiraException(ex);
         }
     }
 
-
+    public void  createTask(RemoteIssue issue) throws JiraException {
+        try {
+            service.createIssue(token, issue);
+        } catch (Exception ex) {
+            throw new JiraException(ex);
+        }
+    }
 }
