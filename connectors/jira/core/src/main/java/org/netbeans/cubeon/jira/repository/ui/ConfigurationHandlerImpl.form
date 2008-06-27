@@ -44,10 +44,10 @@
                   </Group>
                   <Component id="txtName" alignment="0" pref="400" max="32767" attributes="0"/>
                   <Component id="btnValidate" alignment="0" min="-2" max="-2" attributes="0"/>
-                  <Component id="lblName" alignment="0" min="-2" max="-2" attributes="0"/>
-                  <Component id="lblRepo_id" alignment="0" min="-2" max="-2" attributes="0"/>
                   <Component id="txtId" alignment="0" pref="400" max="32767" attributes="0"/>
                   <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="lblName" alignment="0" pref="400" max="32767" attributes="0"/>
+                  <Component id="lblRepo_id" alignment="0" pref="400" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
