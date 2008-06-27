@@ -79,6 +79,33 @@ class PersistenceHandler {
         save(document);
     }
 
+    void changeTaskElementId(String oldId, String newId) {
+       Document document = getDocument();
+        Element root = getRootElement(document);
+        Element tasksElement = findElement(root, TAG_TASKS, NAMESPACE);
+        Element taskElement = null;
+
+        NodeList taskNodes =
+                tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_TASK);
+
+        for (int i = 0; i < taskNodes.getLength(); i++) {
+            Node node = taskNodes.item(i);
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element) node;
+                String id = element.getAttributeNS(NAMESPACE, TAG_ID);
+                if (oldId.equals(id)) {
+                    taskElement = element;
+                    element.setAttributeNS(NAMESPACE, TAG_ID, newId);
+                    break;
+                }
+            }
+        }
+        if(taskElement!=null){
+         save(document);
+        }
+
+    }
+
     void removeTaskElement(TaskElement te) {
         Document document = getDocument();
         Element root = getRootElement(document);

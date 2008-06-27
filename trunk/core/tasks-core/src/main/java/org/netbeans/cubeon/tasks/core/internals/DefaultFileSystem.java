@@ -69,7 +69,8 @@ public class DefaultFileSystem implements TasksFileSystem {
             public void taskElementIdChenged(String oldId, String newId) {
                 List<TaskFolder> subFolders = rootfTaskFolder.getSubFolders();
                 for (TaskFolder taskFolder : subFolders) {
-                    //TODO
+                    TaskFolderImpl impl = taskFolder.getLookup().lookup(TaskFolderImpl.class);
+                    impl.changeTaskElementId(oldId, newId);
                 }
             }
         };

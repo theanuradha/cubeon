@@ -17,6 +17,7 @@
 package org.netbeans.cubeon.jira.repository;
 
 import java.awt.Image;
+import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,6 +25,8 @@ import org.netbeans.cubeon.jira.remote.JiraException;
 import org.netbeans.cubeon.jira.tasks.JiraTask;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
+import org.openide.filesystems.FileObject;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
@@ -51,6 +54,8 @@ public class JiraTaskRepository implements TaskRepository {
     private final JiraTaskStatusProvider jtsp = new JiraTaskStatusProvider();
     private final JiraTaskResolutionProvider jtrp = new JiraTaskResolutionProvider();
     private final JiraRepositoryAttributes repositoryAttributes = new JiraRepositoryAttributes();
+    private final TaskPersistenceHandler handler;
+    private FileObject baseDir;
 
     public JiraTaskRepository(JiraTaskRepositoryProvider provider,
             String id, String name, String description) {
@@ -59,7 +64,16 @@ public class JiraTaskRepository implements TaskRepository {
         this.name = name;
         this.description = description;
         extension = new JiraRepositoryExtension(this);
-        attributesPersistence = new JiraAttributesPersistence(this, provider.getBaseDir());
+        baseDir = provider.getBaseDir().getFileObject(id);
+        if (baseDir == null) {
+            try {
+                baseDir = provider.getBaseDir().createFolder(id);
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+        attributesPersistence = new JiraAttributesPersistence(this, baseDir);
+        handler = new TaskPersistenceHandler(this, baseDir);
     }
 
     public String getId() {
@@ -95,8 +109,8 @@ public class JiraTaskRepository implements TaskRepository {
         throw new UnsupportedOperationException();
     }
 
-    public TaskElement createTaskElement() {
-       return new JiraTask("new", "New Jira Task", " Task", this);
+    public TaskElement createTaskElement(String summery, String description) {
+        return new JiraTask(handler.nextTaskId(), summery, description, this);
     }
 
     public List<TaskElement> getTaskElements() {
@@ -153,6 +167,7 @@ public class JiraTaskRepository implements TaskRepository {
             public void run() {
                 try {
                     attributesPersistence.refresh();
+                    loadAttributes();
                 } catch (JiraException ex) {
                     Logger.getLogger(JiraAttributesPersistence.class.getName()).
                             log(Level.WARNING, ex.getMessage());
@@ -162,7 +177,7 @@ public class JiraTaskRepository implements TaskRepository {
 
     }
 
-    public void loadAttributes() {
+    public synchronized void loadAttributes() {
         attributesPersistence.loadAttributes();
     }
 

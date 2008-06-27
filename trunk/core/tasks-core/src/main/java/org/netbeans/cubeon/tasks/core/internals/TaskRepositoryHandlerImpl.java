@@ -35,6 +35,7 @@ class TaskRepositoryHandlerImpl implements TaskRepositoryHandler {
         for (TaskRepositoryType taskRepositoryType : repositoryTypes) {
             taskRepositorys.addAll(taskRepositoryType.getRepositorys());
         }
+     
         return taskRepositorys;
     }
 

@@ -69,7 +69,7 @@ public interface TaskRepository {
      * 
      * @return
      */
-    TaskElement createTaskElement();
+    public TaskElement createTaskElement(String summery, String description);
 
     /**
      * 

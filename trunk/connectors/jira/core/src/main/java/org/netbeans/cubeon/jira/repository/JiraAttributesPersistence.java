@@ -19,6 +19,7 @@ package org.netbeans.cubeon.jira.repository;
 import com.dolby.jira.net.soap.jira.RemoteConfiguration;
 import com.dolby.jira.net.soap.jira.RemoteProject;
 import com.dolby.jira.net.soap.jira.RemoteResolution;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -50,7 +51,7 @@ class JiraAttributesPersistence {
     private static final String TAG_UNASSIGNED_ISSUES = "unassigned_issues";
     private static final String TAG_USER_MANAGMENT = "user_managment";
     private static final String TAG_WATCHING = "watching";
-    private static final String FILESYSTEM_FILE_TAG = "-attributes.xml"; //NOI18N
+    private static final String FILESYSTEM_FILE_TAG = "attributes.xml"; //NOI18N
     private static final String NAMESPACE = null;//FIXME add propper namespase
     private static final String TAG_ATTACHMENTS = "attachments";
     private static final String TAG_ISSUE_LINKING = "Issue_linking";
@@ -184,7 +185,7 @@ class JiraAttributesPersistence {
     }
 
     private Document getDocument() {
-        final FileObject config = baseDir.getFileObject(repository.getId() + FILESYSTEM_FILE_TAG);
+        final FileObject config = baseDir.getFileObject(FILESYSTEM_FILE_TAG);
         Document doc = null;
         if (config != null) {
             InputStream in = null;
@@ -225,13 +226,14 @@ class JiraAttributesPersistence {
 
     private void save(Document doc) {
 
-        FileObject config = baseDir.getFileObject(repository.getId() + FILESYSTEM_FILE_TAG);
+        FileObject config = baseDir.getFileObject(FILESYSTEM_FILE_TAG);
 
         FileLock lck = null;
         OutputStream out = null;
         try {
             if (config == null) {
-                config = baseDir.createData(repository.getId() + FILESYSTEM_FILE_TAG);
+                
+                config = baseDir.createData(FILESYSTEM_FILE_TAG);
             }
             lck = config.lock();
             out = config.getOutputStream(lck);
