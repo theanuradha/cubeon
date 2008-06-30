@@ -18,6 +18,7 @@ package org.netbeans.cubeon.jira.repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.netbeans.cubeon.jira.tasks.JiraTask;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
 import org.netbeans.cubeon.tasks.spi.repository.TaskStatusProvider;
@@ -60,11 +61,15 @@ public class JiraTaskStatusProvider implements TaskStatusProvider {
     }
 
     public TaskStatus getTaskStatus(TaskElement element) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        JiraTask jiraTask = element.getLookup().lookup(JiraTask.class);
+        assert jiraTask!=null;
+        return jiraTask.getStatus();
     }
 
     public void setTaskStatus(TaskElement element, TaskStatus status) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        JiraTask jiraTask = element.getLookup().lookup(JiraTask.class);
+        assert jiraTask!=null;
+         jiraTask.setStatus(status);
     }
 
 }
