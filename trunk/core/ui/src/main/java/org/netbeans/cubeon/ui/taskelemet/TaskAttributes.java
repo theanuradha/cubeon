@@ -48,21 +48,31 @@ final class TaskAttributes extends JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtDescription = new javax.swing.JTextArea();
+        lblOutline = new javax.swing.JLabel();
+        txtOutline = new javax.swing.JTextField();
+        lblDescription = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         pnlHeader = new javax.swing.JPanel();
         lblMainHeader = new javax.swing.JLabel();
         lblSubHeader = new javax.swing.JLabel();
         lblIcon = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
-        lblOutline = new javax.swing.JLabel();
-        txtOutline = new javax.swing.JTextField();
-        lblDescription = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        txtDescription = new javax.swing.JTextArea();
 
+        txtDescription.setColumns(20);
+        txtDescription.setRows(5);
+        jScrollPane1.setViewportView(txtDescription);
+
+        org.openide.awt.Mnemonics.setLocalizedText(lblOutline, NbBundle.getMessage(TaskAttributes.class, "TaskAttributes.lblOutline.text")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(lblDescription, NbBundle.getMessage(TaskAttributes.class, "TaskAttributes.lblDescription.text")); // NOI18N
+
+        jPanel1.setFocusable(false);
         jPanel1.setLayout(new java.awt.BorderLayout());
 
         pnlHeader.setBackground(new java.awt.Color(255, 255, 255));
+        pnlHeader.setFocusable(false);
 
         lblMainHeader.setFont(new java.awt.Font("Tahoma", 1, 11));
         org.openide.awt.Mnemonics.setLocalizedText(lblMainHeader, "_MAIN_HEADING_");
@@ -103,14 +113,6 @@ final class TaskAttributes extends JPanel {
 
         jPanel1.add(pnlHeader, java.awt.BorderLayout.CENTER);
 
-        org.openide.awt.Mnemonics.setLocalizedText(lblOutline, NbBundle.getMessage(TaskAttributes.class, "TaskAttributes.lblOutline.text")); // NOI18N
-
-        org.openide.awt.Mnemonics.setLocalizedText(lblDescription, NbBundle.getMessage(TaskAttributes.class, "TaskAttributes.lblDescription.text")); // NOI18N
-
-        txtDescription.setColumns(20);
-        txtDescription.setRows(5);
-        jScrollPane1.setViewportView(txtDescription);
-
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -119,11 +121,15 @@ final class TaskAttributes extends JPanel {
             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
                     .add(org.jdesktop.layout.GroupLayout.LEADING, lblDescription, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
                     .add(org.jdesktop.layout.GroupLayout.LEADING, txtOutline, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
                     .add(lblOutline, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE))
                 .addContainerGap())
+            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+                    .addContainerGap()))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -135,9 +141,12 @@ final class TaskAttributes extends JPanel {
                 .add(txtOutline, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(lblDescription)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)
-                .add(18, 18, 18))
+                .addContainerGap(278, Short.MAX_VALUE))
+            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(layout.createSequentialGroup()
+                    .add(132, 132, 132)
+                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE)
+                    .addContainerGap()))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables

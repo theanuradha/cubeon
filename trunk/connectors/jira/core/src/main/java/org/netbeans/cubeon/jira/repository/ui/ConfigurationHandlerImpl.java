@@ -112,19 +112,36 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
 
         txtId = new javax.swing.JTextField();
         txtPassword = new javax.swing.JPasswordField();
-        btnValidate = new javax.swing.JButton();
-        lblPassword = new javax.swing.JLabel();
-        lblName = new javax.swing.JLabel();
         txtUiserId = new javax.swing.JTextField();
+        lblName = new javax.swing.JLabel();
         txtName = new javax.swing.JTextField();
-        lblUserID = new javax.swing.JLabel();
         lblRepo_id = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
+        lblUserID = new javax.swing.JLabel();
+        lblPassword = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
-        jProgressBar1 = new javax.swing.JProgressBar();
         lblNotify = new javax.swing.JLabel();
+        jProgressBar1 = new javax.swing.JProgressBar();
+        btnValidate = new javax.swing.JButton();
 
-        setNextFocusableComponent(txtName);
+        lblName.setText(NbBundle.getMessage(ConfigurationHandlerImpl.class, "ConfigurationHandlerImpl.lblName.text")); // NOI18N
+
+        lblRepo_id.setText(NbBundle.getMessage(ConfigurationHandlerImpl.class, "ConfigurationHandlerImpl.lblRepo_id.text")); // NOI18N
+
+        jLabel1.setText(NbBundle.getMessage(ConfigurationHandlerImpl.class, "ConfigurationHandlerImpl.jLabel1.text","-")); // NOI18N
+
+        lblUserID.setText(NbBundle.getMessage(ConfigurationHandlerImpl.class, "ConfigurationHandlerImpl.lblUserID.text","-")); // NOI18N
+
+        lblPassword.setText(NbBundle.getMessage(ConfigurationHandlerImpl.class, "ConfigurationHandlerImpl.lblPassword.text","-")); // NOI18N
+
+        jPanel1.setLayout(new java.awt.BorderLayout());
+
+        lblNotify.setText(NbBundle.getMessage(ConfigurationHandlerImpl.class, "ConfigurationHandlerImpl.lblNotify.text","-")); // NOI18N
+        jPanel1.add(lblNotify, java.awt.BorderLayout.CENTER);
+
+        jProgressBar1.setIndeterminate(true);
+        jProgressBar1.setPreferredSize(new java.awt.Dimension(146, 14));
+        jPanel1.add(jProgressBar1, java.awt.BorderLayout.SOUTH);
 
         btnValidate.setText(NbBundle.getMessage(ConfigurationHandlerImpl.class, "ConfigurationHandlerImpl.btnValidate.text","-")); // NOI18N
         btnValidate.addActionListener(new java.awt.event.ActionListener() {
@@ -133,34 +150,18 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
             }
         });
 
-        lblPassword.setText(NbBundle.getMessage(ConfigurationHandlerImpl.class, "ConfigurationHandlerImpl.lblPassword.text","-")); // NOI18N
-
-        lblName.setText(NbBundle.getMessage(ConfigurationHandlerImpl.class, "ConfigurationHandlerImpl.lblName.text")); // NOI18N
-
-        lblUserID.setText(NbBundle.getMessage(ConfigurationHandlerImpl.class, "ConfigurationHandlerImpl.lblUserID.text","-")); // NOI18N
-
-        lblRepo_id.setText(NbBundle.getMessage(ConfigurationHandlerImpl.class, "ConfigurationHandlerImpl.lblRepo_id.text")); // NOI18N
-
-        jLabel1.setText(NbBundle.getMessage(ConfigurationHandlerImpl.class, "ConfigurationHandlerImpl.jLabel1.text","-")); // NOI18N
-
-        jPanel1.setLayout(new java.awt.BorderLayout());
-
-        jProgressBar1.setIndeterminate(true);
-        jProgressBar1.setPreferredSize(new java.awt.Dimension(146, 14));
-        jPanel1.add(jProgressBar1, java.awt.BorderLayout.SOUTH);
-
-        lblNotify.setText(NbBundle.getMessage(ConfigurationHandlerImpl.class, "ConfigurationHandlerImpl.lblNotify.text","-")); // NOI18N
-        jPanel1.add(lblNotify, java.awt.BorderLayout.CENTER);
-
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+            .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 400, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+                    .add(lblRepo_id, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+                    .add(txtName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+                    .add(lblName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+                    .add(layout.createSequentialGroup()
                         .add(10, 10, 10)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                             .add(layout.createSequentialGroup()
@@ -169,15 +170,13 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
                             .add(layout.createSequentialGroup()
                                 .add(lblPassword)
                                 .add(18, 18, 18)))
+                        .add(12, 12, 12)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                            .add(txtUiserId, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)
-                            .add(txtPassword)))
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, txtName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, btnValidate)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, txtId, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jLabel1)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, lblName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, lblRepo_id, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE))
+                            .add(txtPassword)
+                            .add(txtUiserId, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE)))
+                    .add(btnValidate)
+                    .add(jLabel1)
+                    .add(txtId, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -195,14 +194,15 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
                 .add(jLabel1)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(lblUserID)
+                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                        .add(lblUserID)
+                        .add(txtUiserId, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                     .add(layout.createSequentialGroup()
-                        .add(txtUiserId, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(26, 26, 26)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                             .add(lblPassword)
                             .add(txtPassword, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 108, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 90, Short.MAX_VALUE)
                 .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 36, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(btnValidate)
@@ -214,26 +214,26 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
 
         jProgressBar1.setVisible(true);
         btnValidate.setEnabled(false);
-       
-        RequestProcessor.getDefault().post(new Runnable() {
+
+        RequestProcessor.getDefault().post(new Runnable() {                                                
 
             public void run() {
                 try {
                     new JiraSession(txtId.getText().trim(),
                             txtUiserId.getText().trim(), new String(txtPassword.getPassword()));
-                    lblNotify.setText("Configuration valid.");//GEN-LAST:event_btnValidateActionPerformed
-                    lblNotify.setForeground(Color.blue);
-        } catch (JiraException ex) {                                           
-            lblNotify.setText("<html>"+ex.getMessage()+"</html>");
-            lblNotify.setForeground(Color.RED);
-        }finally{
-         jProgressBar1.setVisible(false);
-          btnValidate.setEnabled(true);
-        }
+                    lblNotify.setText("Configuration valid.");                                           
+                    lblNotify.setForeground(Color.blue);//GEN-HEADEREND:event_btnValidateActionPerformed
+                } catch (JiraException ex) {
+                    lblNotify.setText("<html>" + ex.getMessage() + "</html>");
+                    lblNotify.setForeground(Color.RED);//GEN-LAST:event_btnValidateActionPerformed
+                } finally {
+                    jProgressBar1.setVisible(false);
+                    btnValidate.setEnabled(true);
+                }
             }
         });
 
-    }                                           
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnValidate;
     private javax.swing.JLabel jLabel1;
