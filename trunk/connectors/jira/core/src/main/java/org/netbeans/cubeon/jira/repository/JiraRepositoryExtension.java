@@ -20,6 +20,7 @@ import java.util.Collection;
 import org.netbeans.cubeon.tasks.spi.Extension;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.repository.RepositoryEventAdapter;
+import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
@@ -79,6 +80,13 @@ public class JiraRepositoryExtension implements Extension {
         Collection<? extends RepositoryEventAdapter> adapters = lookup.lookupAll(RepositoryEventAdapter.class);
         for (RepositoryEventAdapter adapter : adapters) {
             adapter.queryRemoved(query);
+        }
+    }
+
+    public void fireStateChanged(TaskRepository.State state) {
+        Collection<? extends RepositoryEventAdapter> adapters = lookup.lookupAll(RepositoryEventAdapter.class);
+        for (RepositoryEventAdapter adapter : adapters) {
+            adapter.stateChanged(state);
         }
     }
 }

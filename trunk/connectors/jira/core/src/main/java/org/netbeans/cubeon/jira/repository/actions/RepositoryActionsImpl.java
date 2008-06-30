@@ -14,9 +14,12 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.ui.repository;
+package org.netbeans.cubeon.jira.repository.actions;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.Action;
+import org.netbeans.cubeon.jira.repository.JiraTaskRepository;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepositoryActionsProvider;
 
@@ -24,14 +27,21 @@ import org.netbeans.cubeon.tasks.spi.repository.TaskRepositoryActionsProvider;
  *
  * @author Anuradha
  */
-public class RepositoryActionsProviderImpl implements TaskRepositoryActionsProvider {
+public class RepositoryActionsImpl implements TaskRepositoryActionsProvider {
 
     public int getPosition() {
-        return 1000;
+        return 2000;
     }
 
     public Action[] getActions(TaskRepository repository) {
 
-        return new Action[]{};
+        JiraTaskRepository jtr = repository.getLookup().lookup(JiraTaskRepository.class);
+        if (jtr != null) {
+            List<Action> actions = new ArrayList<Action>();
+            actions.add(new UpdateAttributesAction(jtr));
+
+            return actions.toArray( new Action[actions.size()] );
+        }
+        return new Action[0];
     }
 }

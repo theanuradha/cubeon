@@ -26,6 +26,7 @@ import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuerySupportProvider;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.repository.RepositoryEventAdapter;
+import org.netbeans.cubeon.tasks.spi.repository.TaskRepository.State;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepositoryActionsProvider;
 import org.netbeans.cubeon.ui.query.TaskQueryChildern;
 import org.netbeans.cubeon.ui.repository.RepositoryEditAction;
@@ -53,7 +54,7 @@ public class TaskRepositoryNode extends AbstractNode {
 
                 @Override
                 public void nameChenged() {
-                    node.setDisplayName(repository.getName());
+                    node.setDisplayName(TaskRepositoryNode.getNameWithStateTag(repository));
                 }
 
                 @Override
@@ -70,6 +71,11 @@ public class TaskRepositoryNode extends AbstractNode {
                 public void queryRemoved(TaskQuery query) {
                     childern.refreshNodes();
                 }
+
+                @Override
+                public void stateChanged(State state) {
+                    node.setDisplayName(TaskRepositoryNode.getNameWithStateTag(repository));
+                }
             };
             node.extension.add(node.eventAdapter);
         } else {
@@ -79,12 +85,17 @@ public class TaskRepositoryNode extends AbstractNode {
 
                 @Override
                 public void nameChenged() {
-                    node.setDisplayName(repository.getName());
+                    node.setDisplayName(TaskRepositoryNode.getNameWithStateTag(repository));
                 }
 
                 @Override
                 public void descriptionChenged() {
                     node.setShortDescription(repository.getDescription());
+                }
+
+                @Override
+                public void stateChanged(State state) {
+                    node.setDisplayName(TaskRepositoryNode.getNameWithStateTag(repository));
                 }
             };
             node.extension.add(node.eventAdapter);
@@ -93,13 +104,31 @@ public class TaskRepositoryNode extends AbstractNode {
     }
 
     private TaskRepositoryNode(Children children, final TaskRepository repository) {
-        super(children,repository.getLookup());
+        super(children, repository.getLookup());
         extension = repository.getLookup().lookup(Extension.class);
         this.repository = repository;
-        setDisplayName(repository.getName());
+        setDisplayName(getNameWithStateTag(repository));
         setShortDescription(repository.getDescription());
 
 
+    }
+
+    public static String getNameWithStateTag(TaskRepository repository) {
+        switch (repository.getState()) {
+            case INACTIVE:
+                return "<font color=\"#808080\">" + repository.getName() + " [Inactive]";
+            case SYNCHRONIZING:
+                return "<font color=\"#808080\">" + repository.getName() + " [Synchronizing]";
+
+            default:
+                return repository.getName();
+        }
+
+    }
+
+    @Override
+    public String getHtmlDisplayName() {
+        return getDisplayName();
     }
 
     @Override
@@ -138,6 +167,10 @@ public class TaskRepositoryNode extends AbstractNode {
                 sepetatorAdded = false;
             }
         }
+        if (!sepetatorAdded) {
+            actions.add(null);
+        }
+        actions.add(new RepositoryEditAction(repository));
         return actions.toArray(new Action[0]);
     }
 

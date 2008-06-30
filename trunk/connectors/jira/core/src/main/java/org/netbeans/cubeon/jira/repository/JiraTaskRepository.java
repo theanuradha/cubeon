@@ -18,6 +18,7 @@ package org.netbeans.cubeon.jira.repository;
 
 import java.awt.Image;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,6 +48,7 @@ public class JiraTaskRepository implements TaskRepository {
     private String userName;
     private String password;
     //----------------------------
+    private List<JiraTask> taskElements = new ArrayList<JiraTask>();
     private final JiraRepositoryExtension extension;
     private final JiraAttributesPersistence attributesPersistence;    //::::::::::::::::
     private final JiraTaskPriorityProvider jtpp = new JiraTaskPriorityProvider();
@@ -56,6 +58,7 @@ public class JiraTaskRepository implements TaskRepository {
     private final JiraRepositoryAttributes repositoryAttributes = new JiraRepositoryAttributes();
     private final TaskPersistenceHandler handler;
     private FileObject baseDir;
+    private State state = State.INACTIVE;
 
     public JiraTaskRepository(JiraTaskRepositoryProvider provider,
             String id, String name, String description) {
@@ -114,15 +117,25 @@ public class JiraTaskRepository implements TaskRepository {
     }
 
     public List<TaskElement> getTaskElements() {
-        throw new UnsupportedOperationException();
+        return new ArrayList<TaskElement>(taskElements);
     }
 
     public TaskElement getTaskElementById(String id) {
-        throw new UnsupportedOperationException();
+        for (JiraTask jt : taskElements) {
+            if (jt.getId().equals(id)) {
+                return jt;
+            }
+        }
+        return null;
     }
 
     public void persist(TaskElement element) {
-        throw new UnsupportedOperationException();
+        JiraTask jiraTask = element.getLookup().lookup(JiraTask.class);
+        assert jiraTask != null;
+        handler.addTaskElement(jiraTask);
+        if (!taskElements.contains(element)) {
+            taskElements.add(jiraTask);
+        }
     }
 
     public void reset(TaskElement element) {
@@ -166,11 +179,13 @@ public class JiraTaskRepository implements TaskRepository {
 
             public void run() {
                 try {
+                    setState(State.SYNCHRONIZING);
                     attributesPersistence.refresh();
                     loadAttributes();
                 } catch (JiraException ex) {
                     Logger.getLogger(JiraAttributesPersistence.class.getName()).
                             log(Level.WARNING, ex.getMessage());
+                    setState(State.ACTIVE);
                 }
             }
         });
@@ -179,6 +194,7 @@ public class JiraTaskRepository implements TaskRepository {
 
     public synchronized void loadAttributes() {
         attributesPersistence.loadAttributes();
+        setState(State.ACTIVE);
     }
 
     public JiraTaskPriorityProvider getJiraTaskPriorityProvider() {
@@ -200,4 +216,19 @@ public class JiraTaskRepository implements TaskRepository {
     public JiraRepositoryAttributes getRepositoryAttributes() {
         return repositoryAttributes;
     }
+
+    public State getState() {
+        return state;//default
+    }
+
+    public void setState(State state) {
+        this.state = state;
+        extension.fireStateChanged(state);
+    }
+
+    void setTaskElements(List<JiraTask> taskElements) {
+        this.taskElements = new ArrayList<JiraTask>(taskElements);
+    }
+
+
 }
