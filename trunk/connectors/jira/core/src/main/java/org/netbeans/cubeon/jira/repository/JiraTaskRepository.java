@@ -255,6 +255,4 @@ public class JiraTaskRepository implements TaskRepository {
         hash = 97 * hash + (this.id != null ? this.id.hashCode() : 0);
         return hash;
     }
-
-
 }
