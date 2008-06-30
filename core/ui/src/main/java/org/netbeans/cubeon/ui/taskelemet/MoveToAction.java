@@ -62,12 +62,16 @@ public class MoveToAction extends AbstractAction implements Menu, Popup {
         JMenu menuItem = new JMenu(this);
         TasksFileSystem fileSystem = Lookup.getDefault().lookup(TasksFileSystem.class);
         List<TaskFolder> folders = fileSystem.getRootTaskFolder().getSubFolders();
+        boolean folderAdded = false;
         for (TaskFolder taskFolder : folders) {
             if (!taskFolder.contains(element)) {
+                folderAdded = true;
                 menuItem.add(new MoveAction(taskFolder));
             }
         }
-        menuItem.addSeparator();
+        if (folderAdded) {
+            menuItem.addSeparator();
+        }
         menuItem.add(new CreateNewFolder());
         return menuItem;
     }
