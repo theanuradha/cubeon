@@ -27,6 +27,7 @@ import com.dolby.jira.net.soap.jira.RemotePriority;
 import com.dolby.jira.net.soap.jira.RemoteProject;
 import com.dolby.jira.net.soap.jira.RemoteResolution;
 import com.dolby.jira.net.soap.jira.RemoteStatus;
+import com.dolby.jira.net.soap.jira.RemoteValidationException;
 import java.rmi.RemoteException;
 import javax.xml.rpc.ServiceException;
 
@@ -115,11 +116,32 @@ public class JiraSession {
         }
     }
 
-    public void  createTask(RemoteIssue issue) throws JiraException {
+    public void createTask(RemoteIssue issue) throws JiraException {
         try {
             service.createIssue(token, issue);
         } catch (Exception ex) {
             throw new JiraException(ex);
         }
+    }
+
+    public RemoteIssue createIssue(String summary, String description) throws JiraException {
+        RemoteIssue issue = new RemoteIssue();
+        issue.setSummary(summary);
+        issue.setDescription(description);
+        try {
+
+            return service.createIssue(token, issue);
+        } catch (RemotePermissionException ex) {
+            throw new JiraException(ex);
+        } catch (RemoteValidationException ex) {
+            throw new JiraException(ex);
+        } catch (RemoteAuthenticationException ex) {
+            throw new JiraException(ex);
+        } catch (com.dolby.jira.net.soap.jira.RemoteException ex) {
+            throw new JiraException(ex);
+        } catch (RemoteException ex) {
+            throw new JiraException(ex);
+        }
+
     }
 }
