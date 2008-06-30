@@ -10,7 +10,6 @@ import java.util.Iterator;
 import java.util.Set;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider.BasicAttributeHandler;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.ui.taskelemet.NewTaskWizardAction.WizardObject;
 import org.openide.WizardDescriptor;
@@ -23,18 +22,17 @@ class TaskAttributesWizard implements WizardDescriptor.Panel<WizardObject> {
      * component from this class, just use getComponent().
      */
     private TaskAttributes component;
-    private final TaskRepository  defaultRepository;
+    private final TaskRepository defaultRepository;
 
     public TaskAttributesWizard() {
-        defaultRepository=null;
+        defaultRepository = null;
     }
 
     public TaskAttributesWizard(TaskRepository defaultRepository) {
-       
+
         this.defaultRepository = defaultRepository;
     }
-    
-    
+
     // Get the visual component for the panel. In this template, the component
     // is kept separate. This can be more efficient: if the wizard is created
     // but never displayed, or not all panels are displayed, it is better to
@@ -54,8 +52,8 @@ class TaskAttributesWizard implements WizardDescriptor.Panel<WizardObject> {
     }
 
     public boolean isValid() {
-        BasicAttributeHandler handler = component.getHandler();
-        return handler != null && handler.isValidConfiguration();
+
+        return true;
     }
     private final Set<ChangeListener> listeners = new HashSet<ChangeListener>(1); // or can use ChangeSupport in NB 6.0
 
@@ -85,17 +83,17 @@ class TaskAttributesWizard implements WizardDescriptor.Panel<WizardObject> {
     // settings object will be the WizardDescriptor, so you can use
     // WizardDescriptor.getProperty & putProperty to store information entered
     // by the user.
+
     public void readSettings(WizardObject settings) {
-        if(defaultRepository!=null){
-          settings.setRepository(defaultRepository);
+        if (defaultRepository != null) {
+            settings.setRepository(defaultRepository);
         }
         component.setWizardObject(settings);
     }
 
     public void storeSettings(WizardObject settings) {
-        BasicAttributeHandler handler = component.getHandler();
-        assert handler != null;
-        settings.setTaskElement(handler.getTaskElement());
+        settings.setSummary(component.getSummary());
+        settings.setDescription(component.getDescription());
     }
 }
 

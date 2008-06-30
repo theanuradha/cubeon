@@ -25,11 +25,6 @@ import javax.swing.event.ChangeListener;
  */
 public interface TaskEditorProvider {
 
-    /**
-     * 
-     * @return
-     */
-    BasicAttributeHandler createBasicAttributeHandler();
 
     /**
      * 
@@ -37,41 +32,7 @@ public interface TaskEditorProvider {
      */
     EditorAttributeHandler createEditorAttributeHandler();
 
-    /**
-     * 
-     */
-    public interface BasicAttributeHandler {
 
-        /**
-         * 
-         * @param changeListener
-         */
-        void addChangeListener(ChangeListener changeListener);
-
-        /**
-         * 
-         * @param changeListener
-         */
-        void removeChangeListener(ChangeListener changeListener);
-
-        /**
-         * 
-         * @return
-         */
-        boolean isValidConfiguration();
-
-        /**
-         * 
-         * @return
-         */
-        JComponent getComponent();
-
-        /**
-         * 
-         * @return
-         */
-        TaskElement getTaskElement();
-    }
 
     /**
      * 
