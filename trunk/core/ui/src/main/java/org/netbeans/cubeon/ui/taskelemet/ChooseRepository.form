@@ -19,7 +19,7 @@
           <Component id="pnlHeader" alignment="0" max="32767" attributes="0"/>
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="10" pref="10" max="10" attributes="0"/>
-              <Component id="scrPane" pref="480" max="32767" attributes="0"/>
+              <Component id="scrPane" pref="380" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -51,15 +51,15 @@
                   <Group type="103" groupAlignment="1" attributes="0">
                       <Group type="102" attributes="0">
                           <EmptySpace min="10" pref="10" max="10" attributes="0"/>
-                          <Component id="lblSubHeader" pref="407" max="32767" attributes="0"/>
+                          <Component id="lblSubHeader" pref="307" max="32767" attributes="0"/>
                       </Group>
-                      <Component id="lblMainHeader" alignment="1" pref="417" max="32767" attributes="0"/>
+                      <Component id="lblMainHeader" alignment="1" pref="317" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="45" max="-2" attributes="0"/>
                   <Component id="lblIcon" min="-2" pref="18" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
-              <Component id="jSeparator1" alignment="1" pref="500" max="32767" attributes="0"/>
+              <Component id="jSeparator1" alignment="1" pref="400" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">

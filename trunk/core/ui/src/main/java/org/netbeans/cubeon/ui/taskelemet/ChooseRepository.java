@@ -129,12 +129,12 @@ final class ChooseRepository extends javax.swing.JPanel implements ExplorerManag
                 .add(pnlHeaderLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                     .add(pnlHeaderLayout.createSequentialGroup()
                         .add(10, 10, 10)
-                        .add(lblSubHeader, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE))
-                    .add(lblMainHeader, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE))
+                        .add(lblSubHeader, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE))
+                    .add(lblMainHeader, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 317, Short.MAX_VALUE))
                 .add(45, 45, 45)
                 .add(lblIcon, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 18, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jSeparator1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jSeparator1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
         );
         pnlHeaderLayout.setVerticalGroup(
             pnlHeaderLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -160,7 +160,7 @@ final class ChooseRepository extends javax.swing.JPanel implements ExplorerManag
             .add(pnlHeader, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .add(layout.createSequentialGroup()
                 .add(10, 10, 10)
-                .add(scrPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
+                .add(scrPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(

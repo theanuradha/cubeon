@@ -4,18 +4,13 @@
  */
 package org.netbeans.cubeon.ui.taskelemet;
 
-import java.awt.BorderLayout;
 import javax.swing.JPanel;
-import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider;
-import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider.BasicAttributeHandler;
-import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.ui.taskelemet.NewTaskWizardAction.WizardObject;
 import org.openide.util.NbBundle;
 
 final class TaskAttributes extends JPanel {
 
-    private TaskElement taskElement;
-    private BasicAttributeHandler handler;
+    private WizardObject wizardObject;
 
     /** Creates new form TaskAttributes */
     TaskAttributes() {
@@ -29,29 +24,22 @@ final class TaskAttributes extends JPanel {
 
     void setWizardObject(WizardObject object) {
 
-        this.taskElement = object.getRepository().createTaskElement("New Task", "Task Description ");
-        assert taskElement != null;
-
-        handler = taskElement.getLookup().lookup(TaskEditorProvider.class).createBasicAttributeHandler();
+        this.wizardObject = object;
         lblMainHeader.setText(NbBundle.getMessage(TaskAttributes.class,
                 "LBL_Create_New", object.getRepository().getName()));
         lblSubHeader.setText(NbBundle.getMessage(TaskAttributes.class,
                 "LBL_Create_New_Dec"));
-        pnlHolder.removeAll();
-        pnlHolder.add(handler.getComponent(), BorderLayout.CENTER);
-        pnlHolder.repaint();
-        pnlHolder.updateUI();
+
     }
 
-    TaskElement getTaskElement() {
-        return taskElement;
+    public String getDescription() {
+        return txtDescription.getText().trim();
     }
 
-    BasicAttributeHandler getHandler() {
-        return handler;
+    public String getSummary() {
+        return txtOutline.getText().trim();
     }
 
-    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -60,15 +48,17 @@ final class TaskAttributes extends JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        pnlHolder = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         pnlHeader = new javax.swing.JPanel();
         lblMainHeader = new javax.swing.JLabel();
         lblSubHeader = new javax.swing.JLabel();
         lblIcon = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
-
-        pnlHolder.setLayout(new java.awt.BorderLayout());
+        lblOutline = new javax.swing.JLabel();
+        txtOutline = new javax.swing.JTextField();
+        lblDescription = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtDescription = new javax.swing.JTextArea();
 
         jPanel1.setLayout(new java.awt.BorderLayout());
 
@@ -90,12 +80,12 @@ final class TaskAttributes extends JPanel {
                 .add(pnlHeaderLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                     .add(pnlHeaderLayout.createSequentialGroup()
                         .add(10, 10, 10)
-                        .add(lblSubHeader, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE))
-                    .add(lblMainHeader, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE))
+                        .add(lblSubHeader, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE))
+                    .add(lblMainHeader, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 317, Short.MAX_VALUE))
                 .add(45, 45, 45)
                 .add(lblIcon, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 18, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jSeparator1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jSeparator1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
         );
         pnlHeaderLayout.setVerticalGroup(
             pnlHeaderLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -113,29 +103,55 @@ final class TaskAttributes extends JPanel {
 
         jPanel1.add(pnlHeader, java.awt.BorderLayout.CENTER);
 
+        org.openide.awt.Mnemonics.setLocalizedText(lblOutline, NbBundle.getMessage(TaskAttributes.class, "TaskAttributes.lblOutline.text")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(lblDescription, NbBundle.getMessage(TaskAttributes.class, "TaskAttributes.lblDescription.text")); // NOI18N
+
+        txtDescription.setColumns(20);
+        txtDescription.setRows(5);
+        jScrollPane1.setViewportView(txtDescription);
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(pnlHolder, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
-            .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
+            .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, lblDescription, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, txtOutline, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+                    .add(lblOutline, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(0, 0, 0)
-                .add(pnlHolder, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 344, Short.MAX_VALUE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(lblOutline)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(txtOutline, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(lblDescription)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)
+                .add(18, 18, 18))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JLabel lblDescription;
     private javax.swing.JLabel lblIcon;
     private javax.swing.JLabel lblMainHeader;
+    private javax.swing.JLabel lblOutline;
     private javax.swing.JLabel lblSubHeader;
     private javax.swing.JPanel pnlHeader;
-    private javax.swing.JPanel pnlHolder;
+    private javax.swing.JTextArea txtDescription;
+    private javax.swing.JTextField txtOutline;
     // End of variables declaration//GEN-END:variables
 }
 

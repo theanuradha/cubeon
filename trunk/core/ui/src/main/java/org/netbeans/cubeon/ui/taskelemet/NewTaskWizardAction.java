@@ -115,7 +115,8 @@ public final class NewTaskWizardAction extends AbstractAction {
         dialog.toFront();
         if (wizardDescriptor.getValue() == WizardDescriptor.FINISH_OPTION) {
 
-            TaskElement element = wizardObject.getTaskElement();
+            TaskElement element = wizardObject.getRepository().
+                    createTaskElement(wizardObject.summary, wizardObject.description);
             assert element != null;
             TaskRepository repository = wizardObject.getRepository();
             assert repository != null;
@@ -141,15 +142,17 @@ public final class NewTaskWizardAction extends AbstractAction {
 
     static class WizardObject {
 
-        private TaskElement taskElement;
         private TaskRepository repository;
+        private String summary;
+        private String description;
 
         public WizardObject() {
         }
 
-        public WizardObject(TaskElement taskElement, TaskRepository repository) {
-            this.taskElement = taskElement;
+        public WizardObject(TaskRepository repository, String summary, String description) {
             this.repository = repository;
+            this.summary = summary;
+            this.description = description;
         }
 
         public TaskRepository getRepository() {
@@ -160,12 +163,20 @@ public final class NewTaskWizardAction extends AbstractAction {
             this.repository = repository;
         }
 
-        public TaskElement getTaskElement() {
-            return taskElement;
+        public String getDescription() {
+            return description;
         }
 
-        public void setTaskElement(TaskElement taskElement) {
-            this.taskElement = taskElement;
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public String getSummary() {
+            return summary;
+        }
+
+        public void setSummary(String summary) {
+            this.summary = summary;
         }
     }
 }
