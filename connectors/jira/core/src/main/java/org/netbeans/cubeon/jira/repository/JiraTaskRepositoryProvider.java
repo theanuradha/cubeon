@@ -131,4 +131,7 @@ public class JiraTaskRepositoryProvider implements TaskRepositoryType {
     public FileObject getBaseDir() {
         return baseDir;
     }
+
+
+    
 }

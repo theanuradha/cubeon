@@ -230,5 +230,31 @@ public class JiraTaskRepository implements TaskRepository {
         this.taskElements = new ArrayList<JiraTask>(taskElements);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final JiraTaskRepository other = (JiraTaskRepository) obj;
+        if (this.provider != other.provider && (this.provider == null || !this.provider.equals(other.provider))) {
+            return false;
+        }
+        if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 97 * hash + (this.provider != null ? this.provider.hashCode() : 0);
+        hash = 97 * hash + (this.id != null ? this.id.hashCode() : 0);
+        return hash;
+    }
+
 
 }

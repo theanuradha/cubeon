@@ -109,6 +109,7 @@ public class BasicAttributeHandlerImpl extends javax.swing.JPanel implements Tas
 
         jiraTask.setName(txtOutline.getText().trim());
         jiraTask.setDescription(txtDescription.getText().trim());
+        jiraTask.setType((TaskType) cmbTypes.getSelectedItem());
         return jiraTask;
     }
 
