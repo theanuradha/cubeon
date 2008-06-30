@@ -18,6 +18,7 @@ package org.netbeans.cubeon.jira.repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.netbeans.cubeon.jira.tasks.JiraTask;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskType;
 import org.netbeans.cubeon.tasks.spi.repository.TaskTypeProvider;
@@ -61,10 +62,14 @@ public class JiraTaskTypeProvider implements TaskTypeProvider {
     }
 
     public TaskType getTaskType(TaskElement element) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        JiraTask jiraTask = element.getLookup().lookup(JiraTask.class);
+        assert jiraTask!=null;
+        return jiraTask.getType();
     }
 
     public void setTaskType(TaskElement element, TaskType taskType) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        JiraTask jiraTask = element.getLookup().lookup(JiraTask.class);
+        assert jiraTask!=null;
+         jiraTask.setType(taskType);
     }
 }

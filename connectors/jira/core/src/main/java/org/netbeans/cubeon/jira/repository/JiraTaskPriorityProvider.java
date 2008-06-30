@@ -18,6 +18,7 @@ package org.netbeans.cubeon.jira.repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.netbeans.cubeon.jira.tasks.JiraTask;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.repository.TaskPriorityProvider;
@@ -66,10 +67,14 @@ public class JiraTaskPriorityProvider implements TaskPriorityProvider {
     }
 
     public TaskPriority getTaskPriority(TaskElement element) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        JiraTask jiraTask = element.getLookup().lookup(JiraTask.class);
+        assert jiraTask!=null;
+        return jiraTask.getPriority();
     }
 
     public void setTaskPriority(TaskElement element, TaskPriority priority) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        JiraTask jiraTask = element.getLookup().lookup(JiraTask.class);
+        assert jiraTask!=null;
+        jiraTask.setPriority(priority);
     }
 }
