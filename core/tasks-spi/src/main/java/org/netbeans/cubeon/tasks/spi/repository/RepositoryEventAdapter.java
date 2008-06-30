@@ -44,4 +44,6 @@ public class RepositoryEventAdapter {
 
     public void queryRemoved(TaskQuery query) {
     }
+
+    public void stateChanged(TaskRepository.State state){}
 }

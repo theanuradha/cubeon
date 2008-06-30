@@ -16,11 +16,19 @@
  */
 package org.netbeans.cubeon.jira.repository;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import org.netbeans.cubeon.jira.tasks.JiraTask;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
+import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
+import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
+import org.netbeans.cubeon.tasks.spi.task.TaskType;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
@@ -38,7 +46,7 @@ import org.xml.sax.SAXException;
  */
 class TaskPersistenceHandler {
 
-    private static final String FILESYSTEM_FILE_TAG = "config.xml"; //NOI18N
+    private static final String FILESYSTEM_FILE_TAG = "tasks.xml"; //NOI18N
     private static final String NAMESPACE = null;//FIXME add propper namespase
     private static final String TAG_ROOT = "tasks";
     private static final String TAG_REPOSITORY = "repository";
@@ -68,99 +76,97 @@ class TaskPersistenceHandler {
         //do validations changes here
     }
 
-    void addTaskElement(TaskElement te) {
+    void addTaskElement(JiraTask jiraTask) {
         synchronized (LOCK) {
-            /*
-            LocalTask localTask = te.getLookup().lookup(LocalTask.class);
-            assert localTask != null;
+
+
             Document document = getDocument();
             Element root = getRootElement(document);
             Element tasksElement = findElement(root, TAG_TASKS, NAMESPACE);
             //check tasksElement null and create element
             if (tasksElement == null) {
-            tasksElement = document.createElementNS(NAMESPACE, TAG_TASKS);
-            root.appendChild(tasksElement);
+                tasksElement = document.createElementNS(NAMESPACE, TAG_TASKS);
+                root.appendChild(tasksElement);
             }
             Element taskElement = null;
 
-            if (jiraTaskRepository.getTaskElementById(te.getId()) != null) {
-            NodeList taskNodes =
-            tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_TASK);
+            if (jiraTaskRepository.getTaskElementById(jiraTask.getId()) != null) {
+                NodeList taskNodes =
+                        tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_TASK);
 
-            for (int i = 0; i < taskNodes.getLength(); i++) {
-            Node node = taskNodes.item(i);
-            if (node.getNodeType() == Node.ELEMENT_NODE) {
-            Element element = (Element) node;
-            String id = element.getAttributeNS(NAMESPACE, TAG_ID);
-            if (te.getId().equals(id)) {
-            taskElement = element;
-            break;
-            }
-            }
-            }
+                for (int i = 0; i < taskNodes.getLength(); i++) {
+                    Node node = taskNodes.item(i);
+                    if (node.getNodeType() == Node.ELEMENT_NODE) {
+                        Element element = (Element) node;
+                        String id = element.getAttributeNS(NAMESPACE, TAG_ID);
+                        if (jiraTask.getId().equals(id)) {
+                            taskElement = element;
+                            break;
+                        }
+                    }
+                }
             }
             if (taskElement == null) {
-            taskElement = document.createElementNS(NAMESPACE, TAG_TASK);
-            tasksElement.appendChild(taskElement);
-            taskElement.setAttributeNS(NAMESPACE, TAG_ID, te.getId());
+                taskElement = document.createElementNS(NAMESPACE, TAG_TASK);
+                tasksElement.appendChild(taskElement);
+                taskElement.setAttributeNS(NAMESPACE, TAG_ID, jiraTask.getId());
             }
 
-
-            taskElement.setAttributeNS(NAMESPACE, TAG_NAME, localTask.getName());
-            taskElement.setAttributeNS(NAMESPACE, TAG_DESCRIPTION, localTask.getDescription());
-            taskElement.setAttributeNS(NAMESPACE, TAG_REPOSITORY, localTask.getTaskRepository().getId());
-            taskElement.setAttributeNS(NAMESPACE, TAG_PRIORITY, localTask.getPriority().getId().toString());
-            taskElement.setAttributeNS(NAMESPACE, TAG_STATUS, localTask.getStatus().getId());
-            taskElement.setAttributeNS(NAMESPACE, TAG_TYPE, localTask.getType().getId());
-            if (localTask.getUrlString() != null) {
-            taskElement.setAttributeNS(NAMESPACE, TAG_URL, localTask.getUrlString());
+            taskElement.setAttributeNS(NAMESPACE, TAG_NAME, jiraTask.getName());
+            taskElement.setAttributeNS(NAMESPACE, TAG_DESCRIPTION, jiraTask.getDescription());
+            taskElement.setAttributeNS(NAMESPACE, TAG_REPOSITORY, jiraTask.getTaskRepository().getId());
+            taskElement.setAttributeNS(NAMESPACE, TAG_PRIORITY, jiraTask.getPriority().getId().toString());
+            taskElement.setAttributeNS(NAMESPACE, TAG_STATUS, jiraTask.getStatus().getId());
+            taskElement.setAttributeNS(NAMESPACE, TAG_TYPE, jiraTask.getType().getId());
+            if (jiraTask.getUrlString() != null) {
+                taskElement.setAttributeNS(NAMESPACE, TAG_URL, jiraTask.getUrlString());
             }
             Date now = new Date();
 
-            if (localTask.getCreated() == null) {
-            localTask.setCreated(now);
+            if (jiraTask.getCreated() == null) {
+                jiraTask.setCreated(now);
             } else {
-            localTask.setUpdated(now);
+                jiraTask.setUpdated(now);
             }
 
-            taskElement.setAttributeNS(NAMESPACE, TAG_CREATED_DATE, String.valueOf(localTask.getCreated().getTime()));
-            if (localTask.getUpdated() != null) {
-            taskElement.setAttributeNS(NAMESPACE, TAG_UPDATE_DATE, String.valueOf(localTask.getUpdated().getTime()));
+            taskElement.setAttributeNS(NAMESPACE, TAG_CREATED_DATE, String.valueOf(jiraTask.getCreated().getTime()));
+            if (jiraTask.getUpdated() != null) {
+                taskElement.setAttributeNS(NAMESPACE, TAG_UPDATE_DATE, String.valueOf(jiraTask.getUpdated().getTime()));
             }
 
             save(document);
-             * */
+
         }
     }
 
     void removeTaskElement(TaskElement te) {
         synchronized (LOCK) {
-            /*
+
             Document document = getDocument();
             Element root = getRootElement(document);
             Element tasksElement = findElement(root, TAG_TASKS, NAMESPACE);
             Element taskElement = null;
 
             NodeList taskNodes =
-            tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_TASK);
+                    tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_TASK);
 
             for (int i = 0; i < taskNodes.getLength(); i++) {
-            Node node = taskNodes.item(i);
-            if (node.getNodeType() == Node.ELEMENT_NODE) {
-            Element element = (Element) node;
-            String id = element.getAttributeNS(NAMESPACE, TAG_ID);
-            if (te.getId().equals(id)) {
-            taskElement = element;
-            break;
-            }
-            }
+                Node node = taskNodes.item(i);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element element = (Element) node;
+                    String id = element.getAttributeNS(NAMESPACE, TAG_ID);
+                    if (te.getId().equals(id)) {
+                        taskElement = element;
+                        break;
+                    }
+                }
             }
             assert taskElement != null;
 
             tasksElement.removeChild(taskElement);
 
             save(document);
-             * */
+
         }
     }
 
@@ -188,68 +194,69 @@ class TaskPersistenceHandler {
 
     void refresh() {
         synchronized (LOCK) {
-            /*
-            List<LocalTask> taskElements = new ArrayList<LocalTask>();
+
+
             Document document = getDocument();
             Element root = getRootElement(document);
             Element tasksElement = findElement(root, TAG_TASKS, NAMESPACE);
 
             if (tasksElement != null) {
-            NodeList taskNodes =
-            tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_TASK);
-            LocalTaskPriorityProvider priorityProvider = jiraTaskRepository.getLocalTaskPriorityProvider();
-            LocalTaskStatusProvider statusProvider = jiraTaskRepository.getLocalTaskStatusProvider();
-            LocalTaskTypeProvider localTaskTypeProvider = jiraTaskRepository.getLocalTaskTypeProvider();
-            Calendar calendar = Calendar.getInstance(Locale.getDefault());
-            for (int i = 0; i < taskNodes.getLength(); i++) {
-            Node node = taskNodes.item(i);
-            if (node.getNodeType() == Node.ELEMENT_NODE) {
-            Element element = (Element) node;
-            String id = element.getAttributeNS(NAMESPACE, TAG_ID);
-            String name = element.getAttributeNS(NAMESPACE, TAG_NAME);
-            String description = element.getAttributeNS(NAMESPACE, TAG_DESCRIPTION);
-            //read priority
-            String priority = element.getAttributeNS(NAMESPACE, TAG_PRIORITY);
-            TaskPriority taskPriority = priorityProvider.getTaskPriorityById(TaskPriority.PRIORITY.valueOf(priority));
-            //read status
-            String status = element.getAttributeNS(NAMESPACE, TAG_STATUS);
-            TaskStatus taskStatus = statusProvider.getTaskStatusById(status);
-            //read type
-            String type = element.getAttributeNS(NAMESPACE, TAG_TYPE);
-            TaskType taskType = localTaskTypeProvider.getTaskTypeById(type);
+                List<JiraTask> taskElements = new ArrayList<JiraTask>();
+                NodeList taskNodes =
+                        tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_TASK);
+                JiraTaskPriorityProvider priorityProvider = jiraTaskRepository.getJiraTaskPriorityProvider();
+                JiraTaskStatusProvider statusProvider = jiraTaskRepository.getJiraTaskStatusProvider();
+                JiraTaskTypeProvider localTaskTypeProvider = jiraTaskRepository.getJiraTaskTypeProvider();
+                Calendar calendar = Calendar.getInstance(Locale.getDefault());
+                for (int i = 0; i < taskNodes.getLength(); i++) {
+                    Node node = taskNodes.item(i);
+                    if (node.getNodeType() == Node.ELEMENT_NODE) {
+                        Element element = (Element) node;
+                        String id = element.getAttributeNS(NAMESPACE, TAG_ID);
+                        String name = element.getAttributeNS(NAMESPACE, TAG_NAME);
+                        String description = element.getAttributeNS(NAMESPACE, TAG_DESCRIPTION);
+                        //read priority
+                        String priority = element.getAttributeNS(NAMESPACE, TAG_PRIORITY);
+                        TaskPriority taskPriority = priorityProvider.getTaskPriorityById(TaskPriority.PRIORITY.valueOf(priority));
+                        //read status
+                        String status = element.getAttributeNS(NAMESPACE, TAG_STATUS);
+                        TaskStatus taskStatus = statusProvider.getTaskStatusById(status);
+                        //read type
+                        String type = element.getAttributeNS(NAMESPACE, TAG_TYPE);
+                        TaskType taskType = localTaskTypeProvider.getTaskTypeById(type);
 
-            String url = element.getAttributeNS(NAMESPACE, TAG_URL);
+                        String url = element.getAttributeNS(NAMESPACE, TAG_URL);
 
-            Date createdDate = null;
-            Date updatedDate = null;
-            String created = element.getAttributeNS(NAMESPACE, TAG_CREATED_DATE);
-            if (created != null && created.trim().length() != 0) {
+                        Date createdDate = null;
+                        Date updatedDate = null;
+                        String created = element.getAttributeNS(NAMESPACE, TAG_CREATED_DATE);
+                        if (created != null && created.trim().length() != 0) {
 
-            calendar.setTimeInMillis(Long.parseLong(created));
-            createdDate = calendar.getTime();
-            } else {
-            createdDate = new Date();
-            }
-            String updated = element.getAttributeNS(NAMESPACE, TAG_UPDATE_DATE);
-            if (updated != null && updated.trim().length() != 0) {
-            calendar.setTimeInMillis(Long.parseLong(updated));
-            updatedDate = calendar.getTime();
+                            calendar.setTimeInMillis(Long.parseLong(created));
+                            createdDate = calendar.getTime();
+                        } else {
+                            createdDate = new Date();
+                        }
+                        String updated = element.getAttributeNS(NAMESPACE, TAG_UPDATE_DATE);
+                        if (updated != null && updated.trim().length() != 0) {
+                            calendar.setTimeInMillis(Long.parseLong(updated));
+                            updatedDate = calendar.getTime();
+                        }
+
+                        JiraTask taskElement = new JiraTask(id, name, description, jiraTaskRepository);
+                        taskElement.setPriority(taskPriority);
+                        taskElement.setStatus(taskStatus);
+                        taskElement.setType(taskType);
+                        taskElement.setUrlString(url);
+                        taskElement.setCreated(createdDate);
+                        taskElement.setUpdated(updatedDate);
+                        taskElements.add(taskElement);
+
+                    }
+                }
+                jiraTaskRepository.setTaskElements(taskElements);
             }
 
-            LocalTask taskElement = new LocalTask(id, name, description, jiraTaskRepository);
-            taskElement.setPriority(taskPriority);
-            taskElement.setStatus(taskStatus);
-            taskElement.setType(taskType);
-            taskElement.setUrlString(url);
-            taskElement.setCreated(createdDate);
-            taskElement.setUpdated(updatedDate);
-            taskElements.add(taskElement);
-
-            }
-            }
-            jiraTaskRepository.setTaskElements(taskElements);
-            }
-             * */
         }
     }
 
@@ -301,7 +308,7 @@ class TaskPersistenceHandler {
         OutputStream out = null;
         try {
             if (config == null) {
-               
+
                 config = baseDir.createData(FILESYSTEM_FILE_TAG);
             }
             lck = config.lock();

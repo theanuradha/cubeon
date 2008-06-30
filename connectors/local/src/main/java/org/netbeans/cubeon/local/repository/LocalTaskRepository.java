@@ -163,4 +163,8 @@ public class LocalTaskRepository implements TaskRepository {
     public LocalQuerySupport getQuerySupport() {
         return querySupport;
     }
+
+    public State getState() {
+        return State.ACTIVE;//default
+    }
 }

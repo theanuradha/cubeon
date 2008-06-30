@@ -17,9 +17,11 @@
 package org.netbeans.cubeon.jira.repository;
 
 import com.dolby.jira.net.soap.jira.RemoteConfiguration;
+import com.dolby.jira.net.soap.jira.RemoteIssueType;
+import com.dolby.jira.net.soap.jira.RemotePriority;
 import com.dolby.jira.net.soap.jira.RemoteProject;
 import com.dolby.jira.net.soap.jira.RemoteResolution;
-import java.io.File;
+import com.dolby.jira.net.soap.jira.RemoteStatus;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -85,7 +87,7 @@ class JiraAttributesPersistence {
     void refresh() throws JiraException {
         synchronized (LOCK) {
 
-            Document document = getDocument();
+            Document document = getDocument(true);
             Element root = getRootElement(document);
             Element attributes = findElement(root, TAG_ROOT, NAMESPACE);
 
@@ -108,36 +110,36 @@ class JiraAttributesPersistence {
                 project.setAttribute(TAG_LEAD, rp.getLead());
             }
 
-            /*
+
             RemotePriority[] priorities = session.getPriorities();
             Element prioritiesElement = getEmptyElement(document, attributes, TAG_PRIORITIES);
             for (RemotePriority rp : priorities) {
-            Element priority = document.createElement(TAG_PRIORITY);
-            prioritiesElement.appendChild(priority);
-            priority.setAttribute(TAG_ID, rp.getId());
-            priority.setAttribute(TAG_NAME, rp.getName());
+                Element priority = document.createElement(TAG_PRIORITY);
+                prioritiesElement.appendChild(priority);
+                priority.setAttribute(TAG_ID, rp.getId());
+                priority.setAttribute(TAG_NAME, rp.getName());
             }
-            
+
             //-----------------------------------------------------------------
             RemoteIssueType[] issueTypes = session.getIssueTypes();
             Element typesElement = getEmptyElement(document, attributes, TAG_TYPES);
             for (RemoteIssueType issueType : issueTypes) {
-            Element type = document.createElement(TAG_TYPE);
-            typesElement.appendChild(type);
-            type.setAttribute(TAG_ID, issueType.getId());
-            type.setAttribute(TAG_NAME, issueType.getName());
+                Element type = document.createElement(TAG_TYPE);
+                typesElement.appendChild(type);
+                type.setAttribute(TAG_ID, issueType.getId());
+                type.setAttribute(TAG_NAME, issueType.getName());
             }
-            
+
             //-----------------------------------------------------------------
             RemoteStatus[] statuses = session.getStatuses();
             Element statusesElement = getEmptyElement(document, attributes, TAG_STATUSES);
             for (RemoteStatus rs : statuses) {
-            Element status = document.createElement(TAG_STATUS);
-            statusesElement.appendChild(status);
-            status.setAttribute(TAG_ID, rs.getId());
-            status.setAttribute(TAG_NAME, rs.getName());
+                Element status = document.createElement(TAG_STATUS);
+                statusesElement.appendChild(status);
+                status.setAttribute(TAG_ID, rs.getId());
+                status.setAttribute(TAG_NAME, rs.getName());
             }
-             */
+
             //-----------------------------------------------------------------
             RemoteResolution[] resolutions = session.getResolutions();
             Element resolutionsElement = getEmptyElement(document, attributes, TAG_RESOLUTIONS);
@@ -184,10 +186,11 @@ class JiraAttributesPersistence {
 
     }
 
-    private Document getDocument() {
+    private Document getDocument(boolean newDoc) {
+
         final FileObject config = baseDir.getFileObject(FILESYSTEM_FILE_TAG);
         Document doc = null;
-        if (config != null) {
+        if (!newDoc && config != null) {
             InputStream in = null;
             try {
                 in = config.getInputStream();
@@ -232,7 +235,7 @@ class JiraAttributesPersistence {
         OutputStream out = null;
         try {
             if (config == null) {
-                
+
                 config = baseDir.createData(FILESYSTEM_FILE_TAG);
             }
             lck = config.lock();
@@ -258,7 +261,7 @@ class JiraAttributesPersistence {
     public void loadAttributes() {
         synchronized (LOCK) {
 
-            Document document = getDocument();
+            Document document = getDocument(false);
             Element root = getRootElement(document);
             Element attributes = findElement(root, TAG_ROOT, NAMESPACE);
 

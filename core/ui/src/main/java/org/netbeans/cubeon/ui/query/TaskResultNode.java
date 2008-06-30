@@ -32,11 +32,10 @@ import org.openide.nodes.Children;
 
 /**
  *
- * @author Anuradha
+ * @author Anuradha G
  */
 public class TaskResultNode extends AbstractNode {
 
-    private static final String TAG = "<font color=\"#808080\"> <s> ";
     private TaskElement element;
 
     public TaskResultNode(TaskElement element) {
@@ -70,14 +69,7 @@ public class TaskResultNode extends AbstractNode {
     @Override
     public String getHtmlDisplayName() {
         StringBuffer buffer = new StringBuffer("<html>");
-        if (element.isCompleted()) {
-
-            buffer.append(TAG);
-            buffer.append(element.getName());
-            buffer.append("</s>");
-        } else {
-            buffer.append(element.getName());
-        }
+        buffer.append(element.getName());
         buffer.append("<font color=\"#808080\">");
         buffer.append("  ");
         TaskRepository repository = element.getTaskRepository();
