@@ -58,7 +58,9 @@ final class ChooseRepository extends javax.swing.JPanel implements ExplorerManag
         if (nodes.length > 0) {
             Node node = nodes[0];
             TaskRepository repository = node.getLookup().lookup(TaskRepository.class);
-            return repository;
+            if (repository.getState() == TaskRepository.State.ACTIVE) {
+                return repository;
+            }
         }
         return null;
     }
@@ -75,7 +77,7 @@ final class ChooseRepository extends javax.swing.JPanel implements ExplorerManag
         TaskNodeFactory factory = Lookup.getDefault().lookup(TaskNodeFactory.class);
         for (int i = 0; i < repositorys.size(); i++) {
             final TaskRepository repository = repositorys.get(i);
-            nodes[i] = factory.createTaskRepositoryNode(repository,false);
+            nodes[i] = factory.createTaskRepositoryNode(repository, false);
         }
         array.add(nodes);
         Node node = new AbstractNode(array) {
