@@ -16,12 +16,14 @@
  */
 package org.netbeans.cubeon.jira.repository;
 
+import com.dolby.jira.net.soap.jira.RemoteComponent;
 import com.dolby.jira.net.soap.jira.RemoteConfiguration;
 import com.dolby.jira.net.soap.jira.RemoteIssueType;
 import com.dolby.jira.net.soap.jira.RemotePriority;
 import com.dolby.jira.net.soap.jira.RemoteProject;
 import com.dolby.jira.net.soap.jira.RemoteResolution;
 import com.dolby.jira.net.soap.jira.RemoteStatus;
+import com.dolby.jira.net.soap.jira.RemoteVersion;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -62,11 +64,15 @@ class JiraAttributesPersistence {
     private static final String TAG_PROJECTS = "projects";
     private static final String TAG_SUB_TASKS = "sub_tasks";
     private static final String TAG_TYPES = "types";
+    private static final String TAG_COMPONENTS = "components";
+    private static final String TAG_VERSIONS = "versions";
     private static final String TAG_STATUSES = "statuses";
     private static final String TAG_RESOLUTIONS = "resolutions";
     private static final String TAG_PRIORITY = "priority";
     private static final String TAG_PROJECT = "project";
     private static final String TAG_TYPE = "type";
+    private static final String TAG_COMPONENT = "component";
+    private static final String TAG_VERSION = "version";
     private static final String TAG_STATUS = "status";
     private static final String TAG_RESOLUTION = "resolution";
     private static final String TAG_ID = "id";
@@ -108,6 +114,36 @@ class JiraAttributesPersistence {
                 project.setAttribute(TAG_NAME, rp.getName());
                 project.setAttribute(TAG_DESCRIPTION, rp.getDescription());
                 project.setAttribute(TAG_LEAD, rp.getLead());
+                /*
+                RemoteIssueType[] issueTypes = session.getIssueTypesForProject(rp.getId());
+                Element types = document.createElement(TAG_TYPES);
+                project.appendChild(types);
+                for (RemoteIssueType rit : issueTypes) {
+                Element type = document.createElement(TAG_TYPE);
+                types.appendChild(type);
+                type.setAttribute(TAG_ID, rit.getId());
+                }*/
+
+                RemoteComponent[] remoteComponents = session.getComponents(rp.getKey());
+                Element components = document.createElement(TAG_COMPONENTS);
+                project.appendChild(components);
+                for (RemoteComponent rc : remoteComponents) {
+                    Element component = document.createElement(TAG_COMPONENT);
+                    components.appendChild(component);
+                    component.setAttribute(TAG_ID, rc.getId());
+                    component.setAttribute(TAG_NAME, rc.getName());
+                }
+
+
+                RemoteVersion[] remoteVersions = session.getVersions(rp.getKey());
+                Element versions = document.createElement(TAG_VERSIONS);
+                project.appendChild(versions);
+                for (RemoteVersion rv : remoteVersions) {
+                    Element version = document.createElement(TAG_VERSION);
+                    versions.appendChild(version);
+                    version.setAttribute(TAG_ID, rv.getId());
+                    version.setAttribute(TAG_NAME, rv.getName());
+                }
             }
 
 
@@ -333,8 +369,43 @@ class JiraAttributesPersistence {
                         String name = element.getAttribute(TAG_NAME);
                         String description = element.getAttribute(TAG_DESCRIPTION);
                         String lead = element.getAttribute(TAG_LEAD);
+                        JiraProject jiraProject = new JiraProject(id, name, description, lead);
+                        //load components
+                        Element components = findElement(element, TAG_COMPONENTS, NAMESPACE);
+                        if (components != null) {
+                            List<JiraProject.Component> cs = new ArrayList<JiraProject.Component>();
+                            NodeList componentsNodes = components.getChildNodes();
+                            for (int j = 0; j < componentsNodes.getLength(); j++) {
 
-                        projects.add(new JiraProject(id, name, description, lead));
+                                Node componentNode = componentsNodes.item(j);
+                                if (componentNode.getNodeType() == Node.ELEMENT_NODE) {
+
+                                    String cid = ((Element) componentNode).getAttribute(TAG_ID);
+                                    String cname = ((Element) componentNode).getAttribute(TAG_NAME);
+                                    cs.add(new JiraProject.Component(cid, cname));
+                                }
+                            }
+                            jiraProject.setComponents(cs);
+                        }
+                        //load versions
+                        Element versions = findElement(element, TAG_VERSIONS, NAMESPACE);
+                        if (versions != null) {
+                            List<JiraProject.Version> vs = new ArrayList<JiraProject.Version>();
+                            NodeList versionNodes = versions.getChildNodes();
+                            for (int j = 0; j < versionNodes.getLength(); j++) {
+
+                                Node verstionNode = versionNodes.item(j);
+                                if (verstionNode.getNodeType() == Node.ELEMENT_NODE) {
+
+                                    String vid = ((Element) verstionNode).getAttribute(TAG_ID);
+                                    String vname = ((Element) verstionNode).getAttribute(TAG_NAME);
+                                    vs.add(new JiraProject.Version(vid, vname));
+                                }
+                            }
+                            jiraProject.setVersions(vs);
+                        }
+
+                        projects.add(jiraProject);
 
                     }
                 }

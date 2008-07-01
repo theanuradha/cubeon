@@ -19,15 +19,15 @@ package org.netbeans.cubeon.jira.remote;
 import com.dolby.jira.net.soap.jira.JiraSoapService;
 import com.dolby.jira.net.soap.jira.JiraSoapServiceServiceLocator;
 import com.dolby.jira.net.soap.jira.RemoteAuthenticationException;
+import com.dolby.jira.net.soap.jira.RemoteComponent;
 import com.dolby.jira.net.soap.jira.RemoteConfiguration;
 import com.dolby.jira.net.soap.jira.RemoteIssue;
 import com.dolby.jira.net.soap.jira.RemoteIssueType;
-import com.dolby.jira.net.soap.jira.RemotePermissionException;
 import com.dolby.jira.net.soap.jira.RemotePriority;
 import com.dolby.jira.net.soap.jira.RemoteProject;
 import com.dolby.jira.net.soap.jira.RemoteResolution;
 import com.dolby.jira.net.soap.jira.RemoteStatus;
-import com.dolby.jira.net.soap.jira.RemoteValidationException;
+import com.dolby.jira.net.soap.jira.RemoteVersion;
 import java.rmi.RemoteException;
 import javax.xml.rpc.ServiceException;
 
@@ -100,6 +100,14 @@ public class JiraSession {
         }
     }
 
+    public RemoteIssueType[] getIssueTypesForProject(String projectID) throws JiraException {
+        try {
+            return service.getIssueTypesForProject(token, projectID);
+        } catch (Exception ex) {
+            throw new JiraException(ex);
+        }
+    }
+
     public RemoteConfiguration getConfiguration() throws JiraException {
         try {
             return service.getConfiguration(token);
@@ -131,17 +139,25 @@ public class JiraSession {
         try {
 
             return service.createIssue(token, issue);
-        } catch (RemotePermissionException ex) {
-            throw new JiraException(ex);
-        } catch (RemoteValidationException ex) {
-            throw new JiraException(ex);
-        } catch (RemoteAuthenticationException ex) {
-            throw new JiraException(ex);
-        } catch (com.dolby.jira.net.soap.jira.RemoteException ex) {
-            throw new JiraException(ex);
-        } catch (RemoteException ex) {
+        } catch (Exception ex) {
             throw new JiraException(ex);
         }
 
+    }
+
+    public RemoteVersion[] getVersions(String projectID) throws JiraException {
+        try {
+            return service.getVersions(token, projectID);
+        } catch (Exception ex) {
+            throw new JiraException(ex);
+        }
+    }
+
+    public RemoteComponent[] getComponents(String ProjectId) throws JiraException {
+        try {
+            return service.getComponents(token, ProjectId);
+        } catch (Exception ex) {
+            throw new JiraException(ex);
+        }
     }
 }
