@@ -75,6 +75,7 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
         initComponents();
         txtOutline.setText(jiraTask.getName());
         txtDescription.setText(jiraTask.getDescription());
+        txtEnvironment.setText(jiraTask.getEnvironment());
         loadDates(jiraTask);
         loadAttributes();
         final DocumentListener documentListener = new DocumentListener() {
@@ -276,6 +277,7 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
         if (!jiraTask.getDescription().equals(txtDescription.getText().trim())) {
             jiraTask.setDescription(txtDescription.getText().trim());
         }
+        jiraTask.setEnvironment(txtEnvironment.getText().trim());
         if (!jiraTask.getType().equals(cmbType.getSelectedItem())) {
             jiraTask.setType((TaskType) cmbType.getSelectedItem());
         }
