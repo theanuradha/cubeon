@@ -107,7 +107,7 @@ public class JiraProject {
             if (getClass() != obj.getClass()) {
                 return false;
             }
-            final Component other = (Component) obj;
+            final Version other = (Version) obj;
             if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
                 return false;
             }
