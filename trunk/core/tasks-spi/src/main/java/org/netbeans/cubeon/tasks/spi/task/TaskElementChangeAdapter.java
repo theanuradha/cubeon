@@ -50,4 +50,10 @@ public class TaskElementChangeAdapter {
      */
     public void typeChenged() {
     }
+
+    /**
+     *
+     */
+    public void resolutionChenged() {
+    }
 }
