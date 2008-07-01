@@ -23,36 +23,36 @@
 package org.netbeans.cubeon.jira.tasks.ui;
 
 import java.awt.EventQueue;
-import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
-import javax.swing.AbstractAction;
-import javax.swing.JButton;
+import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import org.netbeans.cubeon.jira.repository.JiraRepositoryAttributes;
 import org.netbeans.cubeon.jira.repository.JiraTaskPriorityProvider;
 import org.netbeans.cubeon.jira.repository.JiraTaskRepository;
+import org.netbeans.cubeon.jira.repository.JiraTaskResolutionProvider;
 import org.netbeans.cubeon.jira.repository.JiraTaskStatusProvider;
 import org.netbeans.cubeon.jira.repository.JiraTaskTypeProvider;
+import org.netbeans.cubeon.jira.repository.attributes.JiraProject;
+import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Component;
+import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Version;
 import org.netbeans.cubeon.jira.tasks.JiraTask;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider.EditorAttributeHandler;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
+import org.netbeans.cubeon.tasks.spi.task.TaskResolution;
 import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
 import org.netbeans.cubeon.tasks.spi.task.TaskType;
-import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor;
-import org.openide.awt.HtmlBrowser.URLDisplayer;
 import org.openide.util.NbBundle;
 
 /**
@@ -70,31 +70,8 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
         initComponents();
         txtOutline.setText(jiraTask.getName());
         txtDescription.setText(jiraTask.getDescription());
-        txtUrl.setText(jiraTask.getUrlString());
         loadDates(jiraTask);
-        cmbPriority.removeAllItems();
-        JiraTaskRepository taskRepository = jiraTask.getTaskRepository().getLookup().lookup(JiraTaskRepository.class);
-        JiraTaskPriorityProvider jtpp = taskRepository.getJiraTaskPriorityProvider();
-        for (TaskPriority priority : jtpp.getTaskPrioritys()) {
-            cmbPriority.addItem(priority);
-        }
-        cmbPriority.setSelectedItem(jiraTask.getPriority());
-
-        cmbStatus.removeAllItems();
-        JiraTaskStatusProvider statusProvider = taskRepository.getJiraTaskStatusProvider();
-        for (TaskStatus status : statusProvider.getStatusList()) {
-            cmbStatus.addItem(status);
-        }
-        cmbStatus.setSelectedItem(jiraTask.getStatus());
-
-        cmbType.removeAllItems();
-
-        JiraTaskTypeProvider localTaskTypeProvider = taskRepository.getJiraTaskTypeProvider();
-        for (TaskType type : localTaskTypeProvider.getTaskTypes()) {
-            cmbType.addItem(type);
-        }
-
-        cmbType.setSelectedItem(jiraTask.getType());
+        loadAttributes();
         final DocumentListener documentListener = new DocumentListener() {
 
             public void insertUpdate(DocumentEvent arg0) {
@@ -121,7 +98,7 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
         };
         txtOutline.getDocument().addDocumentListener(documentListener);
         txtDescription.getDocument().addDocumentListener(documentListener);
-        txtUrl.getDocument().addDocumentListener(documentListener);
+
 
         ItemListener itemListener = new ItemListener() {
 
@@ -136,9 +113,94 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
                 }
             }
         };
+
+        ItemListener projectitemListener = new ItemListener() {
+
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    EventQueue.invokeLater(new Runnable() {
+
+                        public void run() {
+                            loadProject((JiraProject) cmbProject.getSelectedItem());
+                        }
+                    });
+                }
+            }
+        };
         cmbPriority.addItemListener(itemListener);
         cmbStatus.addItemListener(itemListener);
         cmbType.addItemListener(itemListener);
+        cmbProject.addItemListener(itemListener);
+        cmbProject.addItemListener(projectitemListener);
+        cmbResolution.addItemListener(itemListener);
+
+    }
+
+    private void loadAttributes() {
+       JiraTaskRepository taskRepository = jiraTask.getTaskRepository().getLookup().lookup(JiraTaskRepository.class);
+        JiraRepositoryAttributes attributes = taskRepository.getRepositoryAttributes();
+
+        cmbProject.removeAllItems();
+        List<JiraProject> projects = attributes.getProjects();
+        for (JiraProject project : projects) {
+            cmbProject.addItem(project);
+        }
+        if(false){
+        //FIXME
+        }else{
+          cmbProject.setSelectedIndex(-1);
+        }
+        cmbPriority.removeAllItems();
+        
+        JiraTaskPriorityProvider jtpp = taskRepository.getJiraTaskPriorityProvider();
+        for (TaskPriority priority : jtpp.getTaskPrioritys()) {
+            cmbPriority.addItem(priority);
+        }
+        cmbPriority.setSelectedItem(jiraTask.getPriority());
+
+        cmbStatus.removeAllItems();
+        JiraTaskStatusProvider statusProvider = taskRepository.getJiraTaskStatusProvider();
+        for (TaskStatus status : statusProvider.getStatusList()) {
+            cmbStatus.addItem(status);
+        }
+        cmbStatus.setSelectedItem(jiraTask.getStatus());
+
+        cmbType.removeAllItems();
+
+        JiraTaskTypeProvider jttp = taskRepository.getJiraTaskTypeProvider();
+        for (TaskType type : jttp.getTaskTypes()) {
+            cmbType.addItem(type);
+        }
+
+        cmbType.setSelectedItem(jiraTask.getType());
+
+        JiraTaskResolutionProvider jtrp = taskRepository.getJiraTaskResolutionProvider();
+        cmbResolution.removeAllItems();
+        for(TaskResolution resolution:jtrp.getTaskResolutiones()){
+           
+          cmbResolution.addItem(resolution);
+        }
+        //cmbResolution.setSelectedItem(jiraTask.);
+    }
+
+    private void loadProject(JiraProject project) {
+        //clear all first
+        DefaultListModel componentModel = new DefaultListModel();
+        DefaultListModel versionModel = new DefaultListModel();
+
+        if (project != null) {
+            List<Version> versions = project.getVersions();
+            for (Version version : versions) {
+                versionModel.addElement(version);
+            }
+            List<Component> components = project.getComponents();
+            for (Component component : components) {
+                componentModel.addElement(component);
+            }
+        }
+        lstFixVersion.setModel(versionModel);
+        lstAffectVersion.setModel(versionModel);
+        lstComponents.setModel(componentModel);
     }
 
     @Override
@@ -186,7 +248,6 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
         if (!jiraTask.getType().equals(cmbType.getSelectedItem())) {
             jiraTask.setType((TaskType) cmbType.getSelectedItem());
         }
-        jiraTask.setUrlString(txtUrl.getText().trim());
         jiraTask.getTaskRepository().persist(jiraTask);
         loadDates(jiraTask);
         return jiraTask;
@@ -216,19 +277,6 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
 
     }
 
-    private void showURL() {
-        try {
-            URLDisplayer.getDefault().showURL(new URL(txtUrl.getText()));
-
-        } catch (MalformedURLException ex) {
-            NotifyDescriptor d =
-                    new NotifyDescriptor.Message(NbBundle.getMessage(JiraTaskEditorUI.class,
-                    "LBL_Open_Url_Error",
-                    txtUrl.getText()), NotifyDescriptor.INFORMATION_MESSAGE);
-            DialogDisplayer.getDefault().notify(d);
-        }
-    }
-
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -243,25 +291,30 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
         txtDescription = new javax.swing.JEditorPane();
         txtOutline = new javax.swing.JTextField();
         lblDesription = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
-        UrlTools = new javax.swing.JToolBar();
-        Open =         new JButton(new AbstractAction() {
-
-            public void actionPerformed(ActionEvent evt) {
-
-                showURL();
-
-            }
-        });
+        lblAttributes = new javax.swing.JLabel();
         lblType = new javax.swing.JLabel();
-        txtUrl = new javax.swing.JTextField();
         cmbType = new javax.swing.JComboBox();
-        lblUrl = new javax.swing.JLabel();
         cmbPriority = new javax.swing.JComboBox();
         cmbStatus = new javax.swing.JComboBox();
         lblStatus = new javax.swing.JLabel();
         lblCreated = new javax.swing.JLabel();
         lblUpdated = new javax.swing.JLabel();
+        lblProject = new javax.swing.JLabel();
+        cmbProject = new javax.swing.JComboBox();
+        lblEnvironment = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtEnvironment = new javax.swing.JEditorPane();
+        lblAffects = new javax.swing.JLabel();
+        lblFixVersion = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        lstAffectVersion = new javax.swing.JList();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        lstFixVersion = new javax.swing.JList();
+        lblComponents = new javax.swing.JLabel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        lstComponents = new javax.swing.JList();
+        lblResolution = new javax.swing.JLabel();
+        cmbResolution = new javax.swing.JComboBox();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
@@ -270,30 +323,15 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
         spDescription.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         spDescription.setViewportView(txtDescription);
 
-        lblDesription.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        lblDesription.setFont(new java.awt.Font("Tahoma", 1, 11));
         lblDesription.setForeground(new java.awt.Color(51, 51, 51));
         lblDesription.setText(NbBundle.getMessage(JiraTaskEditorUI.class, "TaskEditorUI.lblDesription.text")); // NOI18N
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(102, 102, 102));
-        jLabel1.setText(NbBundle.getMessage(JiraTaskEditorUI.class, "TaskEditorUI.jLabel1.text")); // NOI18N
-
-        UrlTools.setFloatable(false);
-        UrlTools.setRollover(true);
-        UrlTools.setOpaque(false);
-
-        Open.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/cubeon/jira/web.png"))); // NOI18N
-        Open.setFocusable(false);
-        Open.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        Open.setOpaque(false);
-        Open.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        UrlTools.add(Open);
+        lblAttributes.setFont(new java.awt.Font("Tahoma", 1, 11));
+        lblAttributes.setForeground(new java.awt.Color(102, 102, 102));
+        lblAttributes.setText(NbBundle.getMessage(JiraTaskEditorUI.class, "TaskEditorUI.jLabel1.text")); // NOI18N
 
         lblType.setText(NbBundle.getMessage(JiraTaskEditorUI.class, "TaskEditorUI.lblType.text")); // NOI18N
-
-        lblUrl.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        lblUrl.setForeground(new java.awt.Color(51, 51, 51));
-        lblUrl.setText(NbBundle.getMessage(JiraTaskEditorUI.class, "TaskEditorUI.lblUrl.text")); // NOI18N
 
         lblStatus.setText(NbBundle.getMessage(JiraTaskEditorUI.class, "TaskEditorUI.lblStatus.text")); // NOI18N
 
@@ -303,52 +341,86 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
         lblUpdated.setForeground(new java.awt.Color(102, 102, 102));
         lblUpdated.setText(NbBundle.getMessage(JiraTaskEditorUI.class, "TaskEditorUI.lblUpdated.text","-")); // NOI18N
 
+        lblProject.setText(NbBundle.getMessage(JiraTaskEditorUI.class, "JiraTaskEditorUI.lblProject.text")); // NOI18N
+
+        lblEnvironment.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        lblEnvironment.setForeground(new java.awt.Color(51, 51, 51));
+        lblEnvironment.setText(NbBundle.getMessage(JiraTaskEditorUI.class, "JiraTaskEditorUI.lblEnvironment.text")); // NOI18N
+
+        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane1.setViewportView(txtEnvironment);
+
+        lblAffects.setText(NbBundle.getMessage(JiraTaskEditorUI.class, "JiraTaskEditorUI.lblAffects.text")); // NOI18N
+
+        lblFixVersion.setText(NbBundle.getMessage(JiraTaskEditorUI.class, "JiraTaskEditorUI.lblFixVersion.text")); // NOI18N
+
+        jScrollPane2.setViewportView(lstAffectVersion);
+
+        jScrollPane3.setViewportView(lstFixVersion);
+
+        lblComponents.setText(NbBundle.getMessage(JiraTaskEditorUI.class, "JiraTaskEditorUI.lblComponents.text")); // NOI18N
+
+        jScrollPane4.setViewportView(lstComponents);
+
+        lblResolution.setText(NbBundle.getMessage(JiraTaskEditorUI.class, "JiraTaskEditorUI.lblResolution.text")); // NOI18N
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+            .add(layout.createSequentialGroup()
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
                         .addContainerGap()
-                        .add(txtOutline, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 674, Short.MAX_VALUE))
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                        .add(20, 20, 20)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, txtOutline, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 727, Short.MAX_VALUE)
+                            .add(lblAttributes, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 727, Short.MAX_VALUE)))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(lblProject, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 46, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(lblType)
                             .add(lblPriority)
-                            .add(lblType))
-                        .add(28, 28, 28)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                            .add(cmbPriority, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .add(cmbType, 0, 116, Short.MAX_VALUE))
-                        .add(50, 50, 50)
-                        .add(lblStatus)
+                            .add(lblComponents))
                         .add(18, 18, 18)
-                        .add(cmbStatus, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 114, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(jLabel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 674, Short.MAX_VALUE))
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                        .addContainerGap()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                                .add(10, 10, 10)
-                                .add(txtUrl, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 633, Short.MAX_VALUE)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(UrlTools, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                            .add(lblUrl, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 674, Short.MAX_VALUE)))
+                            .add(cmbProject, 0, 168, Short.MAX_VALUE)
+                            .add(cmbType, 0, 168, Short.MAX_VALUE)
+                            .add(cmbPriority, 0, 168, Short.MAX_VALUE)
+                            .add(jScrollPane4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE))
+                        .add(8, 8, 8)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                            .add(lblAffects, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 109, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(lblFixVersion, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 109, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE)
+                            .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE))
+                        .add(13, 13, 13)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(lblResolution)
+                            .add(lblStatus, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                        .add(18, 18, 18)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(cmbStatus, 0, 133, Short.MAX_VALUE)
+                            .add(cmbResolution, 0, 133, Short.MAX_VALUE)))
                     .add(layout.createSequentialGroup()
-                        .add(10, 10, 10)
-                        .add(spDescription, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 674, Short.MAX_VALUE))
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
                         .addContainerGap()
-                        .add(lblDesription))
+                        .add(lblEnvironment, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 727, Short.MAX_VALUE))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(lblDesription, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 727, Short.MAX_VALUE))
+                    .add(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 727, Short.MAX_VALUE))
+                    .add(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(spDescription, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 727, Short.MAX_VALUE))
                     .add(layout.createSequentialGroup()
                         .add(16, 16, 16)
-                        .add(lblCreated, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 211, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                        .add(lblUpdated, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 229, Short.MAX_VALUE)
-                        .add(218, 218, 218)))
+                        .add(lblCreated, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 249, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(lblUpdated, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 466, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -358,57 +430,85 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
                 .add(txtOutline, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(lblUpdated)
-                    .add(lblCreated))
+                    .add(lblCreated)
+                    .add(lblUpdated))
                 .add(7, 7, 7)
-                .add(jLabel1)
+                .add(lblAttributes)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                            .add(lblType)
+                            .add(lblProject)
+                            .add(cmbProject, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                            .add(cmbType, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(lblType))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                            .add(cmbPriority, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(lblPriority))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(lblComponents)
+                            .add(jScrollPane4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 55, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                    .add(layout.createSequentialGroup()
+                        .add(lblAffects)
+                        .add(32, 32, 32)
+                        .add(lblFixVersion))
+                    .add(layout.createSequentialGroup()
+                        .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 45, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jScrollPane3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 45, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(layout.createSequentialGroup()
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                             .add(lblStatus)
                             .add(cmbStatus, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                        .add(lblPriority))
-                    .add(layout.createSequentialGroup()
-                        .add(cmbType, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(cmbPriority, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                .add(26, 26, 26)
-                .add(lblUrl)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createSequentialGroup()
-                        .add(11, 11, 11)
-                        .add(txtUrl, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(18, 18, 18)
-                        .add(lblDesription))
-                    .add(layout.createSequentialGroup()
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(UrlTools, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 33, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                .add(5, 5, 5)
-                .add(spDescription, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
-                .addContainerGap())
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                            .add(lblResolution)
+                            .add(cmbResolution, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 26, Short.MAX_VALUE)
+                .add(lblEnvironment)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 53, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(11, 11, 11)
+                .add(lblDesription)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(spDescription, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 165, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(52, 52, 52))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton Open;
-    private javax.swing.JToolBar UrlTools;
     private javax.swing.JComboBox cmbPriority;
+    private javax.swing.JComboBox cmbProject;
+    private javax.swing.JComboBox cmbResolution;
     private javax.swing.JComboBox cmbStatus;
     private javax.swing.JComboBox cmbType;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JLabel lblAffects;
+    private javax.swing.JLabel lblAttributes;
+    private javax.swing.JLabel lblComponents;
     private javax.swing.JLabel lblCreated;
     private javax.swing.JLabel lblDesription;
+    private javax.swing.JLabel lblEnvironment;
+    private javax.swing.JLabel lblFixVersion;
     private javax.swing.JLabel lblPriority;
+    private javax.swing.JLabel lblProject;
+    private javax.swing.JLabel lblResolution;
     private javax.swing.JLabel lblStatus;
     private javax.swing.JLabel lblType;
     private javax.swing.JLabel lblUpdated;
-    private javax.swing.JLabel lblUrl;
+    private javax.swing.JList lstAffectVersion;
+    private javax.swing.JList lstComponents;
+    private javax.swing.JList lstFixVersion;
     private javax.swing.JScrollPane spDescription;
     private javax.swing.JEditorPane txtDescription;
+    private javax.swing.JEditorPane txtEnvironment;
     private javax.swing.JTextField txtOutline;
-    private javax.swing.JTextField txtUrl;
     // End of variables declaration//GEN-END:variables
 }
