@@ -61,6 +61,7 @@ public class JiraTask implements TaskElement {
     private JiraTaskElementExtension extension;
     private boolean local;
     private JiraProject project;
+    private String  environment;
     private List<JiraProject.Component> components = new ArrayList<JiraProject.Component>(0);
     private List<JiraProject.Version> affectedVersions = new ArrayList<JiraProject.Version>(0);
     private List<JiraProject.Version> fixVersions = new ArrayList<JiraProject.Version>(0);
@@ -148,6 +149,14 @@ public class JiraTask implements TaskElement {
 
     public void setProject(JiraProject project) {
         this.project = project;
+    }
+
+    public String getEnvironment() {
+        return environment;
+    }
+
+    public void setEnvironment(String environment) {
+        this.environment = environment;
     }
 
     public boolean isCompleted() {
