@@ -83,7 +83,15 @@ public class JiraTaskElementExtension implements Extension {
         for (TaskElementChangeAdapter adapter : adapters) {
             adapter.typeChenged();
         }
-        
+
+    }
+
+    void fireResolutionChenged() {
+        Collection<? extends TaskElementChangeAdapter> adapters = lookup.lookupAll(TaskElementChangeAdapter.class);
+        for (TaskElementChangeAdapter adapter : adapters) {
+            adapter.resolutionChenged();
+        }
+
     }
 
     public Lookup getLookup() {

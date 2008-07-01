@@ -19,15 +19,21 @@ package org.netbeans.cubeon.jira.tasks;
 import java.awt.Image;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import org.netbeans.cubeon.jira.repository.JiraTaskPriorityProvider;
 import org.netbeans.cubeon.jira.repository.JiraTaskRepository;
 import org.netbeans.cubeon.jira.repository.JiraTaskStatusProvider;
 import org.netbeans.cubeon.jira.repository.JiraTaskTypeProvider;
+import org.netbeans.cubeon.jira.repository.attributes.JiraProject;
+import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Component;
+import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Version;
 import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
+import org.netbeans.cubeon.tasks.spi.task.TaskResolution;
 import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
 import org.netbeans.cubeon.tasks.spi.task.TaskType;
 import org.openide.util.Lookup;
@@ -48,11 +54,16 @@ public class JiraTask implements TaskElement {
     private TaskPriority priority = JiraTaskPriorityProvider.MAJOR;
     private TaskStatus status = JiraTaskStatusProvider.OPEN;
     private TaskType type = JiraTaskTypeProvider.BUG;
+    private TaskResolution resolution;
     private Date created;
     private Date updated;
     private TaskEditorProvider editorProvider;
     private JiraTaskElementExtension extension;
     private boolean local;
+    private JiraProject project;
+    private List<JiraProject.Component> components = new ArrayList<JiraProject.Component>(0);
+    private List<JiraProject.Version> affectedVersions = new ArrayList<JiraProject.Version>(0);
+    private List<JiraProject.Version> fixVersions = new ArrayList<JiraProject.Version>(0);
 
     public JiraTask(String id, String name, String description,
             JiraTaskRepository taskRepository) {
@@ -122,6 +133,23 @@ public class JiraTask implements TaskElement {
         extension.fireTypeChenged();
     }
 
+    public TaskResolution getResolution() {
+        return resolution;
+    }
+
+    public void setResolution(TaskResolution resolution) {
+        this.resolution = resolution;
+        extension.fireResolutionChenged();
+    }
+
+    public JiraProject getProject() {
+        return project;
+    }
+
+    public void setProject(JiraProject project) {
+        this.project = project;
+    }
+
     public boolean isCompleted() {
         return JiraTaskStatusProvider.CLOSED.equals(getStatus());
     }
@@ -185,6 +213,31 @@ public class JiraTask implements TaskElement {
         this.local = local;
     }
 
+    public List<Version> getAffectedVersions() {
+        return new ArrayList<Version>(affectedVersions);
+    }
+
+    public void setAffectedVersions(List<Version> affectedVersions) {
+        this.affectedVersions = new ArrayList<Version>(affectedVersions);
+    }
+
+    public List<Component> getComponents() {
+        return new ArrayList<Component>(components);
+    }
+
+    public void setComponents(List<Component> components) {
+        this.components = new ArrayList<Component>(components);
+    }
+
+    public List<Version> getFixVersions() {
+        return new ArrayList<Version>(fixVersions);
+    }
+
+    public void setFixVersions(List<Version> fixVersions) {
+        this.fixVersions = new ArrayList<Version>(fixVersions);
+        
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -210,6 +263,4 @@ public class JiraTask implements TaskElement {
         hash = 79 * hash + (this.taskRepository != null ? this.taskRepository.hashCode() : 0);
         return hash;
     }
-
-    
 }
