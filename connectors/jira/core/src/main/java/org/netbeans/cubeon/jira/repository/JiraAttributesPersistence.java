@@ -85,6 +85,7 @@ class JiraAttributesPersistence {
     private final JiraTaskRepository repository;
     private final FileObject baseDir;
     private static final Object LOCK = new Object();
+    private static Logger LOG = Logger.getLogger(JiraAttributesPersistence.class.getName());
 
     JiraAttributesPersistence(JiraTaskRepository jiraTaskRepository, FileObject fileObject) {
         this.repository = jiraTaskRepository;
@@ -105,10 +106,12 @@ class JiraAttributesPersistence {
 
             JiraSession session = new JiraSession(repository.getURL(),
                     repository.getUserName(), repository.getPassword());
-
+            LOG.log(Level.INFO, "requsting projects");
             RemoteProject[] projects = session.getProjects();
+            LOG.log(Level.INFO, projects.length + " projects found");
             Element projectsElement = getEmptyElement(document, attributes, TAG_PROJECTS);
             for (RemoteProject rp : projects) {
+                LOG.log(Level.INFO, "project :" + rp.getKey() + " : " + rp.getName());
                 Element project = document.createElement(TAG_PROJECT);
                 projectsElement.appendChild(project);
                 project.setAttribute(TAG_ID, rp.getKey());
@@ -124,22 +127,24 @@ class JiraAttributesPersistence {
                 types.appendChild(type);
                 type.setAttribute(TAG_ID, rit.getId());
                 }*/
-
+                LOG.log(Level.INFO, "requsting Components ");
                 RemoteComponent[] remoteComponents = session.getComponents(rp.getKey());
                 Element components = document.createElement(TAG_COMPONENTS);
                 project.appendChild(components);
                 for (RemoteComponent rc : remoteComponents) {
+                    LOG.log(Level.INFO, "component :" + rc.getName());
                     Element component = document.createElement(TAG_COMPONENT);
                     components.appendChild(component);
                     component.setAttribute(TAG_ID, rc.getId());
                     component.setAttribute(TAG_NAME, rc.getName());
                 }
 
-
+                LOG.log(Level.INFO, "requsting versions ");
                 RemoteVersion[] remoteVersions = session.getVersions(rp.getKey());
                 Element versions = document.createElement(TAG_VERSIONS);
                 project.appendChild(versions);
                 for (RemoteVersion rv : remoteVersions) {
+                    LOG.log(Level.INFO, "version :" + rv.getName());
                     Element version = document.createElement(TAG_VERSION);
                     versions.appendChild(version);
                     version.setAttribute(TAG_ID, rv.getId());
