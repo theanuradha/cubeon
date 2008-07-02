@@ -16,8 +16,9 @@
  */
 package org.netbeans.cubeon.jira.repository;
 
+import com.dolby.jira.net.soap.jira.RemoteIssue;
+import org.netbeans.cubeon.jira.tasks.JiraTask;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
-import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
 
 /**
  *
@@ -44,8 +45,6 @@ public class JiraUtils {
 
     }
 
-
-
     public static TaskPriority.PRIORITY toJiraPriority(String id) {
         int i = Integer.parseInt(id);
         switch (i) {
@@ -62,5 +61,16 @@ public class JiraUtils {
             default:
                 return null;
         }
+    }
+
+    public static RemoteIssue toRemoteIssue(JiraTask jiraTask) {
+
+        return null;
+    }
+
+    public static JiraTask toJiraTask(RemoteIssue issue) {
+
+        return null;
+
     }
 }

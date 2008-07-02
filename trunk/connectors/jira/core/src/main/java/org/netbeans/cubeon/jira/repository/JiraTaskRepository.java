@@ -16,6 +16,7 @@
  */
 package org.netbeans.cubeon.jira.repository;
 
+import com.dolby.jira.net.soap.jira.RemoteIssue;
 import java.awt.Image;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,10 +24,12 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.netbeans.cubeon.jira.remote.JiraException;
+import org.netbeans.cubeon.jira.remote.JiraSession;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject;
 import org.netbeans.cubeon.jira.tasks.JiraTask;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
+import org.netbeans.cubeon.tasks.spi.task.TaskType;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
@@ -49,8 +52,6 @@ public class JiraTaskRepository implements TaskRepository {
     private String userName;
     private String password;
     //----------------------------
-
-
     private final JiraRepositoryExtension extension;
     private final JiraAttributesPersistence attributesPersistence;    //::::::::::::::::
     private final JiraTaskPriorityProvider jtpp = new JiraTaskPriorityProvider();
@@ -115,14 +116,36 @@ public class JiraTaskRepository implements TaskRepository {
     }
 
     public TaskElement createTaskElement(String summery, String description) {
+        TaskType prefedTaskType = jttp.getPrefedTaskType();
+        JiraProject prefredProject = getPrefredProject();
+        try {
+            JiraSession session = new JiraSession(url, getUserName(), password);
+            RemoteIssue issue = new RemoteIssue();
+            issue.setSummary(summery);
+            issue.setDescription(description);
+            issue.setProject(prefredProject.getId());
+            issue.setReporter(getUserName());
+            issue.setType(prefedTaskType.getId());
+            issue = session.createTask(issue);
+
+            JiraTask jiraTask = new JiraTask(issue.getKey(), summery, description, this);
+            jiraTask.setProject(prefredProject);
+            jiraTask.setType(prefedTaskType);
+            return jiraTask;
+        } catch (JiraException ex) {
+            Logger.getLogger(JiraTaskRepository.class.getName()).log(Level.WARNING, ex.getMessage());
+        }
+
+
+
         JiraTask jiraTask = new JiraTask(handler.nextTaskId(), summery, description, this);
-        jiraTask.setProject(getPrefredProject());
+        jiraTask.setProject(prefredProject);
+        jiraTask.setType(prefedTaskType);
         return jiraTask;
     }
 
-
     public TaskElement getTaskElementById(String id) {
-        
+
         return handler.getTaskElementById(id);
     }
 
@@ -220,16 +243,13 @@ public class JiraTaskRepository implements TaskRepository {
         extension.fireStateChanged(state);
     }
 
-
-    public JiraProject getPrefredProject(){
-      List<JiraProject> projects = repositoryAttributes.getProjects();
-      if(projects.size()>0){
-       return projects.get(0);//TODO Extenalize this
-      }
-      return null;
+    public JiraProject getPrefredProject() {
+        List<JiraProject> projects = repositoryAttributes.getProjects();
+        if (projects.size() > 0) {
+            return projects.get(0);//TODO Extenalize this
+        }
+        return null;
     }
-
-
 
     @Override
     public boolean equals(Object obj) {
