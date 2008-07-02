@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.netbeans.api.progress.ProgressHandle;
+import org.netbeans.api.progress.ProgressHandleFactory;
 import org.netbeans.cubeon.jira.remote.JiraException;
 import org.netbeans.cubeon.jira.remote.JiraSession;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject;
@@ -197,8 +199,10 @@ public class JiraTaskRepository implements TaskRepository {
             public void run() {
                 try {
                     setState(State.SYNCHRONIZING);
-                    attributesPersistence.refresh();
+                    ProgressHandle handle = ProgressHandleFactory.createHandle(getName());
+                    attributesPersistence.refresh(handle);
                     loadAttributes();
+                    handle.finish();
                 } catch (JiraException ex) {
                     Logger.getLogger(JiraAttributesPersistence.class.getName()).
                             log(Level.WARNING, ex.getMessage());
