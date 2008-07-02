@@ -35,6 +35,7 @@ public class RepositoryEditAction extends AbstractAction {
     public RepositoryEditAction(TaskRepository repository) {
         this.repository = repository;
         putValue(NAME, "Properties");
+        setEnabled(repository.getState()==TaskRepository.State.ACTIVE);
     }
 
     public void actionPerformed(ActionEvent e) {
