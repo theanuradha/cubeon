@@ -24,9 +24,15 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.netbeans.cubeon.jira.repository.attributes.JiraProject;
+import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Component;
+import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Version;
 import org.netbeans.cubeon.jira.tasks.JiraTask;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
+import org.netbeans.cubeon.tasks.spi.task.TaskResolution;
 import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
 import org.netbeans.cubeon.tasks.spi.task.TaskType;
 import org.openide.filesystems.FileLock;
@@ -37,6 +43,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -46,7 +53,7 @@ import org.xml.sax.SAXException;
  */
 class TaskPersistenceHandler {
 
-    private static final String FILESYSTEM_FILE_TAG = "tasks.xml"; //NOI18N
+    private static final String FILESYSTEM_FILE_TAG = ".xml"; //NOI18N
     private static final String NAMESPACE = null;//FIXME add propper namespase
     private static final String TAG_ROOT = "tasks";
     private static final String TAG_REPOSITORY = "repository";
@@ -59,114 +66,269 @@ class TaskPersistenceHandler {
     private static final String TAG_STATUS = "status";
     private static final String TAG_URL = "url";
     private static final String TAG_TYPE = "type";
+    private static final String TAG_PROJECT = "project";
+    private static final String TAG_ENVIRONMENT = "environment";
+    private static final String TAG_RESOLUTION = "resolution";
     private static final String TAG_CREATED_DATE = "cdate";
     private static final String TAG_UPDATE_DATE = "udate";
     private static final String TAG_DESCRIPTION = "description";
+    private static final String TAG_COMPONENTS = "components";
+    private static final String TAG_AFFECT_VERSIONS = "affect_version";
+    private static final String TAG_FIX_VERSIONS = "fix_version";
+    private static final String TAG_COMPONENT = "component";
+    private static final String TAG_VERSION = "version";
+    //----------------------------------------------------
     private JiraTaskRepository jiraTaskRepository;
-    private FileObject baseDir;
+    private final FileObject baseDir;
+    private FileObject tasksFolder;
     private static final Object LOCK = new Object();
 
     TaskPersistenceHandler(JiraTaskRepository localTaskRepository, FileObject fileObject) {
         this.jiraTaskRepository = localTaskRepository;
         this.baseDir = fileObject;
-        refresh();
+
+        tasksFolder = fileObject.getFileObject("tasks");
+        if (tasksFolder == null) {
+            try {
+                tasksFolder = fileObject.createFolder("tasks");
+            } catch (IOException ex) {
+                Logger.getLogger(TaskPersistenceHandler.class.getName()).log(Level.WARNING, ex.getMessage());
+            }
+        }
+        assert tasksFolder != null;
+
+    }
+
+    TaskElement getTaskElementById(String id) {
+        Document taskDocument = getTaskDocument(id);
+        Element rootElement = getRootElement(taskDocument);
+        Element element = findElement(rootElement, TAG_TASK, NAMESPACE);
+        if (element != null) {
+            JiraTaskPriorityProvider priorityProvider = jiraTaskRepository.getJiraTaskPriorityProvider();
+            JiraTaskStatusProvider statusProvider = jiraTaskRepository.getJiraTaskStatusProvider();
+            JiraTaskTypeProvider taskTypeProvider = jiraTaskRepository.getJiraTaskTypeProvider();
+            JiraTaskResolutionProvider resolutionProvider = jiraTaskRepository.getJiraTaskResolutionProvider();
+            Calendar calendar = Calendar.getInstance(Locale.getDefault());
+
+
+            String name = element.getAttributeNS(NAMESPACE, TAG_NAME);
+            String description = element.getAttributeNS(NAMESPACE, TAG_DESCRIPTION);
+            String environment = element.getAttributeNS(NAMESPACE, TAG_ENVIRONMENT);
+            //read priority
+            String priority = element.getAttributeNS(NAMESPACE, TAG_PRIORITY);
+            TaskPriority taskPriority = priorityProvider.getTaskPriorityById(TaskPriority.PRIORITY.valueOf(priority));
+            //read status
+            String status = element.getAttributeNS(NAMESPACE, TAG_STATUS);
+            TaskStatus taskStatus = statusProvider.getTaskStatusById(status);
+            //read type
+            String type = element.getAttributeNS(NAMESPACE, TAG_TYPE);
+            TaskType taskType = taskTypeProvider.getTaskTypeById(type);
+
+            //read resolution
+            String resolution = element.getAttributeNS(NAMESPACE, TAG_RESOLUTION);
+            TaskResolution taskResolution = null;
+            if (resolution != null) {
+                taskResolution = resolutionProvider.getTaskResolutionById(resolution);
+            }
+            //read resolution
+            String projectId = element.getAttributeNS(NAMESPACE, TAG_PROJECT);
+            JiraRepositoryAttributes attributes = jiraTaskRepository.getRepositoryAttributes();
+            JiraProject project = attributes.getProjectById(projectId);
+
+            String url = element.getAttributeNS(NAMESPACE, TAG_URL);
+
+            Date createdDate = null;
+            Date updatedDate = null;
+            String created = element.getAttributeNS(NAMESPACE, TAG_CREATED_DATE);
+            if (created != null && created.trim().length() != 0) {
+
+                calendar.setTimeInMillis(Long.parseLong(created));
+                createdDate = calendar.getTime();
+
+            }
+
+            //load versions
+
+            Element versionsElement = findElement(element, TAG_FIX_VERSIONS, NAMESPACE);
+            NodeList versionsNodeList = versionsElement.getElementsByTagNameNS(NAMESPACE, TAG_VERSION);
+            List<JiraProject.Version> fixVersions = new ArrayList<Version>();
+
+            for (int i = 0; i < versionsNodeList.getLength(); i++) {
+                Node node = versionsNodeList.item(i);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element e=(Element) node;
+                   
+                    Version version = project.getVersionById(e.getTextContent());
+                    if (version != null) {
+                        fixVersions.add(version);
+                    }
+                }
+            }
+
+
+
+            versionsElement = findElement(element, TAG_AFFECT_VERSIONS, NAMESPACE);
+            versionsNodeList = versionsElement.getElementsByTagNameNS(NAMESPACE, TAG_VERSION);
+            List<JiraProject.Version> affectversions = new ArrayList<Version>();
+
+            for (int i = 0; i < versionsNodeList.getLength(); i++) {
+                Node node = versionsNodeList.item(i);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element e=(Element) node;
+                    Version version = project.getVersionById(e.getTextContent());
+                    if (version != null) {
+                        affectversions.add(version);
+                    }
+                }
+            }
+
+
+            //load components
+            Element componentsElement = findElement(element, TAG_COMPONENTS, NAMESPACE);
+            NodeList componentsNodeList = componentsElement.getElementsByTagNameNS(NAMESPACE, TAG_COMPONENT);
+            List<JiraProject.Component> components = new ArrayList<Component>();
+
+            for (int i = 0; i < componentsNodeList.getLength(); i++) {
+                Node node = componentsNodeList.item(i);
+                 if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element e=(Element) node;
+                    Component component = project.getComponentById(e.getTextContent());
+                    if (component != null) {
+                        components.add(component);
+                    }
+                }
+            }
+
+
+
+
+
+
+            JiraTask jiraTask = new JiraTask(id, name, description, jiraTaskRepository);
+            jiraTask.setProject(project);
+            jiraTask.setEnvironment(environment);
+            jiraTask.setPriority(taskPriority);
+            jiraTask.setStatus(taskStatus);
+            jiraTask.setType(taskType);
+            jiraTask.setResolution(taskResolution);
+            jiraTask.setUrlString(url);
+            jiraTask.setCreated(createdDate);
+            jiraTask.setUpdated(updatedDate);
+            jiraTask.setUpdated(updatedDate);
+            jiraTask.setComponents(components);
+            jiraTask.setAffectedVersions(affectversions);
+            jiraTask.setFixVersions(fixVersions);
+
+            return jiraTask;
+
+        }
+        return null;
     }
 
     void vaidate(TaskElement element) {
         //do validations changes here
     }
 
-    void addTaskElement(JiraTask jiraTask) {
+    void persist(JiraTask task) {
         synchronized (LOCK) {
-
-
-            Document document = getDocument();
+            //create task xml
+            Document document = getTaskDocument(task.getId());
             Element root = getRootElement(document);
-            Element tasksElement = findElement(root, TAG_TASKS, NAMESPACE);
+            Element taskElement = findElement(root, TAG_TASK, NAMESPACE);
             //check tasksElement null and create element
-            if (tasksElement == null) {
-                tasksElement = document.createElementNS(NAMESPACE, TAG_TASKS);
-                root.appendChild(tasksElement);
-            }
-            Element taskElement = null;
-
-            if (jiraTaskRepository.getTaskElementById(jiraTask.getId()) != null) {
-                NodeList taskNodes =
-                        tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_TASK);
-
-                for (int i = 0; i < taskNodes.getLength(); i++) {
-                    Node node = taskNodes.item(i);
-                    if (node.getNodeType() == Node.ELEMENT_NODE) {
-                        Element element = (Element) node;
-                        String id = element.getAttributeNS(NAMESPACE, TAG_ID);
-                        if (jiraTask.getId().equals(id)) {
-                            taskElement = element;
-                            break;
-                        }
-                    }
-                }
-            }
             if (taskElement == null) {
                 taskElement = document.createElementNS(NAMESPACE, TAG_TASK);
-                tasksElement.appendChild(taskElement);
-                taskElement.setAttributeNS(NAMESPACE, TAG_ID, jiraTask.getId());
+                root.appendChild(taskElement);
             }
 
-            taskElement.setAttributeNS(NAMESPACE, TAG_NAME, jiraTask.getName());
-            taskElement.setAttributeNS(NAMESPACE, TAG_DESCRIPTION, jiraTask.getDescription());
-            taskElement.setAttributeNS(NAMESPACE, TAG_REPOSITORY, jiraTask.getTaskRepository().getId());
-            taskElement.setAttributeNS(NAMESPACE, TAG_PRIORITY, jiraTask.getPriority().getId().toString());
-            taskElement.setAttributeNS(NAMESPACE, TAG_STATUS, jiraTask.getStatus().getId());
-            taskElement.setAttributeNS(NAMESPACE, TAG_TYPE, jiraTask.getType().getId());
-            if (jiraTask.getUrlString() != null) {
-                taskElement.setAttributeNS(NAMESPACE, TAG_URL, jiraTask.getUrlString());
+            taskElement.setAttributeNS(NAMESPACE, TAG_ID, task.getId());
+            taskElement.setAttributeNS(NAMESPACE, TAG_NAME, task.getName());
+            taskElement.setAttributeNS(NAMESPACE, TAG_DESCRIPTION, task.getDescription());
+            taskElement.setAttributeNS(NAMESPACE, TAG_REPOSITORY, task.getTaskRepository().getId());
+            taskElement.setAttributeNS(NAMESPACE, TAG_PRIORITY, task.getPriority().getId().toString());
+            taskElement.setAttributeNS(NAMESPACE, TAG_STATUS, task.getStatus().getId());
+            taskElement.setAttributeNS(NAMESPACE, TAG_TYPE, task.getType().getId());
+            taskElement.setAttributeNS(NAMESPACE, TAG_PROJECT, task.getProject().getId());
+
+            if (task.getEnvironment() != null) {
+                taskElement.setAttributeNS(NAMESPACE, TAG_ENVIRONMENT, task.getEnvironment());
             }
+
+            Element componentsElement = getEmptyElement(document, taskElement, TAG_COMPONENTS);
+            List<Component> components = task.getComponents();
+            for (Component component : components) {
+                Text text = document.createTextNode(component.getId());
+                Element element = document.createElement(TAG_COMPONENT);
+                element.appendChild(text);
+                componentsElement.appendChild(element);
+            }
+
+            List<Version> affectedVersions = task.getAffectedVersions();
+            Element affectsVersion = getEmptyElement(document, taskElement, TAG_AFFECT_VERSIONS);
+            for (Version version : affectedVersions) {
+                Text text = document.createTextNode(version.getId());
+                Element element = document.createElement(TAG_VERSION);
+                element.appendChild(text);
+                affectsVersion.appendChild(element);
+            }
+
+            List<Version> fixversions = task.getFixVersions();
+            Element fixVersions = getEmptyElement(document, taskElement, TAG_FIX_VERSIONS);
+            for (Version version : fixversions) {
+                Text text = document.createTextNode(version.getId());
+                Element element = document.createElement(TAG_VERSION);
+                element.appendChild(text);
+                fixVersions.appendChild(element);
+            }
+
+
+            if (task.getResolution() != null) {
+                taskElement.setAttributeNS(NAMESPACE, TAG_RESOLUTION, task.getResolution().getId());
+            }
+
+            if (task.getUrlString() != null) {
+                taskElement.setAttributeNS(NAMESPACE, TAG_URL, task.getUrlString());
+            }
+
             Date now = new Date();
 
-            if (jiraTask.getCreated() == null) {
-                jiraTask.setCreated(now);
+            if (task.getCreated() == null) {
+                task.setCreated(now);
             } else {
-                jiraTask.setUpdated(now);
+                task.setUpdated(now);
             }
 
-            taskElement.setAttributeNS(NAMESPACE, TAG_CREATED_DATE, String.valueOf(jiraTask.getCreated().getTime()));
-            if (jiraTask.getUpdated() != null) {
-                taskElement.setAttributeNS(NAMESPACE, TAG_UPDATE_DATE, String.valueOf(jiraTask.getUpdated().getTime()));
+            taskElement.setAttributeNS(NAMESPACE, TAG_CREATED_DATE, String.valueOf(task.getCreated().getTime()));
+            if (task.getUpdated() != null) {
+                taskElement.setAttributeNS(NAMESPACE, TAG_UPDATE_DATE, String.valueOf(task.getUpdated().getTime()));
             }
 
-            save(document);
 
+            saveTask(document, task.getId());
         }
+    }
+
+    private Element getEmptyElement(Document document, Element root, String tag) {
+        Element taskpriorities = findElement(root, tag, NAMESPACE);
+        if (taskpriorities != null) {
+            root.removeChild(taskpriorities);
+        }
+        taskpriorities = document.createElementNS(NAMESPACE, tag);
+        root.appendChild(taskpriorities);
+        return taskpriorities;
+
     }
 
     void removeTaskElement(TaskElement te) {
         synchronized (LOCK) {
-
-            Document document = getDocument();
-            Element root = getRootElement(document);
-            Element tasksElement = findElement(root, TAG_TASKS, NAMESPACE);
-            Element taskElement = null;
-
-            NodeList taskNodes =
-                    tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_TASK);
-
-            for (int i = 0; i < taskNodes.getLength(); i++) {
-                Node node = taskNodes.item(i);
-                if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    Element element = (Element) node;
-                    String id = element.getAttributeNS(NAMESPACE, TAG_ID);
-                    if (te.getId().equals(id)) {
-                        taskElement = element;
-                        break;
-                    }
+            FileObject taskFo = tasksFolder.getFileObject(te.getId() + ".xml");
+            if (taskFo != null) {
+                try {
+                    taskFo.delete();
+                } catch (IOException ex) {
+                    Logger.getLogger(TaskPersistenceHandler.class.getName()).log(Level.WARNING, ex.getMessage());
                 }
             }
-            assert taskElement != null;
-
-            tasksElement.removeChild(taskElement);
-
-            save(document);
-
         }
     }
 
@@ -192,76 +354,40 @@ class TaskPersistenceHandler {
 
     }
 
-    void refresh() {
-        synchronized (LOCK) {
-
-
-            Document document = getDocument();
-            Element root = getRootElement(document);
-            Element tasksElement = findElement(root, TAG_TASKS, NAMESPACE);
-
-            if (tasksElement != null) {
-                List<JiraTask> taskElements = new ArrayList<JiraTask>();
-                NodeList taskNodes =
-                        tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_TASK);
-                JiraTaskPriorityProvider priorityProvider = jiraTaskRepository.getJiraTaskPriorityProvider();
-                JiraTaskStatusProvider statusProvider = jiraTaskRepository.getJiraTaskStatusProvider();
-                JiraTaskTypeProvider localTaskTypeProvider = jiraTaskRepository.getJiraTaskTypeProvider();
-                Calendar calendar = Calendar.getInstance(Locale.getDefault());
-                for (int i = 0; i < taskNodes.getLength(); i++) {
-                    Node node = taskNodes.item(i);
-                    if (node.getNodeType() == Node.ELEMENT_NODE) {
-                        Element element = (Element) node;
-                        String id = element.getAttributeNS(NAMESPACE, TAG_ID);
-                        String name = element.getAttributeNS(NAMESPACE, TAG_NAME);
-                        String description = element.getAttributeNS(NAMESPACE, TAG_DESCRIPTION);
-                        //read priority
-                        String priority = element.getAttributeNS(NAMESPACE, TAG_PRIORITY);
-                        TaskPriority taskPriority = priorityProvider.getTaskPriorityById(TaskPriority.PRIORITY.valueOf(priority));
-                        //read status
-                        String status = element.getAttributeNS(NAMESPACE, TAG_STATUS);
-                        TaskStatus taskStatus = statusProvider.getTaskStatusById(status);
-                        //read type
-                        String type = element.getAttributeNS(NAMESPACE, TAG_TYPE);
-                        TaskType taskType = localTaskTypeProvider.getTaskTypeById(type);
-
-                        String url = element.getAttributeNS(NAMESPACE, TAG_URL);
-
-                        Date createdDate = null;
-                        Date updatedDate = null;
-                        String created = element.getAttributeNS(NAMESPACE, TAG_CREATED_DATE);
-                        if (created != null && created.trim().length() != 0) {
-
-                            calendar.setTimeInMillis(Long.parseLong(created));
-                            createdDate = calendar.getTime();
-                        } else {
-                            createdDate = new Date();
-                        }
-                        String updated = element.getAttributeNS(NAMESPACE, TAG_UPDATE_DATE);
-                        if (updated != null && updated.trim().length() != 0) {
-                            calendar.setTimeInMillis(Long.parseLong(updated));
-                            updatedDate = calendar.getTime();
-                        }
-
-                        JiraTask taskElement = new JiraTask(id, name, description, jiraTaskRepository);
-                        taskElement.setPriority(taskPriority);
-                        taskElement.setStatus(taskStatus);
-                        taskElement.setType(taskType);
-                        taskElement.setUrlString(url);
-                        taskElement.setCreated(createdDate);
-                        taskElement.setUpdated(updatedDate);
-                        taskElements.add(taskElement);
-
-                    }
-                }
-                jiraTaskRepository.setTaskElements(taskElements);
-            }
-
-        }
-    }
-
     private Document getDocument() {
         final FileObject config = baseDir.getFileObject(FILESYSTEM_FILE_TAG);
+        Document doc = null;
+        if (config != null) {
+            InputStream in = null;
+            try {
+                in = config.getInputStream();
+                doc = XMLUtil.parse(new InputSource(in), false, true, null, null);
+
+            } catch (SAXException ex) {
+                Exceptions.printStackTrace(ex);
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            } finally {
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException ex) {
+                        Exceptions.printStackTrace(ex);
+                    }
+                }
+            }
+
+
+
+        } else {
+            doc = XMLUtil.createDocument(TAG_ROOT, NAMESPACE, null, null);
+
+        }
+        return doc;
+    }
+
+    private Document getTaskDocument(String tag) {
+        final FileObject config = tasksFolder.getFileObject(tag + ".xml");
         Document doc = null;
         if (config != null) {
             InputStream in = null;
@@ -310,6 +436,37 @@ class TaskPersistenceHandler {
             if (config == null) {
 
                 config = baseDir.createData(FILESYSTEM_FILE_TAG);
+            }
+            lck = config.lock();
+            out = config.getOutputStream(lck);
+            XMLUtil.write(doc, out, "UTF-8"); //NOI18N
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        } finally {
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
+            }
+            if (lck != null) {
+                lck.releaseLock();
+            }
+        }
+
+    }
+
+    private void saveTask(Document doc, String tag) {
+
+        FileObject config = tasksFolder.getFileObject(tag + ".xml");
+
+        FileLock lck = null;
+        OutputStream out = null;
+        try {
+            if (config == null) {
+
+                config = tasksFolder.createData(tag + ".xml");
             }
             lck = config.lock();
             out = config.getOutputStream(lck);
