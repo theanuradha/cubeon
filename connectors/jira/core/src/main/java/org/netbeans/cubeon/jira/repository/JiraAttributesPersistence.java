@@ -35,6 +35,7 @@ import org.netbeans.cubeon.jira.remote.JiraException;
 import org.netbeans.cubeon.jira.remote.JiraSession;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject;
 import org.netbeans.cubeon.tasks.spi.task.TaskResolution;
+import org.netbeans.cubeon.tasks.spi.task.TaskType;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
@@ -110,7 +111,7 @@ class JiraAttributesPersistence {
             for (RemoteProject rp : projects) {
                 Element project = document.createElement(TAG_PROJECT);
                 projectsElement.appendChild(project);
-                project.setAttribute(TAG_ID, rp.getId());
+                project.setAttribute(TAG_ID, rp.getKey());
                 project.setAttribute(TAG_NAME, rp.getName());
                 project.setAttribute(TAG_DESCRIPTION, rp.getDescription());
                 project.setAttribute(TAG_LEAD, rp.getLead());
@@ -321,24 +322,26 @@ class JiraAttributesPersistence {
                 }
                 }
                 repository.getJiraTaskPriorityProvider().setPrioritys(prioriiesList);
+                 **/
                 //-----------------------------------------
                 Element taskTypes = findElement(attributes, TAG_TYPES, NAMESPACE);
                 NodeList taskTypeNodes = taskTypes.getChildNodes();
                 List<TaskType> types = new ArrayList<TaskType>();
                 for (int i = 0; i < taskTypeNodes.getLength(); i++) {
 
-                Node node = taskTypeNodes.item(i);
-                if (node.getNodeType() == Node.ELEMENT_NODE) {
-                Element element = (Element) node;
-                String id = element.getAttribute(TAG_ID);
-                String name = element.getAttribute(TAG_NAME);
+                    Node node = taskTypeNodes.item(i);
+                    if (node.getNodeType() == Node.ELEMENT_NODE) {
+                        Element element = (Element) node;
+                        String id = element.getAttribute(TAG_ID);
+                        String name = element.getAttribute(TAG_NAME);
 
-                types.add(new TaskType(id, name));
+                        types.add(new TaskType(id, name));
 
-                }
+                    }
                 }
                 repository.getJiraTaskTypeProvider().setTaskTypes(types);
                 //-----------------------------------------
+                /*
                 Element taskStatuses = findElement(attributes, TAG_STATUSES, NAMESPACE);
                 NodeList taskStatusNodes = taskStatuses.getChildNodes();
                 List<TaskStatus> statuses = new ArrayList<TaskStatus>();

@@ -29,17 +29,9 @@ import org.netbeans.cubeon.tasks.spi.repository.TaskTypeProvider;
  */
 public class JiraTaskTypeProvider implements TaskTypeProvider {
 
-    public  static final TaskType BUG = new TaskType("bug", "Bug");
-    public static final TaskType IMPROVEMENT = new TaskType("improvement", "Improvement");
-    public static final TaskType FEATURE = new TaskType("new_feature", "New Feature");
-    public static final TaskType TASK = new TaskType("task", "Task");
-    public List<TaskType> taskTypes = new ArrayList<TaskType>();
+    public List<TaskType> taskTypes = new ArrayList<TaskType>(0);
 
     public JiraTaskTypeProvider() {
-        taskTypes.add(BUG);
-        taskTypes.add(IMPROVEMENT);
-        taskTypes.add(FEATURE);
-        taskTypes.add(TASK);
     }
 
     public List<TaskType> getTaskTypes() {
@@ -54,7 +46,14 @@ public class JiraTaskTypeProvider implements TaskTypeProvider {
             }
         }
 
-        return BUG;
+        return null;
+    }
+
+    public TaskType getPrefedTaskType() {
+        if (!taskTypes.isEmpty()) {
+            return taskTypes.get(0);
+        }
+        return null;
     }
 
     public void setTaskTypes(List<TaskType> taskTypes) {
@@ -63,13 +62,13 @@ public class JiraTaskTypeProvider implements TaskTypeProvider {
 
     public TaskType getTaskType(TaskElement element) {
         JiraTask jiraTask = element.getLookup().lookup(JiraTask.class);
-        assert jiraTask!=null;
+        assert jiraTask != null;
         return jiraTask.getType();
     }
 
     public void setTaskType(TaskElement element, TaskType taskType) {
         JiraTask jiraTask = element.getLookup().lookup(JiraTask.class);
-        assert jiraTask!=null;
-         jiraTask.setType(taskType);
+        assert jiraTask != null;
+        jiraTask.setType(taskType);
     }
 }

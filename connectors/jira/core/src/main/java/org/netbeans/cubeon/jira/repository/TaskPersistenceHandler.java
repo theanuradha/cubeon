@@ -53,7 +53,7 @@ import org.xml.sax.SAXException;
  */
 class TaskPersistenceHandler {
 
-    private static final String FILESYSTEM_FILE_TAG = ".xml"; //NOI18N
+    private static final String FILESYSTEM_FILE_TAG = "repository.xml"; //NOI18N
     private static final String NAMESPACE = null;//FIXME add propper namespase
     private static final String TAG_ROOT = "tasks";
     private static final String TAG_REPOSITORY = "repository";

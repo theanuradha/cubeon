@@ -124,27 +124,15 @@ public class JiraSession {
         }
     }
 
-    public void createTask(RemoteIssue issue) throws JiraException {
+    public RemoteIssue createTask(RemoteIssue issue) throws JiraException {
         try {
-            service.createIssue(token, issue);
+          return   service.createIssue(token, issue);
         } catch (Exception ex) {
             throw new JiraException(ex);
         }
     }
 
-    public RemoteIssue createIssue(String summary, String description) throws JiraException {
-        RemoteIssue issue = new RemoteIssue();
-        issue.setSummary(summary);
-        issue.setDescription(description);
-        try {
-
-            return service.createIssue(token, issue);
-        } catch (Exception ex) {
-            throw new JiraException(ex);
-        }
-
-    }
-
+ 
     public RemoteVersion[] getVersions(String projectID) throws JiraException {
         try {
             return service.getVersions(token, projectID);
