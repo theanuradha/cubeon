@@ -42,6 +42,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import org.netbeans.cubeon.jira.repository.JiraRepositoryAttributes;
 import org.netbeans.cubeon.jira.repository.JiraTaskPriorityProvider;
 import org.netbeans.cubeon.jira.repository.JiraTaskRepository;
@@ -104,7 +106,7 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
         };
         txtOutline.getDocument().addDocumentListener(documentListener);
         txtDescription.getDocument().addDocumentListener(documentListener);
-
+        txtEnvironment.getDocument().addDocumentListener(documentListener);
 
         ItemListener itemListener = new ItemListener() {
 
@@ -133,6 +135,19 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
                 }
             }
         };
+
+        ListSelectionListener listSelectionListener = new ListSelectionListener() {
+
+            public void valueChanged(ListSelectionEvent e) {
+
+                EventQueue.invokeLater(new Runnable() {
+
+                    public void run() {
+                        fireChangeEvent();
+                    }
+                });
+            }
+        };
         cmbPriority.addItemListener(itemListener);
         cmbStatus.addItemListener(itemListener);
         cmbType.addItemListener(itemListener);
@@ -140,6 +155,10 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
         cmbProject.addItemListener(projectitemListener);
         cmbResolution.addItemListener(itemListener);
 
+
+        lstAffectVersion.getSelectionModel().addListSelectionListener(listSelectionListener);
+        lstFixVersion.getSelectionModel().addListSelectionListener(listSelectionListener);
+        lstComponents.getSelectionModel().addListSelectionListener(listSelectionListener);
     }
 
     private void loadAttributes() {

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.netbeans.cubeon.jira.remote.JiraException;
+import org.netbeans.cubeon.jira.repository.attributes.JiraProject;
 import org.netbeans.cubeon.jira.tasks.JiraTask;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
@@ -48,7 +49,8 @@ public class JiraTaskRepository implements TaskRepository {
     private String userName;
     private String password;
     //----------------------------
-    private List<JiraTask> taskElements = new ArrayList<JiraTask>();
+
+
     private final JiraRepositoryExtension extension;
     private final JiraAttributesPersistence attributesPersistence;    //::::::::::::::::
     private final JiraTaskPriorityProvider jtpp = new JiraTaskPriorityProvider();
@@ -113,29 +115,21 @@ public class JiraTaskRepository implements TaskRepository {
     }
 
     public TaskElement createTaskElement(String summery, String description) {
-        return new JiraTask(handler.nextTaskId(), summery, description, this);
+        JiraTask jiraTask = new JiraTask(handler.nextTaskId(), summery, description, this);
+        jiraTask.setProject(getPrefredProject());
+        return jiraTask;
     }
 
-    public List<TaskElement> getTaskElements() {
-        return new ArrayList<TaskElement>(taskElements);
-    }
 
     public TaskElement getTaskElementById(String id) {
-        for (JiraTask jt : taskElements) {
-            if (jt.getId().equals(id)) {
-                return jt;
-            }
-        }
-        return null;
+        
+        return handler.getTaskElementById(id);
     }
 
     public void persist(TaskElement element) {
         JiraTask jiraTask = element.getLookup().lookup(JiraTask.class);
         assert jiraTask != null;
-        handler.addTaskElement(jiraTask);
-        if (!taskElements.contains(element)) {
-            taskElements.add(jiraTask);
-        }
+        handler.persist(jiraTask);
     }
 
     public void reset(TaskElement element) {
@@ -226,9 +220,16 @@ public class JiraTaskRepository implements TaskRepository {
         extension.fireStateChanged(state);
     }
 
-    void setTaskElements(List<JiraTask> taskElements) {
-        this.taskElements = new ArrayList<JiraTask>(taskElements);
+
+    public JiraProject getPrefredProject(){
+      List<JiraProject> projects = repositoryAttributes.getProjects();
+      if(projects.size()>0){
+       return projects.get(0);//TODO Extenalize this
+      }
+      return null;
     }
+
+
 
     @Override
     public boolean equals(Object obj) {

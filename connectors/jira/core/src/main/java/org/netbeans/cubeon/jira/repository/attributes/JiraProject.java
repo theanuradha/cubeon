@@ -67,13 +67,29 @@ public class JiraProject {
     public void setComponents(List<Component> components) {
         this.components = new ArrayList<Component>(components);
     }
-
+    public Component getComponentById(String id) {
+        for (Component component : components) {
+            if (component.getId().equals(id)) {
+                return component;
+            }
+        }
+        return null;
+    }
     public List<Version> getVersions() {
         return new ArrayList<Version>(versions);
     }
 
     public void setVersions(List<Version> versions) {
         this.versions = new ArrayList<Version>(versions);
+    }
+
+    public Version getVersionById(String id) {
+        for (Version version : versions) {
+            if (version.getId().equals(id)) {
+                return version;
+            }
+        }
+        return null;
     }
 
     public static class Version {

@@ -75,11 +75,6 @@ public interface TaskRepository {
      */
     public TaskElement createTaskElement(String summery, String description);
 
-    /**
-     * 
-     * @return
-     */
-    List<TaskElement> getTaskElements();
 
     /**
      * 
