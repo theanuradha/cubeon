@@ -85,7 +85,7 @@ class JiraAttributesPersistence {
     private static final String TAG_VOTING = "voting";
     private final JiraTaskRepository repository;
     private final FileObject baseDir;
-    private static final Object LOCK = new Object();
+    private final Object LOCK = new Object();
     private static Logger LOG = Logger.getLogger(JiraAttributesPersistence.class.getName());
 
     JiraAttributesPersistence(JiraTaskRepository jiraTaskRepository, FileObject fileObject) {
