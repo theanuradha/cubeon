@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.cubeon.jira.remote.JiraException;
 import org.netbeans.cubeon.jira.remote.JiraSession;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject;
@@ -92,7 +93,8 @@ class JiraAttributesPersistence {
         this.baseDir = fileObject;
     }
 
-    void refresh() throws JiraException {
+    void refresh(ProgressHandle progressHandle) throws JiraException {
+
         synchronized (LOCK) {
 
             Document document = getDocument(true);
@@ -103,15 +105,21 @@ class JiraAttributesPersistence {
                 attributes = document.createElement(TAG_ROOT);
                 root.appendChild(attributes);
             }
-
+            progressHandle.start();
+            progressHandle.switchToIndeterminate();
             JiraSession session = new JiraSession(repository.getURL(),
                     repository.getUserName(), repository.getPassword());
+
             LOG.log(Level.INFO, "requsting projects");
+            progressHandle.progress("Requsting Projects Information");
+            
             RemoteProject[] projects = session.getProjects();
             LOG.log(Level.INFO, projects.length + " projects found");
+            progressHandle.progress(projects.length + " Projects found");
             Element projectsElement = getEmptyElement(document, attributes, TAG_PROJECTS);
             for (RemoteProject rp : projects) {
                 LOG.log(Level.INFO, "project :" + rp.getKey() + " : " + rp.getName());
+                progressHandle.progress("Project :" +rp.getName()+ " : " + rp.getName());
                 Element project = document.createElement(TAG_PROJECT);
                 projectsElement.appendChild(project);
                 project.setAttribute(TAG_ID, rp.getKey());
