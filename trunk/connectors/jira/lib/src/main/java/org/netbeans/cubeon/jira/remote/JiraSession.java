@@ -21,6 +21,7 @@ import com.dolby.jira.net.soap.jira.JiraSoapServiceServiceLocator;
 import com.dolby.jira.net.soap.jira.RemoteAuthenticationException;
 import com.dolby.jira.net.soap.jira.RemoteComponent;
 import com.dolby.jira.net.soap.jira.RemoteConfiguration;
+import com.dolby.jira.net.soap.jira.RemoteFieldValue;
 import com.dolby.jira.net.soap.jira.RemoteIssue;
 import com.dolby.jira.net.soap.jira.RemoteIssueType;
 import com.dolby.jira.net.soap.jira.RemotePriority;
@@ -132,13 +133,15 @@ public class JiraSession {
         }
     }
 
-    public RemoteIssue updateTask(RemoteIssue issue) throws JiraException {
+    public RemoteIssue updateTask(String id,RemoteFieldValue [] fieldValues) throws JiraException {
         try {
-            // return service.updateIssue(token, issue);
+            
+
+           return service.updateIssue(token, id,fieldValues);
         } catch (Exception ex) {
             throw new JiraException(ex);
         }
-        return null;
+        
     }
 
     public RemoteIssue getIssue(String id) throws JiraException {

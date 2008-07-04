@@ -102,7 +102,7 @@ class TaskPersistenceHandler {
 
     }
 
-    TaskElement getTaskElementById(String id) {
+    JiraTask getTaskElementById(String id) {
         Document taskDocument = getTaskDocument(id);
         Element rootElement = getRootElement(taskDocument);
         Element element = findElement(rootElement, TAG_TASK, NAMESPACE);

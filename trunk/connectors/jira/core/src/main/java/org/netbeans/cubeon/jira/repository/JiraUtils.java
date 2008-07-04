@@ -16,7 +16,10 @@
  */
 package org.netbeans.cubeon.jira.repository;
 
+import com.dolby.jira.net.soap.jira.RemoteFieldValue;
 import com.dolby.jira.net.soap.jira.RemoteIssue;
+import java.util.ArrayList;
+import java.util.List;
 import org.netbeans.cubeon.jira.tasks.JiraTask;
 
 /**
@@ -25,5 +28,19 @@ import org.netbeans.cubeon.jira.tasks.JiraTask;
  */
 public class JiraUtils {
 
+    public static RemoteFieldValue[] changedFieldValues(RemoteIssue issue,JiraTask task) {
+        List<RemoteFieldValue> fieldValues = new ArrayList<RemoteFieldValue>();
+        String description = task.getDescription();
+        if(!issue.getDescription().equals(description)){
+           fieldValues.add(new RemoteFieldValue("description", new String[]{description}));
+        }
 
+        String environment = task.getEnvironment();
+        if(!issue.getEnvironment().equals(environment)){
+           fieldValues.add(new RemoteFieldValue("environment", new String[]{environment}));
+        }
+
+
+        return fieldValues.toArray(new RemoteFieldValue[fieldValues.size()]);
+    }
 }
