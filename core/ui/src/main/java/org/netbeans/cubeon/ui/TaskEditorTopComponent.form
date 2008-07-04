@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.4" maxVersion="1.6" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+  <NonVisualComponents>
+    <Component class="javax.swing.JSeparator" name="separator">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+      </AuxValues>
+    </Component>
+  </NonVisualComponents>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="1"/>
     <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
@@ -31,9 +39,20 @@
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
       <SubComponents>
         <Container class="javax.swing.JPanel" name="header">
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="        new JPanel() {&#xd;&#xa;&#xd;&#xa;            private int count;&#xd;&#xa;&#xd;&#xa;            /**&#xd;&#xa;             * Paints a gradient in the background of this component&#xd;&#xa;             */&#xd;&#xa;            @Override&#xd;&#xa;            protected void paintComponent(Graphics g) {&#xd;&#xa;                int i = count++;&#xd;&#xa;                Graphics2D g2 = (Graphics2D) g;&#xd;&#xa;&#xd;&#xa;                g2.setPaint(GRADIENT_HEADER_LARGE);&#xd;&#xa;                g2.fillRect(0, 0, getWidth(), getHeight());&#xd;&#xa;                &#xd;&#xa;&#xd;&#xa;                RenderingHints oldHints = g2.getRenderingHints();&#xd;&#xa;                g2.setRenderingHints(hints);&#xd;&#xa;&#xd;&#xa;                float width = getWidth();&#xd;&#xa;                float height = getHeight();&#xd;&#xa;&#xd;&#xa;                g2.translate(0, -30);&#xd;&#xa;                &#xd;&#xa;                PaintUtils.drawCurve(g2,&#xd;&#xa;                20.0f, -10.0f, 20.0f, -10.0f,&#xd;&#xa;                width / 2.0f - 40.0f, 10.0f,&#xd;&#xa;                0.0f, -5.0f,&#xd;&#xa;                width / 2.0f + 40, 1.0f,&#xd;&#xa;                0.0f, 5.0f,&#xd;&#xa;                50.0f, 5.0f, false,i,width,start,end );&#xd;&#xa;                &#xd;&#xa;                g2.translate(0, 30);&#xd;&#xa;                g2.translate(0, height - 60);&#xd;&#xa;                &#xd;&#xa;                PaintUtils.drawCurve(g2,&#xd;&#xa;                        30.0f, -15.0f, 50.0f, 15.0f,&#xd;&#xa;                        width / 2.0f - 40.0f, 1.0f,&#xd;&#xa;                        15.0f, -25.0f,&#xd;&#xa;                        width / 2.0f, 1.0f / 2.0f,&#xd;&#xa;                        0.0f, 25.0f,&#xd;&#xa;                        15.0f, 9.0f, false, i, width, start, end);&#xd;&#xa;&#xd;&#xa;                g2.translate(0, -height + 60);&#xd;&#xa;&#xd;&#xa;                PaintUtils.drawCurve(g2,&#xd;&#xa;                        height - 35.0f, -5.0f, height - 50.0f, 10.0f,&#xd;&#xa;                        width / 2.0f - 40.0f, 1.0f,&#xd;&#xa;                        height - 35.0f, -25.0f,&#xd;&#xa;                        width / 2.0f, 1.0f / 2.0f,&#xd;&#xa;                        height - 20.0f, 25.0f,&#xd;&#xa;                        25.0f, 7.0f, true, i, width, start, end);&#xd;&#xa;&#xd;&#xa;                g2.setRenderingHints(oldHints);&#xd;&#xa;            }&#xd;&#xa;        };"/>
-          </AuxValues>
+          <Properties>
+            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="ff" green="ff" red="ff" type="rgb"/>
+            </Property>
+            <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[32767, 25]"/>
+            </Property>
+            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[0, 25]"/>
+            </Property>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[0, 25]"/>
+            </Property>
+          </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
               <BorderConstraints direction="North"/>
@@ -43,35 +62,23 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="separator" alignment="1" pref="711" max="32767" attributes="0"/>
                   <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                      <Component id="lblHeader" pref="508" max="32767" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="lblHeader" pref="485" max="32767" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="jToolBar1" min="-2" pref="188" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="1" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jToolBar1" pref="28" max="32767" attributes="0"/>
-                          <Component id="lblHeader" alignment="1" pref="28" max="32767" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="separator" min="-2" max="-2" attributes="0"/>
-                  </Group>
+                  <Component id="lblHeader" alignment="0" pref="34" max="32767" attributes="0"/>
+                  <Component id="jToolBar1" alignment="0" pref="34" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>
           <SubComponents>
-            <Component class="javax.swing.JSeparator" name="separator">
-              <AuxValues>
-                <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
-                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
-              </AuxValues>
-            </Component>
             <Component class="javax.swing.JLabel" name="lblHeader">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
@@ -88,9 +95,31 @@
                 <Property name="floatable" type="boolean" value="false"/>
                 <Property name="rollover" type="boolean" value="true"/>
                 <Property name="opaque" type="boolean" value="false"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[49, 23]"/>
+                </Property>
               </Properties>
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
+              <SubComponents>
+                <Component class="javax.swing.JButton" name="jButton1">
+                  <Properties>
+                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                      <Image iconType="3" name="/org/netbeans/cubeon/ui/refresh.png"/>
+                    </Property>
+                    <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                      <ResourceString bundle="org/netbeans/cubeon/ui/Bundle.properties" key="TaskEditorTopComponent.jButton1.toolTipText" replaceFormat="NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;,&quot;-&quot;)"/>
+                    </Property>
+                    <Property name="focusable" type="boolean" value="false"/>
+                    <Property name="horizontalTextPosition" type="int" value="0"/>
+                    <Property name="opaque" type="boolean" value="false"/>
+                    <Property name="verticalTextPosition" type="int" value="3"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+                  </Events>
+                </Component>
+              </SubComponents>
             </Container>
           </SubComponents>
         </Container>
