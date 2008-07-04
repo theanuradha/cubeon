@@ -30,10 +30,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.event.ChangeEvent;
@@ -413,4 +416,8 @@ public class TaskEditorUI extends javax.swing.JPanel implements EditorAttributeH
     private javax.swing.JTextField txtOutline;
     private javax.swing.JTextField txtUrl;
     // End of variables declaration//GEN-END:variables
+
+    public List<Action> getActions() {
+        return new ArrayList<Action>(0);
+    }
 }

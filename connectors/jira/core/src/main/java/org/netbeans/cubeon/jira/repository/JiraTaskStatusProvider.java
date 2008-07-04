@@ -29,24 +29,22 @@ import org.netbeans.cubeon.tasks.spi.repository.TaskStatusProvider;
  */
 public class JiraTaskStatusProvider implements TaskStatusProvider {
 
-    public static final TaskStatus OPEN = new TaskStatus("open", "Open");
-    public static final TaskStatus IN_PROGRESS = new TaskStatus("in_progress", "In Progress");
-    public static final TaskStatus REOPEN = new TaskStatus("reopened", "Reopened");
-    public static final TaskStatus RESOLVED = new TaskStatus("resolved", "Resolved");
-    public static final TaskStatus CLOSED = new TaskStatus("closed", "Closed");
     private List<TaskStatus> statuses = new ArrayList<TaskStatus>();
 
     public JiraTaskStatusProvider() {
-        statuses.add(OPEN);
-        statuses.add(IN_PROGRESS);
-        statuses.add(REOPEN);
-        statuses.add(RESOLVED);
-        statuses.add(CLOSED);
     }
 
     public List<TaskStatus> getStatusList() {
 
         return new ArrayList<TaskStatus>(statuses);
+    }
+
+    public boolean isCompleted(TaskStatus status) {
+        return false;
+    }
+
+    public void setStatuses(List<TaskStatus> statuses) {
+        this.statuses = new ArrayList<TaskStatus>(statuses);
     }
 
     public TaskStatus getTaskStatusById(String id) {
@@ -57,19 +55,18 @@ public class JiraTaskStatusProvider implements TaskStatusProvider {
             }
         }
 
-        return  OPEN;
+        return null;
     }
 
     public TaskStatus getTaskStatus(TaskElement element) {
         JiraTask jiraTask = element.getLookup().lookup(JiraTask.class);
-        assert jiraTask!=null;
+        assert jiraTask != null;
         return jiraTask.getStatus();
     }
 
     public void setTaskStatus(TaskElement element, TaskStatus status) {
         JiraTask jiraTask = element.getLookup().lookup(JiraTask.class);
-        assert jiraTask!=null;
-         jiraTask.setStatus(status);
+        assert jiraTask != null;
+        jiraTask.setStatus(status);
     }
-
 }

@@ -29,9 +29,15 @@ import org.netbeans.cubeon.tasks.spi.repository.TaskStatusProvider;
  */
 public class LocalTaskStatusProvider implements TaskStatusProvider {
 
-    public static final TaskStatus COMPLETED = new TaskStatus("completed", "Completed");
-    public static final TaskStatus NEW = new TaskStatus("new", "New");
-    public static final TaskStatus STARTED = new TaskStatus("started", "Started");
+    public final TaskStatus COMPLETED;
+    public final TaskStatus NEW;
+    public final TaskStatus STARTED;
+
+    public LocalTaskStatusProvider(LocalTaskRepository repository) {
+        COMPLETED = new TaskStatus(repository, "completed", "Completed");
+        NEW = new TaskStatus(repository, "new", "New");
+        STARTED = new TaskStatus(repository, "started", "Started");
+    }
 
     public List<TaskStatus> getStatusList() {
         List<TaskStatus> taskStatuses = new ArrayList<TaskStatus>();
@@ -53,13 +59,13 @@ public class LocalTaskStatusProvider implements TaskStatusProvider {
 
     public TaskStatus getTaskStatus(TaskElement element) {
         LocalTask localTask = element.getLookup().lookup(LocalTask.class);
-        assert localTask!=null;
+        assert localTask != null;
         return localTask.getStatus();
     }
 
     public void setTaskStatus(TaskElement element, TaskStatus status) {
         LocalTask localTask = element.getLookup().lookup(LocalTask.class);
-        assert localTask!=null;
+        assert localTask != null;
         localTask.setStatus(status);
     }
 }

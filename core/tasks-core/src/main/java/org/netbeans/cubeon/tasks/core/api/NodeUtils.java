@@ -14,12 +14,13 @@
  *  limitations under the License.
  *  under the License.
  */
-
 package org.netbeans.cubeon.tasks.core.api;
 
 import java.awt.Image;
 import javax.swing.Icon;
 import javax.swing.UIManager;
+import org.netbeans.cubeon.tasks.spi.repository.TaskPriorityProvider;
+import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
 import org.openide.util.Utilities;
 
 /**
@@ -49,12 +50,38 @@ public class NodeUtils {
         assert base != null;
         return base;
     }
-    
+
+    public static Image getTaskPriorityImage(TaskPriority priority) {
+        Image badge;
+        TaskPriorityProvider provider = priority.getRepository().getLookup().lookup(TaskPriorityProvider.class);
+        int indexOf = provider.getTaskPrioritys().indexOf(priority);
+        switch (indexOf) {
+            case 0:
+                badge = Utilities.loadImage("org/netbeans/cubeon/tasks/core/priority/p1.png");
+                break;
+            case 1:
+                badge = Utilities.loadImage("org/netbeans/cubeon/tasks/core/priority/p2.png");
+                break;
+            case 2:
+                badge = Utilities.loadImage("org/netbeans/cubeon/tasks/core/priority/p3.gif");
+                break;
+            case 3:
+                badge = Utilities.loadImage("org/netbeans/cubeon/tasks/core/priority/p4.png");
+                break;
+            case 4:
+                badge = Utilities.loadImage("org/netbeans/cubeon/tasks/core/priority/p5.png");
+                break;
+
+            default:
+                badge = Utilities.loadImage("org/netbeans/cubeon/tasks/core/priority/p5.gif");
+
+        }
+        return badge;
+    }
     private static final String ICON_KEY_UIMANAGER = "Tree.closedIcon"; // NOI18N
     private static final String OPENED_ICON_KEY_UIMANAGER = "Tree.openIcon"; // NOI18N
     private static final String ICON_KEY_UIMANAGER_NB = "Nb.Explorer.Folder.icon"; // NOI18N
     private static final String OPENED_ICON_KEY_UIMANAGER_NB = "Nb.Explorer.Folder.openedIcon"; // NOI18N
     private static final String ICON_PATH = "org/netbeans/cubeon/context/defaultFolder.gif"; // NOI18N
     private static final String OPENED_ICON_PATH = "org/netbeans/cubeon/context/defaultFolderOpen.gif"; // NOI18N
-    
 }

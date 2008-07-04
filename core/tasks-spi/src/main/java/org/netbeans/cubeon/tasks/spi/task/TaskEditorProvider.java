@@ -16,6 +16,8 @@
  */
 package org.netbeans.cubeon.tasks.spi.task;
 
+import java.util.List;
+import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.event.ChangeListener;
 
@@ -69,6 +71,8 @@ public interface TaskEditorProvider {
          */
         void removeChangeListener(ChangeListener changeListener);
 
+
+        List<Action> getActions();
         /**
          * 
          * @return

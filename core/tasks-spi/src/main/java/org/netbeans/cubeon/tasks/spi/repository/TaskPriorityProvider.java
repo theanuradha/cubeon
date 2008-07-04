@@ -31,7 +31,7 @@ public interface TaskPriorityProvider {
      * providing repository implementation
      */
     List<TaskPriority> getTaskPrioritys();
-
+  TaskPriority getTaskPriorityById(String priority);
 
     TaskPriority getTaskPriority(TaskElement element);
 

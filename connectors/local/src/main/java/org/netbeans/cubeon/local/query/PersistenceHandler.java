@@ -118,7 +118,7 @@ class PersistenceHandler {
             for (TaskPriority tp : priorities) {
                 Element element = document.createElement(TAG_PRIORITY);
                 taskpriorities.appendChild(element);
-                element.appendChild(document.createTextNode(tp.getId().name()));
+                element.appendChild(document.createTextNode(tp.getId()));
             }
             //---------------------------------------------------------------------------
             Element taskTypes = getEmptyElement(document, taskQuery, TAG_TYPES);
@@ -212,7 +212,7 @@ class PersistenceHandler {
                         List<String> tagsTexts = getTagsTexts(elementPriority, TAG_PRIORITY);
                         List<TaskPriority> priorities = new ArrayList<TaskPriority>();
                         for (String id : tagsTexts) {
-                            priorities.add(priorityProvider.getTaskPriorityById(TaskPriority.PRIORITY.valueOf(id)));
+                            priorities.add(priorityProvider.getTaskPriorityById(id));
                         }
                         localQuery.setPriorities(priorities);
                         //----------------------------------------------------------------------

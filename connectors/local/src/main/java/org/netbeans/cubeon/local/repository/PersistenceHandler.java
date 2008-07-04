@@ -213,7 +213,7 @@ class PersistenceHandler {
                         String description = element.getAttributeNS(NAMESPACE, TAG_DESCRIPTION);
                         //read priority
                         String priority = element.getAttributeNS(NAMESPACE, TAG_PRIORITY);
-                        TaskPriority taskPriority = priorityProvider.getTaskPriorityById(TaskPriority.PRIORITY.valueOf(priority));
+                        TaskPriority taskPriority = priorityProvider.getTaskPriorityById(priority);
                         //read status
                         String status = element.getAttributeNS(NAMESPACE, TAG_STATUS);
                         TaskStatus taskStatus = statusProvider.getTaskStatusById(status);

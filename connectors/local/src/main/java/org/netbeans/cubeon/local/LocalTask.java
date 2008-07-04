@@ -44,8 +44,8 @@ public class LocalTask implements TaskElement {
     private String urlString;
     private LocalTaskRepository taskRepository;
     private TaskPriority priority;
-    private TaskStatus status = LocalTaskStatusProvider.NEW;
-    private TaskType type = LocalTaskTypeProvider.TASK;
+    private TaskStatus status ;
+    private TaskType type ;
     private Date created;
     private Date updated;
     private final TaskEditorProvider editorProvider;
@@ -60,6 +60,8 @@ public class LocalTask implements TaskElement {
         extension = new LocalTaskElementExtension(this);
         editorProvider = new TaskEditorProviderImpl(this);
         priority = taskRepository.getLocalTaskPriorityProvider().getDefaultPriority();
+        status=taskRepository.getLocalTaskStatusProvider().NEW;
+        type=taskRepository.getLocalTaskTypeProvider().TASK;
     }
 
     public String getId() {
@@ -121,16 +123,16 @@ public class LocalTask implements TaskElement {
     }
 
     public boolean isCompleted() {
-        return LocalTaskStatusProvider.COMPLETED.equals(getStatus());
+        return taskRepository.getLocalTaskStatusProvider().COMPLETED.equals(getStatus());
     }
 
     public Image getImage() {
         Image image = Utilities.loadImage("org/netbeans/cubeon/local/nodes/task.png");
-        if (LocalTaskTypeProvider.BUG.equals(getType())) {
+        if (taskRepository.getLocalTaskTypeProvider().BUG.equals(getType())) {
             image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_defact.png"), 0, 0);
-        } else if (LocalTaskTypeProvider.ENHANCEMENT.equals(getType())) {
+        } else if (taskRepository.getLocalTaskTypeProvider().ENHANCEMENT.equals(getType())) {
             image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_enhancement.png"), 0, 0);
-        } else if (LocalTaskTypeProvider.FEATURE.equals(getType())) {
+        } else if (taskRepository.getLocalTaskTypeProvider().FEATURE.equals(getType())) {
             image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_feature.png"), 0, 0);
         } else {
             image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_task.png"), 0, 0);

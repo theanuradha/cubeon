@@ -39,9 +39,9 @@ public class LocalTaskRepository implements TaskRepository {
     private String description;
     private List<LocalTask> localTasks = new ArrayList<LocalTask>();
     private final PersistenceHandler persistenceHandler;
-    private final LocalTaskPriorityProvider ltpp = new LocalTaskPriorityProvider();
-    private final LocalTaskStatusProvider ltsp = new LocalTaskStatusProvider();
-    private final LocalTaskTypeProvider lttp = new LocalTaskTypeProvider();
+    private final LocalTaskPriorityProvider ltpp;
+    private final LocalTaskStatusProvider ltsp;
+    private final LocalTaskTypeProvider lttp;
     private LocalRepositoryExtension extension;
     private LocalQuerySupport querySupport;
     private final Lookup lookup;
@@ -52,10 +52,13 @@ public class LocalTaskRepository implements TaskRepository {
         this.id = id;
         this.name = name;
         this.description = description;
-
+        lttp = new LocalTaskTypeProvider(this);
+        ltsp = new LocalTaskStatusProvider(this);
+        ltpp = new LocalTaskPriorityProvider(this);
         extension = new LocalRepositoryExtension(this);
         persistenceHandler = new PersistenceHandler(this, provider.getBaseDir());
         querySupport = new LocalQuerySupport(this, extension);
+
         lookup = Lookups.fixed(this, extension, provider, persistenceHandler, ltpp, ltsp, lttp, querySupport);
     }
 

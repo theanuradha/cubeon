@@ -29,37 +29,32 @@ import org.netbeans.cubeon.tasks.spi.repository.TaskPriorityProvider;
  */
 public class JiraTaskPriorityProvider implements TaskPriorityProvider {
 
-    public static final TaskPriority BLOCKER =
-            TaskPriority.createPriority(TaskPriority.PRIORITY.P1, "Blocker");
-    public static final TaskPriority CRITICAL =
-            TaskPriority.createPriority(TaskPriority.PRIORITY.P2, "Critical");
-    public static final TaskPriority MAJOR =
-            TaskPriority.createPriority(TaskPriority.PRIORITY.P3, "Major");
-    public static final TaskPriority MINOR =
-            TaskPriority.createPriority(TaskPriority.PRIORITY.P1, "Minor");
-    public static final TaskPriority TRIVIAL =
-            TaskPriority.createPriority(TaskPriority.PRIORITY.P1, "Trivial");
     private List<TaskPriority> prioritys = new ArrayList<TaskPriority>();
 
     public JiraTaskPriorityProvider() {
-        prioritys.add(BLOCKER);
-        prioritys.add(CRITICAL);
-        prioritys.add(MAJOR);
-        prioritys.add(MINOR);
-        prioritys.add(TRIVIAL);
     }
 
     public List<TaskPriority> getTaskPrioritys() {
         return new ArrayList<TaskPriority>(prioritys);
     }
 
-    public TaskPriority getTaskPriorityById(TaskPriority.PRIORITY priority) {
+    public TaskPriority getTaskPriorityById(String priority) {
         for (TaskPriority tp : getTaskPrioritys()) {
-            if (priority == tp.getId()) {
+            if (tp.getId().equals(priority)) {
                 return tp;
             }
         }
-        return MAJOR;
+
+        return null;
+    }
+
+    public TaskPriority getPrefredPriority() {
+        int size = prioritys.size();
+        if (size > 0) {
+
+            return prioritys.get(size/2);
+        }
+        return null;
     }
 
     public void setPrioritys(List<TaskPriority> prioritys) {
@@ -68,13 +63,13 @@ public class JiraTaskPriorityProvider implements TaskPriorityProvider {
 
     public TaskPriority getTaskPriority(TaskElement element) {
         JiraTask jiraTask = element.getLookup().lookup(JiraTask.class);
-        assert jiraTask!=null;
+        assert jiraTask != null;
         return jiraTask.getPriority();
     }
 
     public void setTaskPriority(TaskElement element, TaskPriority priority) {
         JiraTask jiraTask = element.getLookup().lookup(JiraTask.class);
-        assert jiraTask!=null;
+        assert jiraTask != null;
         jiraTask.setPriority(priority);
     }
 }

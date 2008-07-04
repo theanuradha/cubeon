@@ -7,13 +7,17 @@ package org.netbeans.cubeon.ui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
 import java.io.IOException;
+import java.util.List;
+import javax.swing.Action;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
@@ -72,7 +76,7 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
         this.element = element;
 
         initComponents();
-
+        jToolBar1.setLayout(new FlowLayout(FlowLayout.RIGHT));
         Lookup lookup = element.getLookup();
 
         TaskEditorProvider editorProvider = lookup.lookup(TaskEditorProvider.class);
@@ -86,6 +90,18 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
         lblHeader.setIcon(new ImageIcon(taskRepository.getImage()));
         lblHeader.setText(eah.getDisplayName());
         base.add(eah.getComponent(), BorderLayout.CENTER);
+
+        List<Action> actions = eah.getActions();
+        for (Action action : actions) {
+            if (action == null) {
+                jToolBar1.addSeparator();
+            } else {
+                JButton button = new JButton(action);
+                button.setText(null);
+                button.setOpaque(false);
+                jToolBar1.add(button);
+            }
+        }
 
         setActivatedNodes(new Node[]{editorNode = TaskElementNode.createNode(element, this)});
         eah.addChangeListener(this);
@@ -184,30 +200,38 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
         };
         javax.swing.JSeparator separator = new javax.swing.JSeparator();
         lblHeader = new javax.swing.JLabel();
+        jToolBar1 = new javax.swing.JToolBar();
 
         setLayout(new java.awt.BorderLayout());
 
         base.setBackground(new java.awt.Color(255, 255, 255));
         base.setLayout(new java.awt.BorderLayout());
 
-        lblHeader.setFont(new java.awt.Font("Tahoma", 1, 13));
+        lblHeader.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
         lblHeader.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/cubeon/ui/repository.png"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(lblHeader, "Task Element Name"); // NOI18N
+
+        jToolBar1.setFloatable(false);
+        jToolBar1.setRollover(true);
+        jToolBar1.setOpaque(false);
 
         org.jdesktop.layout.GroupLayout headerLayout = new org.jdesktop.layout.GroupLayout(header);
         header.setLayout(headerLayout);
         headerLayout.setHorizontalGroup(
             headerLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, separator, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 711, Short.MAX_VALUE)
-            .add(headerLayout.createSequentialGroup()
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, headerLayout.createSequentialGroup()
                 .add(5, 5, 5)
-                .add(lblHeader, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 443, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(263, Short.MAX_VALUE))
+                .add(lblHeader, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 508, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                .add(jToolBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 188, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
         );
         headerLayout.setVerticalGroup(
             headerLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, headerLayout.createSequentialGroup()
-                .add(lblHeader, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 33, Short.MAX_VALUE)
+                .add(headerLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jToolBar1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, lblHeader, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(separator, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
         );
@@ -219,8 +243,10 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel base;
     private javax.swing.JPanel header;
+    private javax.swing.JToolBar jToolBar1;
     private javax.swing.JLabel lblHeader;
     // End of variables declaration//GEN-END:variables
+
     @Override
     public int getPersistenceType() {
         return TopComponent.PERSISTENCE_NEVER;

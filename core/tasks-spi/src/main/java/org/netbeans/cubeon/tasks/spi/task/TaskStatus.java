@@ -16,23 +16,26 @@
  */
 package org.netbeans.cubeon.tasks.spi.task;
 
+import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
+
 /**
  *
  * @author Anuradha G
  */
 public class TaskStatus {
 
-    private String id;
-    private String text;
-
+    private final String id;
+    private final String name;
+     private final TaskRepository repository;
     /**
      * 
      * @param id
      * @param text
      */
-    public TaskStatus(String id, String text) {
+    public TaskStatus(TaskRepository repository,String id, String text) {
+        this.repository = repository;
         this.id = id;
-        this.text = text;
+        this.name = text;
     }
 
     /**
@@ -40,7 +43,7 @@ public class TaskStatus {
      * @return
      */
     public String getText() {
-        return text;
+        return name;
     }
 
     /**
@@ -50,6 +53,38 @@ public class TaskStatus {
     public String getId() {
         return id;
     }
+
+    public TaskRepository getRepository() {
+        return repository;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final TaskStatus other = (TaskStatus) obj;
+        if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
+            return false;
+        }
+        if (this.repository != other.repository && (this.repository == null || !this.repository.equals(other.repository))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 59 * hash + (this.id != null ? this.id.hashCode() : 0);
+        hash = 59 * hash + (this.repository != null ? this.repository.hashCode() : 0);
+        return hash;
+    }
+
+    
 
     @Override
     public String toString() {

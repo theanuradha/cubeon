@@ -16,8 +16,7 @@
  */
 package org.netbeans.cubeon.tasks.spi.task;
 
-import java.awt.Image;
-import org.openide.util.Utilities;
+import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 
 /**
  *
@@ -25,72 +24,36 @@ import org.openide.util.Utilities;
  */
 public final class TaskPriority {
 
-    private final PRIORITY id;
-    private final Image image;
-    private String text;
+    private final String id;
+    private final String name;
+    private final TaskRepository repository;
 
-    /**
-     * 
-     */
-    public enum PRIORITY {
 
-        /**
-         * 
-         */
-        P1,
-        /**
-         * 
-         */
-        P2,
-        /**
-         * 
-         */
-        P3,
-        /**
-         * 
-         */
-        P4,
-        /**
-         * 
-         */
-        P5
-    }
-
-    private TaskPriority(PRIORITY id, Image image, String text) {
+    public  TaskPriority(TaskRepository repository,String id, String name) {
+        this.repository = repository;
         this.id = id;
-        this.image = image;
-        this.text = text;
+       this.name = name;
     }
 
-    /**
-     * 
-     * @param priority
-     * @param text
-     * @return
-     */
-    public static TaskPriority createPriority(PRIORITY priority, String text) {
-        return new TaskPriority(priority, getImage(priority), text);
-    }
+
 
     /**
      * 
      * @return
      */
-    public PRIORITY getId() {
+    public String getId() {
         return id;
     }
 
-    /**
-     * 
-     * @return
-     */
-    public Image getImage() {
-        return image;
-    }
+
 
     @Override
     public String toString() {
-        return text.toString();
+        return name.toString();
+    }
+
+    public TaskRepository getRepository() {
+        return repository;
     }
 
     @Override
@@ -105,38 +68,21 @@ public final class TaskPriority {
         if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
             return false;
         }
+        if (this.repository != other.repository && (this.repository == null || !this.repository.equals(other.repository))) {
+            return false;
+        }
         return true;
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 17 * hash + (this.id != null ? this.id.hashCode() : 0);
+        hash = 83 * hash + (this.id != null ? this.id.hashCode() : 0);
+        hash = 83 * hash + (this.repository != null ? this.repository.hashCode() : 0);
         return hash;
     }
 
-    /**
-     * 
-     * @param priority
-     * @return
-     */
-    public static Image getImage(PRIORITY priority) {
 
-        switch (priority) {
-            case P1:
-                return Utilities.loadImage("org/netbeans/cubeon/tasks/spi/priority/p1.png");
-            case P2:
-                return Utilities.loadImage("org/netbeans/cubeon/tasks/spi/priority/p2.png");
-            case P3:
-                return Utilities.loadImage("org/netbeans/cubeon/tasks/spi/priority/p3.gif");
-            case P4:
-                return Utilities.loadImage("org/netbeans/cubeon/tasks/spi/priority/p4.png");
-            case P5:
-                return Utilities.loadImage("org/netbeans/cubeon/tasks/spi/priority/p5.png");
 
-            default:
-                return Utilities.loadImage("org/netbeans/cubeon/tasks/spi/priority/p3.gif");
-        }
 
-    }
 }

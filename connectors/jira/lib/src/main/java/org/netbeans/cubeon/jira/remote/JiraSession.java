@@ -23,6 +23,7 @@ import com.dolby.jira.net.soap.jira.RemoteComponent;
 import com.dolby.jira.net.soap.jira.RemoteConfiguration;
 import com.dolby.jira.net.soap.jira.RemoteIssue;
 import com.dolby.jira.net.soap.jira.RemoteIssueType;
+import com.dolby.jira.net.soap.jira.RemotePermissionException;
 import com.dolby.jira.net.soap.jira.RemotePriority;
 import com.dolby.jira.net.soap.jira.RemoteProject;
 import com.dolby.jira.net.soap.jira.RemoteResolution;
@@ -126,13 +127,20 @@ public class JiraSession {
 
     public RemoteIssue createTask(RemoteIssue issue) throws JiraException {
         try {
-          return   service.createIssue(token, issue);
+            return service.createIssue(token, issue);
         } catch (Exception ex) {
             throw new JiraException(ex);
         }
     }
 
- 
+    public RemoteIssue getIssue(String id) throws JiraException {
+        try {
+            return service.getIssue(token, id);
+        } catch (Exception ex) {
+            throw new JiraException(ex);
+        }
+    }
+
     public RemoteVersion[] getVersions(String projectID) throws JiraException {
         try {
             return service.getVersions(token, projectID);

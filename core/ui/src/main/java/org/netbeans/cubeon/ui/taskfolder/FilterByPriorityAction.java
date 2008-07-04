@@ -17,16 +17,23 @@
 package org.netbeans.cubeon.ui.taskfolder;
 
 import java.awt.event.ActionEvent;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import org.netbeans.cubeon.tasks.core.api.CubeonContext;
+import org.netbeans.cubeon.tasks.core.api.NodeUtils;
 import org.netbeans.cubeon.tasks.core.api.TaskFolder;
 import org.netbeans.cubeon.tasks.core.api.TaskFolderRefreshable;
+import org.netbeans.cubeon.tasks.core.api.TaskRepositoryHandler;
+import org.netbeans.cubeon.tasks.spi.repository.TaskPriorityProvider;
+import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskElementFilter;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
-import org.netbeans.cubeon.tasks.spi.task.TaskPriority.PRIORITY;
 import org.netbeans.cubeon.ui.TaskExplorerTopComponent;
 import org.netbeans.cubeon.ui.filters.PriorityFilter;
 import org.openide.util.Lookup;
@@ -61,42 +68,55 @@ public class FilterByPriorityAction extends AbstractAction implements Menu, Popu
 
     public JMenuItem getMenuPresenter() {
         JMenu menu = new JMenu(this);
-        JCheckBoxMenuItem p1 = new JCheckBoxMenuItem(new Filter(TaskPriority.PRIORITY.P1));
-        p1.setSelected(filter.contains(TaskPriority.PRIORITY.P1));
-        menu.add(p1);
-        //--------------------------------------------------------------------------------
-        JCheckBoxMenuItem p2 = new JCheckBoxMenuItem(new Filter(TaskPriority.PRIORITY.P2));
-        p2.setSelected(filter.contains(TaskPriority.PRIORITY.P2));
-        menu.add(p2);
-        //--------------------------------------------------------------------------------
-        JCheckBoxMenuItem p3 = new JCheckBoxMenuItem(new Filter(TaskPriority.PRIORITY.P3));
-        p3.setSelected(filter.contains(TaskPriority.PRIORITY.P3));
-        menu.add(p3);
-        //--------------------------------------------------------------------------------
-        JCheckBoxMenuItem p4 = new JCheckBoxMenuItem(new Filter(TaskPriority.PRIORITY.P4));
-        p4.setSelected(filter.contains(TaskPriority.PRIORITY.P4));
-        menu.add(p4);
-        //--------------------------------------------------------------------------------
-        JCheckBoxMenuItem p5 = new JCheckBoxMenuItem(new Filter(TaskPriority.PRIORITY.P5));
-        p5.setSelected(filter.contains(TaskPriority.PRIORITY.P5));
-        menu.add(p5);
-        //--------------------------------------------------------------------------------
+        CubeonContext context = Lookup.getDefault().lookup(CubeonContext.class);
+        TaskRepositoryHandler handler = context.getLookup().lookup(TaskRepositoryHandler.class);
+        List<TaskRepository> repositorys = handler.getTaskRepositorys();
+        Collections.sort(repositorys, new Comparator<TaskRepository>() {
+
+            public int compare(TaskRepository o1, TaskRepository o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+        boolean addSeperator = false;
+        for (TaskRepository repository : repositorys) {
+
+            TaskPriorityProvider priorityProvider = repository.getLookup().lookup(TaskPriorityProvider.class);
+            if (priorityProvider != null) {
+                if (addSeperator) {
+                    menu.addSeparator();
+                }
+                JMenuItem repoMenu = new JMenuItem(repository.getName() + " Priorities", new ImageIcon(repository.getImage()));
+                menu.add(repoMenu);
+
+                List<TaskPriority> prioritys = priorityProvider.getTaskPrioritys();
+                for (TaskPriority taskPriority : prioritys) {
+                    JCheckBoxMenuItem p1 = new JCheckBoxMenuItem(new Filter(taskPriority));
+                    p1.setSelected(filter.contains(taskPriority));
+                    menu.add(p1);
+                }
+                addSeperator = true;
+            }
+
+        }
+
         return menu;
     }
 
     public JMenuItem getPopupPresenter() {
+
+
 
         return getMenuPresenter();
     }
 
     private class Filter extends AbstractAction {
 
-        private TaskPriority.PRIORITY priority;
+        private TaskPriority priority;
 
-        public Filter(PRIORITY priority) {
+        public Filter(TaskPriority priority) {
             this.priority = priority;
             putValue(NAME, priority.toString());
-            putValue(SMALL_ICON, new ImageIcon(TaskPriority.getImage(priority)));
+            putValue(SMALL_ICON, new ImageIcon(NodeUtils.getTaskPriorityImage(priority)));
         }
 
         public void actionPerformed(ActionEvent e) {
