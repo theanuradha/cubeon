@@ -17,13 +17,16 @@
 package org.netbeans.cubeon.jira.repository;
 
 import com.dolby.jira.net.soap.jira.RemoteComponent;
+import com.dolby.jira.net.soap.jira.RemoteFieldValue;
 import com.dolby.jira.net.soap.jira.RemoteIssue;
 import com.dolby.jira.net.soap.jira.RemoteVersion;
 import java.awt.Image;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.netbeans.api.progress.ProgressHandle;
@@ -68,6 +71,7 @@ public class JiraTaskRepository implements TaskRepository {
     private final JiraTaskResolutionProvider jtrp = new JiraTaskResolutionProvider();
     private final JiraRepositoryAttributes repositoryAttributes = new JiraRepositoryAttributes();
     private final TaskPersistenceHandler handler;
+    private Map<String, JiraTask> map = new HashMap<String, JiraTask>();
     private FileObject baseDir;
     private State state = State.INACTIVE;
     private volatile JiraSession session;
@@ -157,9 +161,16 @@ public class JiraTaskRepository implements TaskRepository {
         return jiraTask;
     }
 
-    public TaskElement getTaskElementById(String id) {
+    public synchronized TaskElement getTaskElementById(String id) {
+        JiraTask get = map.get(id);
+        if (get == null) {
 
-        return handler.getTaskElementById(id);
+            get = handler.getTaskElementById(id);
+            if (get != null) {
+                map.put(id, get);
+            }
+        }
+        return get;
     }
 
     public void persist(TaskElement element) {
@@ -282,7 +293,17 @@ public class JiraTaskRepository implements TaskRepository {
 
     public void submit(JiraTask task) {
         synchronized (task) {
-
+            try {
+                JiraSession js = getSession();
+                RemoteFieldValue[] fieldValues = JiraUtils.changedFieldValues(js.getIssue(task.getId()), task);
+                if (fieldValues.length > 0) {
+                    RemoteIssue updateTask = js.updateTask(task.getId(), fieldValues);
+                    maregeToTask(updateTask, task);
+                    persist(task);
+                }
+            } catch (JiraException ex) {
+                Exceptions.printStackTrace(ex);
+            }
         }
     }
 
