@@ -22,9 +22,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import org.netbeans.cubeon.jira.repository.JiraTaskPriorityProvider;
 import org.netbeans.cubeon.jira.repository.JiraTaskRepository;
-import org.netbeans.cubeon.jira.repository.JiraTaskStatusProvider;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Component;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Version;
@@ -50,8 +48,8 @@ public class JiraTask implements TaskElement {
     private String description;
     private String urlString;
     private JiraTaskRepository taskRepository;
-    private TaskPriority priority = JiraTaskPriorityProvider.MAJOR;
-    private TaskStatus status = JiraTaskStatusProvider.OPEN;
+    private TaskPriority priority;
+    private TaskStatus status ;
     private TaskType type;
     private TaskResolution resolution;
     private Date created;
@@ -61,6 +59,8 @@ public class JiraTask implements TaskElement {
     private boolean local;
     private JiraProject project;
     private String environment;
+    private String reporter;
+    private String assignee;
     private List<JiraProject.Component> components = new ArrayList<JiraProject.Component>(0);
     private List<JiraProject.Version> affectedVersions = new ArrayList<JiraProject.Version>(0);
     private List<JiraProject.Version> fixVersions = new ArrayList<JiraProject.Version>(0);
@@ -159,7 +159,7 @@ public class JiraTask implements TaskElement {
     }
 
     public boolean isCompleted() {
-        return JiraTaskStatusProvider.CLOSED.equals(getStatus());
+        return taskRepository.getJiraTaskStatusProvider().isCompleted(status);
     }
 
     public Image getImage() {
@@ -256,6 +256,22 @@ public class JiraTask implements TaskElement {
     public void setFixVersions(List<Version> fixVersions) {
         this.fixVersions = new ArrayList<Version>(fixVersions);
 
+    }
+
+    public String getAssignee() {
+        return assignee;
+    }
+
+    public void setAssignee(String assignee) {
+        this.assignee = assignee;
+    }
+
+    public String getReporter() {
+        return reporter;
+    }
+
+    public void setReporter(String reporter) {
+        this.reporter = reporter;
     }
 
     @Override

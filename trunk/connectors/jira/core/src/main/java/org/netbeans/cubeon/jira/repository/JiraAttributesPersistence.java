@@ -35,7 +35,9 @@ import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.cubeon.jira.remote.JiraException;
 import org.netbeans.cubeon.jira.remote.JiraSession;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject;
+import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.task.TaskResolution;
+import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
 import org.netbeans.cubeon.tasks.spi.task.TaskType;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
@@ -112,14 +114,14 @@ class JiraAttributesPersistence {
 
             LOG.log(Level.INFO, "requsting projects");
             progressHandle.progress("Requsting Projects Information");
-            
+
             RemoteProject[] projects = session.getProjects();
             LOG.log(Level.INFO, projects.length + " projects found");
             progressHandle.progress(projects.length + " Projects found");
             Element projectsElement = getEmptyElement(document, attributes, TAG_PROJECTS);
             for (RemoteProject rp : projects) {
                 LOG.log(Level.INFO, "project :" + rp.getKey() + " : " + rp.getName());
-                progressHandle.progress("Project :" +rp.getName()+ " : " + rp.getName());
+                progressHandle.progress("Project :" + rp.getName() + " : " + rp.getName());
                 Element project = document.createElement(TAG_PROJECT);
                 projectsElement.appendChild(project);
                 project.setAttribute(TAG_ID, rp.getKey());
@@ -317,25 +319,25 @@ class JiraAttributesPersistence {
 
 
             if (attributes != null) {
-                /*
+
                 //-----------------------------------------
                 Element taskpriorities = findElement(attributes, TAG_PRIORITIES, NAMESPACE);
                 NodeList repositoryNodes = taskpriorities.getChildNodes();
                 List<TaskPriority> prioriiesList = new ArrayList<TaskPriority>();
                 for (int i = 0; i < repositoryNodes.getLength(); i++) {
 
-                Node node = repositoryNodes.item(i);
-                if (node.getNodeType() == Node.ELEMENT_NODE) {
-                Element element = (Element) node;
-                String id = element.getAttribute(TAG_ID);
-                String name = element.getAttribute(TAG_NAME);
-                PRIORITY priority = JiraUtils.toJiraPriority(id);
-                prioriiesList.add(TaskPriority.createPriority(priority, name));
+                    Node node = repositoryNodes.item(i);
+                    if (node.getNodeType() == Node.ELEMENT_NODE) {
+                        Element element = (Element) node;
+                        String id = element.getAttribute(TAG_ID);
+                        String name = element.getAttribute(TAG_NAME);
 
-                }
+                        prioriiesList.add(new TaskPriority(repository, id, name));
+
+                    }
                 }
                 repository.getJiraTaskPriorityProvider().setPrioritys(prioriiesList);
-                 **/
+
                 //-----------------------------------------
                 Element taskTypes = findElement(attributes, TAG_TYPES, NAMESPACE);
                 NodeList taskTypeNodes = taskTypes.getChildNodes();
@@ -348,30 +350,30 @@ class JiraAttributesPersistence {
                         String id = element.getAttribute(TAG_ID);
                         String name = element.getAttribute(TAG_NAME);
 
-                        types.add(new TaskType(id, name));
+                        types.add(new TaskType(repository, id, name));
 
                     }
                 }
                 repository.getJiraTaskTypeProvider().setTaskTypes(types);
                 //-----------------------------------------
-                /*
+
                 Element taskStatuses = findElement(attributes, TAG_STATUSES, NAMESPACE);
                 NodeList taskStatusNodes = taskStatuses.getChildNodes();
                 List<TaskStatus> statuses = new ArrayList<TaskStatus>();
                 for (int i = 0; i < taskStatusNodes.getLength(); i++) {
 
-                Node node = taskStatusNodes.item(i);
-                if (node.getNodeType() == Node.ELEMENT_NODE) {
-                Element element = (Element) node;
-                String id = element.getAttribute(TAG_ID);
-                String name = element.getAttribute(TAG_NAME);
+                    Node node = taskStatusNodes.item(i);
+                    if (node.getNodeType() == Node.ELEMENT_NODE) {
+                        Element element = (Element) node;
+                        String id = element.getAttribute(TAG_ID);
+                        String name = element.getAttribute(TAG_NAME);
 
-                statuses.add(new TaskStatus(id, name));
+                        statuses.add(new TaskStatus(repository, id, name));
 
-                }
+                    }
                 }
                 repository.getJiraTaskStatusProvider().setStatuses(statuses);
-                 */
+
                 //-----------------------------------------
                 Element taskProjects = findElement(attributes, TAG_PROJECTS, NAMESPACE);
                 NodeList taskProjectNodes = taskProjects.getChildNodes();
@@ -442,7 +444,7 @@ class JiraAttributesPersistence {
                         String id = element.getAttribute(TAG_ID);
                         String name = element.getAttribute(TAG_NAME);
 
-                        resolutiones.add(new TaskResolution(id, name));
+                        resolutiones.add(new TaskResolution(repository, id, name));
 
                     }
                 }

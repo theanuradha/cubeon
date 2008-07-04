@@ -77,6 +77,9 @@ class TaskPersistenceHandler {
     private static final String TAG_FIX_VERSIONS = "fix_version";
     private static final String TAG_COMPONENT = "component";
     private static final String TAG_VERSION = "version";
+    private static final String TAG_LOCAL = "local";
+    private static final String TAG_REPORTER = "reporter";
+    private static final String TAG_ASSIGNEE = "assignee";
     //----------------------------------------------------
     private JiraTaskRepository jiraTaskRepository;
     private final FileObject baseDir;
@@ -116,7 +119,7 @@ class TaskPersistenceHandler {
             String environment = element.getAttributeNS(NAMESPACE, TAG_ENVIRONMENT);
             //read priority
             String priority = element.getAttributeNS(NAMESPACE, TAG_PRIORITY);
-            TaskPriority taskPriority = priorityProvider.getTaskPriorityById(TaskPriority.PRIORITY.valueOf(priority));
+            TaskPriority taskPriority = priorityProvider.getTaskPriorityById((priority));
             //read status
             String status = element.getAttributeNS(NAMESPACE, TAG_STATUS);
             TaskStatus taskStatus = statusProvider.getTaskStatusById(status);
@@ -124,6 +127,11 @@ class TaskPersistenceHandler {
             String type = element.getAttributeNS(NAMESPACE, TAG_TYPE);
             TaskType taskType = taskTypeProvider.getTaskTypeById(type);
 
+            String localTag = element.getAttributeNS(NAMESPACE, TAG_LOCAL);
+            boolean local = false;
+            if (localTag != null) {
+                local = Boolean.parseBoolean(localTag);
+            }
             //read resolution
             String resolution = element.getAttributeNS(NAMESPACE, TAG_RESOLUTION);
             TaskResolution taskResolution = null;
@@ -146,7 +154,13 @@ class TaskPersistenceHandler {
                 createdDate = calendar.getTime();
 
             }
+            String updated = element.getAttributeNS(NAMESPACE, TAG_UPDATE_DATE);
+            if (updated != null && updated.trim().length() != 0) {
 
+                calendar.setTimeInMillis(Long.parseLong(updated));
+                updatedDate = calendar.getTime();
+
+            }
             //load versions
 
             Element versionsElement = findElement(element, TAG_FIX_VERSIONS, NAMESPACE);
@@ -156,8 +170,8 @@ class TaskPersistenceHandler {
             for (int i = 0; i < versionsNodeList.getLength(); i++) {
                 Node node = versionsNodeList.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    Element e=(Element) node;
-                   
+                    Element e = (Element) node;
+
                     Version version = project.getVersionById(e.getTextContent());
                     if (version != null) {
                         fixVersions.add(version);
@@ -174,7 +188,7 @@ class TaskPersistenceHandler {
             for (int i = 0; i < versionsNodeList.getLength(); i++) {
                 Node node = versionsNodeList.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    Element e=(Element) node;
+                    Element e = (Element) node;
                     Version version = project.getVersionById(e.getTextContent());
                     if (version != null) {
                         affectversions.add(version);
@@ -190,8 +204,8 @@ class TaskPersistenceHandler {
 
             for (int i = 0; i < componentsNodeList.getLength(); i++) {
                 Node node = componentsNodeList.item(i);
-                 if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    Element e=(Element) node;
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element e = (Element) node;
                     Component component = project.getComponentById(e.getTextContent());
                     if (component != null) {
                         components.add(component);
@@ -200,12 +214,12 @@ class TaskPersistenceHandler {
             }
 
 
-
-
-
+            String reporter = element.getAttributeNS(NAMESPACE, TAG_REPORTER);
+            String assignee = element.getAttributeNS(NAMESPACE, TAG_ASSIGNEE);
 
             JiraTask jiraTask = new JiraTask(id, name, description, jiraTaskRepository);
             jiraTask.setProject(project);
+            jiraTask.setLocal(local);
             jiraTask.setEnvironment(environment);
             jiraTask.setPriority(taskPriority);
             jiraTask.setStatus(taskStatus);
@@ -214,10 +228,11 @@ class TaskPersistenceHandler {
             jiraTask.setUrlString(url);
             jiraTask.setCreated(createdDate);
             jiraTask.setUpdated(updatedDate);
-            jiraTask.setUpdated(updatedDate);
             jiraTask.setComponents(components);
             jiraTask.setAffectedVersions(affectversions);
             jiraTask.setFixVersions(fixVersions);
+            jiraTask.setReporter(reporter);
+            jiraTask.setAssignee(assignee);
 
             return jiraTask;
 
@@ -245,10 +260,21 @@ class TaskPersistenceHandler {
             taskElement.setAttributeNS(NAMESPACE, TAG_NAME, task.getName());
             taskElement.setAttributeNS(NAMESPACE, TAG_DESCRIPTION, task.getDescription());
             taskElement.setAttributeNS(NAMESPACE, TAG_REPOSITORY, task.getTaskRepository().getId());
-            taskElement.setAttributeNS(NAMESPACE, TAG_PRIORITY, task.getPriority().getId().toString());
+            taskElement.setAttributeNS(NAMESPACE, TAG_PRIORITY, task.getPriority().getId());
             taskElement.setAttributeNS(NAMESPACE, TAG_STATUS, task.getStatus().getId());
             taskElement.setAttributeNS(NAMESPACE, TAG_TYPE, task.getType().getId());
             taskElement.setAttributeNS(NAMESPACE, TAG_PROJECT, task.getProject().getId());
+
+            if (task.getReporter() != null) {
+                taskElement.setAttributeNS(NAMESPACE, TAG_REPORTER, task.getReporter());
+            }
+            if (task.getAssignee() != null) {
+                taskElement.setAttributeNS(NAMESPACE, TAG_ASSIGNEE, task.getAssignee());
+            }
+
+            if (task.isLocal()) {
+                taskElement.setAttributeNS(NAMESPACE, TAG_LOCAL, String.valueOf(task.isLocal()));
+            }
 
             if (task.getEnvironment() != null) {
                 taskElement.setAttributeNS(NAMESPACE, TAG_ENVIRONMENT, task.getEnvironment());
@@ -290,15 +316,10 @@ class TaskPersistenceHandler {
                 taskElement.setAttributeNS(NAMESPACE, TAG_URL, task.getUrlString());
             }
 
-            Date now = new Date();
+            if (task.getCreated() != null) {
+                taskElement.setAttributeNS(NAMESPACE, TAG_CREATED_DATE, String.valueOf(task.getCreated().getTime()));
 
-            if (task.getCreated() == null) {
-                task.setCreated(now);
-            } else {
-                task.setUpdated(now);
             }
-
-            taskElement.setAttributeNS(NAMESPACE, TAG_CREATED_DATE, String.valueOf(task.getCreated().getTime()));
             if (task.getUpdated() != null) {
                 taskElement.setAttributeNS(NAMESPACE, TAG_UPDATE_DATE, String.valueOf(task.getUpdated().getTime()));
             }

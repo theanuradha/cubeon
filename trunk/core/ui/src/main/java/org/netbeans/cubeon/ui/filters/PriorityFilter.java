@@ -19,12 +19,15 @@ package org.netbeans.cubeon.ui.filters;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
+import org.netbeans.cubeon.tasks.core.api.CubeonContext;
+import org.netbeans.cubeon.tasks.core.api.TaskRepositoryHandler;
 import org.netbeans.cubeon.tasks.spi.repository.TaskPriorityProvider;
+import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskElementFilter;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
-import org.netbeans.cubeon.tasks.spi.task.TaskPriority.PRIORITY;
 import org.netbeans.cubeon.ui.UIPreferences;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -34,17 +37,26 @@ public class PriorityFilter implements TaskElementFilter {
 
     private static final String KEY_FILTERS = "priority_filters";
     private static final String TOKEN = ":";
-    private Set<TaskPriority.PRIORITY> filters =
-            new HashSet<TaskPriority.PRIORITY>();
+    private Set<TaskPriority> filters =
+            new HashSet<TaskPriority>();
 
     public PriorityFilter() {
         String filterText = UIPreferences.getPreferences().get(KEY_FILTERS, "");
         StringTokenizer tokenizer = new StringTokenizer(filterText, TOKEN);
+        CubeonContext context = Lookup.getDefault().lookup(CubeonContext.class);
+        TaskRepositoryHandler handler = context.getLookup().lookup(TaskRepositoryHandler.class);
         while (tokenizer.hasMoreTokens()) {
-            String nextToken = tokenizer.nextToken();
-            PRIORITY priority = TaskPriority.PRIORITY.valueOf(nextToken);
-            if (priority != null) {
-                filters.add(priority);
+            String repoid = tokenizer.nextToken();
+            String priority = tokenizer.nextToken();
+            TaskRepository repository = handler.getTaskRepositoryById(repoid);
+            if (repository != null) {
+                TaskPriorityProvider priorityProvider = repository.getLookup().lookup(TaskPriorityProvider.class);
+                if (priorityProvider != null) {
+                    TaskPriority tp = priorityProvider.getTaskPriorityById(priority);
+                    if (tp != null) {
+                        filters.add(tp);
+                    }
+                }
             }
         }
     }
@@ -67,37 +79,41 @@ public class PriorityFilter implements TaskElementFilter {
 
     public boolean isFiltered(TaskElement element) {
         TaskPriorityProvider tpp = element.getTaskRepository().getLookup().lookup(TaskPriorityProvider.class);
-        return tpp != null && !contains(tpp.getTaskPriority(element).getId());
+        return tpp != null && !(contains(tpp.getTaskPriority(element)));
     }
 
-    public Set<PRIORITY> getFilters() {
-        return new HashSet<PRIORITY>(filters);
+    public Set<TaskPriority> getFilters() {
+        return new HashSet<TaskPriority>(filters);
     }
 
-    public void removeFilter(PRIORITY priority) {
+    public void removeFilter(TaskPriority priority) {
         if (contains(priority)) {
             filters.remove(priority);
             persist();
         }
     }
 
-    public void addFilter(PRIORITY priority) {
+    public void addFilter(TaskPriority priority) {
         if (!contains(priority)) {
             filters.add(priority);
             persist();
         }
     }
 
-    public boolean contains(PRIORITY priority) {
+    public boolean contains(TaskPriority priority) {
         return filters.contains(priority);
     }
 
     private void persist() {
         StringBuffer buffer = new StringBuffer();
-        for (PRIORITY priority : filters) {
-            buffer.append(priority.toString());
+        for (TaskPriority priority : filters) {
+            buffer.append(priority.getRepository().getId());
             buffer.append(TOKEN);
+
+            buffer.append(priority.getId());
+            buffer.append(TOKEN);
+
         }
-        UIPreferences.getPreferences().get(KEY_FILTERS, buffer.toString());
+        UIPreferences.getPreferences().put(KEY_FILTERS, buffer.toString());
     }
 }

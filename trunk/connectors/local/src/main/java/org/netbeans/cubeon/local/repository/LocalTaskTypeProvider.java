@@ -29,10 +29,17 @@ import org.netbeans.cubeon.tasks.spi.repository.TaskTypeProvider;
  */
 public class LocalTaskTypeProvider implements TaskTypeProvider {
 
-    public static TaskType BUG = new TaskType("defect", "Defect");
-    public static TaskType ENHANCEMENT = new TaskType("enhancement", "Enhancement");
-    public static TaskType FEATURE = new TaskType("feature ", "Feature");
-    public static TaskType TASK = new TaskType("task", "Task");
+    public final TaskType BUG;
+    public final TaskType ENHANCEMENT;
+    public final TaskType FEATURE;
+    public final TaskType TASK;
+
+    public LocalTaskTypeProvider(LocalTaskRepository repository) {
+        BUG = new TaskType(repository, "defect", "Defect");
+        ENHANCEMENT = new TaskType(repository, "enhancement", "Enhancement");
+        FEATURE = new TaskType(repository, "feature ", "Feature");
+        TASK = new TaskType(repository, "task", "Task");
+    }
 
     public List<TaskType> getTaskTypes() {
         List<TaskType> taskTypes = new ArrayList<TaskType>(4);

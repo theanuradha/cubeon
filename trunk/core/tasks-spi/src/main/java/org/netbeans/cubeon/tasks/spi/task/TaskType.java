@@ -16,21 +16,24 @@
  */
 package org.netbeans.cubeon.tasks.spi.task;
 
+import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
+
 /**
  *
  * @author Anuradha
  */
 public class  TaskType {
 
-    private String id;
-    private String text;
-
+    private final String id;
+    private final String text;
+    private final TaskRepository repository;
     /**
      * 
      * @param id
      * @param text
      */
-    public TaskType(String id, String text) {
+    public TaskType(TaskRepository repository ,String id, String text) {
+        this.repository = repository;
         this.id = id;
         this.text = text;
     }
@@ -51,6 +54,10 @@ public class  TaskType {
         return id;
     }
 
+    public TaskRepository getRepository() {
+        return repository;
+    }
+
     @Override
     public String toString() {
         return getText();
@@ -68,14 +75,20 @@ public class  TaskType {
         if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
             return false;
         }
+        if (this.repository != other.repository && (this.repository == null || !this.repository.equals(other.repository))) {
+            return false;
+        }
         return true;
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 73 * hash + (this.id != null ? this.id.hashCode() : 0);
+        hash = 97 * hash + (this.id != null ? this.id.hashCode() : 0);
+        hash = 97 * hash + (this.repository != null ? this.repository.hashCode() : 0);
         return hash;
     }
+
+   
     
 }

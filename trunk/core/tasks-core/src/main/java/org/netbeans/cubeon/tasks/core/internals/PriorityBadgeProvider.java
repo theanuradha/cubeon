@@ -17,6 +17,7 @@
 package org.netbeans.cubeon.tasks.core.internals;
 
 import java.awt.Image;
+import org.netbeans.cubeon.tasks.core.api.NodeUtils;
 import org.netbeans.cubeon.tasks.spi.repository.TaskPriorityProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskBadgeProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
@@ -34,11 +35,12 @@ public class PriorityBadgeProvider implements TaskBadgeProvider {
         TaskPriorityProvider provider = element.getTaskRepository().getLookup().lookup(TaskPriorityProvider.class);
         if (provider != null) {
             TaskPriority priority = provider.getTaskPriority(element);
+            
 
-            Image badge = priority.getImage();
-            image = Utilities.mergeImages(badge, image, 7, 0);
+            image = Utilities.mergeImages(NodeUtils.getTaskPriorityImage(priority), image, 7, 0);
+
         }
-
         return image;
+
     }
 }

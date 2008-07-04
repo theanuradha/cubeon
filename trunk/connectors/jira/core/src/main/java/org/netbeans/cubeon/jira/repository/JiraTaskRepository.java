@@ -16,10 +16,13 @@
  */
 package org.netbeans.cubeon.jira.repository;
 
+import com.dolby.jira.net.soap.jira.RemoteComponent;
 import com.dolby.jira.net.soap.jira.RemoteIssue;
+import com.dolby.jira.net.soap.jira.RemoteVersion;
 import java.awt.Image;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,9 +31,12 @@ import org.netbeans.api.progress.ProgressHandleFactory;
 import org.netbeans.cubeon.jira.remote.JiraException;
 import org.netbeans.cubeon.jira.remote.JiraSession;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject;
+import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Component;
+import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Version;
 import org.netbeans.cubeon.jira.tasks.JiraTask;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
+import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.task.TaskType;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
@@ -64,6 +70,7 @@ public class JiraTaskRepository implements TaskRepository {
     private final TaskPersistenceHandler handler;
     private FileObject baseDir;
     private State state = State.INACTIVE;
+    private volatile JiraSession session;
 
     public JiraTaskRepository(JiraTaskRepositoryProvider provider,
             String id, String name, String description) {
@@ -113,26 +120,33 @@ public class JiraTaskRepository implements TaskRepository {
         return Utilities.loadImage("org/netbeans/cubeon/jira/repository/jira-repository.png");
     }
 
+    public void submit(JiraTask task) {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
     public void validate(TaskElement element) {
         throw new UnsupportedOperationException();
     }
 
     public TaskElement createTaskElement(String summery, String description) {
         TaskType prefedTaskType = jttp.getPrefedTaskType();
+        TaskPriority prefredPriority = jtpp.getPrefredPriority();
         JiraProject prefredProject = getPrefredProject();
         try {
-            JiraSession session = new JiraSession(url, getUserName(), password);
+            JiraSession js = getSession();
             RemoteIssue issue = new RemoteIssue();
             issue.setSummary(summery);
             issue.setDescription(description);
             issue.setProject(prefredProject.getId());
             issue.setReporter(getUserName());
             issue.setType(prefedTaskType.getId());
-            issue = session.createTask(issue);
+            issue.setPriority(prefredPriority.getId());
+            issue = js.createTask(issue);
 
             JiraTask jiraTask = new JiraTask(issue.getKey(), summery, description, this);
-            jiraTask.setProject(prefredProject);
-            jiraTask.setType(prefedTaskType);
+            jiraTask.setUrlString(url + "/browse/" + issue.getKey());//NOI18N
+
+            maregeToTask(issue, jiraTask);
             return jiraTask;
         } catch (JiraException ex) {
             Logger.getLogger(JiraTaskRepository.class.getName()).log(Level.WARNING, ex.getMessage());
@@ -141,6 +155,7 @@ public class JiraTaskRepository implements TaskRepository {
 
 
         JiraTask jiraTask = new JiraTask(handler.nextTaskId(), summery, description, this);
+        jiraTask.setLocal(true);
         jiraTask.setProject(prefredProject);
         jiraTask.setType(prefedTaskType);
         return jiraTask;
@@ -253,6 +268,83 @@ public class JiraTaskRepository implements TaskRepository {
             return projects.get(0);//TODO Extenalize this
         }
         return null;
+    }
+
+    public void update(JiraTask task) {
+        synchronized (task) {
+            try {
+                JiraSession js = getSession();
+                RemoteIssue issue = js.getIssue(task.getId());
+                maregeToTask(issue, task);
+                persist(task);
+            } catch (JiraException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+
+    }
+
+    public synchronized JiraSession getSession() throws JiraException {
+        if (session == null) {
+            session = new JiraSession(url, getUserName(), password);
+        }
+        return session;
+    }
+
+    private void maregeToTask(RemoteIssue issue, JiraTask jiraTask) {
+        jiraTask.setName(issue.getSummary());
+        jiraTask.setDescription(issue.getDescription());
+        jiraTask.setEnvironment(issue.getEnvironment());
+        JiraProject project = repositoryAttributes.getProjectById(issue.getProject());
+        jiraTask.setProject(project);
+        jiraTask.setType(jttp.getTaskTypeById(issue.getType()));
+        jiraTask.setPriority(jtpp.getTaskPriorityById(issue.getPriority()));
+        jiraTask.setStatus(jtsp.getTaskStatusById(issue.getStatus()));
+        jiraTask.setResolution(jtrp.getTaskResolutionById(issue.getResolution()));
+        jiraTask.setReporter(issue.getReporter());
+        jiraTask.setAssignee(issue.getAssignee());
+
+        //----------------------------------------------------------------------
+        RemoteComponent[] components = issue.getComponents();
+        List<JiraProject.Component> cs = new ArrayList<JiraProject.Component>();
+        for (RemoteComponent rc : components) {
+            Component component = project.getComponentById(rc.getId());
+            if (component != null) {
+                cs.add(component);
+            }
+        }
+        jiraTask.setComponents(cs);
+
+        //----------------------------------------------------------------------
+        RemoteVersion[] affectsRemoteVersions = issue.getAffectsVersions();
+        List<JiraProject.Version> affectsVersions = new ArrayList<JiraProject.Version>();
+        for (RemoteVersion rv : affectsRemoteVersions) {
+            Version version = project.getVersionById(rv.getId());
+            if (version != null) {
+                affectsVersions.add(version);
+            }
+        }
+        jiraTask.setAffectedVersions(affectsVersions);
+        //----------------------------------------------------------------------
+        RemoteVersion[] rvs = issue.getFixVersions();
+        List<JiraProject.Version> fixVersions = new ArrayList<JiraProject.Version>();
+        for (RemoteVersion rv : rvs) {
+            Version version = project.getVersionById(rv.getId());
+            if (version != null) {
+                fixVersions.add(version);
+            }
+        }
+        jiraTask.setFixVersions(fixVersions);
+        //----------------------------------------------------------------------
+
+        Calendar created = issue.getCreated();
+        if (created != null) {
+            jiraTask.setCreated(created.getTime());
+        }
+        Calendar updated = issue.getUpdated();
+        if (updated != null) {
+            jiraTask.setUpdated(updated.getTime());
+        }
     }
 
     @Override

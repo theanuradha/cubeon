@@ -28,10 +28,12 @@ import java.awt.event.ItemListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import javax.swing.Action;
 import javax.swing.DefaultListModel;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JComponent;
@@ -44,6 +46,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import org.netbeans.cubeon.jira.tasks.actions.UpdateTaskAction;
 import org.netbeans.cubeon.jira.repository.JiraRepositoryAttributes;
 import org.netbeans.cubeon.jira.repository.JiraTaskPriorityProvider;
 import org.netbeans.cubeon.jira.repository.JiraTaskRepository;
@@ -54,6 +57,7 @@ import org.netbeans.cubeon.jira.repository.attributes.JiraProject;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Component;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Version;
 import org.netbeans.cubeon.jira.tasks.JiraTask;
+import org.netbeans.cubeon.jira.tasks.actions.SubmitTaskAction;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider.EditorAttributeHandler;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
@@ -78,6 +82,8 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
         txtOutline.setText(jiraTask.getName());
         txtDescription.setText(jiraTask.getDescription());
         txtEnvironment.setText(jiraTask.getEnvironment());
+        lblReportedBy.setText(jiraTask.getReporter());
+        txtAssignee.setText(jiraTask.getAssignee());
         loadDates(jiraTask);
         loadAttributes();
         final DocumentListener documentListener = new DocumentListener() {
@@ -159,6 +165,14 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
         lstAffectVersion.getSelectionModel().addListSelectionListener(listSelectionListener);
         lstFixVersion.getSelectionModel().addListSelectionListener(listSelectionListener);
         lstComponents.getSelectionModel().addListSelectionListener(listSelectionListener);
+
+
+        if (jiraTask.isLocal()) {
+            cmbStatus.setEnabled(false);
+            cmbResolution.setEnabled(false);
+            lstFixVersion.setEnabled(false);
+        //todo add other stuff
+        }
     }
 
     private void loadAttributes() {
@@ -359,6 +373,11 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
 
     }
 
+    public List<Action> getActions() {
+        return Arrays.<Action>asList(new SubmitTaskAction(jiraTask)
+                , new UpdateTaskAction(jiraTask));
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -398,6 +417,11 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
         jScrollPane4 = new javax.swing.JScrollPane();
         lstComponents = new javax.swing.JList();
         lblDesription1 = new javax.swing.JLabel();
+        lblDesription2 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        lblReportedBy = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        txtAssignee = new javax.swing.JTextField();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
@@ -450,19 +474,26 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
         lblDesription1.setForeground(new java.awt.Color(51, 51, 51));
         lblDesription1.setText(NbBundle.getMessage(JiraTaskEditorUI.class, "JiraTaskEditorUI.lblDesription1.text")); // NOI18N
 
+        lblDesription2.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        lblDesription2.setForeground(new java.awt.Color(51, 51, 51));
+        lblDesription2.setText(NbBundle.getMessage(JiraTaskEditorUI.class, "JiraTaskEditorUI.lblDesription2.text")); // NOI18N
+
+        jLabel1.setText(NbBundle.getMessage(JiraTaskEditorUI.class, "JiraTaskEditorUI.jLabel1.text","-")); // NOI18N
+
+        lblReportedBy.setText(NbBundle.getMessage(JiraTaskEditorUI.class, "JiraTaskEditorUI.lblReportedBy.text","-")); // NOI18N
+
+        jLabel3.setText(NbBundle.getMessage(JiraTaskEditorUI.class, "JiraTaskEditorUI.jLabel3.text","-")); // NOI18N
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
+                .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(org.jdesktop.layout.GroupLayout.TRAILING, txtOutline, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 727, Short.MAX_VALUE)
-                            .add(lblAttributes, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 727, Short.MAX_VALUE)))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, txtOutline, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 727, Short.MAX_VALUE)
+                    .add(lblAttributes, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 727, Short.MAX_VALUE)
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(layout.createSequentialGroup()
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -487,24 +518,19 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
                             .add(lblAffects)
                             .add(lblFixVersion, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 79, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 145, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(jScrollPane3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 145, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)
+                            .add(jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE))
                         .add(8, 8, 8))
                     .add(layout.createSequentialGroup()
-                        .add(16, 16, 16)
-                        .add(lblCreated, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 249, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(lblUpdated, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 466, Short.MAX_VALUE))
+                        .add(lblCreated, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 319, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(18, 18, 18)
+                        .add(lblUpdated, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 303, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(spDescription, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 727, Short.MAX_VALUE)
+                    .add(lblDesription, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 727, Short.MAX_VALUE)
                     .add(layout.createSequentialGroup()
-                        .addContainerGap()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(spDescription, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 727, Short.MAX_VALUE)
-                            .add(lblDesription, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 727, Short.MAX_VALUE)))
-                    .add(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(lblDesription1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 727, Short.MAX_VALUE)
+                            .add(lblDesription1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 318, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                             .add(layout.createSequentialGroup()
                                 .add(10, 10, 10)
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
@@ -515,12 +541,21 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
                                     .add(layout.createSequentialGroup()
                                         .add(lblStatus)
                                         .add(38, 38, 38)
-                                        .add(cmbStatus, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 151, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))))))
+                                        .add(cmbStatus, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 151, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(lblDesription2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE)
+                            .add(layout.createSequentialGroup()
+                                .add(10, 10, 10)
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                    .add(jLabel1)
+                                    .add(jLabel3))
+                                .add(18, 18, 18)
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                    .add(txtAssignee, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 142, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                    .add(lblReportedBy, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 294, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))))
                 .addContainerGap())
         );
-
-        layout.linkSize(new java.awt.Component[] {jScrollPane2, jScrollPane3}, org.jdesktop.layout.GroupLayout.HORIZONTAL);
-
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
@@ -568,15 +603,21 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(spDescription, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 111, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(lblDesription1)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(lblDesription1)
+                    .add(lblDesription2))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(lblStatus)
-                    .add(cmbStatus, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(cmbStatus, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jLabel1)
+                    .add(lblReportedBy))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(lblResolution)
-                    .add(cmbResolution, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(cmbResolution, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jLabel3)
+                    .add(txtAssignee, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(142, Short.MAX_VALUE))
         );
 
@@ -590,6 +631,8 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
     private javax.swing.JComboBox cmbResolution;
     private javax.swing.JComboBox cmbStatus;
     private javax.swing.JComboBox cmbType;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -600,10 +643,12 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
     private javax.swing.JLabel lblCreated;
     private javax.swing.JLabel lblDesription;
     private javax.swing.JLabel lblDesription1;
+    private javax.swing.JLabel lblDesription2;
     private javax.swing.JLabel lblEnvironment;
     private javax.swing.JLabel lblFixVersion;
     private javax.swing.JLabel lblPriority;
     private javax.swing.JLabel lblProject;
+    private javax.swing.JLabel lblReportedBy;
     private javax.swing.JLabel lblResolution;
     private javax.swing.JLabel lblStatus;
     private javax.swing.JLabel lblType;
@@ -612,6 +657,7 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
     private javax.swing.JList lstComponents;
     private javax.swing.JList lstFixVersion;
     private javax.swing.JScrollPane spDescription;
+    private javax.swing.JTextField txtAssignee;
     private javax.swing.JEditorPane txtDescription;
     private javax.swing.JEditorPane txtEnvironment;
     private javax.swing.JTextField txtOutline;
