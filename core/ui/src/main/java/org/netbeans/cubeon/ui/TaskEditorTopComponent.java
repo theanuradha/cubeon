@@ -125,9 +125,9 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
         base.setLayout(new java.awt.BorderLayout());
 
         header.setBackground(new java.awt.Color(255, 255, 255));
-        header.setMaximumSize(new java.awt.Dimension(32767, 25));
-        header.setMinimumSize(new java.awt.Dimension(0, 25));
-        header.setPreferredSize(new java.awt.Dimension(0, 25));
+        header.setMaximumSize(new java.awt.Dimension(32767, 34));
+        header.setMinimumSize(new java.awt.Dimension(0, 34));
+        header.setPreferredSize(new java.awt.Dimension(0, 34));
 
         lblHeader.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
         lblHeader.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/cubeon/ui/repository.png"))); // NOI18N
