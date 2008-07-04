@@ -120,10 +120,6 @@ public class JiraTaskRepository implements TaskRepository {
         return Utilities.loadImage("org/netbeans/cubeon/jira/repository/jira-repository.png");
     }
 
-    public void submit(JiraTask task) {
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
-
     public void validate(TaskElement element) {
         throw new UnsupportedOperationException();
     }
@@ -282,6 +278,12 @@ public class JiraTaskRepository implements TaskRepository {
             }
         }
 
+    }
+
+    public void submit(JiraTask task) {
+        synchronized (task) {
+
+        }
     }
 
     public synchronized JiraSession getSession() throws JiraException {

@@ -79,6 +79,8 @@ public interface TaskEditorProvider {
          */
         JComponent getComponent();
 
+        void refresh();
+
         /**
          * 
          * @return

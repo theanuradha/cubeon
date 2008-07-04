@@ -5,21 +5,14 @@
 package org.netbeans.cubeon.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 
 import java.io.IOException;
 import java.util.List;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.netbeans.cubeon.tasks.spi.Extension;
@@ -29,10 +22,10 @@ import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskElementChangeAdapter;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.ui.internals.TaskElementNode;
-import org.netbeans.cubeon.ui.util.PaintUtils;
 import org.openide.cookies.SaveCookie;
 import org.openide.nodes.Node;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 
 /**
@@ -41,10 +34,7 @@ import org.openide.windows.TopComponent;
 final class TaskEditorTopComponent extends TopComponent implements SaveCookie, ChangeListener {
 
     private static final String PREFERRED_ID = "TaskEditorTopComponent";
-    private static final Color start = new Color(255, 255, 255, 255);
-    private static final Color end = new Color(255, 255, 255, 0);
-    private static final RenderingHints hints;
-    private final static GradientPaint GRADIENT_HEADER_LARGE;
+
     private TaskElement element;
     private final TaskElementNode editorNode;
     private final EditorAttributeHandler eah;
@@ -52,31 +42,11 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
     private final TaskElementChangeAdapter changeAdapter;
 
 
-    static {
-        hints = new RenderingHints(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
-        hints.put(RenderingHints.KEY_INTERPOLATION,
-                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        hints.put(RenderingHints.KEY_RENDERING,
-                RenderingHints.VALUE_RENDER_QUALITY);
-
-        Color color = UIManager.getDefaults().getColor("InternalFrame.activeTitleGradient");
-
-        if (color != null) {
-            GRADIENT_HEADER_LARGE = new GradientPaint(0, 0,
-                    Color.WHITE, 0, 33, color);
-        } else {
-
-            GRADIENT_HEADER_LARGE = new GradientPaint(0, 0,
-                    Color.WHITE, 0, 33, Color.WHITE);
-        }
-    }
-
     TaskEditorTopComponent(final TaskElement element) {
         this.element = element;
 
         initComponents();
-        jToolBar1.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        jToolBar1.setLayout(new FlowLayout(FlowLayout.RIGHT,0,0));
         Lookup lookup = element.getLookup();
 
         TaskEditorProvider editorProvider = lookup.lookup(TaskEditorProvider.class);
@@ -99,7 +69,7 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
                 JButton button = new JButton(action);
                 button.setText(null);
                 button.setOpaque(false);
-                jToolBar1.add(button);
+                jToolBar1.add(button,0);
             }
         }
 
@@ -142,70 +112,22 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        base = new javax.swing.JPanel();
-        header =         new JPanel() {
-
-            private int count;
-
-            /**
-            * Paints a gradient in the background of this component
-            */
-            @Override
-            protected void paintComponent(Graphics g) {
-                int i = count++;
-                Graphics2D g2 = (Graphics2D) g;
-
-                g2.setPaint(GRADIENT_HEADER_LARGE);
-                g2.fillRect(0, 0, getWidth(), getHeight());
-
-                RenderingHints oldHints = g2.getRenderingHints();
-                g2.setRenderingHints(hints);
-
-                float width = getWidth();
-                float height = getHeight();
-
-                g2.translate(0, -30);
-
-                PaintUtils.drawCurve(g2,
-                    20.0f, -10.0f, 20.0f, -10.0f,
-                    width / 2.0f - 40.0f, 10.0f,
-                    0.0f, -5.0f,
-                    width / 2.0f + 40, 1.0f,
-                    0.0f, 5.0f,
-                    50.0f, 5.0f, false,i,width,start,end );
-
-                g2.translate(0, 30);
-                g2.translate(0, height - 60);
-
-                PaintUtils.drawCurve(g2,
-                    30.0f, -15.0f, 50.0f, 15.0f,
-                    width / 2.0f - 40.0f, 1.0f,
-                    15.0f, -25.0f,
-                    width / 2.0f, 1.0f / 2.0f,
-                    0.0f, 25.0f,
-                    15.0f, 9.0f, false, i, width, start, end);
-
-                g2.translate(0, -height + 60);
-
-                PaintUtils.drawCurve(g2,
-                    height - 35.0f, -5.0f, height - 50.0f, 10.0f,
-                    width / 2.0f - 40.0f, 1.0f,
-                    height - 35.0f, -25.0f,
-                    width / 2.0f, 1.0f / 2.0f,
-                    height - 20.0f, 25.0f,
-                    25.0f, 7.0f, true, i, width, start, end);
-
-                g2.setRenderingHints(oldHints);
-            }
-        };
         javax.swing.JSeparator separator = new javax.swing.JSeparator();
+        base = new javax.swing.JPanel();
+        header = new javax.swing.JPanel();
         lblHeader = new javax.swing.JLabel();
         jToolBar1 = new javax.swing.JToolBar();
+        jButton1 = new javax.swing.JButton();
 
         setLayout(new java.awt.BorderLayout());
 
         base.setBackground(new java.awt.Color(255, 255, 255));
         base.setLayout(new java.awt.BorderLayout());
+
+        header.setBackground(new java.awt.Color(255, 255, 255));
+        header.setMaximumSize(new java.awt.Dimension(32767, 25));
+        header.setMinimumSize(new java.awt.Dimension(0, 25));
+        header.setPreferredSize(new java.awt.Dimension(0, 25));
 
         lblHeader.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
         lblHeader.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/cubeon/ui/repository.png"))); // NOI18N
@@ -214,35 +136,51 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
         jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
         jToolBar1.setOpaque(false);
+        jToolBar1.setPreferredSize(new java.awt.Dimension(49, 23));
+
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/cubeon/ui/refresh.png"))); // NOI18N
+        jButton1.setToolTipText(NbBundle.getMessage(TaskEditorTopComponent.class, "TaskEditorTopComponent.jButton1.toolTipText","-")); // NOI18N
+        jButton1.setFocusable(false);
+        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton1.setOpaque(false);
+        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jButton1);
 
         org.jdesktop.layout.GroupLayout headerLayout = new org.jdesktop.layout.GroupLayout(header);
         header.setLayout(headerLayout);
         headerLayout.setHorizontalGroup(
             headerLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, separator, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 711, Short.MAX_VALUE)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, headerLayout.createSequentialGroup()
-                .add(5, 5, 5)
-                .add(lblHeader, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 508, Short.MAX_VALUE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(jToolBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 188, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap()
+                .add(lblHeader, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 485, Short.MAX_VALUE)
+                .add(18, 18, 18)
+                .add(jToolBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 188, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         headerLayout.setVerticalGroup(
             headerLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, headerLayout.createSequentialGroup()
-                .add(headerLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jToolBar1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, lblHeader, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(separator, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+            .add(lblHeader, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
+            .add(jToolBar1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
         );
 
         base.add(header, java.awt.BorderLayout.NORTH);
 
         add(base, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        eah.refresh();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel base;
     private javax.swing.JPanel header;
+    private javax.swing.JButton jButton1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JLabel lblHeader;
     // End of variables declaration//GEN-END:variables

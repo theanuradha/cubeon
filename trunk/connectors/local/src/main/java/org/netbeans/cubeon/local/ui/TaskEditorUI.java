@@ -66,82 +66,49 @@ public class TaskEditorUI extends javax.swing.JPanel implements EditorAttributeH
 
     private final Set<ChangeListener> listeners = new HashSet<ChangeListener>(1);
     private LocalTask localTask;
+    final DocumentListener documentListener = new DocumentListener() {
 
-    /** Creates new form TaskEditorUI */
-    public TaskEditorUI(LocalTask localTask) {
-        this.localTask = localTask;
-        initComponents();
-        txtOutline.setText(localTask.getName());
-        txtDescription.setText(localTask.getDescription());
-        txtUrl.setText(localTask.getUrlString());
-        loadDates(localTask);
-        cmbPriority.removeAllItems();
-        LocalTaskRepository taskRepository = localTask.getTaskRepository().getLookup().lookup(LocalTaskRepository.class);
-        LocalTaskPriorityProvider ltpp = taskRepository.getLocalTaskPriorityProvider();
-        for (TaskPriority priority : ltpp.getTaskPrioritys()) {
-            cmbPriority.addItem(priority);
-        }
-        cmbPriority.setSelectedItem(localTask.getPriority());
-
-        cmbStatus.removeAllItems();
-        LocalTaskStatusProvider statusProvider = taskRepository.getLocalTaskStatusProvider();
-        for (TaskStatus status : statusProvider.getStatusList()) {
-            cmbStatus.addItem(status);
-        }
-        cmbStatus.setSelectedItem(localTask.getStatus());
-
-        cmbType.removeAllItems();
-
-        LocalTaskTypeProvider localTaskTypeProvider = taskRepository.getLocalTaskTypeProvider();
-        for (TaskType type : localTaskTypeProvider.getTaskTypes()) {
-            cmbType.addItem(type);
+        public void insertUpdate(DocumentEvent arg0) {
+            run();
         }
 
-        cmbType.setSelectedItem(localTask.getType());
-        final DocumentListener documentListener = new DocumentListener() {
+        public void removeUpdate(DocumentEvent arg0) {
+            run();
+        }
 
-            public void insertUpdate(DocumentEvent arg0) {
-                run();
-            }
+        public void changedUpdate(DocumentEvent arg0) {
+            run();
+        }
 
-            public void removeUpdate(DocumentEvent arg0) {
-                run();
-            }
+        private void run() {
+            EventQueue.invokeLater(new Runnable() {
 
-            public void changedUpdate(DocumentEvent arg0) {
-                run();
-            }
+                public void run() {
+                    fireChangeEvent();
+                }
+            });
 
-            private void run() {
+        }
+    };
+    ItemListener itemListener = new ItemListener() {
+
+        public void itemStateChanged(ItemEvent e) {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
                 EventQueue.invokeLater(new Runnable() {
 
                     public void run() {
                         fireChangeEvent();
                     }
                 });
-
             }
-        };
-        txtOutline.getDocument().addDocumentListener(documentListener);
-        txtDescription.getDocument().addDocumentListener(documentListener);
-        txtUrl.getDocument().addDocumentListener(documentListener);
+        }
+    };
 
-        ItemListener itemListener = new ItemListener() {
-
-            public void itemStateChanged(ItemEvent e) {
-                if (e.getStateChange() == ItemEvent.SELECTED) {
-                    EventQueue.invokeLater(new Runnable() {
-
-                        public void run() {
-                            fireChangeEvent();
-                        }
-                    });
-                }
-            }
-        };
-        cmbPriority.addItemListener(itemListener);
-        cmbStatus.addItemListener(itemListener);
-        cmbType.addItemListener(itemListener);
+    /** Creates new form TaskEditorUI */
+    public TaskEditorUI(LocalTask localTask) {
+        this.localTask = localTask;
+        initComponents();
+        refresh();
     }
 
     @Override
@@ -416,8 +383,57 @@ public class TaskEditorUI extends javax.swing.JPanel implements EditorAttributeH
     private javax.swing.JTextField txtOutline;
     private javax.swing.JTextField txtUrl;
     // End of variables declaration//GEN-END:variables
+    // End of variables declaration
 
     public List<Action> getActions() {
         return new ArrayList<Action>(0);
+    }
+
+    public void refresh() {
+        txtOutline.getDocument().removeDocumentListener(documentListener);
+        txtDescription.getDocument().removeDocumentListener(documentListener);
+        txtUrl.getDocument().removeDocumentListener(documentListener);
+
+
+        cmbPriority.removeItemListener(itemListener);
+        cmbStatus.removeItemListener(itemListener);
+        cmbType.removeItemListener(itemListener);
+
+        txtOutline.setText(localTask.getName());
+        txtDescription.setText(localTask.getDescription());
+        txtUrl.setText(localTask.getUrlString());
+        loadDates(localTask);
+        cmbPriority.removeAllItems();
+        LocalTaskRepository taskRepository = localTask.getTaskRepository().getLookup().lookup(LocalTaskRepository.class);
+        LocalTaskPriorityProvider ltpp = taskRepository.getLocalTaskPriorityProvider();
+        for (TaskPriority priority : ltpp.getTaskPrioritys()) {
+            cmbPriority.addItem(priority);
+        }
+        cmbPriority.setSelectedItem(localTask.getPriority());
+
+        cmbStatus.removeAllItems();
+        LocalTaskStatusProvider statusProvider = taskRepository.getLocalTaskStatusProvider();
+        for (TaskStatus status : statusProvider.getStatusList()) {
+            cmbStatus.addItem(status);
+        }
+        cmbStatus.setSelectedItem(localTask.getStatus());
+
+        cmbType.removeAllItems();
+
+        LocalTaskTypeProvider localTaskTypeProvider = taskRepository.getLocalTaskTypeProvider();
+        for (TaskType type : localTaskTypeProvider.getTaskTypes()) {
+            cmbType.addItem(type);
+        }
+
+        cmbType.setSelectedItem(localTask.getType());
+
+        txtOutline.getDocument().addDocumentListener(documentListener);
+        txtDescription.getDocument().addDocumentListener(documentListener);
+        txtUrl.getDocument().addDocumentListener(documentListener);
+
+
+        cmbPriority.addItemListener(itemListener);
+        cmbStatus.addItemListener(itemListener);
+        cmbType.addItemListener(itemListener);
     }
 }

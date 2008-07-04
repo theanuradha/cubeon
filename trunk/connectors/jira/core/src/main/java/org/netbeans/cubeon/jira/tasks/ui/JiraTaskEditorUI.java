@@ -74,105 +74,74 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
 
     private final Set<ChangeListener> listeners = new HashSet<ChangeListener>(1);
     private JiraTask jiraTask;
+    final DocumentListener documentListener = new DocumentListener() {
+
+        public void insertUpdate(DocumentEvent arg0) {
+            run();
+        }
+
+        public void removeUpdate(DocumentEvent arg0) {
+            run();
+        }
+
+        public void changedUpdate(DocumentEvent arg0) {
+            run();
+        }
+
+        private void run() {
+            EventQueue.invokeLater(new Runnable() {
+
+                public void run() {
+                    fireChangeEvent();
+                }
+            });
+
+        }
+    };
+    ItemListener itemListener = new ItemListener() {
+
+        public void itemStateChanged(ItemEvent e) {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                EventQueue.invokeLater(new Runnable() {
+
+                    public void run() {
+                        fireChangeEvent();
+                    }
+                });
+            }
+        }
+    };
+    ItemListener projectitemListener = new ItemListener() {
+
+        public void itemStateChanged(ItemEvent e) {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                EventQueue.invokeLater(new Runnable() {
+
+                    public void run() {
+                        loadProject((JiraProject) cmbProject.getSelectedItem());
+                    }
+                });
+            }
+        }
+    };
+    ListSelectionListener listSelectionListener = new ListSelectionListener() {
+
+        public void valueChanged(ListSelectionEvent e) {
+
+            EventQueue.invokeLater(new Runnable() {
+
+                public void run() {
+                    fireChangeEvent();
+                }
+            });
+        }
+    };
 
     /** Creates new form TaskEditorUI */
     public JiraTaskEditorUI(JiraTask jiraTask) {
         this.jiraTask = jiraTask;
         initComponents();
-        txtOutline.setText(jiraTask.getName());
-        txtDescription.setText(jiraTask.getDescription());
-        txtEnvironment.setText(jiraTask.getEnvironment());
-        lblReportedBy.setText(jiraTask.getReporter());
-        txtAssignee.setText(jiraTask.getAssignee());
-        loadDates(jiraTask);
-        loadAttributes();
-        final DocumentListener documentListener = new DocumentListener() {
-
-            public void insertUpdate(DocumentEvent arg0) {
-                run();
-            }
-
-            public void removeUpdate(DocumentEvent arg0) {
-                run();
-            }
-
-            public void changedUpdate(DocumentEvent arg0) {
-                run();
-            }
-
-            private void run() {
-                EventQueue.invokeLater(new Runnable() {
-
-                    public void run() {
-                        fireChangeEvent();
-                    }
-                });
-
-            }
-        };
-        txtOutline.getDocument().addDocumentListener(documentListener);
-        txtDescription.getDocument().addDocumentListener(documentListener);
-        txtEnvironment.getDocument().addDocumentListener(documentListener);
-
-        ItemListener itemListener = new ItemListener() {
-
-            public void itemStateChanged(ItemEvent e) {
-                if (e.getStateChange() == ItemEvent.SELECTED) {
-                    EventQueue.invokeLater(new Runnable() {
-
-                        public void run() {
-                            fireChangeEvent();
-                        }
-                    });
-                }
-            }
-        };
-
-        ItemListener projectitemListener = new ItemListener() {
-
-            public void itemStateChanged(ItemEvent e) {
-                if (e.getStateChange() == ItemEvent.SELECTED) {
-                    EventQueue.invokeLater(new Runnable() {
-
-                        public void run() {
-                            loadProject((JiraProject) cmbProject.getSelectedItem());
-                        }
-                    });
-                }
-            }
-        };
-
-        ListSelectionListener listSelectionListener = new ListSelectionListener() {
-
-            public void valueChanged(ListSelectionEvent e) {
-
-                EventQueue.invokeLater(new Runnable() {
-
-                    public void run() {
-                        fireChangeEvent();
-                    }
-                });
-            }
-        };
-        cmbPriority.addItemListener(itemListener);
-        cmbStatus.addItemListener(itemListener);
-        cmbType.addItemListener(itemListener);
-        cmbProject.addItemListener(itemListener);
-        cmbProject.addItemListener(projectitemListener);
-        cmbResolution.addItemListener(itemListener);
-
-
-        lstAffectVersion.getSelectionModel().addListSelectionListener(listSelectionListener);
-        lstFixVersion.getSelectionModel().addListSelectionListener(listSelectionListener);
-        lstComponents.getSelectionModel().addListSelectionListener(listSelectionListener);
-
-
-        if (jiraTask.isLocal()) {
-            cmbStatus.setEnabled(false);
-            cmbResolution.setEnabled(false);
-            lstFixVersion.setEnabled(false);
-        //todo add other stuff
-        }
+        refresh();
     }
 
     private void loadAttributes() {
@@ -374,8 +343,7 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
     }
 
     public List<Action> getActions() {
-        return Arrays.<Action>asList(new SubmitTaskAction(jiraTask)
-                , new UpdateTaskAction(jiraTask));
+        return Arrays.<Action>asList(new SubmitTaskAction(jiraTask), new UpdateTaskAction(jiraTask));
     }
 
     /** This method is called from within the constructor to
@@ -662,4 +630,55 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
     private javax.swing.JEditorPane txtEnvironment;
     private javax.swing.JTextField txtOutline;
     // End of variables declaration//GEN-END:variables
+
+    public void refresh() {
+                txtOutline.getDocument().removeDocumentListener(documentListener);
+        txtDescription.getDocument().removeDocumentListener(documentListener);
+        txtEnvironment.getDocument().removeDocumentListener(documentListener);
+
+        cmbPriority.removeItemListener(itemListener);
+        cmbStatus.removeItemListener(itemListener);
+        cmbType.removeItemListener(itemListener);
+        cmbProject.removeItemListener(itemListener);
+        cmbProject.removeItemListener(projectitemListener);
+        cmbResolution.removeItemListener(itemListener);
+
+
+        lstAffectVersion.getSelectionModel().removeListSelectionListener(listSelectionListener);
+        lstFixVersion.getSelectionModel().removeListSelectionListener(listSelectionListener);
+        lstComponents.getSelectionModel().removeListSelectionListener(listSelectionListener);
+
+
+                txtOutline.setText(jiraTask.getName());
+        txtDescription.setText(jiraTask.getDescription());
+        txtEnvironment.setText(jiraTask.getEnvironment());
+        lblReportedBy.setText(jiraTask.getReporter());
+        txtAssignee.setText(jiraTask.getAssignee());
+        loadDates(jiraTask);
+        loadAttributes();
+
+        txtOutline.getDocument().addDocumentListener(documentListener);
+        txtDescription.getDocument().addDocumentListener(documentListener);
+        txtEnvironment.getDocument().addDocumentListener(documentListener);
+
+        cmbPriority.addItemListener(itemListener);
+        cmbStatus.addItemListener(itemListener);
+        cmbType.addItemListener(itemListener);
+        cmbProject.addItemListener(itemListener);
+        cmbProject.addItemListener(projectitemListener);
+        cmbResolution.addItemListener(itemListener);
+
+
+        lstAffectVersion.getSelectionModel().addListSelectionListener(listSelectionListener);
+        lstFixVersion.getSelectionModel().addListSelectionListener(listSelectionListener);
+        lstComponents.getSelectionModel().addListSelectionListener(listSelectionListener);
+
+
+        if (jiraTask.isLocal()) {
+            cmbStatus.setEnabled(false);
+            cmbResolution.setEnabled(false);
+            lstFixVersion.setEnabled(false);
+        //todo add other stuff
+        }
+    }
 }
