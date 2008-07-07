@@ -37,6 +37,7 @@ import org.netbeans.cubeon.jira.repository.attributes.JiraProject;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Component;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Version;
 import org.netbeans.cubeon.jira.tasks.JiraTask;
+import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
@@ -221,7 +222,7 @@ public class JiraTaskRepository implements TaskRepository {
             public void run() {
                 try {
                     setState(State.SYNCHRONIZING);
-                    ProgressHandle handle = ProgressHandleFactory.createHandle(getName());
+                    ProgressHandle handle = ProgressHandleFactory.createHandle(getName()+": Updating Attributes");
                     attributesPersistence.refresh(handle);
                     loadAttributes();
                     handle.finish();
@@ -284,6 +285,8 @@ public class JiraTaskRepository implements TaskRepository {
                 RemoteIssue issue = js.getIssue(task.getId());
                 maregeToTask(issue, task);
                 persist(task);
+                TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
+                factory.refresh(task);
             } catch (JiraException ex) {
                 Exceptions.printStackTrace(ex);
             }

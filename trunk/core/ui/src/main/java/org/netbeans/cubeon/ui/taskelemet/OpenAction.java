@@ -37,6 +37,6 @@ public class OpenAction extends AbstractAction {
 
     public void actionPerformed(ActionEvent e) {
         TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
-        factory.createTaskEditor(element);
+        factory.openTask(element);
     }
 }

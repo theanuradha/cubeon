@@ -14,35 +14,50 @@
  *  limitations under the License.
  *  under the License.
  */
-
 package org.netbeans.cubeon.jira.tasks.actions;
 
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
+import org.netbeans.api.progress.ProgressHandle;
+import org.netbeans.api.progress.ProgressHandleFactory;
 import org.netbeans.cubeon.jira.repository.JiraTaskRepository;
 import org.netbeans.cubeon.jira.tasks.JiraTask;
+import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 
 /**
  *
  * @author Anuradha
  */
-public class UpdateTaskAction extends AbstractAction{
+public class UpdateTaskAction extends AbstractAction {
+
     private JiraTask task;
 
     public UpdateTaskAction(JiraTask task) {
 
-    this.task = task;
+        this.task = task;
         putValue(NAME, "Update");
         putValue(SHORT_DESCRIPTION, "Update Remote Changes");
         putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/jira/task-update.png")));
     }
 
     public void actionPerformed(ActionEvent e) {
-        JiraTaskRepository repository = task.getTaskRepository().getLookup().lookup(JiraTaskRepository.class);
-        
-        repository.update(task);
-    }
 
+        RequestProcessor.getDefault().post(new Runnable() {
+
+            public void run() {
+                setEnabled(false);
+
+                ProgressHandle handle = ProgressHandleFactory.createHandle("Updating : " + task.getId());
+                handle.start();
+                handle.switchToIndeterminate();
+                JiraTaskRepository repository = task.getTaskRepository().getLookup().lookup(JiraTaskRepository.class);
+
+                repository.update(task);
+                handle.finish();
+                setEnabled(true);
+            }
+        });
+    }
 }

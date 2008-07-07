@@ -136,7 +136,7 @@ public final class NewTaskWizardAction extends AbstractAction {
             refreshable.refreshNode();
             //open newly created Task 
             TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
-            factory.createTaskEditor(element);
+            factory.openTask(element);
         }
     }
 

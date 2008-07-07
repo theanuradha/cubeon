@@ -34,19 +34,18 @@ import org.openide.windows.TopComponent;
 final class TaskEditorTopComponent extends TopComponent implements SaveCookie, ChangeListener {
 
     private static final String PREFERRED_ID = "TaskEditorTopComponent";
-
     private TaskElement element;
     private final TaskElementNode editorNode;
     private final EditorAttributeHandler eah;
     private final Extension extension;
     private final TaskElementChangeAdapter changeAdapter;
+    private final TaskEditorFactoryImpl factoryImpl;
 
-
-    TaskEditorTopComponent(final TaskElement element) {
+    TaskEditorTopComponent(TaskEditorFactoryImpl factoryImpl, final TaskElement element) {
         this.element = element;
-
+        this.factoryImpl = factoryImpl;
         initComponents();
-        jToolBar1.setLayout(new FlowLayout(FlowLayout.RIGHT,0,0));
+        jToolBar1.setLayout(new FlowLayout(FlowLayout.RIGHT, 0, 0));
         Lookup lookup = element.getLookup();
 
         TaskEditorProvider editorProvider = lookup.lookup(TaskEditorProvider.class);
@@ -69,7 +68,7 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
                 JButton button = new JButton(action);
                 button.setText(null);
                 button.setOpaque(false);
-                jToolBar1.add(button,0);
+                jToolBar1.add(button, 0);
             }
         }
 
@@ -174,10 +173,8 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        eah.refresh(); 
-        editorNode.setModified(false);
-
-    }//GEN-LAST:event_jButton1ActionPerformed
+        refresh();//GEN-LAST:event_jButton1ActionPerformed
+    }                                        
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel base;
@@ -202,6 +199,11 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
         editorNode.setModified(false);
     }
 
+    public void refresh() {
+        eah.refresh();
+        editorNode.setModified(false);
+    }
+
     public void stateChanged(ChangeEvent e) {
         editorNode.setModified(true);
     }
@@ -209,10 +211,15 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
     @Override
     protected void componentClosed() {
         extension.remove(changeAdapter);
+        factoryImpl.notifyRemove(element);
         try {
             editorNode.destroy();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+    }
+
+    public EditorAttributeHandler getAttributeHandler() {
+        return eah;
     }
 }
