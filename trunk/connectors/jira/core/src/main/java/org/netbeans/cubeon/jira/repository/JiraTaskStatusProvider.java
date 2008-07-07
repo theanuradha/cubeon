@@ -64,9 +64,4 @@ public class JiraTaskStatusProvider implements TaskStatusProvider {
         return jiraTask.getStatus();
     }
 
-    public void setTaskStatus(TaskElement element, TaskStatus status) {
-        JiraTask jiraTask = element.getLookup().lookup(JiraTask.class);
-        assert jiraTask != null;
-        jiraTask.setStatus(status);
-    }
 }

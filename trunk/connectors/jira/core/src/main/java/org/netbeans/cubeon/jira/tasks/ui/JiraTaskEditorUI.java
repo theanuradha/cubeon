@@ -273,9 +273,9 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
         if (!jiraTask.getPriority().equals(cmbPriority.getSelectedItem())) {
             jiraTask.setPriority((TaskPriority) cmbPriority.getSelectedItem());
         }
-        if (!jiraTask.getStatus().equals(cmbStatus.getSelectedItem())) {
-            jiraTask.setStatus((TaskStatus) cmbStatus.getSelectedItem());
-        }
+//        if (!jiraTask.getStatus().equals(cmbStatus.getSelectedItem())) {
+//            jiraTask.setStatus((TaskStatus) cmbStatus.getSelectedItem());
+//        }
         if (!jiraTask.getDescription().equals(txtDescription.getText().trim())) {
             jiraTask.setDescription(txtDescription.getText().trim());
         }
