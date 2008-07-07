@@ -16,6 +16,7 @@
  */
 package org.netbeans.cubeon.tasks.core.api;
 
+import java.util.List;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 
 /**
@@ -24,5 +25,15 @@ import org.netbeans.cubeon.tasks.spi.task.TaskElement;
  */
 public interface TaskEditorFactory {
 
-    void createTaskEditor(TaskElement element);
+    void openTask(TaskElement element);
+
+    void closeTask(TaskElement element);
+
+    boolean isOpen(TaskElement element);
+
+    List<TaskElement> getTasks();
+
+    void refresh(TaskElement element);
+
+    void save(TaskElement element);
 }

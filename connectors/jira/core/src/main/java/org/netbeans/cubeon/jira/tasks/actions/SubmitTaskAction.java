@@ -19,8 +19,13 @@ package org.netbeans.cubeon.jira.tasks.actions;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
+import org.netbeans.api.progress.ProgressHandle;
+import org.netbeans.api.progress.ProgressHandleFactory;
 import org.netbeans.cubeon.jira.repository.JiraTaskRepository;
 import org.netbeans.cubeon.jira.tasks.JiraTask;
+import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
+import org.openide.util.Lookup;
+import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 
 /**
@@ -39,8 +44,23 @@ public class SubmitTaskAction extends AbstractAction {
     }
 
     public void actionPerformed(ActionEvent e) {
-        JiraTaskRepository repository = task.getTaskRepository().getLookup().lookup(JiraTaskRepository.class);
+        RequestProcessor.getDefault().post(new Runnable() {
 
-        repository.submit(task);
+            public void run() {
+                setEnabled(false);
+
+                ProgressHandle handle = ProgressHandleFactory.createHandle("Submiting : " + task.getId());
+                handle.start();
+                handle.switchToIndeterminate();
+                TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
+                factory.save(task);
+                JiraTaskRepository repository = task.getTaskRepository().getLookup().lookup(JiraTaskRepository.class);
+                repository.submit(task);
+
+
+                handle.finish();
+                setEnabled(true);
+            }
+        });
     }
 }
