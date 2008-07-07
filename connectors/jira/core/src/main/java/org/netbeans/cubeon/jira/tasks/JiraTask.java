@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.netbeans.cubeon.jira.repository.JiraTaskRepository;
+import org.netbeans.cubeon.jira.repository.attributes.JiraAction;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Component;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Version;
@@ -64,6 +65,7 @@ public class JiraTask implements TaskElement {
     private List<JiraProject.Component> components = new ArrayList<JiraProject.Component>(0);
     private List<JiraProject.Version> affectedVersions = new ArrayList<JiraProject.Version>(0);
     private List<JiraProject.Version> fixVersions = new ArrayList<JiraProject.Version>(0);
+
 
     public JiraTask(String id, String name, String description,
             JiraTaskRepository taskRepository) {
