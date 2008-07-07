@@ -25,7 +25,6 @@ import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Version;
 import org.netbeans.cubeon.jira.tasks.JiraTask;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.task.TaskResolution;
-import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
 import org.netbeans.cubeon.tasks.spi.task.TaskType;
 
 /**
