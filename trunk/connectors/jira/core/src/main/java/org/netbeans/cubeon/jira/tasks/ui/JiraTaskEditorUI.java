@@ -46,6 +46,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import org.netbeans.cubeon.jira.repository.attributes.JiraAction;
 import org.netbeans.cubeon.jira.tasks.actions.UpdateTaskAction;
 import org.netbeans.cubeon.jira.repository.JiraRepositoryAttributes;
 import org.netbeans.cubeon.jira.repository.JiraTaskPriorityProvider;
@@ -191,7 +192,17 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
         } else {
             cmbResolution.setSelectedItem(jiraTask.getResolution());
         }
-    //cmbResolution.setSelectedItem(jiraTask.);
+        cmbActions.removeAllItems();
+        List<JiraAction> actions = jiraTask.getActions();
+        for (JiraAction action : actions) {
+            cmbActions.addItem(action);
+        }
+        if(jiraTask.getAction()!=null){
+         cmbActions.setSelectedItem(jiraTask.getAction());
+        }else{
+         cmbActions.setSelectedIndex(-1);
+        }
+
     }
 
     private void selectItems(JList list, List<? extends Object> objects) {
