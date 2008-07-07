@@ -91,7 +91,7 @@ public class JiraUtils {
             fixVersionsIds.add(version.getId());
         }
 
-        fieldValues.add(new RemoteFieldValue("fixversions",
+        fieldValues.add(new RemoteFieldValue("fixVersions",
                 fixVersionsIds.toArray(new String[fixVersionsIds.size()])));
 
         return fieldValues.toArray(new RemoteFieldValue[fieldValues.size()]);
