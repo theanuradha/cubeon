@@ -17,8 +17,10 @@
 package org.netbeans.cubeon.jira.repository;
 
 import com.dolby.jira.net.soap.jira.RemoteComponent;
+import com.dolby.jira.net.soap.jira.RemoteField;
 import com.dolby.jira.net.soap.jira.RemoteFieldValue;
 import com.dolby.jira.net.soap.jira.RemoteIssue;
+import com.dolby.jira.net.soap.jira.RemoteNamedObject;
 import com.dolby.jira.net.soap.jira.RemoteVersion;
 import java.awt.Image;
 import java.io.IOException;
@@ -33,6 +35,7 @@ import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
 import org.netbeans.cubeon.jira.remote.JiraException;
 import org.netbeans.cubeon.jira.remote.JiraSession;
+import org.netbeans.cubeon.jira.repository.attributes.JiraAction;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Component;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Version;
@@ -222,7 +225,7 @@ public class JiraTaskRepository implements TaskRepository {
             public void run() {
                 try {
                     setState(State.SYNCHRONIZING);
-                    ProgressHandle handle = ProgressHandleFactory.createHandle(getName()+": Updating Attributes");
+                    ProgressHandle handle = ProgressHandleFactory.createHandle(getName() + ": Updating Attributes");
                     attributesPersistence.refresh(handle);
                     loadAttributes();
                     handle.finish();
@@ -317,7 +320,7 @@ public class JiraTaskRepository implements TaskRepository {
         return session;
     }
 
-    private void maregeToTask(RemoteIssue issue, JiraTask jiraTask) {
+    private void maregeToTask(RemoteIssue issue, JiraTask jiraTask) throws JiraException {
         jiraTask.setName(issue.getSummary());
         jiraTask.setDescription(issue.getDescription());
         jiraTask.setEnvironment(issue.getEnvironment());
@@ -371,6 +374,19 @@ public class JiraTaskRepository implements TaskRepository {
         if (updated != null) {
             jiraTask.setUpdated(updated.getTime());
         }
+
+        List<JiraAction> actions = new ArrayList<JiraAction>();
+        RemoteNamedObject[] availableActions = getSession().getAvailableActions(issue.getKey());
+        for (RemoteNamedObject rno : availableActions) {
+            JiraAction action = new JiraAction(rno.getId(), rno.getName());
+            RemoteField[] fields = getSession().getFieldsForAction(issue.getKey(), rno.getId());
+            for (RemoteField rf : fields) {
+                action.addFiled(rf.getId());
+            }
+            actions.add(action);
+        }
+        jiraTask.setActions(actions);
+    //todo add Actions
     }
 
     @Override

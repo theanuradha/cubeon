@@ -16,6 +16,9 @@
  */
 package org.netbeans.cubeon.jira.repository.attributes;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author Anuradha G
@@ -24,6 +27,7 @@ public class JiraAction {
 
     private final String id;
     private final String name;
+    private List<String> filedIds = new ArrayList<String>();
 
     public JiraAction(String id, String name) {
         this.id = id;
@@ -37,4 +41,45 @@ public class JiraAction {
     public String getName() {
         return name;
     }
+
+    public List<String> getFiledIds() {
+        return new ArrayList<String>(filedIds);
+    }
+
+    public boolean removeFiled(String o) {
+        return filedIds.remove(o);
+    }
+
+    public boolean addFiled(String e) {
+        return filedIds.add(e);
+    }
+
+    @Override
+    public String toString() {
+        return  name;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final JiraAction other = (JiraAction) obj;
+        if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 37 * hash + (this.id != null ? this.id.hashCode() : 0);
+        return hash;
+    }
+    
+
 }

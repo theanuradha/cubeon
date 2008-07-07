@@ -21,9 +21,11 @@ import com.dolby.jira.net.soap.jira.JiraSoapServiceServiceLocator;
 import com.dolby.jira.net.soap.jira.RemoteAuthenticationException;
 import com.dolby.jira.net.soap.jira.RemoteComponent;
 import com.dolby.jira.net.soap.jira.RemoteConfiguration;
+import com.dolby.jira.net.soap.jira.RemoteField;
 import com.dolby.jira.net.soap.jira.RemoteFieldValue;
 import com.dolby.jira.net.soap.jira.RemoteIssue;
 import com.dolby.jira.net.soap.jira.RemoteIssueType;
+import com.dolby.jira.net.soap.jira.RemoteNamedObject;
 import com.dolby.jira.net.soap.jira.RemotePriority;
 import com.dolby.jira.net.soap.jira.RemoteProject;
 import com.dolby.jira.net.soap.jira.RemoteResolution;
@@ -133,20 +135,36 @@ public class JiraSession {
         }
     }
 
-    public RemoteIssue updateTask(String id,RemoteFieldValue [] fieldValues) throws JiraException {
+    public RemoteIssue updateTask(String id, RemoteFieldValue[] fieldValues) throws JiraException {
         try {
-            
 
-           return service.updateIssue(token, id,fieldValues);
+
+            return service.updateIssue(token, id, fieldValues);
         } catch (Exception ex) {
             throw new JiraException(ex);
         }
-        
+
     }
 
     public RemoteIssue getIssue(String id) throws JiraException {
         try {
             return service.getIssue(token, id);
+        } catch (Exception ex) {
+            throw new JiraException(ex);
+        }
+    }
+
+    public RemoteField[] getFieldsForAction(String issueId, String actionId) throws JiraException {
+        try {
+            return service.getFieldsForAction(token, issueId, actionId);
+        } catch (Exception ex) {
+            throw new JiraException(ex);
+        }
+    }
+
+    public RemoteNamedObject[] getAvailableActions(String issueId) throws JiraException {
+        try {
+            return service.getAvailableActions(token, issueId);
         } catch (Exception ex) {
             throw new JiraException(ex);
         }

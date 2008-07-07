@@ -50,7 +50,7 @@ public class JiraTask implements TaskElement {
     private String urlString;
     private JiraTaskRepository taskRepository;
     private TaskPriority priority;
-    private TaskStatus status ;
+    private TaskStatus status;
     private TaskType type;
     private TaskResolution resolution;
     private Date created;
@@ -65,7 +65,8 @@ public class JiraTask implements TaskElement {
     private List<JiraProject.Component> components = new ArrayList<JiraProject.Component>(0);
     private List<JiraProject.Version> affectedVersions = new ArrayList<JiraProject.Version>(0);
     private List<JiraProject.Version> fixVersions = new ArrayList<JiraProject.Version>(0);
-
+    private List<JiraAction> actions = new ArrayList<JiraAction>(0);
+    private JiraAction action;
 
     public JiraTask(String id, String name, String description,
             JiraTaskRepository taskRepository) {
@@ -274,6 +275,22 @@ public class JiraTask implements TaskElement {
 
     public void setReporter(String reporter) {
         this.reporter = reporter;
+    }
+
+    public JiraAction getAction() {
+        return action;
+    }
+
+    public void setAction(JiraAction action) {
+        this.action = action;
+    }
+
+    public List<JiraAction> getActions() {
+        return new ArrayList<JiraAction>(actions);
+    }
+
+    public void setActions(List<JiraAction> actions) {
+        this.actions = new ArrayList<JiraAction>(actions);
     }
 
     @Override
