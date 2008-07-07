@@ -32,9 +32,7 @@ import org.netbeans.cubeon.tasks.spi.repository.TaskTypeProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskContainer;
 import org.netbeans.cubeon.tasks.spi.task.TaskElementActionsProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElementChangeAdapter;
-import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
 import org.netbeans.cubeon.ui.taskelemet.CopyDetailsAction;
-import org.netbeans.cubeon.ui.taskelemet.MarkAsAction;
 import org.netbeans.cubeon.ui.taskelemet.MoveToAction;
 import org.netbeans.cubeon.ui.taskelemet.MoveToDefault;
 import org.netbeans.cubeon.ui.taskelemet.OpenAction;
@@ -198,7 +196,7 @@ public class TaskElementNode extends AbstractNode {
         actions.add(new MoveToAction(container, element));
 
         if (extendedActions) {
-            actions.add(new MarkAsAction(element));
+           
 
 
             final List<TaskElementActionsProvider> providers =

@@ -34,5 +34,5 @@ public interface TaskStatusProvider {
 
     TaskStatus getTaskStatus(TaskElement element);
 
-    void setTaskStatus(TaskElement element, TaskStatus status);
+
 }

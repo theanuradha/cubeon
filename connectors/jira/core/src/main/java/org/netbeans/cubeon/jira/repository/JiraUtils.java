@@ -61,10 +61,7 @@ public class JiraUtils {
         if (resolution != null && !resolution.getId().equals(issue.getResolution())) {
             fieldValues.add(new RemoteFieldValue("resolution", new String[]{resolution.getId()}));
         }
-        TaskStatus status = task.getStatus();
-        if (status != null && !status.getId().equals(issue.getStatus())) {
-            fieldValues.add(new RemoteFieldValue("status", new String[]{status.getId()}));
-        }
+
         List<Component> components = task.getComponents();
         List<String> componentIds = new ArrayList<String>();
 

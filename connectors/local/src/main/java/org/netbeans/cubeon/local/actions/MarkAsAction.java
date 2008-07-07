@@ -14,18 +14,17 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.ui.taskelemet;
+package org.netbeans.cubeon.local.actions;
 
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import org.netbeans.cubeon.tasks.spi.repository.TaskPriorityProvider;
-import org.netbeans.cubeon.tasks.spi.task.TaskElement;
+import org.netbeans.cubeon.local.LocalTask;
+import org.netbeans.cubeon.local.repository.LocalTaskStatusProvider;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
-import org.netbeans.cubeon.tasks.spi.repository.TaskStatusProvider;
 import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 import org.openide.util.actions.Presenter.Menu;
@@ -37,13 +36,14 @@ import org.openide.util.actions.Presenter.Popup;
  */
 public class MarkAsAction extends AbstractAction implements Menu, Popup {
 
-    private TaskElement element;
-    private TaskStatusProvider provider;
-    public MarkAsAction(TaskElement element) {
+    private LocalTask element;
+    private LocalTaskStatusProvider provider;
+
+    public MarkAsAction(LocalTask element) {
         this.element = element;
-         provider= element.getTaskRepository().getLookup().lookup(TaskStatusProvider.class);
+        provider = element.getTaskRepository().getLookup().lookup(LocalTaskStatusProvider.class);
         putValue(NAME, NbBundle.getMessage(MarkAsAction.class, "LBL_Mark_As"));
-        setEnabled(provider!=null);
+        setEnabled(provider != null);
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -51,10 +51,10 @@ public class MarkAsAction extends AbstractAction implements Menu, Popup {
 
     public JMenuItem getMenuPresenter() {
         JMenu menuItem = new JMenu(this);
-        if(provider!=null){
-        for (TaskStatus status : provider.getStatusList()) {
-            menuItem.add(new SelectAction(status, status.equals(provider.getTaskStatus(element))));
-        }
+        if (provider != null) {
+            for (TaskStatus status : provider.getStatusList()) {
+                menuItem.add(new SelectAction(status, status.equals(provider.getTaskStatus(element))));
+            }
         }
         return menuItem;
     }
