@@ -56,10 +56,10 @@ public class JiraUtils {
         if (priority != null && !priority.getId().equals(issue.getPriority())) {
             fieldValues.add(new RemoteFieldValue("priority", new String[]{priority.getId()}));
         }
-        TaskResolution resolution = task.getResolution();
-        if (resolution != null && !resolution.getId().equals(issue.getResolution())) {
-            fieldValues.add(new RemoteFieldValue("resolution", new String[]{resolution.getId()}));
-        }
+//        TaskResolution resolution = task.getResolution();
+//        if (resolution != null && !resolution.getId().equals(issue.getResolution())) {
+//            fieldValues.add(new RemoteFieldValue("resolution", new String[]{resolution.getId()}));
+//        }
 
         List<Component> components = task.getComponents();
         List<String> componentIds = new ArrayList<String>();
