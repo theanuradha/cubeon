@@ -56,7 +56,7 @@ public class SubmitTaskAction extends AbstractAction {
                 factory.save(task);
                 JiraTaskRepository repository = task.getTaskRepository().getLookup().lookup(JiraTaskRepository.class);
                 repository.submit(task);
-
+                factory.refresh(task);
 
                 handle.finish();
                 setEnabled(true);
