@@ -27,6 +27,7 @@ import org.netbeans.cubeon.jira.repository.attributes.JiraAction;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Component;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Version;
+import org.netbeans.cubeon.jira.repository.ui.JiraActionsProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
@@ -65,7 +66,7 @@ public class JiraTask implements TaskElement {
     private List<JiraProject.Component> components = new ArrayList<JiraProject.Component>(0);
     private List<JiraProject.Version> affectedVersions = new ArrayList<JiraProject.Version>(0);
     private List<JiraProject.Version> fixVersions = new ArrayList<JiraProject.Version>(0);
-    private List<JiraAction> actions = new ArrayList<JiraAction>(0);
+    private JiraActionsProvider actionsProvider=new  JiraActionsProvider();
     private JiraAction action;
 
     public JiraTask(String id, String name, String description,
@@ -86,6 +87,7 @@ public class JiraTask implements TaskElement {
     public String getName() {
         return name;
     }
+
 
     public void setName(String name) {
         this.name = name;
@@ -286,13 +288,18 @@ public class JiraTask implements TaskElement {
     }
 
     public List<JiraAction> getActions() {
-        return new ArrayList<JiraAction>(actions);
+        return actionsProvider.getActions();
     }
 
     public void setActions(List<JiraAction> actions) {
-        this.actions = new ArrayList<JiraAction>(actions);
+        actionsProvider.setActions(actions);
     }
 
+    public JiraActionsProvider getActionsProvider() {
+        return actionsProvider;
+    }
+
+        
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {

@@ -73,6 +73,7 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
 
     private final Set<ChangeListener> listeners = new HashSet<ChangeListener>(1);
     private JiraTask jiraTask;
+    private JiraAction defaultStatus;
     final DocumentListener documentListener = new DocumentListener() {
 
         public void insertUpdate(DocumentEvent arg0) {
@@ -118,6 +119,19 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
 
                     public void run() {
                         loadProject((JiraProject) cmbProject.getSelectedItem());
+                    }
+                });
+            }
+        }
+    };
+    ItemListener actionitemListener = new ItemListener() {
+
+        public void itemStateChanged(ItemEvent e) {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                EventQueue.invokeLater(new Runnable() {
+
+                    public void run() {
+                        loadAction((JiraAction) cmbActions.getSelectedItem());
                     }
                 });
             }
@@ -194,14 +208,17 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
         }
         cmbActions.removeAllItems();
         List<JiraAction> actions = jiraTask.getActions();
+        defaultStatus = new JiraAction(jiraTask.getStatus().getId(), "Leave as " + jiraTask.getStatus().getText());
+        cmbActions.addItem(defaultStatus);
         for (JiraAction action : actions) {
             cmbActions.addItem(action);
         }
-        if(jiraTask.getAction()!=null){
-         cmbActions.setSelectedItem(jiraTask.getAction());
-        }else{
-         cmbActions.setSelectedIndex(-1);
+        if (jiraTask.getAction() != null) {
+            cmbActions.setSelectedItem(jiraTask.getAction());
+        } else {
+            cmbActions.setSelectedItem(defaultStatus);
         }
+        loadAction(jiraTask.getAction());
 
     }
 
@@ -218,6 +235,28 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
             for (Object object : objects) {
                 int indexOf = model.indexOf(object);
                 list.addSelectionInterval(indexOf, indexOf);
+            }
+        }
+    }
+
+    private void loadAction(JiraAction action) {
+        if (action == null || action.equals(defaultStatus)) {
+            cmbResolution.setEnabled(false);
+            if (jiraTask.getResolution() == null) {
+                cmbResolution.setSelectedIndex(-1);
+            } else {
+                cmbResolution.setSelectedItem(jiraTask.getResolution());
+            }
+        } else {
+            List<String> filedIds = action.getFiledIds();
+            if (filedIds.contains("resolution")) {
+                cmbResolution.setEnabled(true);
+                if (cmbResolution.getSelectedIndex() == -1 && cmbResolution.getItemCount() > 0) {
+                    cmbResolution.setSelectedIndex(0);
+                }
+            } else {
+                cmbResolution.setEnabled(false);
+                cmbResolution.setSelectedIndex(-1);
             }
         }
     }
@@ -293,6 +332,10 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
         }
         if (jiraTask.getProject() == null || !jiraTask.getProject().equals(cmbProject.getSelectedItem())) {
             jiraTask.setProject((JiraProject) cmbProject.getSelectedItem());
+        }
+        Object action = cmbActions.getSelectedItem();
+        if (action == null || !action.equals(defaultStatus)) {
+            jiraTask.setAction((JiraAction) action);
         }
         List<JiraProject.Component> components = new ArrayList<JiraProject.Component>();
         Object[] selectedValues = lstComponents.getSelectedValues();
@@ -406,7 +449,7 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
 
         lblResolution.setText(NbBundle.getMessage(JiraTaskEditorUI.class, "JiraTaskEditorUI.lblResolution.text")); // NOI18N
 
-        lblDesription.setFont(new java.awt.Font("Tahoma", 1, 11));
+        lblDesription.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         lblDesription.setForeground(new java.awt.Color(51, 51, 51));
         lblDesription.setText(NbBundle.getMessage(JiraTaskEditorUI.class, "TaskEditorUI.lblDesription.text")); // NOI18N
 
@@ -525,18 +568,18 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                                     .add(txtAssignee, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 142, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                                     .add(lblReportedBy, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 294, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))))
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                        .add(lblStatus, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 210, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 39, Short.MAX_VALUE)
-                        .add(lblCreated, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 210, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                        .add(lblUpdated, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 244, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                    .add(layout.createSequentialGroup()
+                        .add(lblCreated, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 239, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(lblUpdated, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 215, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(lblStatus, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 237, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .addContainerGap()
+                .add(0, 0, 0)
                 .add(txtOutline, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
@@ -596,7 +639,7 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
                     .add(cmbResolution, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(jLabel3)
                     .add(txtAssignee, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(37, Short.MAX_VALUE))
+                .addContainerGap(48, Short.MAX_VALUE))
         );
 
         layout.linkSize(new java.awt.Component[] {jScrollPane2, jScrollPane3}, org.jdesktop.layout.GroupLayout.VERTICAL);
@@ -652,6 +695,7 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
         cmbType.removeItemListener(itemListener);
         cmbProject.removeItemListener(itemListener);
         cmbProject.removeItemListener(projectitemListener);
+        cmbActions.removeItemListener(actionitemListener);
         cmbResolution.removeItemListener(itemListener);
 
 
@@ -677,6 +721,7 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
         cmbType.addItemListener(itemListener);
         cmbProject.addItemListener(itemListener);
         cmbProject.addItemListener(projectitemListener);
+        cmbActions.addItemListener(actionitemListener);
         cmbResolution.addItemListener(itemListener);
 
 
@@ -690,8 +735,8 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
             cmbResolution.setEnabled(false);
             lstFixVersion.setEnabled(false);
         //todo add other stuff
-        }else{
-          cmbProject.setEnabled(false);
+        } else {
+            cmbProject.setEnabled(false);
         }
     }
 }

@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.netbeans.cubeon.jira.repository.attributes.JiraAction;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Component;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Version;
@@ -80,6 +81,10 @@ class TaskPersistenceHandler {
     private static final String TAG_LOCAL = "local";
     private static final String TAG_REPORTER = "reporter";
     private static final String TAG_ASSIGNEE = "assignee";
+    private static final String TAG_ACTIONS = "actions";
+    private static final String TAG_ACTION = "action";
+    private static final String TAG_FIELDS = "fields";
+    private static final String TAG_FIELD = "field";
     //----------------------------------------------------
     private JiraTaskRepository jiraTaskRepository;
     private final FileObject baseDir;
@@ -217,6 +222,38 @@ class TaskPersistenceHandler {
             String reporter = element.getAttributeNS(NAMESPACE, TAG_REPORTER);
             String assignee = element.getAttributeNS(NAMESPACE, TAG_ASSIGNEE);
 
+            //read actions
+            String action = element.getAttributeNS(NAMESPACE, TAG_ACTION);
+            JiraAction selectedAction = null;
+            Element actionsElement = findElement(element, TAG_ACTIONS, NAMESPACE);
+            NodeList actionssNodeList = actionsElement.getElementsByTagNameNS(NAMESPACE, TAG_ACTION);
+            List<JiraAction> actions = new ArrayList<JiraAction>();
+            for (int i = 0; i < actionssNodeList.getLength(); i++) {
+                Node node = actionssNodeList.item(i);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element e = (Element) node;
+                    String aId = e.getAttribute(TAG_ID);
+                    String aName = e.getAttribute(TAG_NAME);
+                    JiraAction jiraAction = new JiraAction(aId, aName);
+                    if (selectedAction == null && aId.equals(action)) {
+                        selectedAction = jiraAction;
+                    }
+                    Element fieldsElement = findElement(e, TAG_FIELDS, NAMESPACE);
+                    NodeList fieldsNodeList = fieldsElement.getElementsByTagNameNS(NAMESPACE, TAG_FIELD);
+                    for (int j = 0; j < fieldsNodeList.getLength(); j++) {
+                        Node fnode = fieldsNodeList.item(j);
+                        if (fnode.getNodeType() == Node.ELEMENT_NODE) {
+                            Element fe = (Element) fnode;
+                            String fid = fe.getTextContent();
+                            jiraAction.addFiled(fid);
+                        }
+                    }
+                    actions.add(jiraAction);
+                }
+            }
+
+
+
             JiraTask jiraTask = new JiraTask(id, name, description, jiraTaskRepository);
             jiraTask.setProject(project);
             jiraTask.setLocal(local);
@@ -233,6 +270,8 @@ class TaskPersistenceHandler {
             jiraTask.setFixVersions(fixVersions);
             jiraTask.setReporter(reporter);
             jiraTask.setAssignee(assignee);
+            jiraTask.getActionsProvider().setActions(actions);
+            jiraTask.setAction(selectedAction);
 
             return jiraTask;
 
@@ -323,8 +362,24 @@ class TaskPersistenceHandler {
             if (task.getUpdated() != null) {
                 taskElement.setAttributeNS(NAMESPACE, TAG_UPDATE_DATE, String.valueOf(task.getUpdated().getTime()));
             }
-
-
+            //actions
+            List<JiraAction> actions = task.getActions();
+            Element actionsElement = getEmptyElement(document, taskElement, TAG_ACTIONS);
+            for (JiraAction action : actions) {
+                Element element = document.createElement(TAG_ACTION);
+                actionsElement.appendChild(element);
+                element.setAttribute(TAG_ID, action.getId());
+                element.setAttribute(TAG_NAME, action.getName());
+                Element fieldselement = document.createElement(TAG_FIELDS);
+                element.appendChild(fieldselement);
+                List<String> filedIds = action.getFiledIds();
+                for (String id : filedIds) {
+                    Text text = document.createTextNode(id);
+                    Element field = document.createElement(TAG_FIELD);
+                    field.appendChild(text);
+                    fieldselement.appendChild(field);
+                }
+            }
             saveTask(document, task.getId());
         }
     }
