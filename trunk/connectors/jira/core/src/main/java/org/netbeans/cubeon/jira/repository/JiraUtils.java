@@ -42,7 +42,7 @@ public class JiraUtils {
         }
 
         String environment = task.getEnvironment();
-        if (!issue.getEnvironment().equals(environment)) {
+        if (issue.getEnvironment()==null || !issue.getEnvironment().equals(environment)) {
             fieldValues.add(new RemoteFieldValue("environment", new String[]{environment}));
         }
         String name = task.getName();
