@@ -20,6 +20,7 @@ import com.dolby.jira.net.soap.jira.RemoteFieldValue;
 import com.dolby.jira.net.soap.jira.RemoteIssue;
 import java.util.ArrayList;
 import java.util.List;
+import org.netbeans.cubeon.jira.repository.attributes.JiraAction;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Component;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Version;
 import org.netbeans.cubeon.jira.tasks.JiraTask;
@@ -61,34 +62,47 @@ public class JiraUtils {
 //            fieldValues.add(new RemoteFieldValue("resolution", new String[]{resolution.getId()}));
 //        }
 
-        List<Component> components = task.getComponents();
-        List<String> componentIds = new ArrayList<String>();
+        if (issue.getResolution() == null) {
+            List<Component> components = task.getComponents();
+            List<String> componentIds = new ArrayList<String>();
 
-        for (Component component : components) {
-            componentIds.add(component.getId());
-        }
-        fieldValues.add(new RemoteFieldValue("components",
-                componentIds.toArray(new String[componentIds.size()])));
+            for (Component component : components) {
+                componentIds.add(component.getId());
+            }
+            fieldValues.add(new RemoteFieldValue("components",
+                    componentIds.toArray(new String[componentIds.size()])));
 //----------------------------
-        List<Version> affectedVersions = task.getAffectedVersions();
-        List<String> affectedVersionIds = new ArrayList<String>();
+            List<Version> affectedVersions = task.getAffectedVersions();
+            List<String> affectedVersionIds = new ArrayList<String>();
 
-        for (Version version : affectedVersions) {
-            affectedVersionIds.add(version.getId());
-        }
+            for (Version version : affectedVersions) {
+                affectedVersionIds.add(version.getId());
+            }
 
-        fieldValues.add(new RemoteFieldValue("versions",
-                affectedVersionIds.toArray(new String[affectedVersionIds.size()])));
+            fieldValues.add(new RemoteFieldValue("versions",
+                    affectedVersionIds.toArray(new String[affectedVersionIds.size()])));
 //----------------------------
-        List<Version> fixVersions = task.getFixVersions();
-        List<String> fixVersionsIds = new ArrayList<String>();
+            List<Version> fixVersions = task.getFixVersions();
+            List<String> fixVersionsIds = new ArrayList<String>();
 
-        for (Version version : fixVersions) {
-            fixVersionsIds.add(version.getId());
+            for (Version version : fixVersions) {
+                fixVersionsIds.add(version.getId());
+            }
+
+            fieldValues.add(new RemoteFieldValue("fixVersions",
+                    fixVersionsIds.toArray(new String[fixVersionsIds.size()])));
         }
+        return fieldValues.toArray(new RemoteFieldValue[fieldValues.size()]);
+    }
 
-        fieldValues.add(new RemoteFieldValue("fixVersions",
-                fixVersionsIds.toArray(new String[fixVersionsIds.size()])));
+    public static RemoteFieldValue[] changedFieldValuesForAction(JiraAction action, RemoteIssue issue, JiraTask task) {
+        List<RemoteFieldValue> fieldValues = new ArrayList<RemoteFieldValue>();
+
+
+        TaskResolution resolution = task.getResolution();
+        if (action.getFiledIds().contains("resolution") && resolution != null && !resolution.getId().equals(issue.getResolution())) {
+            fieldValues.add(new RemoteFieldValue("resolution", new String[]{resolution.getId()}));
+        }
 
         return fieldValues.toArray(new RemoteFieldValue[fieldValues.size()]);
     }

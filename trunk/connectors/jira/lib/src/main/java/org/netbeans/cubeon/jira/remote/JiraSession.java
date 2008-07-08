@@ -146,6 +146,15 @@ public class JiraSession {
 
     }
 
+    public RemoteIssue progressWorkflowAction(String issueId, String actionId, RemoteFieldValue[] arg3) throws JiraException {
+        try {
+
+            return service.progressWorkflowAction(token, issueId, actionId, arg3);
+        } catch (Exception ex) {
+            throw new JiraException(ex);
+        }
+    }
+
     public RemoteIssue getIssue(String id) throws JiraException {
         try {
             return service.getIssue(token, id);

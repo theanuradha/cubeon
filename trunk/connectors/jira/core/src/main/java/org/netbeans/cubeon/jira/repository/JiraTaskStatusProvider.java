@@ -39,9 +39,6 @@ public class JiraTaskStatusProvider implements TaskStatusProvider {
         return new ArrayList<TaskStatus>(statuses);
     }
 
-    public boolean isCompleted(TaskStatus status) {
-        return false;
-    }
 
     public void setStatuses(List<TaskStatus> statuses) {
         this.statuses = new ArrayList<TaskStatus>(statuses);

@@ -305,7 +305,24 @@ public class JiraTaskRepository implements TaskRepository {
                 if (fieldValues.length > 0) {
                     RemoteIssue updateTask = js.updateTask(task.getId(), fieldValues);
                     maregeToTask(updateTask, task);
+                    if (task.getAction() != null) {
+                        RemoteIssue remoteIssue = js.progressWorkflowAction(task.getId(),
+                                task.getAction().getId(),
+                                JiraUtils.changedFieldValuesForAction(task.getAction(),
+                                updateTask, task));
+                        maregeToTask(remoteIssue, task);
+                    }
                     persist(task);
+                } else {
+                    if (task.getAction() != null) {
+                        RemoteIssue remoteIssue = js.progressWorkflowAction(task.getId(),
+                                task.getAction().getId(),
+                                JiraUtils.changedFieldValuesForAction(task.getAction(),
+                                js.getIssue(task.getId()), task));
+                        maregeToTask(remoteIssue, task);
+                        persist(task);
+                    }
+
                 }
             } catch (JiraException ex) {
                 Exceptions.printStackTrace(ex);
@@ -328,8 +345,15 @@ public class JiraTaskRepository implements TaskRepository {
         jiraTask.setProject(project);
         jiraTask.setType(jttp.getTaskTypeById(issue.getType()));
         jiraTask.setPriority(jtpp.getTaskPriorityById(issue.getPriority()));
-        jiraTask.setStatus(jtsp.getTaskStatusById(issue.getStatus()));
-        jiraTask.setResolution(jtrp.getTaskResolutionById(issue.getResolution()));
+
+        if (jiraTask.getStatus() == null ||
+                !issue.getStatus().equals(jiraTask.getStatus().getId())) {
+            jiraTask.setAction(null);
+            jiraTask.setResolution(jtrp.getTaskResolutionById(issue.getResolution()));
+
+            jiraTask.setStatus(jtsp.getTaskStatusById(issue.getStatus()));
+        }
+
         jiraTask.setReporter(issue.getReporter());
         jiraTask.setAssignee(issue.getAssignee());
 

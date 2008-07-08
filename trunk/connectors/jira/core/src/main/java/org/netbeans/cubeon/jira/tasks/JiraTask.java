@@ -164,7 +164,7 @@ public class JiraTask implements TaskElement {
     }
 
     public boolean isCompleted() {
-        return taskRepository.getJiraTaskStatusProvider().isCompleted(status);
+        return resolution!=null;
     }
 
     public Image getImage() {
