@@ -349,6 +349,8 @@ class TaskPersistenceHandler {
 
             if (task.getResolution() != null) {
                 taskElement.setAttributeNS(NAMESPACE, TAG_RESOLUTION, task.getResolution().getId());
+            } else {
+                taskElement.removeAttribute(TAG_RESOLUTION);
             }
 
             if (task.getUrlString() != null) {
