@@ -42,7 +42,7 @@ public class JiraUtils {
         }
 
         String environment = task.getEnvironment();
-        if (issue.getEnvironment()==null || !issue.getEnvironment().equals(environment)) {
+        if (issue.getEnvironment() == null || !issue.getEnvironment().equals(environment)) {
             fieldValues.add(new RemoteFieldValue("environment", new String[]{environment}));
         }
         String name = task.getName();
@@ -56,6 +56,9 @@ public class JiraUtils {
         TaskPriority priority = task.getPriority();
         if (priority != null && !priority.getId().equals(issue.getPriority())) {
             fieldValues.add(new RemoteFieldValue("priority", new String[]{priority.getId()}));
+        }
+        if (task.getAssignee() == null || !task.getAssignee().equals(issue.getAssignee())) {
+            fieldValues.add(new RemoteFieldValue("assignee", new String[]{task.getAssignee()}));
         }
 //        TaskResolution resolution = task.getResolution();
 //        if (resolution != null && !resolution.getId().equals(issue.getResolution())) {
@@ -100,10 +103,24 @@ public class JiraUtils {
 
 
         TaskResolution resolution = task.getResolution();
-        if (action.getFiledIds().contains("resolution") && resolution != null && !resolution.getId().equals(issue.getResolution())) {
+        List<String> filedIds = action.getFiledIds();
+        if (filedIds.contains("resolution") && resolution != null && !resolution.getId().equals(issue.getResolution())) {
             fieldValues.add(new RemoteFieldValue("resolution", new String[]{resolution.getId()}));
         }
+        if (filedIds.contains("assignee")) {
+            fieldValues.add(new RemoteFieldValue("assignee", new String[]{task.getAssignee()}));
+        }
+        if (filedIds.contains("fixVersions")) {
+            List<Version> fixVersions = task.getFixVersions();
+            List<String> fixVersionsIds = new ArrayList<String>();
 
+            for (Version version : fixVersions) {
+                fixVersionsIds.add(version.getId());
+            }
+
+            fieldValues.add(new RemoteFieldValue("fixVersions",
+                    fixVersionsIds.toArray(new String[fixVersionsIds.size()])));
+        }
         return fieldValues.toArray(new RemoteFieldValue[fieldValues.size()]);
     }
 }

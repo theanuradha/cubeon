@@ -317,9 +317,9 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
         if (!jiraTask.getPriority().equals(cmbPriority.getSelectedItem())) {
             jiraTask.setPriority((TaskPriority) cmbPriority.getSelectedItem());
         }
-//        if (!jiraTask.getStatus().equals(cmbStatus.getSelectedItem())) {
-//            jiraTask.setStatus((TaskStatus) cmbStatus.getSelectedItem());
-//        }
+        if (!txtAssignee.getText().trim().equals(jiraTask.getAssignee())) {
+            jiraTask.setAssignee(txtAssignee.getText().trim());
+        }
         if (!jiraTask.getDescription().equals(txtDescription.getText().trim())) {
             jiraTask.setDescription(txtDescription.getText().trim());
         }
@@ -687,6 +687,7 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
 
     public void refresh() {
         txtOutline.getDocument().removeDocumentListener(documentListener);
+        txtAssignee.getDocument().removeDocumentListener(documentListener);
         txtDescription.getDocument().removeDocumentListener(documentListener);
         txtEnvironment.getDocument().removeDocumentListener(documentListener);
 
@@ -713,6 +714,7 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
         loadAttributes();
 
         txtOutline.getDocument().addDocumentListener(documentListener);
+        txtAssignee.getDocument().addDocumentListener(documentListener);
         txtDescription.getDocument().addDocumentListener(documentListener);
         txtEnvironment.getDocument().addDocumentListener(documentListener);
 
