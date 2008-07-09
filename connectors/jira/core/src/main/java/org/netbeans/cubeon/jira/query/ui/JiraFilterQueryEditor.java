@@ -38,37 +38,36 @@ import org.netbeans.cubeon.jira.query.JiraQuerySupport;
 import org.netbeans.cubeon.jira.repository.attributes.JiraFilter;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuerySupportProvider;
+import org.openide.explorer.ExplorerManager;
+import org.openide.explorer.view.BeanTreeView;
 import org.openide.util.NbBundle;
 
 /**
  *
  * @author Anuradha
  */
-public class JiraFilterQueryEditor extends javax.swing.JPanel implements TaskQuerySupportProvider.ConfigurationHandler {
+public class JiraFilterQueryEditor extends javax.swing.JPanel implements ExplorerManager.Provider, TaskQuerySupportProvider.ConfigurationHandler {
 
     private JiraQuerySupport jiraQuerySupport;
     private JiraFilterQuery query;
+    private BeanTreeView beanTreeView = new BeanTreeView();
+    private ExplorerManager explorerManager = new ExplorerManager();
 
     /** Creates new form JiraFilterQueryEditor */
     public JiraFilterQueryEditor(JiraQuerySupport jiraQuerySupport) {
         initComponents();
         this.jiraQuerySupport = jiraQuerySupport;
         loadFilters();
-        lstFilters.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        beanTreeView.setRootVisible(false);
+    }
 
-            public void valueChanged(ListSelectionEvent e) {
-                fireChangeEvent();
-            }
-        });
+    public ExplorerManager getExplorerManager() {
+        return explorerManager;
     }
 
     private void loadFilters() {
         List<JiraFilter> filters = jiraQuerySupport.getJiraTaskRepository().getRepositoryAttributes().getFilters();
-        DefaultListModel filtersModel = new DefaultListModel();
-        for (JiraFilter jiraFilter : filters) {
-            filtersModel.addElement(jiraFilter);
-        }
-        lstFilters.setModel(filtersModel);
+
     }
 
     public void setQuery(JiraFilterQuery query) {
@@ -76,10 +75,7 @@ public class JiraFilterQueryEditor extends javax.swing.JPanel implements TaskQue
     }
 
     private JiraFilter getSelectedFilter() {
-        Object selectedValue = lstFilters.getSelectedValue();
-        if (selectedValue instanceof JiraFilter) {
-            return (JiraFilter) selectedValue;
-        }
+
         return null;
     }
 
@@ -106,7 +102,7 @@ public class JiraFilterQueryEditor extends javax.swing.JPanel implements TaskQue
 
     public boolean isValidConfiguration() {
 
-        return getSelectedFilter() != null;
+        return true;
     }
 
     final void fireChangeEvent() {
@@ -133,38 +129,27 @@ public class JiraFilterQueryEditor extends javax.swing.JPanel implements TaskQue
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        lstFilters = new javax.swing.JList();
+        javax.swing.JScrollPane jScrollPane1 = beanTreeView;
 
-        jLabel1.setText(NbBundle.getMessage(JiraFilterQueryEditor.class, "JiraFilterQueryEditor.jLabel1.text","-")); // NOI18N
-
-        jScrollPane1.setViewportView(lstFilters);
+        jScrollPane1.setBorder(javax.swing.BorderFactory.createEtchedBorder(null, javax.swing.UIManager.getDefaults().getColor("CheckBoxMenuItem.selectionBackground")));
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+            .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jLabel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE))
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jLabel1)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE)
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JList lstFilters;
     // End of variables declaration//GEN-END:variables
 }
