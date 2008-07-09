@@ -63,7 +63,7 @@ class PersistenceHandler {
     private static final String TAG_TYPES = "types";
     private static final String TAG_TYPE = "type";
     private static final String TAG_MATCH_TYPE = "match_type";
-
+    private static final String TAG_NEXT_ID = "next";
     private LocalQuerySupport localQuerySupport;
     private FileObject baseDir;
     private static final Object LOCK = new Object();
@@ -98,8 +98,8 @@ class PersistenceHandler {
                 Node node = nodeList.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element element = (Element) node;
-                    String id = element.getAttributeNS(NAMESPACE, TAG_NAME);
-                    if (localQuery.getName().equals(id)) {
+                    String id = element.getAttributeNS(NAMESPACE, TAG_ID);
+                    if (localQuery.getId().equals(id)) {
                         taskQuery = element;
                         break;
                     }
@@ -111,6 +111,7 @@ class PersistenceHandler {
                 tasksElement.appendChild(taskQuery);
 
             }
+            taskQuery.setAttributeNS(NAMESPACE, TAG_ID, localQuery.getId());
             taskQuery.setAttributeNS(NAMESPACE, TAG_NAME, localQuery.getName());
             List<TaskPriority> priorities = localQuery.getPriorities();
 
@@ -168,8 +169,8 @@ class PersistenceHandler {
                 Node node = taskNodes.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element element = (Element) node;
-                    String id = element.getAttributeNS(NAMESPACE, TAG_NAME);
-                    if (query.getName().equals(id)) {
+                    String id = element.getAttributeNS(NAMESPACE, TAG_ID);
+                    if (query.getId().equals(id)) {
                         taskElement = element;
                         break;
                     }
@@ -181,6 +182,28 @@ class PersistenceHandler {
 
             save(document);
         }
+    }
+
+    String nextTaskId() {
+        String id = localQuerySupport.getTaskRepository().getId().toUpperCase();
+        synchronized (LOCK) {
+            Document document = getDocument();
+            Element root = getRootElement(document);
+            Element nextElement = findElement(root, TAG_NEXT_ID, NAMESPACE);
+            int nextID = 0;
+            if (nextElement == null) {
+                nextElement = document.createElementNS(NAMESPACE, TAG_NEXT_ID);
+                nextElement.setAttribute(TAG_ID, String.valueOf(++nextID));
+                root.appendChild(nextElement);
+            } else {
+                nextID = Integer.parseInt(nextElement.getAttribute(TAG_ID));
+                nextElement.setAttribute(TAG_ID, String.valueOf(++nextID));
+            }
+            save(document);
+            id = id + "-" + nextID;
+        }
+        return id;
+
     }
 
     void refresh() {
@@ -204,37 +227,39 @@ class PersistenceHandler {
                     if (node.getNodeType() == Node.ELEMENT_NODE) {
                         Element element = (Element) node;
 
+                        String id = element.getAttributeNS(NAMESPACE, TAG_ID);
+
                         String name = element.getAttributeNS(NAMESPACE, TAG_NAME);
-                        LocalQuery localQuery = new LocalQuery(name, localTaskRepository);
+                        LocalQuery localQuery = new LocalQuery(id, name, localTaskRepository);
 
 
                         Element elementPriority = findElement(element, TAG_PRIORITIES, NAMESPACE);
                         List<String> tagsTexts = getTagsTexts(elementPriority, TAG_PRIORITY);
                         List<TaskPriority> priorities = new ArrayList<TaskPriority>();
-                        for (String id : tagsTexts) {
-                            priorities.add(priorityProvider.getTaskPriorityById(id));
+                        for (String pid : tagsTexts) {
+                            priorities.add(priorityProvider.getTaskPriorityById(pid));
                         }
                         localQuery.setPriorities(priorities);
                         //----------------------------------------------------------------------
                         Element elementtypes = findElement(element, TAG_TYPES, NAMESPACE);
                         tagsTexts = getTagsTexts(elementtypes, TAG_TYPE);
                         List<TaskType> types = new ArrayList<TaskType>();
-                        for (String id : tagsTexts) {
-                            types.add(localTaskTypeProvider.getTaskTypeById(id));
+                        for (String tid : tagsTexts) {
+                            types.add(localTaskTypeProvider.getTaskTypeById(tid));
                         }
                         localQuery.setTypes(types);
                         //----------------------------------------------------------------------
                         Element elementStates = findElement(element, TAG_STATES, NAMESPACE);
                         tagsTexts = getTagsTexts(elementStates, TAG_STATUS);
                         List<TaskStatus> states = new ArrayList<TaskStatus>();
-                        for (String id : tagsTexts) {
-                            states.add(statusProvider.getTaskStatusById(id));
+                        for (String sid : tagsTexts) {
+                            states.add(statusProvider.getTaskStatusById(sid));
                         }
                         localQuery.setStates(states);
                         //----------------------------------------------------------------------
                         String content = element.getAttributeNS(NAMESPACE, TAG_CONTAIN);
                         String match_Type = element.getAttributeNS(NAMESPACE, TAG_MATCH_TYPE);
-                        if (match_Type != null && match_Type.trim().length()>0) {
+                        if (match_Type != null && match_Type.trim().length() > 0) {
                             MatchType matchType = MatchType.valueOf(match_Type);
                             localQuery.setMatchType(matchType);
                         }

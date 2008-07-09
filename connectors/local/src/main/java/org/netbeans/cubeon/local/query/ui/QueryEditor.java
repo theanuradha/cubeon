@@ -65,11 +65,9 @@ public class QueryEditor extends javax.swing.JPanel implements TaskQuerySupportP
         loadAttributes(repository);
         if (query != null) {
             this.localQuery = query.getLookup().lookup(LocalQuery.class);
-            txtName.setEditable(false);
-        } else {
-            this.localQuery = repository.getQuerySupport().createTaskQuery();
-        }
-        loadTaskQuery(this.localQuery);
+            loadTaskQuery(this.localQuery);
+        } 
+        
 
     }
 
@@ -146,6 +144,9 @@ public class QueryEditor extends javax.swing.JPanel implements TaskQuerySupportP
     }
 
     public TaskQuery getTaskQuery() {
+        if(localQuery==null){
+         localQuery= repository.getQuerySupport().createTaskQuery(txtName.getText().trim(),txtName.getText().trim());
+        }
         localQuery.setName(txtName.getText().trim());
 
         Object[] selectedValues = lstPriority.getSelectedValues();

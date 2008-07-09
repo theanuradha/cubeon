@@ -32,7 +32,7 @@ public interface TaskQuerySupportProvider {
      * @param name
      * @return
      */
-    TaskQuery findTaskQueryByName(String name);
+    TaskQuery findTaskQueryById(String name);
 
     /**
      *
@@ -41,9 +41,18 @@ public interface TaskQuerySupportProvider {
     List<TaskQuery> getTaskQuerys();
 
     /**
+     * 
+     * @param name
+     * @param description
+     * @return
+     */
+    TaskQuery createTaskQuery(String name, String description) ;
+
+     /**
      * save modifid attributes
      * @param query
      */
+
     void addTaskQuery(TaskQuery query);
 
     /**

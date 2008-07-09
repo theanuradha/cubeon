@@ -80,7 +80,7 @@ class PersistenceHandler {
     }
 
     void changeTaskElementId(String oldId, String newId) {
-       Document document = getDocument();
+        Document document = getDocument();
         Element root = getRootElement(document);
         Element tasksElement = findElement(root, TAG_TASKS, NAMESPACE);
         Element taskElement = null;
@@ -100,8 +100,8 @@ class PersistenceHandler {
                 }
             }
         }
-        if(taskElement!=null){
-         save(document);
+        if (taskElement != null) {
+            save(document);
         }
 
     }
@@ -143,7 +143,7 @@ class PersistenceHandler {
             root.appendChild(taskQuery);
         }
         if (query != null) {
-            taskQuery.setAttribute(TAG_NAME, query.getName());
+            taskQuery.setAttribute(TAG_ID, query.getId());
             taskQuery.setAttribute(TAG_REPOSITORY, query.getTaskRepository().getId());
         } else {
             root.removeChild(taskQuery);
@@ -172,11 +172,11 @@ class PersistenceHandler {
             CubeonContext context = Lookup.getDefault().lookup(CubeonContext.class);
             TaskRepositoryHandler repositoryHandler = context.getLookup().
                     lookup(TaskRepositoryHandler.class);
-            String name = taskQuery.getAttribute(TAG_NAME);
+            String id = taskQuery.getAttribute(TAG_ID);
             String repository = taskQuery.getAttribute(TAG_REPOSITORY);
             TaskRepository taskRepository = repositoryHandler.getTaskRepositoryById(repository);
             TaskQuerySupportProvider provider = taskRepository.getLookup().lookup(TaskQuerySupportProvider.class);
-            return provider.findTaskQueryByName(name);
+            return provider.findTaskQueryById(id);
         }
         return null;
     }

@@ -37,8 +37,14 @@ public class ResultQueryNode extends AbstractNode {
     public ResultQueryNode(Children children, TaskQuery query) {
         super(children);
         this.query = query;
+        setInfomations(query);
+
+    }
+
+    void setInfomations(TaskQuery query) {
         setDisplayName(NbBundle.getMessage(ResultQueryNode.class,
                 "LBL_ResultNode_Name", query.getName()));
+        setShortDescription(query.getDescription());
     }
 
     void updateNodeTag(String tag) {
@@ -78,4 +84,7 @@ public class ResultQueryNode extends AbstractNode {
     public Image getOpenedIcon(int arg0) {
         return getIcon(arg0);
     }
+
+
+
 }

@@ -208,7 +208,7 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
         }
         cmbActions.removeAllItems();
         List<JiraAction> actions = jiraTask.getActions();
-        defaultStatus = new JiraAction(jiraTask.getStatus().getId(), "Leave as " + jiraTask.getStatus().getText());
+        defaultStatus = new JiraAction("##", "Leave as " + jiraTask.getStatus().getText());
         cmbActions.addItem(defaultStatus);
         for (JiraAction action : actions) {
             cmbActions.addItem(action);

@@ -18,6 +18,7 @@ package org.netbeans.cubeon.jira.repository;
 
 import com.dolby.jira.net.soap.jira.RemoteComponent;
 import com.dolby.jira.net.soap.jira.RemoteConfiguration;
+import com.dolby.jira.net.soap.jira.RemoteFilter;
 import com.dolby.jira.net.soap.jira.RemoteIssueType;
 import com.dolby.jira.net.soap.jira.RemotePriority;
 import com.dolby.jira.net.soap.jira.RemoteProject;
@@ -66,6 +67,7 @@ class JiraAttributesPersistence {
     private static final String TAG_ROOT = "attributes";
     private static final String TAG_PRIORITIES = "priorites";
     private static final String TAG_PROJECTS = "projects";
+    private static final String TAG_FILTERS = "filters";
     private static final String TAG_SUB_TASKS = "sub_tasks";
     private static final String TAG_TYPES = "types";
     private static final String TAG_COMPONENTS = "components";
@@ -74,6 +76,7 @@ class JiraAttributesPersistence {
     private static final String TAG_RESOLUTIONS = "resolutions";
     private static final String TAG_PRIORITY = "priority";
     private static final String TAG_PROJECT = "project";
+    private static final String TAG_FILTER = "filter";
     private static final String TAG_TYPE = "type";
     private static final String TAG_COMPONENT = "component";
     private static final String TAG_VERSION = "version";
@@ -200,6 +203,16 @@ class JiraAttributesPersistence {
                 resolutionsElement.appendChild(resolution);
                 resolution.setAttribute(TAG_ID, rr.getId());
                 resolution.setAttribute(TAG_NAME, rr.getName());
+            }
+            //-----------------------------------------------------------------
+            RemoteFilter[] savedFilters = session.getSavedFilters();
+            Element filtersElement = getEmptyElement(document, attributes, TAG_FILTERS);
+            for (RemoteFilter remoteFilter : savedFilters) {
+                Element filter = document.createElement(TAG_RESOLUTION);
+                filtersElement.appendChild(filter);
+                filter.setAttribute(TAG_ID, remoteFilter.getId());
+                filter.setAttribute(TAG_NAME, remoteFilter.getName());
+                filter.setAttribute(TAG_DESCRIPTION, remoteFilter.getDescription());
             }
             //-----------------------------------------------------------------
             Element configurationsElement = getEmptyElement(document, attributes, TAG_CONFIGURATIONS);
