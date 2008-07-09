@@ -40,13 +40,7 @@ public interface TaskQuerySupportProvider {
      */
     List<TaskQuery> getTaskQuerys();
 
-    /**
-     * 
-     * @param name
-     * @param description
-     * @return
-     */
-    TaskQuery createTaskQuery(String name, String description) ;
+
 
      /**
      * save modifid attributes

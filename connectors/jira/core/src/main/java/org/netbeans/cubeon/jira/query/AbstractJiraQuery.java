@@ -54,5 +54,9 @@ public abstract class AbstractJiraQuery implements TaskQuery {
         return extension;
     }
 
+    public QueryExtension getJiraExtension() {
+        return extension;
+    }
+
     public abstract Type getType();
 }

@@ -16,10 +16,13 @@
  */
 package org.netbeans.cubeon.jira.query;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.netbeans.cubeon.jira.repository.JiraTaskRepository;
+import org.netbeans.cubeon.jira.repository.attributes.JiraFilter;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.util.Lookup;
+import org.openide.util.lookup.Lookups;
 
 /**
  *
@@ -27,36 +30,45 @@ import org.openide.util.Lookup;
  */
 public class JiraFilterQuery extends AbstractJiraQuery {
 
-    private String filterId;
+    private JiraFilter filter;
+   
 
-    public JiraFilterQuery(JiraTaskRepository repository, String id, String filterId) {
+    public JiraFilterQuery(JiraTaskRepository repository, String id) {
         super(repository, id);
-        this.filterId = filterId;
-
     }
-
+    
     @Override
     public Type getType() {
         return Type.FILTER;
     }
 
     public String getName() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return filter.getName();
     }
 
     public String getDescription() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return filter.getDescription();
     }
 
     public Lookup getLookup() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return Lookups.fixed(this, extension);
     }
 
     public void synchronize() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //TODO
     }
 
     public List<TaskElement> getTaskElements() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        List<TaskElement> elements = new ArrayList<TaskElement>();
+
+        return elements;
     }
- }
+
+    public JiraFilter getFilter() {
+        return filter;
+    }
+
+    public void setFilter(JiraFilter filter) {
+        this.filter = filter;
+    }
+}
