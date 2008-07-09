@@ -42,7 +42,7 @@ import org.xml.sax.SAXException;
  */
 class PersistenceHandler {
 
-    private static final String FILESYSTEM_FILE_TAG = "-query.xml"; //NOI18N
+    private static final String FILESYSTEM_FILE_TAG = "queries.xml"; //NOI18N
     private static final String NAMESPACE = null;//FIXME add propper namespase
     private static final String TAG_ROOT = "querys";
     private static final String TAG_QUERYS = "querys";
@@ -68,7 +68,7 @@ class PersistenceHandler {
     PersistenceHandler(JiraQuerySupport jiraQuerySupport, FileObject fileObject) {
         this.jiraQuerySupport = jiraQuerySupport;
         this.baseDir = fileObject;
-        refresh();
+        
     }
 
     void vaidate(TaskQuery query) {
@@ -245,7 +245,7 @@ class PersistenceHandler {
     }
 
     private Document getDocument() {
-        final FileObject config = baseDir.getFileObject(jiraQuerySupport.getTaskRepository().getId() + FILESYSTEM_FILE_TAG);
+        final FileObject config = baseDir.getFileObject( FILESYSTEM_FILE_TAG);
         Document doc = null;
         if (config != null) {
             InputStream in = null;
@@ -286,13 +286,13 @@ class PersistenceHandler {
 
     private void save(Document doc) {
 
-        FileObject config = baseDir.getFileObject(jiraQuerySupport.getTaskRepository().getId() + FILESYSTEM_FILE_TAG);
+        FileObject config = baseDir.getFileObject(FILESYSTEM_FILE_TAG);
 
         FileLock lck = null;
         OutputStream out = null;
         try {
             if (config == null) {
-                config = baseDir.createData(jiraQuerySupport.getTaskRepository().getId() + FILESYSTEM_FILE_TAG);
+                config = baseDir.createData(FILESYSTEM_FILE_TAG);
             }
             lck = config.lock();
             out = config.getOutputStream(lck);
