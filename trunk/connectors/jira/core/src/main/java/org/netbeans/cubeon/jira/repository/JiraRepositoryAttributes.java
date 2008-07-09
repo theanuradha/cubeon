@@ -18,6 +18,7 @@ package org.netbeans.cubeon.jira.repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.netbeans.cubeon.jira.repository.attributes.JiraFilter;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject;
 
 /**
@@ -27,6 +28,7 @@ import org.netbeans.cubeon.jira.repository.attributes.JiraProject;
 public class JiraRepositoryAttributes {
 
     private List<JiraProject> projects = new ArrayList<JiraProject>();
+    private List<JiraFilter> filters = new ArrayList<JiraFilter>();
 
     public List<JiraProject> getProjects() {
         return new ArrayList<JiraProject>(projects);
@@ -40,6 +42,24 @@ public class JiraRepositoryAttributes {
         for (JiraProject project : projects) {
             if (project.getId().equals(id)) {
                 return project;
+            }
+        }
+        return null;
+    }
+    //--------------------------filters-------------------------
+
+    public List<JiraFilter> getFilters() {
+        return new ArrayList<JiraFilter>(filters);
+    }
+
+    public void setFilters(List<JiraFilter> projects) {
+        this.filters = new ArrayList<JiraFilter>(projects);
+    }
+
+    public JiraFilter geFilterById(String id) {
+        for (JiraFilter filter : filters) {
+            if (filter.getId().equals(id)) {
+                return filter;
             }
         }
         return null;

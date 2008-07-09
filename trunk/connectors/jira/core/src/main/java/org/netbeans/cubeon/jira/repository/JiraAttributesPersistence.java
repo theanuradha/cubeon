@@ -35,6 +35,7 @@ import java.util.logging.Logger;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.cubeon.jira.remote.JiraException;
 import org.netbeans.cubeon.jira.remote.JiraSession;
+import org.netbeans.cubeon.jira.repository.attributes.JiraFilter;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.task.TaskResolution;
@@ -441,10 +442,29 @@ class JiraAttributesPersistence {
                     }
                 }
                 repository.getRepositoryAttributes().setProjects(projects);
+                //----------------------------------------
+                List<JiraFilter> filters = new ArrayList<JiraFilter>();
+                Element taskfilter = findElement(attributes, TAG_FILTERS, NAMESPACE);
+                if (taskfilter != null) {
+                    NodeList filterNodes = taskfilter.getChildNodes();
 
+                    for (int i = 0; i < filterNodes.getLength(); i++) {
 
+                        Node node = filterNodes.item(i);
+                        if (node.getNodeType() == Node.ELEMENT_NODE) {
+                            Element element = (Element) node;
+                            String id = element.getAttribute(TAG_ID);
+                            String name = element.getAttribute(TAG_NAME);
+                            String description = element.getAttribute(TAG_DESCRIPTION);
 
+                            filters.add(new JiraFilter(repository, id, name, description));
 
+                        }
+                    }
+
+                }
+
+                repository.getRepositoryAttributes().setFilters(filters);
                 //-----------------------------------------
                 Element taskResolution = findElement(attributes, TAG_RESOLUTIONS, NAMESPACE);
                 NodeList taskResolutionNodes = taskResolution.getChildNodes();

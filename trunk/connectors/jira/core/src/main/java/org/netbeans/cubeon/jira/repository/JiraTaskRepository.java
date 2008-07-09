@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
+import org.netbeans.cubeon.jira.query.JiraQuerySupport;
 import org.netbeans.cubeon.jira.remote.JiraException;
 import org.netbeans.cubeon.jira.remote.JiraSession;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject;
@@ -63,6 +64,7 @@ public class JiraTaskRepository implements TaskRepository {
     private final JiraTaskStatusProvider jtsp = new JiraTaskStatusProvider();
     private final JiraTaskResolutionProvider jtrp = new JiraTaskResolutionProvider();
     private final JiraRepositoryAttributes repositoryAttributes = new JiraRepositoryAttributes();
+    private final JiraQuerySupport querySupport;
     private final TaskPersistenceHandler handler;
     private Map<String, JiraTask> map = new HashMap<String, JiraTask>();
     private FileObject baseDir;
@@ -86,6 +88,7 @@ public class JiraTaskRepository implements TaskRepository {
         }
         attributesPersistence = new JiraAttributesPersistence(this, baseDir);
         handler = new TaskPersistenceHandler(this, baseDir);
+        querySupport = new JiraQuerySupport(this, extension);
     }
 
     public String getId() {
@@ -110,7 +113,7 @@ public class JiraTaskRepository implements TaskRepository {
 
     public Lookup getLookup() {
         return Lookups.fixed(this,
-                provider, extension, jtpp, jtrp, jtsp, jttp);
+                provider, extension, jtpp, jtrp, jtsp, jttp, querySupport);
     }
 
     public Image getImage() {
@@ -122,7 +125,7 @@ public class JiraTaskRepository implements TaskRepository {
     }
 
     public TaskElement createTaskElement(String summery, String description) {
-        
+
         return JiraUtils.createTaskElement(this, summery, description);
     }
 
