@@ -38,9 +38,15 @@ class TaskQueryAttributesWizard implements WizardDescriptor.Panel<WizardObject> 
     // is kept separate. This can be more efficient: if the wizard is created
     // but never displayed, or not all panels are displayed, it is better to
     // create only those which really need to be visible.
+
     public Component getComponent() {
         if (component == null) {
-            component = new TaskQueryAttributes();
+            component = new TaskQueryAttributes(new ChangeListener() {
+
+                public void stateChanged(ChangeEvent e) {
+                    fireChangeEvent();
+                }
+            });
         }
         return component;
     }
@@ -84,6 +90,7 @@ class TaskQueryAttributesWizard implements WizardDescriptor.Panel<WizardObject> 
     // settings object will be the WizardDescriptor, so you can use
     // WizardDescriptor.getProperty & putProperty to store information entered
     // by the user.
+
     public void readSettings(WizardObject settings) {
         if (defaultRepository != null) {
             settings.setRepository(defaultRepository);
