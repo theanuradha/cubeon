@@ -7,6 +7,8 @@ package org.netbeans.cubeon.ui.query;
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
 
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuerySupportProvider;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuerySupportProvider.ConfigurationHandler;
 import org.netbeans.cubeon.ui.query.NewQueryWizardAction.WizardObject;
@@ -15,10 +17,12 @@ import org.openide.util.NbBundle;
 final class TaskQueryAttributes extends JPanel {
 
     private ConfigurationHandler handler;
+    private final ChangeListener wizard;
 
     /** Creates new form TaskQueryAttributes */
-    TaskQueryAttributes() {
+    TaskQueryAttributes(final ChangeListener wizard) {
         initComponents();
+        this.wizard = wizard;
     }
 
     @Override
@@ -29,6 +33,7 @@ final class TaskQueryAttributes extends JPanel {
     void setWizardObject(WizardObject object) {
         TaskQuerySupportProvider tqsp = object.getRepository().getLookup().lookup(TaskQuerySupportProvider.class);
         handler = tqsp.createConfigurationHandler(object.getQuery());
+        handler.addChangeListener(wizard);
         lblMainHeader.setText(NbBundle.getMessage(TaskQueryAttributes.class,
                 "LBL_Create_New", object.getRepository().getName()));
         lblSubHeader.setText(NbBundle.getMessage(TaskQueryAttributes.class,

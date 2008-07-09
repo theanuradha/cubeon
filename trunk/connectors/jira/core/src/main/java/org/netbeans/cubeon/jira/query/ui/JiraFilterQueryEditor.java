@@ -22,16 +22,16 @@
  */
 package org.netbeans.cubeon.jira.query.ui;
 
+import java.awt.Image;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import org.netbeans.cubeon.jira.query.AbstractJiraQuery;
 import org.netbeans.cubeon.jira.query.JiraFilterQuery;
 import org.netbeans.cubeon.jira.query.JiraQuerySupport;
@@ -40,7 +40,11 @@ import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuerySupportProvider;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.BeanTreeView;
-import org.openide.util.NbBundle;
+import org.openide.nodes.AbstractNode;
+import org.openide.nodes.Children;
+import org.openide.nodes.Node;
+import org.openide.util.Utilities;
+import org.openide.util.lookup.Lookups;
 
 /**
  *
@@ -57,8 +61,16 @@ public class JiraFilterQueryEditor extends javax.swing.JPanel implements Explore
     public JiraFilterQueryEditor(JiraQuerySupport jiraQuerySupport) {
         initComponents();
         this.jiraQuerySupport = jiraQuerySupport;
+        explorerManager.addPropertyChangeListener(new PropertyChangeListener() {
+
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (ExplorerManager.PROP_SELECTED_NODES.equals(evt.getPropertyName())) {
+                    fireChangeEvent();
+                }
+            }
+        });
         loadFilters();
-        beanTreeView.setRootVisible(false);
+
     }
 
     public ExplorerManager getExplorerManager() {
@@ -67,7 +79,28 @@ public class JiraFilterQueryEditor extends javax.swing.JPanel implements Explore
 
     private void loadFilters() {
         List<JiraFilter> filters = jiraQuerySupport.getJiraTaskRepository().getRepositoryAttributes().getFilters();
+        Children.Array array = new Children.Array();
+        AbstractNode root = new AbstractNode(array) {
 
+            @Override
+            public Image getOpenedIcon(int type) {
+                return getIcon(type);
+            }
+
+            @Override
+            public Image getIcon(int type) {
+                return jiraQuerySupport.getJiraTaskRepository().getImage();
+            }
+
+        };
+        root.setDisplayName("Jira Repository Filters");
+
+
+        for (JiraFilter jiraFilter : filters) {
+            array.add(new Node[]{new FilterNode(jiraFilter)});
+
+        }
+        explorerManager.setRootContext(root);
     }
 
     public void setQuery(JiraFilterQuery query) {
@@ -75,7 +108,12 @@ public class JiraFilterQueryEditor extends javax.swing.JPanel implements Explore
     }
 
     private JiraFilter getSelectedFilter() {
-
+        Node[] selectedNodes = explorerManager.getSelectedNodes();
+        if (selectedNodes.length > 0) {
+            Node node = selectedNodes[0];
+            JiraFilter filter = node.getLookup().lookup(JiraFilter.class);
+            return filter;
+        }
         return null;
     }
 
@@ -102,7 +140,7 @@ public class JiraFilterQueryEditor extends javax.swing.JPanel implements Explore
 
     public boolean isValidConfiguration() {
 
-        return true;
+        return getSelectedFilter() != null;
     }
 
     final void fireChangeEvent() {
@@ -118,6 +156,24 @@ public class JiraFilterQueryEditor extends javax.swing.JPanel implements Explore
 
     public JComponent getComponent() {
         return this;
+    }
+
+    private class FilterNode extends AbstractNode {
+
+        private JiraFilter filter;
+
+        public FilterNode(JiraFilter filter) {
+            super(Children.LEAF, Lookups.fixed(filter));
+            this.filter = filter;
+            setDisplayName(filter.getName());
+            setShortDescription(filter.getDescription());
+        }
+
+        @Override
+        public Image getIcon(int type) {
+            return  Utilities.loadImage("org/netbeans/cubeon/jira/query/ui/filter.png");
+        }
+
     }
 
     /** This method is called from within the constructor to

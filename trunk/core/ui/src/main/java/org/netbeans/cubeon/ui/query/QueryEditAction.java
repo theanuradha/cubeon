@@ -16,9 +16,10 @@
  */
 package org.netbeans.cubeon.ui.query;
 
-import org.netbeans.cubeon.ui.repository.*;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuerySupportProvider;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
@@ -40,7 +41,12 @@ public class QueryEditAction extends AbstractAction {
     }
 
     public void actionPerformed(ActionEvent e) {
-        TaskQueryAttributes settings = new TaskQueryAttributes();
+        TaskQueryAttributes settings = new TaskQueryAttributes(new ChangeListener() {
+
+            public void stateChanged(ChangeEvent e) {
+                //todo
+            }
+        });
 
         settings.setWizardObject(new NewQueryWizardAction.WizardObject(query, query.getTaskRepository()));
         DialogDescriptor dd = new DialogDescriptor(settings, settings.getName());
