@@ -255,6 +255,17 @@ public class JiraTaskRepository implements TaskRepository {
             try {
                 JiraSession js = getSession();
                 RemoteIssue issue = js.getIssue(task.getId());
+                update(issue, task);
+            } catch (JiraException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+
+    }
+    public void update( RemoteIssue issue,JiraTask task) {
+        synchronized (task) {
+            try {
+                
                 JiraUtils.maregeToTask(this, issue, task);
                 persist(task);
                 TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
@@ -265,7 +276,6 @@ public class JiraTaskRepository implements TaskRepository {
         }
 
     }
-
     public void submit(JiraTask task) {
         synchronized (task) {
             try {
@@ -299,7 +309,7 @@ public class JiraTaskRepository implements TaskRepository {
         }
     }
 
-    synchronized JiraSession getSession() throws JiraException {
+    public synchronized JiraSession getSession() throws JiraException {
         if (session == null) {
             session = new JiraSession(url, getUserName(), password);
         }

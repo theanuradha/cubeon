@@ -285,10 +285,45 @@ class TaskPersistenceHandler {
 
     void persist(JiraTask task) {
         synchronized (LOCK) {
-            //create task xml
-            Document document = getTaskDocument(task.getId());
+            Document document = getDocument();
             Element root = getRootElement(document);
-            Element taskElement = findElement(root, TAG_TASK, NAMESPACE);
+            Element tasksElement = findElement(root, TAG_TASKS, NAMESPACE);
+            //check tasksElement null and create element
+            if (tasksElement == null) {
+                tasksElement = document.createElementNS(NAMESPACE, TAG_TASKS);
+                root.appendChild(tasksElement);
+            }
+            Element taskElement = null;
+
+
+            NodeList taskNodes =
+                    tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_TASK);
+
+            for (int i = 0; i < taskNodes.getLength(); i++) {
+                Node node = taskNodes.item(i);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element element = (Element) node;
+                    String id = element.getAttributeNS(NAMESPACE, TAG_ID);
+                    if (task.getId().equals(id)) {
+                        taskElement = element;
+                        break;
+                    }
+                }
+            }
+            if (taskElement == null) {
+                taskElement = document.createElementNS(NAMESPACE, TAG_TASK);
+                tasksElement.appendChild(taskElement);
+                taskElement.setAttributeNS(NAMESPACE, TAG_ID, task.getId());
+            }
+
+
+            save(document);
+
+
+            //create task xml
+            document = getTaskDocument(task.getId());
+            root = getRootElement(document);
+            taskElement = findElement(root, TAG_TASK, NAMESPACE);
             //check tasksElement null and create element
             if (taskElement == null) {
                 taskElement = document.createElementNS(NAMESPACE, TAG_TASK);
@@ -399,6 +434,32 @@ class TaskPersistenceHandler {
 
     void removeTaskElement(TaskElement te) {
         synchronized (LOCK) {
+
+            Document document = getDocument();
+            Element root = getRootElement(document);
+            Element tasksElement = findElement(root, TAG_TASKS, NAMESPACE);
+            Element taskElement = null;
+
+            NodeList taskNodes =
+                    tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_TASK);
+
+            for (int i = 0; i < taskNodes.getLength(); i++) {
+                Node node = taskNodes.item(i);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element element = (Element) node;
+                    String id = element.getAttributeNS(NAMESPACE, TAG_ID);
+                    if (te.getId().equals(id)) {
+                        taskElement = element;
+                        break;
+                    }
+                }
+            }
+            assert taskElement != null;
+
+            tasksElement.removeChild(taskElement);
+
+            save(document);
+
             FileObject taskFo = tasksFolder.getFileObject(te.getId() + ".xml");
             if (taskFo != null) {
                 try {
