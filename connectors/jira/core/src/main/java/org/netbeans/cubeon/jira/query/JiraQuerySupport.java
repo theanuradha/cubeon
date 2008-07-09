@@ -31,7 +31,7 @@ import org.netbeans.cubeon.tasks.spi.query.TaskQuerySupportProvider;
  */
 public class JiraQuerySupport implements TaskQuerySupportProvider {
 
-    private List<TaskQuery> taskQuerys = new ArrayList<TaskQuery>();
+    private List<TaskQuery> taskQuerys = new ArrayList<TaskQuery>(0);
     private JiraTaskRepository repository;
     private JiraRepositoryExtension extension;
     private PersistenceHandler handler;
@@ -39,7 +39,7 @@ public class JiraQuerySupport implements TaskQuerySupportProvider {
     public JiraQuerySupport(JiraTaskRepository repository, JiraRepositoryExtension extension) {
         this.repository = repository;
         this.extension = extension;
-        handler = new PersistenceHandler(this, repository.getProvider().getBaseDir());
+        handler = new PersistenceHandler(this, repository.getBaseDir());
         handler.refresh();
 
     }
@@ -51,6 +51,11 @@ public class JiraQuerySupport implements TaskQuerySupportProvider {
         }
 
         return null;
+
+    }
+
+    public void refresh(){
+      handler.refresh();
 
     }
 

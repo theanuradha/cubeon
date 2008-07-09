@@ -91,6 +91,10 @@ public class JiraTaskRepository implements TaskRepository {
         querySupport = new JiraQuerySupport(this, extension);
     }
 
+    public FileObject getBaseDir() {
+        return baseDir;
+    }
+
     public String getId() {
         return id;
     }
@@ -205,6 +209,7 @@ public class JiraTaskRepository implements TaskRepository {
 
     public synchronized void loadAttributes() {
         attributesPersistence.loadAttributes();
+        querySupport.refresh();
         setState(State.ACTIVE);
     }
 
