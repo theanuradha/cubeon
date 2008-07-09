@@ -50,6 +50,10 @@ public abstract class AbstractJiraQuery implements TaskQuery {
         return repository;
     }
 
+    public JiraTaskRepository getRepository() {
+        return repository;
+    }
+
     public Extension getExtension() {
         return extension;
     }
