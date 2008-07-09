@@ -36,6 +36,7 @@ import org.openide.util.lookup.Lookups;
  */
 public class LocalQuery implements TaskQuery {
 
+    private final String id;
     private String name;
     private LocalTaskRepository repository;
     private List<TaskPriority> priorities = new ArrayList<TaskPriority>();
@@ -47,14 +48,23 @@ public class LocalQuery implements TaskQuery {
     private final QueryExtension extension;
     private MatchType matchType = MatchType.CONTAIN;
 
-    public LocalQuery(String name, LocalTaskRepository repository) {
+    public LocalQuery(String id, String name, LocalTaskRepository repository) {
+        this.id = id;
         this.name = name;
         this.repository = repository;
         extension = new QueryExtension(this);
     }
 
+    public String getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public String getDescription() {
+        return "Local Query : " + getName();
     }
 
     public void setName(String name) {

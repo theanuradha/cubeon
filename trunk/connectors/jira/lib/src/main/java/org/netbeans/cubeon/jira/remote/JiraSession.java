@@ -23,9 +23,11 @@ import com.dolby.jira.net.soap.jira.RemoteComponent;
 import com.dolby.jira.net.soap.jira.RemoteConfiguration;
 import com.dolby.jira.net.soap.jira.RemoteField;
 import com.dolby.jira.net.soap.jira.RemoteFieldValue;
+import com.dolby.jira.net.soap.jira.RemoteFilter;
 import com.dolby.jira.net.soap.jira.RemoteIssue;
 import com.dolby.jira.net.soap.jira.RemoteIssueType;
 import com.dolby.jira.net.soap.jira.RemoteNamedObject;
+import com.dolby.jira.net.soap.jira.RemotePermissionException;
 import com.dolby.jira.net.soap.jira.RemotePriority;
 import com.dolby.jira.net.soap.jira.RemoteProject;
 import com.dolby.jira.net.soap.jira.RemoteResolution;
@@ -171,6 +173,14 @@ public class JiraSession {
         }
     }
 
+    public RemoteIssue[] getIssuesFromTextSearch(String text) throws JiraException {
+        try {
+            return service.getIssuesFromTextSearch(token, text);
+        } catch (Exception ex) {
+            throw new JiraException(ex);
+        }
+    }
+
     public RemoteNamedObject[] getAvailableActions(String issueId) throws JiraException {
         try {
             return service.getAvailableActions(token, issueId);
@@ -190,6 +200,22 @@ public class JiraSession {
     public RemoteComponent[] getComponents(String ProjectId) throws JiraException {
         try {
             return service.getComponents(token, ProjectId);
+        } catch (Exception ex) {
+            throw new JiraException(ex);
+        }
+    }
+
+    public RemoteFilter[] getSavedFilters() throws JiraException {
+        try {
+            return service.getSavedFilters(token);
+        } catch (Exception ex) {
+            throw new JiraException(ex);
+        }
+    }
+
+    public RemoteIssue[] getIssuesFromFilter(String arg1) throws JiraException {
+        try {
+            return service.getIssuesFromFilter(token, arg1);
         } catch (Exception ex) {
             throw new JiraException(ex);
         }

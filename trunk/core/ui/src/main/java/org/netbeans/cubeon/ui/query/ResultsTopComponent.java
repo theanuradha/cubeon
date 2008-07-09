@@ -74,6 +74,7 @@ final class ResultsTopComponent extends TopComponent implements ExplorerManager.
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
+
     /**
      * Gets default instance. Do not use directly: reserved for *.settings files only,
      * i.e. deserialization routines; otherwise you could get a non-deserialized instance.
@@ -157,6 +158,11 @@ final class ResultsTopComponent extends TopComponent implements ExplorerManager.
             final ResultQueryNode queryNode = new ResultQueryNode(array, taskQuery);
             explorerManager.setRootContext(queryNode);
             adapter = new TaskQueryEventAdapter() {
+
+                @Override
+                public void atributesupdated() {
+                    queryNode.setInfomations(taskQuery);
+                }
 
                 @Override
                 public void querySynchronized() {

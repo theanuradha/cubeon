@@ -17,10 +17,12 @@
 package org.netbeans.cubeon.ui.query;
 
 import java.awt.Image;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.Action;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
+import org.netbeans.cubeon.tasks.spi.query.TaskQueryEventAdapter;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.util.Utilities;
@@ -32,19 +34,40 @@ import org.openide.util.Utilities;
 public class TaskQueryNode extends AbstractNode {
 
     private TaskQuery query;
-    private boolean canDelete=true;
+    private boolean canDelete = true;
+    private final TaskQueryEventAdapter adapter;
 
-    public TaskQueryNode(TaskQuery query) {
+    public TaskQueryNode(final TaskQuery query) {
         super(Children.LEAF);
         this.query = query;
         setDisplayName(query.getName());
+        setShortDescription(query.getDescription());
+        adapter = new TaskQueryEventAdapter() {
+
+            @Override
+            public void atributesupdated() {
+                setDisplayName(query.getName());
+                setShortDescription(query.getDescription());
+            }
+        };
+        query.getExtension().add(adapter);
     }
 
-    public TaskQueryNode(Children children, TaskQuery query, boolean canDelete) {
+    public TaskQueryNode(Children children, final TaskQuery query, boolean canDelete) {
         super(children);
         this.query = query;
         this.canDelete = canDelete;
         setDisplayName(query.getName());
+        setShortDescription(query.getDescription());
+        adapter = new TaskQueryEventAdapter() {
+
+            @Override
+            public void atributesupdated() {
+                setDisplayName(query.getName());
+                setShortDescription(query.getDescription());
+            }
+        };
+        query.getExtension().add(adapter);
     }
 
     @Override
@@ -79,5 +102,8 @@ public class TaskQueryNode extends AbstractNode {
         return getIcon(arg0);
     }
 
-
+    @Override
+    public void destroy() throws IOException {
+        query.getExtension().remove(adapter);
+    }
 }

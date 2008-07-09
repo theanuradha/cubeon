@@ -28,7 +28,11 @@ import org.openide.util.Lookup;
  */
 public interface TaskQuery {
 
-   
+    /**
+     *
+     * @return
+     */
+    String getId();
 
     /**
      *
@@ -36,7 +40,11 @@ public interface TaskQuery {
      */
     String getName();
 
-  
+    /**
+     *
+     * @return
+     */
+    String getDescription();
 
     /**
      *
