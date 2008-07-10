@@ -193,7 +193,7 @@ final class ResultsTopComponent extends TopComponent implements ExplorerManager.
             };
             taskQuery.getExtension().add(adapter);
             taskQuery.synchronize();
-
+            queryNode.updateNodeTag("Synchronizing...");
 
 
         }
