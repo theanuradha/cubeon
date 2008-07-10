@@ -71,7 +71,7 @@ public class JiraFilterQuery extends AbstractJiraQuery {
 
                 public void run() {
                     synchronized (JiraFilterQuery.this) {
-                        ProgressHandle handle = ProgressHandleFactory.createHandle("Synchronizng Query : " + getName());
+                        ProgressHandle handle = ProgressHandleFactory.createHandle("Synchronizing Query : " + getName());
                         handle.start();
                         handle.switchToIndeterminate();
 
