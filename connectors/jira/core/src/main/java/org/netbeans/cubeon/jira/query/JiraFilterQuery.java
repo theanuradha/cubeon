@@ -19,15 +19,17 @@ package org.netbeans.cubeon.jira.query;
 import com.dolby.jira.net.soap.jira.RemoteIssue;
 import java.util.ArrayList;
 import java.util.List;
+import org.netbeans.api.progress.ProgressHandle;
+import org.netbeans.api.progress.ProgressHandleFactory;
 import org.netbeans.cubeon.jira.remote.JiraException;
 import org.netbeans.cubeon.jira.remote.JiraSession;
 import org.netbeans.cubeon.jira.repository.JiraTaskRepository;
-import org.netbeans.cubeon.jira.repository.JiraUtils;
 import org.netbeans.cubeon.jira.repository.attributes.JiraFilter;
 import org.netbeans.cubeon.jira.tasks.JiraTask;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
+import org.openide.util.RequestProcessor;
 import org.openide.util.lookup.Lookups;
 
 /**
@@ -61,30 +63,48 @@ public class JiraFilterQuery extends AbstractJiraQuery {
     }
 
     public void synchronize() {
-        JiraTaskRepository repository = getRepository();
+
+        final JiraTaskRepository repository = getRepository();
         if (filter != null) {
-            try {
-                JiraSession session = repository.getSession();
-                RemoteIssue[] remoteIssues = session.getIssuesFromFilter(filter.getId());
 
-                for (RemoteIssue remoteIssue : remoteIssues) {
+            RequestProcessor.getDefault().post(new Runnable() {
 
-                    TaskElement element = repository.getTaskElementById(remoteIssue.getKey());
-                    if (element != null) {
-                        repository.update(remoteIssue, element.getLookup().lookup(JiraTask.class));
-                    } else {
-                        JiraTask jiraTask = new JiraTask(remoteIssue.getKey(), remoteIssue.getSummary(), remoteIssue.getDescription(), repository);
-                        jiraTask.setUrlString(repository.getURL() + "/browse/" + remoteIssue.getKey());//NOI18N
-                        repository.update(remoteIssue, jiraTask);
-                        element = jiraTask;
+                public void run() {
+                    synchronized (JiraFilterQuery.this) {
+                        ProgressHandle handle = ProgressHandleFactory.createHandle("Synchronizng Query : " + getName());
+                        handle.start();
+                        handle.switchToIndeterminate();
+
+                        try {
+                            JiraSession session = repository.getSession();
+                            RemoteIssue[] remoteIssues = session.getIssuesFromFilter(filter.getId());
+                            ids.clear();
+                            for (RemoteIssue remoteIssue : remoteIssues) {
+
+                                TaskElement element = repository.getTaskElementById(remoteIssue.getKey());
+                                if (element != null) {
+                                    repository.update(remoteIssue, element.getLookup().lookup(JiraTask.class));
+                                } else {
+                                    JiraTask jiraTask = new JiraTask(remoteIssue.getKey(), remoteIssue.getSummary(), remoteIssue.getDescription(), repository);
+                                    jiraTask.setUrlString(repository.getURL() + "/browse/" + remoteIssue.getKey());//NOI18N
+                                    repository.update(remoteIssue, jiraTask);
+                                    element = jiraTask;
+                                }
+                                ids.add(element.getId());
+                            }
+                        } catch (JiraException ex) {
+                            Exceptions.printStackTrace(ex);
+                        }
+
+                        handle.finish();
+                        extension.fireSynchronized();
                     }
-                    ids.add(element.getId());
                 }
-            } catch (JiraException ex) {
-                Exceptions.printStackTrace(ex);
-            }
+            });
+
+
         }
-        extension.fireSynchronized();
+
     }
 
     public List<TaskElement> getTaskElements() {
