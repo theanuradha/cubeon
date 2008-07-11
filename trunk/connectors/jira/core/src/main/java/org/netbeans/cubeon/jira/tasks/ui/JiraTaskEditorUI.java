@@ -237,6 +237,7 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
                 list.addSelectionInterval(indexOf, indexOf);
             }
         }
+        list.ensureIndexIsVisible(list.getSelectedIndex());
     }
 
     private void loadAction(JiraAction action) {
