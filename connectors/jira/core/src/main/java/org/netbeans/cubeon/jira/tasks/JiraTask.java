@@ -45,7 +45,7 @@ import org.openide.util.lookup.Lookups;
  */
 public class JiraTask implements TaskElement {
 
-    private final String id;
+    private  String id;
     private String name;
     private String description;
     private String urlString;
@@ -82,6 +82,10 @@ public class JiraTask implements TaskElement {
 
     public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {

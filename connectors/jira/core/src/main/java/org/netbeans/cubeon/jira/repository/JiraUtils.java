@@ -25,8 +25,6 @@ import com.dolby.jira.net.soap.jira.RemoteVersion;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.netbeans.cubeon.jira.remote.JiraException;
 import org.netbeans.cubeon.jira.remote.JiraSession;
 import org.netbeans.cubeon.jira.repository.attributes.JiraAction;
@@ -136,38 +134,41 @@ public class JiraUtils {
     }
 
     public static TaskElement createTaskElement(JiraTaskRepository repository,
-            String summery, String description) {
+            JiraTask jiraTask) throws JiraException {
+        String old = jiraTask.getId();
         TaskType prefedTaskType = repository.getJiraTaskTypeProvider().getPrefedTaskType();
         TaskPriority prefredPriority = repository.getJiraTaskPriorityProvider().getPrefredPriority();
         JiraProject prefredProject = repository.getPrefredProject();
-        try {
-            JiraSession js = repository.getSession();
-            RemoteIssue issue = new RemoteIssue();
-            issue.setSummary(summery);
-            issue.setDescription(description);
-            issue.setProject(prefredProject.getId());
-            issue.setReporter(repository.getUserName());
-            issue.setType(prefedTaskType.getId());
-            issue.setPriority(prefredPriority.getId());
-            issue = js.createTask(issue);
 
-            JiraTask jiraTask = new JiraTask(issue.getKey(), summery, description, repository);
-            jiraTask.setUrlString(repository.getURL() + "/browse/" + issue.getKey());//NOI18N
-
-            JiraUtils.maregeToTask(repository, issue, jiraTask);
-            return jiraTask;
-        } catch (JiraException ex) {
-            Logger.getLogger(JiraTaskRepository.class.getName()).log(Level.WARNING, ex.getMessage());
+        JiraSession js = repository.getSession();
+        RemoteIssue issue = new RemoteIssue();
+        issue.setSummary(jiraTask.getName());
+        issue.setDescription(jiraTask.getDescription());
+        issue.setProject(jiraTask.getProject() == null ? prefredProject.getId() : jiraTask.getProject().getId());
+        issue.setReporter(repository.getUserName());
+        issue.setType(jiraTask.getType() == null ? prefedTaskType.getId() : jiraTask.getType().getId());
+        issue.setPriority(jiraTask.getPriority() == null ? prefredPriority.getId() : jiraTask.getPriority().getId());
+        issue.setEnvironment(jiraTask.getEnvironment());
+        List<Version> affectedVersions = jiraTask.getAffectedVersions();
+        RemoteVersion[] versions = new RemoteVersion[affectedVersions.size()];
+        for (int i = 0; i < affectedVersions.size(); i++) {
+            Version version = affectedVersions.get(i);
+            RemoteVersion rv = new RemoteVersion();
+            rv.setId(version.getId());
+            versions[i] = rv;
         }
+        issue.setAffectsVersions(versions);
+        issue = js.createTask(issue);
 
 
-
-        JiraTask jiraTask = new JiraTask(repository.getTaskPersistenceHandler().nextTaskId(),
-                summery, description, repository);
-        jiraTask.setLocal(true);
-        jiraTask.setProject(prefredProject);
-        jiraTask.setType(prefedTaskType);
+        jiraTask.setUrlString(repository.getURL() + "/browse/" + issue.getKey());//NOI18N
+        jiraTask.setId(issue.getKey());
+        JiraUtils.maregeToTask(repository, issue, jiraTask);
+        repository.persist(jiraTask);
+        repository.getExtension().fireIdChanged(old, jiraTask.getId());
         return jiraTask;
+
+
     }
 
     public static void maregeToTask(JiraTaskRepository repository, RemoteIssue issue, JiraTask jiraTask) throws JiraException {

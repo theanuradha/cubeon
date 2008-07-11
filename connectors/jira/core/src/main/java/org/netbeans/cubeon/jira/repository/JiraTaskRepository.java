@@ -129,7 +129,13 @@ public class JiraTaskRepository implements TaskRepository {
 
     public TaskElement createTaskElement(String summery, String description) {
 
-        return JiraUtils.createTaskElement(this, summery, description);
+        JiraTask jiraTask = new JiraTask(handler.nextTaskId(),
+                summery, description, this);
+        jiraTask.setLocal(true);
+        jiraTask.setProject(getPrefredProject());
+        jiraTask.setType(getJiraTaskTypeProvider().getPrefedTaskType());
+        jiraTask.setPriority(jtpp.getPrefredPriority());
+        return jiraTask;
     }
 
     public synchronized TaskElement getTaskElementById(String id) {
@@ -281,14 +287,16 @@ public class JiraTaskRepository implements TaskRepository {
 
     public void update(RemoteIssue issue, JiraTask task) {
         synchronized (task) {
-            try {
+            if (!task.isLocal()) {
+                try {
 
-                JiraUtils.maregeToTask(this, issue, task);
-                persist(task);
-                TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
-                factory.refresh(task);
-            } catch (JiraException ex) {
-                Exceptions.printStackTrace(ex);
+                    JiraUtils.maregeToTask(this, issue, task);
+                    persist(task);
+                    TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
+                    factory.refresh(task);
+                } catch (JiraException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
             }
         }
 
@@ -297,27 +305,33 @@ public class JiraTaskRepository implements TaskRepository {
     public void submit(JiraTask task) {
         synchronized (task) {
             try {
-                JiraSession js = getSession();
-                RemoteFieldValue[] fieldValues = JiraUtils.changedFieldValues(js.getIssue(task.getId()), task);
-                if (fieldValues.length > 0) {
-                    RemoteIssue updateTask = js.updateTask(task.getId(), fieldValues);
-                    JiraUtils.maregeToTask(this, updateTask, task);
-                    if (task.getAction() != null) {
-                        RemoteIssue remoteIssue = js.progressWorkflowAction(task.getId(),
-                                task.getAction().getId(),
-                                JiraUtils.changedFieldValuesForAction(task.getAction(),
-                                updateTask, task));
-                        JiraUtils.maregeToTask(this, remoteIssue, task);
-                    }
-                    persist(task);
+                if (task.isLocal()) {
+                    JiraUtils.createTaskElement(this, task);
                 } else {
-                    if (task.getAction() != null) {
-                        RemoteIssue remoteIssue = js.progressWorkflowAction(task.getId(),
-                                task.getAction().getId(),
-                                JiraUtils.changedFieldValuesForAction(task.getAction(),
-                                js.getIssue(task.getId()), task));
-                        JiraUtils.maregeToTask(this, remoteIssue, task);
+
+                    JiraSession js = getSession();
+                    RemoteFieldValue[] fieldValues = JiraUtils.changedFieldValues(js.getIssue(task.getId()), task);
+                    if (fieldValues.length > 0) {
+                        RemoteIssue updateTask = js.updateTask(task.getId(), fieldValues);
+                        JiraUtils.maregeToTask(this, updateTask, task);
+                        if (task.getAction() != null) {
+                            RemoteIssue remoteIssue = js.progressWorkflowAction(task.getId(),
+                                    task.getAction().getId(),
+                                    JiraUtils.changedFieldValuesForAction(task.getAction(),
+                                    updateTask, task));
+                            JiraUtils.maregeToTask(this, remoteIssue, task);
+                        }
                         persist(task);
+                    } else {
+                        if (task.getAction() != null) {
+                            RemoteIssue remoteIssue = js.progressWorkflowAction(task.getId(),
+                                    task.getAction().getId(),
+                                    JiraUtils.changedFieldValuesForAction(task.getAction(),
+                                    js.getIssue(task.getId()), task));
+                            JiraUtils.maregeToTask(this, remoteIssue, task);
+                            persist(task);
+                        }
+
                     }
 
                 }

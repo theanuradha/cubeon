@@ -23,6 +23,7 @@ import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.repository.TaskStatusProvider;
 import org.netbeans.cubeon.tasks.spi.repository.TaskTypeProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
+import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
 import org.netbeans.cubeon.ui.taskelemet.CopyDetailsAction;
 import org.netbeans.cubeon.ui.taskelemet.MoveToAction;
 import org.netbeans.cubeon.ui.taskelemet.OpenAction;
@@ -85,8 +86,11 @@ public class TaskResultNode extends AbstractNode {
         }
         TaskStatusProvider tsp = repository.getLookup().lookup(TaskStatusProvider.class);
         if (tsp != null) {
-            buffer.append(", Status :");
-            buffer.append(tsp.getTaskStatus(element).toString());
+            TaskStatus taskStatus = tsp.getTaskStatus(element);
+            if (taskStatus != null) {
+                buffer.append(", Status :");
+                buffer.append(taskStatus);
+            }
         }
         buffer.append("</html>");
         return buffer.toString();

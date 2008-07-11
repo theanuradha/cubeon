@@ -183,7 +183,9 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
         }
         cmbPriority.setSelectedItem(jiraTask.getPriority());
 
-        String message = NbBundle.getMessage(JiraTaskEditorUI.class, "JiraTaskEditorUI.lblStatus.text", jiraTask.getStatus());
+        String message = NbBundle.getMessage(JiraTaskEditorUI.class,
+                "JiraTaskEditorUI.lblStatus.text",
+                jiraTask.getStatus()==null?"Local":jiraTask.getStatus());
         lblStatus.setText(message);
 
         cmbType.removeAllItems();
@@ -208,7 +210,8 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
         }
         cmbActions.removeAllItems();
         List<JiraAction> actions = jiraTask.getActions();
-        defaultStatus = new JiraAction("##", "Leave as " + jiraTask.getStatus().getText());
+        defaultStatus = new JiraAction("##", "Leave as " +(jiraTask.getStatus()!=null ?
+            jiraTask.getStatus().getText():"Local Task"));
         cmbActions.addItem(defaultStatus);
         for (JiraAction action : actions) {
             cmbActions.addItem(action);
