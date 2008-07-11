@@ -71,7 +71,7 @@ public class MarkAsAction extends AbstractAction implements Menu, Popup {
             this.status = status;
             putValue(NAME, status.getText());
             if (selected) {
-                putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/ui/selected.png")));
+                putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/local/selected.png")));
 
             }
             setEnabled(!selected);
