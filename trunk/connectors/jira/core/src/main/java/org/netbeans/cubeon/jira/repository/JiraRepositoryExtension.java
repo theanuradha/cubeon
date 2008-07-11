@@ -89,4 +89,10 @@ public class JiraRepositoryExtension implements Extension {
             adapter.stateChanged(state);
         }
     }
+     public void fireIdChanged(String oldId,String newId) {
+        Collection<? extends RepositoryEventAdapter> adapters = lookup.lookupAll(RepositoryEventAdapter.class);
+        for (RepositoryEventAdapter adapter : adapters) {
+            adapter.taskElementIdChenged(oldId, newId);
+        }
+    }
 }

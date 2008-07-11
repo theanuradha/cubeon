@@ -335,6 +335,7 @@ class TaskPersistenceHandler {
             taskElement.setAttributeNS(NAMESPACE, TAG_DESCRIPTION, task.getDescription());
             taskElement.setAttributeNS(NAMESPACE, TAG_REPOSITORY, task.getTaskRepository().getId());
             taskElement.setAttributeNS(NAMESPACE, TAG_PRIORITY, task.getPriority().getId());
+            if(task.getStatus()!=null)
             taskElement.setAttributeNS(NAMESPACE, TAG_STATUS, task.getStatus().getId());
             taskElement.setAttributeNS(NAMESPACE, TAG_TYPE, task.getType().getId());
             taskElement.setAttributeNS(NAMESPACE, TAG_PROJECT, task.getProject().getId());
