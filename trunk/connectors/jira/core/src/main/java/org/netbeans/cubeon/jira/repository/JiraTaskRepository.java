@@ -38,7 +38,6 @@ import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
-import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 
@@ -188,29 +187,46 @@ public class JiraTaskRepository implements TaskRepository {
     }
 
     public void updateAttributes() {
-        RequestProcessor.getDefault().post(new Runnable() {
 
-            public void run() {
-                try {
-                    setState(State.SYNCHRONIZING);
-                    ProgressHandle handle = ProgressHandleFactory.createHandle(getName() + ": Updating Attributes");
-                    attributesPersistence.refresh(handle);
-                    loadAttributes();
-                    handle.finish();
-                } catch (JiraException ex) {
-                    Logger.getLogger(JiraAttributesPersistence.class.getName()).
-                            log(Level.WARNING, ex.getMessage());
-                    setState(State.ACTIVE);
-                }
-            }
-        });
+        try {
+            setState(State.SYNCHRONIZING);
+            ProgressHandle handle = ProgressHandleFactory.createHandle(getName() + ": Updating Attributes");
+            attributesPersistence.refresh(handle);
+            loadAttributes();
+            handle.finish();
+        } catch (JiraException ex) {
+            Logger.getLogger(JiraAttributesPersistence.class.getName()).
+                    log(Level.WARNING, ex.getMessage());
+            setState(State.ACTIVE);
+        }
 
+
+    }
+
+    public void updateFilters() {
+        try {
+
+            ProgressHandle handle = ProgressHandleFactory.createHandle(getName() + ": Updating Filters");
+            attributesPersistence.refreshFilters(handle);
+            loadFilters();
+            handle.finish();
+        } catch (JiraException ex) {
+            Logger.getLogger(JiraAttributesPersistence.class.getName()).
+                    log(Level.WARNING, ex.getMessage());
+
+        }
     }
 
     public synchronized void loadAttributes() {
         attributesPersistence.loadAttributes();
         querySupport.refresh();
         setState(State.ACTIVE);
+    }
+
+    public synchronized void loadFilters() {
+        attributesPersistence.loadFilters();
+        querySupport.refresh();
+
     }
 
     public JiraTaskPriorityProvider getJiraTaskPriorityProvider() {
@@ -262,10 +278,11 @@ public class JiraTaskRepository implements TaskRepository {
         }
 
     }
-    public void update( RemoteIssue issue,JiraTask task) {
+
+    public void update(RemoteIssue issue, JiraTask task) {
         synchronized (task) {
             try {
-                
+
                 JiraUtils.maregeToTask(this, issue, task);
                 persist(task);
                 TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
@@ -276,6 +293,7 @@ public class JiraTaskRepository implements TaskRepository {
         }
 
     }
+
     public void submit(JiraTask task) {
         synchronized (task) {
             try {
@@ -318,6 +336,10 @@ public class JiraTaskRepository implements TaskRepository {
 
     TaskPersistenceHandler getTaskPersistenceHandler() {
         return handler;
+    }
+
+    public JiraQuerySupport getQuerySupport() {
+        return querySupport;
     }
 
     @Override

@@ -102,7 +102,10 @@ class JiraAttributesPersistence {
     void refresh(ProgressHandle progressHandle) throws JiraException {
 
         synchronized (LOCK) {
-
+            JiraSession session = repository.getSession();
+            if (session == null) {
+                return;
+            }
             Document document = getDocument(true);
             Element root = getRootElement(document);
             Element attributes = findElement(root, TAG_ROOT, NAMESPACE);
@@ -113,8 +116,6 @@ class JiraAttributesPersistence {
             }
             progressHandle.start();
             progressHandle.switchToIndeterminate();
-            JiraSession session = new JiraSession(repository.getURL(),
-                    repository.getUserName(), repository.getPassword());
 
             LOG.log(Level.INFO, "requsting projects");
             progressHandle.progress("Requsting Projects Information");
@@ -206,15 +207,7 @@ class JiraAttributesPersistence {
                 resolution.setAttribute(TAG_NAME, rr.getName());
             }
             //-----------------------------------------------------------------
-            RemoteFilter[] savedFilters = session.getSavedFilters();
-            Element filtersElement = getEmptyElement(document, attributes, TAG_FILTERS);
-            for (RemoteFilter remoteFilter : savedFilters) {
-                Element filter = document.createElement(TAG_RESOLUTION);
-                filtersElement.appendChild(filter);
-                filter.setAttribute(TAG_ID, remoteFilter.getId());
-                filter.setAttribute(TAG_NAME, remoteFilter.getName());
-                filter.setAttribute(TAG_DESCRIPTION, remoteFilter.getDescription());
-            }
+            _refreshFilters(session, document, attributes);
             //-----------------------------------------------------------------
             Element configurationsElement = getEmptyElement(document, attributes, TAG_CONFIGURATIONS);
             try {
@@ -239,6 +232,42 @@ class JiraAttributesPersistence {
             }
             save(document);
         }
+    }
+
+    void refreshFilters(ProgressHandle progressHandle) throws JiraException {
+        synchronized (LOCK) {
+            JiraSession session = repository.getSession();
+            if (session == null) {
+                return;
+            }
+            Document document = getDocument(false);
+            Element root = getRootElement(document);
+            Element attributes = findElement(root, TAG_ROOT, NAMESPACE);
+
+            if (attributes == null) {
+                attributes = document.createElement(TAG_ROOT);
+                root.appendChild(attributes);
+            }
+            progressHandle.start();
+            progressHandle.switchToIndeterminate();
+            progressHandle.progress("Requsting Repository Filters");
+            _refreshFilters(session, document, attributes);
+            save(document);
+        }
+
+    }
+
+    private void _refreshFilters(JiraSession session, Document document, Element attributes) throws JiraException {
+        RemoteFilter[] savedFilters = session.getSavedFilters();
+        Element filtersElement = getEmptyElement(document, attributes, TAG_FILTERS);
+        for (RemoteFilter remoteFilter : savedFilters) {
+            Element filter = document.createElement(TAG_FILTER);
+            filtersElement.appendChild(filter);
+            filter.setAttribute(TAG_ID, remoteFilter.getId());
+            filter.setAttribute(TAG_NAME, remoteFilter.getName());
+            filter.setAttribute(TAG_DESCRIPTION, remoteFilter.getDescription());
+        }
+
     }
 
     private Element getEmptyElement(Document document, Element root, String tag) {
@@ -443,28 +472,7 @@ class JiraAttributesPersistence {
                 }
                 repository.getRepositoryAttributes().setProjects(projects);
                 //----------------------------------------
-                List<JiraFilter> filters = new ArrayList<JiraFilter>();
-                Element taskfilter = findElement(attributes, TAG_FILTERS, NAMESPACE);
-                if (taskfilter != null) {
-                    NodeList filterNodes = taskfilter.getChildNodes();
-
-                    for (int i = 0; i < filterNodes.getLength(); i++) {
-
-                        Node node = filterNodes.item(i);
-                        if (node.getNodeType() == Node.ELEMENT_NODE) {
-                            Element element = (Element) node;
-                            String id = element.getAttribute(TAG_ID);
-                            String name = element.getAttribute(TAG_NAME);
-                            String description = element.getAttribute(TAG_DESCRIPTION);
-
-                            filters.add(new JiraFilter(repository, id, name, description));
-
-                        }
-                    }
-
-                }
-
-                repository.getRepositoryAttributes().setFilters(filters);
+                _loadFilters(attributes);
                 //-----------------------------------------
                 Element taskResolution = findElement(attributes, TAG_RESOLUTIONS, NAMESPACE);
                 NodeList taskResolutionNodes = taskResolution.getChildNodes();
@@ -484,6 +492,44 @@ class JiraAttributesPersistence {
                 repository.getJiraTaskResolutionProvider().setTaskResolutions(resolutiones);
             }
         }
+    }
+
+    void loadFilters() {
+        Document document = getDocument(false);
+        Element root = getRootElement(document);
+        Element attributes = findElement(root, TAG_ROOT, NAMESPACE);
+
+
+        if (attributes != null) {
+            _loadFilters(attributes);
+        }
+
+    }
+
+    private void _loadFilters(Element attributes) {
+        List<JiraFilter> filters = new ArrayList<JiraFilter>();
+        Element taskfilter = findElement(attributes, TAG_FILTERS, NAMESPACE);
+        if (taskfilter != null) {
+            NodeList filterNodes = taskfilter.getChildNodes();
+
+            for (int i = 0; i < filterNodes.getLength(); i++) {
+
+                Node node = filterNodes.item(i);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element element = (Element) node;
+                    String id = element.getAttribute(TAG_ID);
+                    String name = element.getAttribute(TAG_NAME);
+                    String description = element.getAttribute(TAG_DESCRIPTION);
+
+                    filters.add(new JiraFilter(repository, id, name, description));
+
+                }
+            }
+
+        }
+
+        repository.getRepositoryAttributes().setFilters(filters);
+
     }
 
     private static Element findElement(Element parent, String name, String namespace) {

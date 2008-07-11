@@ -47,6 +47,7 @@ class PersistenceHandler {
     private static final String TAG_ROOT = "querys";
     private static final String TAG_QUERYS = "querys";
     private static final String TAG_QUERY = "query";
+    private static final String TAG_IDS = "ids";
     private static final String TAG_ID = "id";
     private static final String TAG_FILTER_ID = "filter_id";
     private static final String TAG_NAME = "name";
@@ -59,6 +60,7 @@ class PersistenceHandler {
     private static final String TAG_STATUS = "status";
     private static final String TAG_TYPES = "types";
     private static final String TAG_TYPE = "type";
+    private static final String TAG_TASK = "task";
     private static final String TAG_MATCH_TYPE = "match_type";
     private static final String TAG_NEXT_ID = "next";
     private JiraQuerySupport jiraQuerySupport;
@@ -68,7 +70,7 @@ class PersistenceHandler {
     PersistenceHandler(JiraQuerySupport jiraQuerySupport, FileObject fileObject) {
         this.jiraQuerySupport = jiraQuerySupport;
         this.baseDir = fileObject;
-        
+
     }
 
     void vaidate(TaskQuery query) {
@@ -116,6 +118,12 @@ class PersistenceHandler {
                         JiraFilterQuery filterQuery = abstractJiraQuery.getLookup().lookup(JiraFilterQuery.class);
                         if (filterQuery.getFilter() != null) {
                             taskQuery.setAttributeNS(NAMESPACE, TAG_FILTER_ID, filterQuery.getFilter().getId());
+                        }
+                        Element idsElement = getEmptyElement(document, taskQuery, TAG_IDS);
+                        for (String id : filterQuery.getIds()) {
+                            Element idElement = document.createElement(TAG_TASK);
+                            idsElement.appendChild(idElement);
+                            idElement.setAttribute(TAG_ID, id);
                         }
                     }
                     break;
@@ -214,7 +222,23 @@ class PersistenceHandler {
                                     String filter = element.getAttributeNS(NAMESPACE, TAG_FILTER_ID);
                                     JiraTaskRepository repository = jiraQuerySupport.getJiraTaskRepository();
                                     JiraFilter jf = repository.getRepositoryAttributes().geFilterById(filter);
+                                    Element idsElement = findElement(element, TAG_IDS, NAMESPACE);
+                                    List<String> ids = new ArrayList<String>();
+                                    if (idsElement != null) {
+                                        NodeList idsNodeList =
+                                                idsElement.getElementsByTagNameNS(NAMESPACE, TAG_TASK);
+
+                                        for (int j = 0; j < idsNodeList.getLength(); j++) {
+                                            Node idNode = idsNodeList.item(j);
+                                            if (idNode.getNodeType() == Node.ELEMENT_NODE) {
+                                                Element idElement = (Element) idNode;
+                                                String idTag = idElement.getAttributeNS(NAMESPACE, TAG_ID);
+                                                ids.add(idTag);
+                                            }
+                                        }
+                                    }
                                     filterQuery.setFilter(jf);
+                                    filterQuery.setIds(ids);
                                     jiraQuery = filterQuery;
                                 }
                                 break;
@@ -245,7 +269,7 @@ class PersistenceHandler {
     }
 
     private Document getDocument() {
-        final FileObject config = baseDir.getFileObject( FILESYSTEM_FILE_TAG);
+        final FileObject config = baseDir.getFileObject(FILESYSTEM_FILE_TAG);
         Document doc = null;
         if (config != null) {
             InputStream in = null;

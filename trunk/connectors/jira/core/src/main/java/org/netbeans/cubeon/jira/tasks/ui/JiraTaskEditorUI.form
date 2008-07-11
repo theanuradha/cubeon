@@ -28,38 +28,38 @@
                   <Component id="lblAttributes" alignment="0" pref="713" max="32767" attributes="0"/>
                   <Group type="102" alignment="1" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" attributes="0">
+                          <Group type="102" max="-2" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="lblProject" alignment="0" min="-2" pref="46" max="-2" attributes="0"/>
                                   <Component id="lblType" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="lblPriority" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="40" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="cmbProject" alignment="0" pref="152" max="32767" attributes="2"/>
-                                  <Component id="cmbType" alignment="0" pref="152" max="32767" attributes="2"/>
-                                  <Component id="cmbPriority" alignment="0" pref="152" max="32767" attributes="2"/>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="cmbProject" alignment="0" pref="149" max="32767" attributes="1"/>
+                                  <Component id="cmbPriority" alignment="0" pref="149" max="32767" attributes="1"/>
+                                  <Component id="cmbType" alignment="0" pref="149" max="32767" attributes="1"/>
                               </Group>
-                              <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                               <Component id="lblComponents" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" max="-2" attributes="0"/>
                               <Component id="jScrollPane4" min="-2" pref="136" max="-2" attributes="2"/>
                           </Group>
-                          <Group type="102" attributes="0">
+                          <Group type="102" attributes="1">
                               <Component id="lblEnvironment" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="jScrollPane1" pref="371" max="32767" attributes="0"/>
+                              <Component id="jScrollPane1" min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="lblAffects" min="-2" max="-2" attributes="0"/>
                           <Component id="lblFixVersion" min="-2" pref="79" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="jScrollPane2" alignment="0" pref="138" max="32767" attributes="0"/>
-                          <Component id="jScrollPane3" alignment="1" pref="138" max="32767" attributes="0"/>
+                          <Component id="jScrollPane3" pref="135" max="32767" attributes="0"/>
+                          <Component id="jScrollPane2" alignment="1" pref="135" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
                   </Group>
@@ -102,8 +102,8 @@
                       <Component id="lblCreated" min="-2" pref="239" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="lblUpdated" min="-2" pref="215" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="lblStatus" min="-2" pref="237" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="lblStatus" min="-2" pref="196" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -113,7 +113,6 @@
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
               <Component id="txtOutline" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -124,70 +123,69 @@
               <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
               <Component id="lblAttributes" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Group type="102" attributes="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="lblAffects" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="64" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="1" attributes="0">
                       <Group type="103" groupAlignment="1" attributes="0">
-                          <Group type="102" attributes="0">
+                          <Component id="jScrollPane2" linkSize="7" alignment="1" min="-2" pref="69" max="-2" attributes="0"/>
+                          <Group type="102" alignment="1" attributes="0">
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="lblProject" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="cmbProject" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="lblComponents" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="lblAffects" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="cmbType" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="lblType" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="cmbType" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="cmbPriority" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="lblPriority" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="cmbPriority" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
-                          <Component id="jScrollPane4" alignment="1" pref="68" max="32767" attributes="1"/>
+                          <Component id="jScrollPane4" linkSize="7" pref="72" max="32767" attributes="1"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="lblEnvironment" min="-2" max="-2" attributes="0"/>
-                          <Component id="jScrollPane1" min="-2" pref="48" max="-2" attributes="1"/>
-                      </Group>
-                      <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="1" attributes="0">
-                      <Component id="jScrollPane2" linkSize="4" min="-2" pref="45" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="lblFixVersion" alignment="0" min="-2" pref="14" max="-2" attributes="0"/>
-                          <Component id="jScrollPane3" linkSize="4" alignment="0" min="-2" pref="45" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="lblDesription" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="lblFixVersion" alignment="0" min="-2" pref="14" max="-2" attributes="0"/>
+                  <Component id="lblEnvironment" min="-2" max="-2" attributes="0"/>
+                  <Component id="jScrollPane1" linkSize="7" min="-2" pref="72" max="-2" attributes="1"/>
+                  <Group type="102" attributes="0">
+                      <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
+                      <Component id="jScrollPane3" linkSize="7" min="-2" pref="69" max="-2" attributes="0"/>
+                  </Group>
+              </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="spDescription" min="-2" pref="111" max="-2" attributes="0"/>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="lblDesription" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <Component id="spDescription" pref="143" max="32767" attributes="0"/>
+              <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="lblDesription1" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="lblDesription2" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="lblAction" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="lblReportedBy" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="cmbActions" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="lblResolution" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="cmbResolution" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="txtAssignee" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="48" max="32767" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
