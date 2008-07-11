@@ -163,6 +163,7 @@ public class JiraUtils {
 
         jiraTask.setUrlString(repository.getURL() + "/browse/" + issue.getKey());//NOI18N
         jiraTask.setId(issue.getKey());
+        jiraTask.setLocal(false);
         JiraUtils.maregeToTask(repository, issue, jiraTask);
         repository.persist(jiraTask);
         repository.getExtension().fireIdChanged(old, jiraTask.getId());
