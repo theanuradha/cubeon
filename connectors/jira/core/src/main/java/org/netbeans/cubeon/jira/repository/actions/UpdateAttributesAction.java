@@ -23,6 +23,7 @@ import org.netbeans.cubeon.tasks.spi.Extension;
 import org.netbeans.cubeon.tasks.spi.repository.RepositoryEventAdapter;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository.State;
+import org.openide.util.RequestProcessor;
 
 /**
  *
@@ -52,7 +53,12 @@ public class UpdateAttributesAction extends AbstractAction {
     }
 
     public void actionPerformed(ActionEvent e) {
-        repository.updateAttributes();
+        RequestProcessor.getDefault().post(new Runnable() {
+
+            public void run() {
+                repository.updateAttributes();
+            }
+        });
     }
 
     @Override

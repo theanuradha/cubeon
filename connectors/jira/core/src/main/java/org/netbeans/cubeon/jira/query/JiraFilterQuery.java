@@ -77,10 +77,12 @@ public class JiraFilterQuery extends AbstractJiraQuery {
 
                         try {
                             JiraSession session = repository.getSession();
+                            handle.progress("Requsting Issues From Repository"); 
                             RemoteIssue[] remoteIssues = session.getIssuesFromFilter(filter.getId());
+
                             ids.clear();
                             for (RemoteIssue remoteIssue : remoteIssues) {
-
+                                handle.progress(remoteIssue.getKey()+" :"+remoteIssue.getSummary()); 
                                 TaskElement element = repository.getTaskElementById(remoteIssue.getKey());
                                 if (element != null) {
                                     repository.update(remoteIssue, element.getLookup().lookup(JiraTask.class));
@@ -95,7 +97,7 @@ public class JiraFilterQuery extends AbstractJiraQuery {
                         } catch (JiraException ex) {
                             Exceptions.printStackTrace(ex);
                         }
-
+                        repository.getQuerySupport().modifyTaskQuery(JiraFilterQuery.this);
                         handle.finish();
                         extension.fireSynchronized();
                     }
@@ -126,5 +128,13 @@ public class JiraFilterQuery extends AbstractJiraQuery {
 
     public void setFilter(JiraFilter filter) {
         this.filter = filter;
+    }
+
+    public List<String> getIds() {
+        return new ArrayList<String>(ids);
+    }
+
+    public void setIds(List<String> ids) {
+        this.ids = new ArrayList<String>(ids);
     }
 }

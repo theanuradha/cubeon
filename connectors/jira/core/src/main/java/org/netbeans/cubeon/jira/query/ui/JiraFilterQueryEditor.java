@@ -43,6 +43,8 @@ import org.openide.explorer.view.BeanTreeView;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
+import org.openide.util.NbBundle;
+import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 
@@ -91,7 +93,6 @@ public class JiraFilterQueryEditor extends javax.swing.JPanel implements Explore
             public Image getIcon(int type) {
                 return jiraQuerySupport.getJiraTaskRepository().getImage();
             }
-
         };
         root.setDisplayName("Jira Repository Filters");
 
@@ -105,6 +106,17 @@ public class JiraFilterQueryEditor extends javax.swing.JPanel implements Explore
 
     public void setQuery(JiraFilterQuery query) {
         this.query = query;
+        if (query != null && query.getFilter() != null) {
+            Node rootContext = explorerManager.getRootContext();
+            Node[] nodes = rootContext.getChildren().getNodes(true);
+            for (Node node : nodes) {
+                JiraFilter filter = node.getLookup().lookup(JiraFilter.class);
+                if (query.getFilter().equals(filter)) {
+                    explorerManager.setExploredContext(node, new Node[]{node});
+                    break;
+                }
+            }
+        }
     }
 
     private JiraFilter getSelectedFilter() {
@@ -171,9 +183,22 @@ public class JiraFilterQueryEditor extends javax.swing.JPanel implements Explore
 
         @Override
         public Image getIcon(int type) {
-            return  Utilities.loadImage("org/netbeans/cubeon/jira/query/ui/filter.png");
+            return Utilities.loadImage("org/netbeans/cubeon/jira/query/ui/filter.png");
         }
+    }
 
+    private void updateFilters() {
+        btnUpdateFilters.setEnabled(false);
+        RequestProcessor.getDefault().post(new Runnable() {
+
+            public void run() {
+                jiraQuerySupport.getJiraTaskRepository().updateFilters();
+                loadFilters();
+                setQuery(query);
+                btnUpdateFilters.setEnabled(true);
+
+            }
+        });
     }
 
     /** This method is called from within the constructor to
@@ -186,8 +211,16 @@ public class JiraFilterQueryEditor extends javax.swing.JPanel implements Explore
     private void initComponents() {
 
         javax.swing.JScrollPane jScrollPane1 = beanTreeView;
+        btnUpdateFilters = new javax.swing.JButton();
 
         jScrollPane1.setBorder(javax.swing.BorderFactory.createEtchedBorder(null, javax.swing.UIManager.getDefaults().getColor("CheckBoxMenuItem.selectionBackground")));
+
+        btnUpdateFilters.setText(NbBundle.getMessage(JiraFilterQueryEditor.class, "JiraFilterQueryEditor.btnUpdateFilters.text","-")); // NOI18N
+        btnUpdateFilters.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdateFiltersActionPerformed(evt);
+            }
+        });
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -195,17 +228,27 @@ public class JiraFilterQueryEditor extends javax.swing.JPanel implements Explore
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
+                    .add(btnUpdateFilters))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE)
-                .addContainerGap())
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(btnUpdateFilters)
+                .add(11, 11, 11))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnUpdateFiltersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateFiltersActionPerformed
+
+        updateFilters();
+    }//GEN-LAST:event_btnUpdateFiltersActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnUpdateFilters;
     // End of variables declaration//GEN-END:variables
 }

@@ -172,31 +172,36 @@ final class ResultsTopComponent extends TopComponent implements ExplorerManager.
                     task = RequestProcessor.getDefault().create(new Runnable() {
 
                         public void run() {
-                            array.remove(array.getNodes());
-                            List<TaskElement> elements = taskQuery.getTaskElements();
-                            Collections.sort(elements, new Comparator<TaskElement>() {
-
-                                public int compare(TaskElement o1, TaskElement o2) {
-                                    return o1.getName().compareTo(o2.getName());
-                                }
-                            });
-
-
-                            queryNode.updateNodeTag(elements.size() + " Tasks Found");
-                            for (TaskElement taskElement : elements) {
-                                array.add(new Node[]{new TaskResultNode(taskElement)});
-                            }
+                            loadQueries(array, queryNode);
                         }
                     });
                     task.run();
                 }
             };
             taskQuery.getExtension().add(adapter);
-            taskQuery.synchronize();
-            queryNode.updateNodeTag("Synchronizing...");
 
+            queryNode.updateNodeTag("Synchronizing...");
+            loadQueries(array, queryNode);
 
         }
+    }
+
+    private void loadQueries(Children array, final ResultQueryNode queryNode) {
+        array.remove(array.getNodes());
+        List<TaskElement> elements = taskQuery.getTaskElements();
+        Collections.sort(elements, new Comparator<TaskElement>() {
+
+            public int compare(TaskElement o1, TaskElement o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+
+
+        queryNode.updateNodeTag(elements.size() + " Tasks Found");
+        for (TaskElement taskElement : elements) {
+            array.add(new Node[]{new TaskResultNode(taskElement)});
+        }
+
     }
 
     public ExplorerManager getExplorerManager() {

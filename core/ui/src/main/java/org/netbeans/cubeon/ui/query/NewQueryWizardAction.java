@@ -113,7 +113,7 @@ public final class NewQueryWizardAction extends AbstractAction {
             ResultsTopComponent component = ResultsTopComponent.findInstance();
             component.open();
             component.requestActive();
-
+            query.synchronize();
             component.showResults(query);
 
         }
