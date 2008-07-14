@@ -70,7 +70,7 @@ public class TaskResultNode extends AbstractNode {
     @Override
     public String getHtmlDisplayName() {
         StringBuffer buffer = new StringBuffer("<html>");
-        buffer.append(element.getName());
+        buffer.append("<xmp>").append(element.getName()).append("</xmp>");
         buffer.append("<font color=\"#808080\">");
         buffer.append("  ");
         TaskRepository repository = element.getTaskRepository();

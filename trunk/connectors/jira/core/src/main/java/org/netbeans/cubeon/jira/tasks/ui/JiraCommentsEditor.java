@@ -130,7 +130,7 @@ public class JiraCommentsEditor extends javax.swing.JPanel implements ExplorerMa
             }
 
             buffer.append("<font color=\"#808080\"> ");
-            buffer.append(trimed(comment.getBody()));
+            buffer.append("<xmp>").append(trimed(comment.getBody())).append("</xmp>");
             return buffer.toString();
         }
 
@@ -159,10 +159,12 @@ public class JiraCommentsEditor extends javax.swing.JPanel implements ExplorerMa
     }
 
     private String buildHtmlDescription(JiraComment comment) {
-        StringBuffer buffer = new StringBuffer("<html>");
+        StringBuffer buffer = new StringBuffer("<html> ");
         List<String> splitMultiLine = splitMultiLine(comment.getBody());
         for (String string : splitMultiLine) {
+            buffer.append("<xmp>");
             buffer.append(string);
+            buffer.append("</xmp>");
             buffer.append("<p>");
         }
         buffer.append("</html>");
