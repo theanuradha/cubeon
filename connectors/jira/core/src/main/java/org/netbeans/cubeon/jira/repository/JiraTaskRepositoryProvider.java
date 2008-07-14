@@ -79,7 +79,9 @@ public class JiraTaskRepositoryProvider implements TaskRepositoryType {
                 repository.getLookup().lookup(JiraTaskRepository.class);
         if (jiraTaskRepository != null) {
             persistence.addRepository(jiraTaskRepository);
-            taskRepositorys.add(jiraTaskRepository);
+            if (!taskRepositorys.contains(jiraTaskRepository)) {
+                taskRepositorys.add(jiraTaskRepository);
+            }
             JiraRepositoryExtension extension = jiraTaskRepository.getExtension();
             extension.fireNameChenged();
             extension.fireDescriptionChenged();
