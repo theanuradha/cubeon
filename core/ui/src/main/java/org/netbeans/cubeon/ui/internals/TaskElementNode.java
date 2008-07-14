@@ -237,7 +237,7 @@ public class TaskElementNode extends AbstractNode {
 
             buffer.append(TAG);
         }
-        buffer.append(element.getName());
+        buffer.append("<xmp>").append(element.getName()).append("</xmp>");
         buffer.append("</html>");
         return buffer.toString();
     }
