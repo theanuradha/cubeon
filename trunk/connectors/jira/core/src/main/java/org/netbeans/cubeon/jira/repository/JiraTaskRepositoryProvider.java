@@ -30,6 +30,7 @@ import org.openide.filesystems.Repository;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 
@@ -74,7 +75,7 @@ public class JiraTaskRepositoryProvider implements TaskRepositoryType {
 
     public TaskRepository persistRepository(TaskRepository repository) {
 
-        JiraTaskRepository jiraTaskRepository =
+        final JiraTaskRepository jiraTaskRepository =
                 repository.getLookup().lookup(JiraTaskRepository.class);
         if (jiraTaskRepository != null) {
             persistence.addRepository(jiraTaskRepository);
@@ -82,8 +83,13 @@ public class JiraTaskRepositoryProvider implements TaskRepositoryType {
             JiraRepositoryExtension extension = jiraTaskRepository.getExtension();
             extension.fireNameChenged();
             extension.fireDescriptionChenged();
-            jiraTaskRepository.updateAttributes();
-            jiraTaskRepository.loadAttributes();
+            RequestProcessor.getDefault().post(new Runnable() {
+
+                public void run() {
+                    jiraTaskRepository.updateAttributes();
+                }
+            });
+
             return repository;
         }
 
@@ -100,7 +106,7 @@ public class JiraTaskRepositoryProvider implements TaskRepositoryType {
 
             return true;
         }
-        
+
         return false;
 
     }
@@ -131,7 +137,4 @@ public class JiraTaskRepositoryProvider implements TaskRepositoryType {
     public FileObject getBaseDir() {
         return baseDir;
     }
-
-
-    
 }
