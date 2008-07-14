@@ -17,7 +17,6 @@
 package org.netbeans.cubeon.tasks.core.internals;
 
 import java.awt.event.ActionEvent;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -26,13 +25,8 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import org.netbeans.cubeon.tasks.core.api.TaskFolder;
 import org.netbeans.cubeon.tasks.core.spi.TaskExplorerViewActionsProvider;
-import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
-import org.openide.filesystems.Repository;
 import org.openide.nodes.AbstractNode;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.actions.Presenter;
@@ -44,27 +38,12 @@ import org.openide.util.lookup.Lookups;
  */
 class RootFolder extends TaskFolderImpl {
 
-    private TaskFolderImpl defaultFolder;
-
-    public RootFolder(TaskFolderImpl parent, String name,
-            FileObject fileObject, String description) {
-        super(parent, name, fileObject, description, true);
-
-        FileObject dfileObject = null;
-
-        try {
-            dfileObject = FileUtil.createFolder(Repository.getDefault().
-                    getDefaultFileSystem().getRoot(), DefaultFileSystem.DEFAULT_PATH);
+    public RootFolder(String name,
+            String description) {
+        super(null, name, description, true);
 
 
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
-        }
 
-        assert dfileObject != null;
-        defaultFolder = new TaskFolderImpl(this, "Uncategorized", dfileObject, "Uncategorized");
-        refreshFolders();
-        persistenceHandler.refresh();
         folderChildren = new TaskFolderChildren(this);
 
         folderNode = new AbstractNode(folderChildren.getChildren(), Lookups.singleton(this)) {
@@ -101,40 +80,7 @@ class RootFolder extends TaskFolderImpl {
         };
     }
 
-    public TaskFolderImpl getDefaultFolder() {
-        return defaultFolder;
-    }
 
-    @Override
-    public List<TaskFolder> getSubFolders() {
-        List<TaskFolder> subFolders = super.getSubFolders();
-        subFolders.add(0, defaultFolder);
-        return subFolders;
-    }
-
-    @Override
-    protected void refreshFolders() {
-        clearFolder(this);
-
-        FileObject[] fos = fileObject.getChildren();
-        for (FileObject fo : fos) {
-            if (fo.isFolder()) {
-                String cname = fo.getName();
-                String cdescription = (String) fo.getAttribute(DefaultFileSystem.DESCRIPTION_TAG);
-                taskFolders.add(new TaskFolderImpl(this, cname, fo, cdescription));
-            }
-        }
-        defaultFolder.refreshFolders();
-    }
-
-    @Override
-    public void refreshNode() {
-        folderChildren.refreshContent();
-        defaultFolder.folderChildren.refreshContent();
-        for (TaskFolderImpl impl : taskFolders) {
-            impl.folderChildren.refreshContent();
-        }
-    }
     //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     private class NewActions extends AbstractAction implements Presenter.Popup {
 

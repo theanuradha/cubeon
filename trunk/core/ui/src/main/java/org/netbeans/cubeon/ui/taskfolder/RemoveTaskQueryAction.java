@@ -19,6 +19,8 @@ package org.netbeans.cubeon.ui.taskfolder;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import org.netbeans.cubeon.tasks.core.api.TaskFolder;
+import org.netbeans.cubeon.tasks.core.api.TasksFileSystem;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
@@ -37,8 +39,8 @@ public class RemoveTaskQueryAction extends AbstractAction {
     }
 
     public void actionPerformed(ActionEvent e) {
+        TasksFileSystem fileSystem = Lookup.getDefault().lookup(TasksFileSystem.class);
 
-
-        folder.setTaskQuery(null);
+        fileSystem.setTaskQuery(folder, null);
     }
 }

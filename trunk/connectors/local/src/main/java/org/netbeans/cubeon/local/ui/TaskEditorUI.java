@@ -136,8 +136,8 @@ public class TaskEditorUI extends javax.swing.JPanel implements EditorAttributeH
         }
     }
 
-    public JComponent getComponent() {
-        return this;
+    public JComponent [] getComponent() {
+       return new JComponent[]{this};
     }
 
     public TaskElement save() {

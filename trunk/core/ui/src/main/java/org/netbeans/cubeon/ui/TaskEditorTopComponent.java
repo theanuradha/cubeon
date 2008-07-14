@@ -8,11 +8,15 @@ import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 
+import java.awt.Insets;
 import java.io.IOException;
 import java.util.List;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JTabbedPane;
+import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.netbeans.cubeon.tasks.spi.Extension;
@@ -58,7 +62,7 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
 
         lblHeader.setIcon(new ImageIcon(taskRepository.getImage()));
         lblHeader.setText(eah.getDisplayName());
-        base.add(eah.getComponent(), BorderLayout.CENTER);
+        buildEditor();
 
         List<Action> actions = eah.getActions();
         for (Action action : actions) {
@@ -121,14 +125,14 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
         setLayout(new java.awt.BorderLayout());
 
         base.setBackground(new java.awt.Color(255, 255, 255));
-        base.setLayout(new java.awt.BorderLayout());
+        base.setLayout(new java.awt.BorderLayout(0, 2));
 
         header.setBackground(new java.awt.Color(255, 255, 255));
         header.setMaximumSize(new java.awt.Dimension(32767, 34));
         header.setMinimumSize(new java.awt.Dimension(0, 34));
         header.setPreferredSize(new java.awt.Dimension(0, 34));
 
-        lblHeader.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
+        lblHeader.setFont(new java.awt.Font("Tahoma", 1, 13));
         lblHeader.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/cubeon/ui/repository.png"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(lblHeader, "Task Element Name"); // NOI18N
 
@@ -174,7 +178,7 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         refresh();//GEN-LAST:event_jButton1ActionPerformed
-    }                                        
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel base;
@@ -217,6 +221,26 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+    }
+
+    private void buildEditor() {
+        JComponent[] component = eah.getComponent();
+
+        if (component.length == 1) {
+            base.add(component[0], BorderLayout.CENTER);
+        } else {
+            Insets oldInsets = UIManager.getInsets("TabbedPane.contentBorderInsets");
+            // bottom insets is 1 because the tabs are bottom aligned
+            UIManager.put("TabbedPane.contentBorderInsets", new Insets(0, 0, 0, 0));
+            JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.BOTTOM, JTabbedPane.SCROLL_TAB_LAYOUT);
+            UIManager.put("TabbedPane.contentBorderInsets", oldInsets);
+
+            base.add(tabbedPane, BorderLayout.CENTER);
+            for (JComponent jc : component) {
+                tabbedPane.addTab(jc.getName(), jc);
+            }
+        }
+
     }
 
     public EditorAttributeHandler getAttributeHandler() {

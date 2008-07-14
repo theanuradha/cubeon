@@ -16,6 +16,7 @@
  */
 package org.netbeans.cubeon.jira.repository;
 
+import com.dolby.jira.net.soap.jira.RemoteComment;
 import com.dolby.jira.net.soap.jira.RemoteFieldValue;
 import com.dolby.jira.net.soap.jira.RemoteIssue;
 import java.awt.Image;
@@ -314,24 +315,48 @@ public class JiraTaskRepository implements TaskRepository {
                     if (fieldValues.length > 0) {
                         RemoteIssue updateTask = js.updateTask(task.getId(), fieldValues);
                         JiraUtils.maregeToTask(this, updateTask, task);
+
+                        RemoteIssue remoteIssue = null;
                         if (task.getAction() != null) {
-                            RemoteIssue remoteIssue = js.progressWorkflowAction(task.getId(),
+                            remoteIssue = js.progressWorkflowAction(task.getId(),
                                     task.getAction().getId(),
                                     JiraUtils.changedFieldValuesForAction(task.getAction(),
                                     updateTask, task));
+
+                        }
+                        if (task.getNewComment() != null && task.getNewComment().trim().length() > 0) {
+                            RemoteComment comment = new RemoteComment();
+                            comment.setAuthor(getUserName());
+                            comment.setBody(task.getNewComment());
+                            js.addComment(task.getId(), comment);
+                            task.setNewComment(null);
+                            remoteIssue = js.getIssue(task.getId());
+                        }
+                        if (remoteIssue != null) {
                             JiraUtils.maregeToTask(this, remoteIssue, task);
                         }
                         persist(task);
                     } else {
+                        RemoteIssue remoteIssue = null;
                         if (task.getAction() != null) {
-                            RemoteIssue remoteIssue = js.progressWorkflowAction(task.getId(),
+                            remoteIssue = js.progressWorkflowAction(task.getId(),
                                     task.getAction().getId(),
                                     JiraUtils.changedFieldValuesForAction(task.getAction(),
                                     js.getIssue(task.getId()), task));
+
+                        }
+                        if (task.getNewComment() != null && task.getNewComment().trim().length() > 0) {
+                            RemoteComment comment = new RemoteComment();
+                            comment.setAuthor(getUserName());
+                            comment.setBody(task.getNewComment());
+                            js.addComment(task.getId(), comment);
+                            task.setNewComment(null);
+                            remoteIssue = js.getIssue(task.getId());
+                        }
+                        if (remoteIssue != null) {
                             JiraUtils.maregeToTask(this, remoteIssue, task);
                             persist(task);
                         }
-
                     }
 
                 }

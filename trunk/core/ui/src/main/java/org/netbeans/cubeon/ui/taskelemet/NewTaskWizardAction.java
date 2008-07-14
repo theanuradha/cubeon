@@ -114,7 +114,8 @@ public final class NewTaskWizardAction extends AbstractAction {
         dialog.setVisible(true);
         dialog.toFront();
         if (wizardDescriptor.getValue() == WizardDescriptor.FINISH_OPTION) {
-
+            TasksFileSystem fileSystem = Lookup.getDefault().lookup(TasksFileSystem.class);
+            assert fileSystem != null;
             TaskElement element = wizardObject.getRepository().
                     createTaskElement(wizardObject.summary, wizardObject.description);
             assert element != null;
@@ -124,12 +125,12 @@ public final class NewTaskWizardAction extends AbstractAction {
             TaskFolder tf = taskFolder;
             //check null and add to defult folder
             if (tf == null) {
-                TasksFileSystem fileSystem = Lookup.getDefault().lookup(TasksFileSystem.class);
-                assert fileSystem != null;
+
                 tf = fileSystem.getDefaultFolder();
 
             }
-            tf.addTaskElement(element);
+
+            fileSystem.addTaskElement(tf, element);
 
             TaskFolderRefreshable refreshable = tf.getLookup().lookup(TaskFolderRefreshable.class);
             assert refreshable != null;

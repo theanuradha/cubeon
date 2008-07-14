@@ -16,6 +16,7 @@
  */
 package org.netbeans.cubeon.jira.repository;
 
+import com.dolby.jira.net.soap.jira.RemoteComment;
 import com.dolby.jira.net.soap.jira.RemoteComponent;
 import com.dolby.jira.net.soap.jira.RemoteField;
 import com.dolby.jira.net.soap.jira.RemoteFieldValue;
@@ -28,6 +29,7 @@ import java.util.List;
 import org.netbeans.cubeon.jira.remote.JiraException;
 import org.netbeans.cubeon.jira.remote.JiraSession;
 import org.netbeans.cubeon.jira.repository.attributes.JiraAction;
+import org.netbeans.cubeon.jira.repository.attributes.JiraComment;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Component;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Version;
@@ -226,6 +228,8 @@ public class JiraUtils {
         jiraTask.setFixVersions(fixVersions);
         //----------------------------------------------------------------------
 
+
+
         Calendar created = issue.getCreated();
         if (created != null) {
             jiraTask.setCreated(created.getTime());
@@ -248,6 +252,21 @@ public class JiraUtils {
             actions.add(action);
         }
         jiraTask.setActions(actions);
+        RemoteComment[] comments = repository.getSession().getComments(issue.getKey());
+        List<JiraComment> jiraComments = new ArrayList<JiraComment>();
+        for (RemoteComment comment : comments) {
+            JiraComment jiraComment = new JiraComment(comment.getId());
+            jiraComment.setAuthor(comment.getAuthor());
 
+            jiraComment.setBody(comment.getBody());
+            jiraComment.setCreated(comment.getCreated().getTime());
+
+            jiraComment.setUpdateAuthor(comment.getUpdateAuthor());
+            if (comment.getUpdated() != null) {
+                jiraComment.setUpdated(comment.getUpdated().getTime());
+            }
+            jiraComments.add(jiraComment);
+        }
+        jiraTask.setComments(jiraComments);
     }
 }

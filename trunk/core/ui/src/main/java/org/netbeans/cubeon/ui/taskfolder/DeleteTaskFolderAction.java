@@ -51,22 +51,25 @@ public class DeleteTaskFolderAction extends AbstractAction {
                 "No to Delete Folder and remove all contaning Tasks.", "Delete Task Folder : " + folder.getName(),
                 NotifyDescriptor.YES_NO_CANCEL_OPTION);
         Object notify = DialogDisplayer.getDefault().notify(d);
+        TasksFileSystem fileSystem = Lookup.getDefault().lookup(TasksFileSystem.class);
         if (notify == NotifyDescriptor.YES_OPTION) {
-            TasksFileSystem fileSystem = Lookup.getDefault().lookup(TasksFileSystem.class);
+
+
             TaskFolder defaultFolder = fileSystem.getDefaultFolder();
             TaskFolder parent = folder.getParent();
             List<TaskElement> taskElements = folder.getTaskElements();
             for (TaskElement taskElement : taskElements) {
-                folder.removeTaskElement(taskElement);
-                defaultFolder.addTaskElement(taskElement);
+                fileSystem.removeTaskElement(folder, taskElement);
+                fileSystem.addTaskElement(defaultFolder, taskElement);
             }
-            parent.removeFolder(folder);
+            fileSystem.removeFolder(parent, folder);
+
             TaskFolderRefreshable refreshProvider = fileSystem.getRootTaskFolder().getLookup().lookup(TaskFolderRefreshable.class);
             assert refreshProvider != null;
             refreshProvider.refreshNode();
         } else if (notify == NotifyDescriptor.NO_OPTION) {
             TaskFolder parent = folder.getParent();
-            parent.removeFolder(folder);
+            fileSystem.removeFolder(parent, folder);
             TaskFolderRefreshable refreshProvider = parent.getLookup().lookup(TaskFolderRefreshable.class);
             assert refreshProvider != null;
             refreshProvider.refreshNode();

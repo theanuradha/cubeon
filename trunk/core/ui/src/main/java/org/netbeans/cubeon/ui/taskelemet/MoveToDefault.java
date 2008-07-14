@@ -18,9 +18,11 @@ package org.netbeans.cubeon.ui.taskelemet;
 
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
+import org.netbeans.cubeon.tasks.core.api.TaskFolder;
 import org.netbeans.cubeon.tasks.core.api.TaskFolderRefreshable;
-import org.netbeans.cubeon.tasks.spi.task.TaskContainer;
+import org.netbeans.cubeon.tasks.core.api.TasksFileSystem;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -28,10 +30,10 @@ import org.netbeans.cubeon.tasks.spi.task.TaskElement;
  */
 public class MoveToDefault extends AbstractAction {
 
-    private TaskContainer container;
+    private TaskFolder container;
     private TaskElement element;
 
-    public MoveToDefault(TaskContainer container, TaskElement taskElement) {
+    public MoveToDefault(TaskFolder container, TaskElement taskElement) {
         this.container = container;
         this.element = taskElement;
 
@@ -40,7 +42,8 @@ public class MoveToDefault extends AbstractAction {
 
     public void actionPerformed(ActionEvent e) {
         if (container != null) {
-            container.removeTaskElement(element);
+            TasksFileSystem fileSystem = Lookup.getDefault().lookup(TasksFileSystem.class);
+            fileSystem.removeTaskElement(container, element);
             TaskFolderRefreshable oldTfr = container.getLookup().lookup(TaskFolderRefreshable.class);
             if (oldTfr != null) {
                 oldTfr.refreshNode();

@@ -36,7 +36,6 @@ import java.util.Set;
 import javax.swing.Action;
 import javax.swing.DefaultListModel;
 import javax.swing.DefaultListSelectionModel;
-import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
@@ -59,7 +58,6 @@ import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Version;
 import org.netbeans.cubeon.jira.tasks.JiraTask;
 import org.netbeans.cubeon.jira.tasks.actions.SubmitTaskAction;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
-import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider.EditorAttributeHandler;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.task.TaskResolution;
 import org.netbeans.cubeon.tasks.spi.task.TaskType;
@@ -69,11 +67,12 @@ import org.openide.util.NbBundle;
  *
  * @author Anuradha G
  */
-public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttributeHandler {
+public class JiraTaskEditorUI extends javax.swing.JPanel {
 
     private final Set<ChangeListener> listeners = new HashSet<ChangeListener>(1);
     private JiraTask jiraTask;
     private JiraAction defaultStatus;
+    private final JiraCommentsEditor commentsEditor;
     final DocumentListener documentListener = new DocumentListener() {
 
         public void insertUpdate(DocumentEvent arg0) {
@@ -154,6 +153,7 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
     public JiraTaskEditorUI(JiraTask jiraTask) {
         this.jiraTask = jiraTask;
         initComponents();
+        commentsEditor = new JiraCommentsEditor(this);
         refresh();
     }
 
@@ -185,7 +185,7 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
 
         String message = NbBundle.getMessage(JiraTaskEditorUI.class,
                 "JiraTaskEditorUI.lblStatus.text",
-                jiraTask.getStatus()==null?"Local":jiraTask.getStatus());
+                jiraTask.getStatus() == null ? "Local" : jiraTask.getStatus());
         lblStatus.setText(message);
 
         cmbType.removeAllItems();
@@ -210,8 +210,7 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
         }
         cmbActions.removeAllItems();
         List<JiraAction> actions = jiraTask.getActions();
-        defaultStatus = new JiraAction("##", "Leave as " +(jiraTask.getStatus()!=null ?
-            jiraTask.getStatus().getText():"Local Task"));
+        defaultStatus = new JiraAction("##", "Leave as " + (jiraTask.getStatus() != null ? jiraTask.getStatus().getText() : "Local Task"));
         cmbActions.addItem(defaultStatus);
         for (JiraAction action : actions) {
             cmbActions.addItem(action);
@@ -285,19 +284,6 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
         lstComponents.setModel(componentModel);
     }
 
-    @Override
-    public String getName() {
-        return jiraTask.getName();
-    }
-
-    public String getDisplayName() {
-        return jiraTask.getId();
-    }
-
-    public String getShortDescription() {
-        return jiraTask.getName();
-    }
-
     public final void addChangeListener(ChangeListener l) {
         synchronized (listeners) {
             listeners.add(l);
@@ -308,10 +294,6 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
         synchronized (listeners) {
             listeners.remove(l);
         }
-    }
-
-    public JComponent getComponent() {
-        return this;
     }
 
     public TaskElement save() {
@@ -337,6 +319,7 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
         if (jiraTask.getProject() == null || !jiraTask.getProject().equals(cmbProject.getSelectedItem())) {
             jiraTask.setProject((JiraProject) cmbProject.getSelectedItem());
         }
+        jiraTask.setNewComment(commentsEditor.getNewComment());
         Object action = cmbActions.getSelectedItem();
         if (action == null || !action.equals(defaultStatus)) {
             jiraTask.setAction((JiraAction) action);
@@ -445,6 +428,7 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
         lblStatus = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
+        setName(NbBundle.getMessage(JiraTaskEditorUI.class, "LBL_Primary_Details","-")); // NOI18N
 
         lblPriority.setText(NbBundle.getMessage(JiraTaskEditorUI.class, "TaskEditorUI.lblPriority.text")); // NOI18N
 
@@ -459,7 +443,7 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
 
         lblAction.setText(NbBundle.getMessage(JiraTaskEditorUI.class, "TaskEditorUI.lblStatus.text")); // NOI18N
 
-        lblAttributes.setFont(new java.awt.Font("Tahoma", 1, 11));
+        lblAttributes.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         lblAttributes.setForeground(new java.awt.Color(102, 102, 102));
         lblAttributes.setText(NbBundle.getMessage(JiraTaskEditorUI.class, "TaskEditorUI.jLabel1.text")); // NOI18N
 
@@ -714,7 +698,7 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
         txtAssignee.setText(jiraTask.getAssignee());
         loadDates(jiraTask);
         loadAttributes();
-
+        commentsEditor.refresh();
         txtOutline.getDocument().addDocumentListener(documentListener);
         txtAssignee.getDocument().addDocumentListener(documentListener);
         txtDescription.getDocument().addDocumentListener(documentListener);
@@ -742,5 +726,13 @@ public class JiraTaskEditorUI extends javax.swing.JPanel implements EditorAttrib
         } else {
             cmbProject.setEnabled(false);
         }
+    }
+
+    JiraTask getJiraTask() {
+        return jiraTask;
+    }
+
+    JiraCommentsEditor getCommentsEditor() {
+        return commentsEditor;
     }
 }
