@@ -71,6 +71,8 @@ public class JiraFilterQuery extends AbstractJiraQuery {
 
                 public void run() {
                     synchronized (JiraFilterQuery.this) {
+                        extension.fireSynchronizing();
+                        try{
                         ProgressHandle handle = ProgressHandleFactory.createHandle("Synchronizing Query : " + getName());
                         handle.start();
                         handle.switchToIndeterminate();
@@ -99,7 +101,9 @@ public class JiraFilterQuery extends AbstractJiraQuery {
                         }
                         repository.getQuerySupport().modifyTaskQuery(JiraFilterQuery.this);
                         handle.finish();
+                        }finally{
                         extension.fireSynchronized();
+                        }
                     }
                 }
             });

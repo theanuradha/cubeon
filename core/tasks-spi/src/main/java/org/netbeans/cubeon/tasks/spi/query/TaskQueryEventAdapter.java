@@ -25,6 +25,9 @@ public class TaskQueryEventAdapter {
     public void atributesupdated() {
     }
 
+    public void querySynchronizing() {
+    }
+
     public void querySynchronized() {
     }
 
