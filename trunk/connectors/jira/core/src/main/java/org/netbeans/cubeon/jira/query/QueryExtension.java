@@ -60,6 +60,13 @@ public class QueryExtension implements Extension {
 
     }
 
+    void fireSynchronizing() {
+        Collection<? extends TaskQueryEventAdapter> adapters = lookup.lookupAll(TaskQueryEventAdapter.class);
+        for (TaskQueryEventAdapter adapter : adapters) {
+            adapter.querySynchronizing();
+        }
+
+    }
     void fireSynchronized() {
         Collection<? extends TaskQueryEventAdapter> adapters = lookup.lookupAll(TaskQueryEventAdapter.class);
         for (TaskQueryEventAdapter adapter : adapters) {

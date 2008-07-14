@@ -165,6 +165,11 @@ final class ResultsTopComponent extends TopComponent implements ExplorerManager.
                 }
 
                 @Override
+                public void querySynchronizing() {
+                    queryNode.updateNodeTag("Synchronizing...");
+                }
+
+                @Override
                 public void querySynchronized() {
                     if (task != null && !task.isFinished()) {
                         task.cancel();
