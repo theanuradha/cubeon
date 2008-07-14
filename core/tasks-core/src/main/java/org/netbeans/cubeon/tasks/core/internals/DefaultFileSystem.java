@@ -24,8 +24,10 @@ import org.netbeans.cubeon.tasks.core.api.TaskFolder;
 import org.netbeans.cubeon.tasks.core.api.TaskRepositoryHandler;
 import org.netbeans.cubeon.tasks.core.api.TasksFileSystem;
 import org.netbeans.cubeon.tasks.spi.Extension;
+import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.repository.RepositoryEventAdapter;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
+import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.filesystems.Repository;
@@ -38,28 +40,24 @@ import org.openide.util.Lookup;
  */
 public class DefaultFileSystem implements TasksFileSystem {
 
-    static final String BASE_PATH = "cubeon/tasks";
-    static final String DEFAULT_PATH = "cubeon/uncategorized";
-    static final String DESCRIPTION_TAG = "description";
-    private final RootFolder rootfTaskFolder;
+    static final String TASKS_XML_PATH = "cubeon/tasks";
+    private final PersistenceHandler handler;
 
     public DefaultFileSystem() {
 
-        FileObject rfileObject = null;
+        FileObject fileObject = null;
 
         try {
-            rfileObject = FileUtil.createFolder(Repository.getDefault().
-                    getDefaultFileSystem().getRoot(), BASE_PATH);
+            fileObject = FileUtil.createFolder(Repository.getDefault().
+                    getDefaultFileSystem().getRoot(), TASKS_XML_PATH);
 
 
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
-        assert rfileObject != null;
+        assert fileObject != null;
+        handler = new PersistenceHandler(fileObject);
 
-        String name = rfileObject.getName();
-
-        rootfTaskFolder = new RootFolder(null, name, rfileObject, null);
 
         CubeonContext context = Lookup.getDefault().lookup(CubeonContext.class);
 
@@ -67,15 +65,11 @@ public class DefaultFileSystem implements TasksFileSystem {
 
             @Override
             public void taskElementIdChenged(String oldId, String newId) {
-                List<TaskFolder> subFolders = rootfTaskFolder.getSubFolders();
-                for (TaskFolder taskFolder : subFolders) {
-                    TaskFolderImpl impl = taskFolder.getLookup().lookup(TaskFolderImpl.class);
-                    impl.changeTaskElementId(oldId, newId);
-                }
+                handler.changeTaskElementId(oldId, newId);
             }
         };
-        TaskRepositoryHandler handler = context.getLookup().lookup(TaskRepositoryHandler.class);
-        for (TaskRepository repository : handler.getTaskRepositorys()) {
+        TaskRepositoryHandler repositoryHandler = context.getLookup().lookup(TaskRepositoryHandler.class);
+        for (TaskRepository repository : repositoryHandler.getTaskRepositorys()) {
             Extension extension = repository.getLookup().lookup(Extension.class);
             extension.add(adapter);
         }
@@ -83,15 +77,73 @@ public class DefaultFileSystem implements TasksFileSystem {
 
     public TaskFolder getDefaultFolder() {
 
-        return rootfTaskFolder.getDefaultFolder();
+        return handler.getDefaultFolder();
     }
 
     public List<TaskFolder> getFolders() {
 
-        return new ArrayList<TaskFolder>(rootfTaskFolder.getSubFolders());
+        return new ArrayList<TaskFolder>(handler.getRootfTaskFolder().getSubFolders());
     }
 
     public TaskFolder getRootTaskFolder() {
-        return rootfTaskFolder;
+        return handler.getRootfTaskFolder();
+    }
+
+    public void addNewFolder(TaskFolder parent, TaskFolder folder) {
+        TaskFolderImpl perantImpl = parent.getLookup().lookup(TaskFolderImpl.class);
+        assert perantImpl != null;
+        TaskFolderImpl folderImpl = folder.getLookup().lookup(TaskFolderImpl.class);
+        assert folderImpl != null;
+        handler.addFolder(folderImpl);
+        perantImpl.addNewFolder(folder);
+
+    }
+
+    public TaskElement addTaskElement(TaskFolder folder, TaskElement element) {
+        TaskFolderImpl perantImpl = folder.getLookup().lookup(TaskFolderImpl.class);
+        assert perantImpl != null;
+        handler.addTaskElement(perantImpl, element);
+        perantImpl.addTaskElement(element);
+        return element;
+    }
+
+    public boolean removeFolder(TaskFolder parent, TaskFolder folder) {
+        TaskFolderImpl perantImpl = parent.getLookup().lookup(TaskFolderImpl.class);
+        assert perantImpl != null;
+        TaskFolderImpl folderImpl = folder.getLookup().lookup(TaskFolderImpl.class);
+        assert folderImpl != null;
+
+        handler.removeFolder(folderImpl);
+
+        return perantImpl.removeFolder(folder);
+    }
+
+    public boolean removeTaskElement(TaskFolder folder, TaskElement element) {
+        TaskFolderImpl perantImpl = folder.getLookup().lookup(TaskFolderImpl.class);
+        assert perantImpl != null;
+        handler.removeTaskElement(perantImpl, element);
+        return perantImpl.removeTaskElement(element);
+
+    }
+
+    public boolean rename(TaskFolder folder, String name, String description) {
+        TaskFolderImpl perantImpl = folder.getLookup().lookup(TaskFolderImpl.class);
+        assert perantImpl != null;
+
+        perantImpl.setDescription(description);
+        handler.persistFolder(perantImpl, name);
+
+        return perantImpl.rename(name);
+    }
+
+    public void setTaskQuery(TaskFolder folder, TaskQuery query) {
+        TaskFolderImpl perantImpl = folder.getLookup().lookup(TaskFolderImpl.class);
+        assert perantImpl != null;
+        handler.setTaskQuery(perantImpl, query);
+        perantImpl.setTaskQuery(query);
+    }
+
+    public TaskFolder newFolder(String folderName, String folderDescription) {
+        return new TaskFolderImpl(null, folderName, folderDescription);
     }
 }

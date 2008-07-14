@@ -28,6 +28,6 @@ import org.openide.nodes.Node;
  */
 public interface TaskNodeFactory {
   Node createTaskElementNode(TaskElement element,boolean withChildern);
-  Node createTaskElementNode(TaskContainer container,TaskElement element,boolean withChildern);
+  Node createTaskElementNode(TaskFolder folder,TaskElement element,boolean withChildern);
   Node createTaskRepositoryNode(TaskRepository repository,boolean withChildern);
 }

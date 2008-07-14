@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 import org.netbeans.cubeon.jira.repository.JiraTaskRepository;
 import org.netbeans.cubeon.jira.repository.attributes.JiraAction;
+import org.netbeans.cubeon.jira.repository.attributes.JiraComment;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Component;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Version;
@@ -45,7 +46,7 @@ import org.openide.util.lookup.Lookups;
  */
 public class JiraTask implements TaskElement {
 
-    private  String id;
+    private String id;
     private String name;
     private String description;
     private String urlString;
@@ -66,8 +67,10 @@ public class JiraTask implements TaskElement {
     private List<JiraProject.Component> components = new ArrayList<JiraProject.Component>(0);
     private List<JiraProject.Version> affectedVersions = new ArrayList<JiraProject.Version>(0);
     private List<JiraProject.Version> fixVersions = new ArrayList<JiraProject.Version>(0);
-    private JiraActionsProvider actionsProvider=new  JiraActionsProvider();
+    private List<JiraComment> comments = new ArrayList<JiraComment>();
+    private JiraActionsProvider actionsProvider = new JiraActionsProvider();
     private JiraAction action;
+    private String newComment;
 
     public JiraTask(String id, String name, String description,
             JiraTaskRepository taskRepository) {
@@ -91,7 +94,6 @@ public class JiraTask implements TaskElement {
     public String getName() {
         return name;
     }
-
 
     public void setName(String name) {
         this.name = name;
@@ -168,7 +170,7 @@ public class JiraTask implements TaskElement {
     }
 
     public boolean isCompleted() {
-        return resolution!=null;
+        return resolution != null;
     }
 
     public Image getImage() {
@@ -291,6 +293,14 @@ public class JiraTask implements TaskElement {
         this.action = action;
     }
 
+    public String getNewComment() {
+        return newComment;
+    }
+
+    public void setNewComment(String newComment) {
+        this.newComment = newComment;
+    }
+
     public List<JiraAction> getActions() {
         return actionsProvider.getActions();
     }
@@ -299,11 +309,18 @@ public class JiraTask implements TaskElement {
         actionsProvider.setActions(actions);
     }
 
+    public List<JiraComment> getComments() {
+        return new ArrayList<JiraComment>(comments);
+    }
+
+    public void setComments(List<JiraComment> comments) {
+        this.comments = new ArrayList<JiraComment>(comments);
+    }
+
     public JiraActionsProvider getActionsProvider() {
         return actionsProvider;
     }
 
-        
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {

@@ -29,6 +29,8 @@ import org.openide.util.Lookup;
  */
 public interface TaskFolder extends TaskContainer {
 
+
+
     /**
      * 
      * @return Name of the folder
@@ -54,21 +56,19 @@ public interface TaskFolder extends TaskContainer {
      */
     Lookup getLookup();
 
-    TaskFolder addNewFolder(String name, String description);
+   
 
-    boolean removeFolder(TaskFolder folder);
 
     List<TaskFolder> getSubFolders();
 
-    TaskElement addTaskElement(TaskElement element);
-
-    boolean removeTaskElement(TaskElement element);
+ 
 
     List<TaskElement> getTaskElements();
 
     boolean contains(TaskElement element);
 
-    void setTaskQuery(TaskQuery query);
+
 
     TaskQuery getTaskQuery();
+    
 }

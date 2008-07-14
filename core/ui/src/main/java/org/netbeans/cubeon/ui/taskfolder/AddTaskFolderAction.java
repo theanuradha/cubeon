@@ -20,8 +20,10 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import org.netbeans.cubeon.tasks.core.api.TaskFolder;
 import org.netbeans.cubeon.tasks.core.api.TaskFolderRefreshable;
+import org.netbeans.cubeon.tasks.core.api.TasksFileSystem;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
@@ -32,7 +34,6 @@ public class AddTaskFolderAction extends AbstractAction {
 
     private final TaskFolder folder;
 
-       
     public AddTaskFolderAction(TaskFolder folder) {
         this.folder = folder;
         putValue(NAME, NbBundle.getMessage(AddTaskFolderAction.class, "LBL_Add_Folder"));
@@ -54,8 +55,9 @@ public class AddTaskFolderAction extends AbstractAction {
                 });
         Object ret = DialogDisplayer.getDefault().notify(dd);
         if (atf.getOKButton() == ret) {
+            TasksFileSystem fileSystem = Lookup.getDefault().lookup(TasksFileSystem.class);
+            fileSystem.addNewFolder(folder, fileSystem.newFolder(atf.getFolderName(), atf.getFolderDescription()));
 
-            folder.addNewFolder(atf.getFolderName(), atf.getFolderDescription());
             TaskFolderRefreshable refreshProvider = folder.getLookup().lookup(TaskFolderRefreshable.class);
             assert refreshProvider != null;
             refreshProvider.refreshNode();

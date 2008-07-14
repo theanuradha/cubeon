@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.swing.Action;
+import org.netbeans.cubeon.tasks.core.api.TaskFolder;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskBadgeProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
@@ -63,10 +64,10 @@ public class TaskElementNode extends AbstractNode {
     private InstanceContent content;
     private DataObject dataObject;
     private final TaskElementChangeAdapter changeAdapter;
-    private TaskContainer container;
+    private TaskFolder container;
     private boolean extendedActions;
 
-    public static TaskElementNode createNode(final TaskContainer container, final TaskElement element, boolean extendedActions) {
+    public static TaskElementNode createNode(final TaskFolder container, final TaskElement element, boolean extendedActions) {
 
         InstanceContent content = new InstanceContent();
         content.add(element);
@@ -95,7 +96,7 @@ public class TaskElementNode extends AbstractNode {
         return node;
     }
 
-    private TaskElementNode(final TaskContainer container, final TaskElement element, InstanceContent content) {
+    private TaskElementNode(final TaskFolder container, final TaskElement element, InstanceContent content) {
         super(Children.LEAF, new AbstractLookup(content));
         this.container = container;
         this.element = element;

@@ -27,10 +27,6 @@ public interface TaskContainer {
 
     public Lookup getLookup();
 
-    TaskElement addTaskElement(TaskElement element);
-
-    boolean removeTaskElement(TaskElement element);
-
     List<TaskElement> getTaskElements();
 
     boolean contains(TaskElement element);

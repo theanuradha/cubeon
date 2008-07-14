@@ -18,13 +18,12 @@ package org.netbeans.cubeon.ui.taskfolder;
 
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
-import javax.swing.KeyStroke;
 import org.netbeans.cubeon.tasks.core.api.TaskFolder;
-import org.netbeans.cubeon.tasks.core.api.TaskFolderOparations;
 import org.netbeans.cubeon.tasks.core.api.TaskFolderRefreshable;
-import org.netbeans.cubeon.ui.taskfolder.AddTaskFolder;
+import org.netbeans.cubeon.tasks.core.api.TasksFileSystem;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
@@ -41,7 +40,7 @@ public class EditTaskFolderAction extends AbstractAction {
         putValue(SHORT_DESCRIPTION, NbBundle.getMessage(EditTaskFolderAction.class,
                 "LBL_Edit_Folder_Description"));
 
-        //putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke("F2"));//NOI18N
+    //putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke("F2"));//NOI18N
 
     }
 
@@ -62,26 +61,25 @@ public class EditTaskFolderAction extends AbstractAction {
         Object ret = DialogDisplayer.getDefault().notify(dd);
         if (atf.getOKButton() == ret) {
 
-            final TaskFolderOparations oparations =
-                    folder.getLookup().lookup(TaskFolderOparations.class);
-            assert oparations != null;
+            TasksFileSystem fileSystem = Lookup.getDefault().lookup(TasksFileSystem.class);
             //flag that control Node should refresh or not
             boolean refresh = false;
             String newName = atf.getFolderName();
 
             //check if name has change
             if (!folder.getName().equals(newName)) {
-                oparations.rename(newName);
+
                 //flag to refresh
                 refresh = true;
             }
             String newDescription = atf.getFolderDescription();
             //check if description has change
             if (!newDescription.equals(folder.getDescription())) {
-                oparations.setDescription(newDescription);
+                refresh = true;
 
             }
             if (refresh) {
+                fileSystem.rename(folder, newName, newDescription);
                 TaskFolderRefreshable refreshProvider = folder.getParent().
                         getLookup().lookup(TaskFolderRefreshable.class);
                 assert refreshProvider != null;

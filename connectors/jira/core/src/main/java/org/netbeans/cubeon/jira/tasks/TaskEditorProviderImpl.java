@@ -16,7 +16,7 @@
  */
 package org.netbeans.cubeon.jira.tasks;
 
-import org.netbeans.cubeon.jira.tasks.ui.JiraTaskEditorUI;
+import org.netbeans.cubeon.jira.tasks.ui.JiraAttributeHandler;
 import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider;
 
 /**
@@ -31,9 +31,7 @@ public class TaskEditorProviderImpl implements TaskEditorProvider {
         this.jiraTask = localTask;
     }
 
-   
-
     public EditorAttributeHandler createEditorAttributeHandler() {
-        return new JiraTaskEditorUI(jiraTask);
+        return new JiraAttributeHandler(jiraTask);
     }
 }

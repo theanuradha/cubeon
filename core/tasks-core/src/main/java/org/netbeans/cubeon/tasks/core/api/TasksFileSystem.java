@@ -17,6 +17,8 @@
 package org.netbeans.cubeon.tasks.core.api;
 
 import java.util.List;
+import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
+import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 
 /**
  *
@@ -25,9 +27,23 @@ import java.util.List;
 public interface TasksFileSystem {
 
     List<TaskFolder> getFolders();
-    
+
     TaskFolder getDefaultFolder();
-    
+
     TaskFolder getRootTaskFolder();
+
+    void addNewFolder(TaskFolder parent, TaskFolder folder);
+
+    boolean removeFolder(TaskFolder parent, TaskFolder folder);
+
+    TaskElement addTaskElement(TaskFolder folder, TaskElement element);
+
+    boolean removeTaskElement(TaskFolder folder, TaskElement element);
+
+    boolean rename(TaskFolder folder, String name, String description);
+
+    void setTaskQuery(TaskFolder folder, TaskQuery query);
+
+    public TaskFolder newFolder(String folderName, String folderDescription);
     //TODO : add backup restore oprations
 }

@@ -27,6 +27,7 @@ import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.netbeans.cubeon.jira.repository.attributes.JiraAction;
+import org.netbeans.cubeon.jira.repository.attributes.JiraComment;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Component;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Version;
@@ -59,6 +60,8 @@ class TaskPersistenceHandler {
     private static final String TAG_ROOT = "tasks";
     private static final String TAG_REPOSITORY = "repository";
     private static final String TAG_ID = "id";
+    private static final String TAG_AUTHOR = "author";
+    private static final String TAG_UPDATE_AUTHOR = "uauthor";
     private static final String TAG_TASKS = "tasks";
     private static final String TAG_NEXT_ID = "next";
     private static final String TAG_TASK = "task";
@@ -77,6 +80,8 @@ class TaskPersistenceHandler {
     private static final String TAG_AFFECT_VERSIONS = "affect_version";
     private static final String TAG_FIX_VERSIONS = "fix_version";
     private static final String TAG_COMPONENT = "component";
+    private static final String TAG_COMMENTS = "comments";
+    private static final String TAG_COMMENT = "comment";
     private static final String TAG_VERSION = "version";
     private static final String TAG_LOCAL = "local";
     private static final String TAG_REPORTER = "reporter";
@@ -204,6 +209,7 @@ class TaskPersistenceHandler {
 
             //load components
             Element componentsElement = findElement(element, TAG_COMPONENTS, NAMESPACE);
+
             NodeList componentsNodeList = componentsElement.getElementsByTagNameNS(NAMESPACE, TAG_COMPONENT);
             List<JiraProject.Component> components = new ArrayList<Component>();
 
@@ -222,6 +228,48 @@ class TaskPersistenceHandler {
             String reporter = element.getAttributeNS(NAMESPACE, TAG_REPORTER);
             String assignee = element.getAttributeNS(NAMESPACE, TAG_ASSIGNEE);
 
+
+            String newcomment = element.getAttributeNS(NAMESPACE, TAG_COMMENT);
+            List<JiraComment> jiraComments = new ArrayList<JiraComment>();
+
+            Element commentsElement = findElement(element, TAG_COMMENTS, NAMESPACE);
+            if (commentsElement != null) {
+                NodeList commentsNodeList = commentsElement.getElementsByTagNameNS(NAMESPACE, TAG_COMMENT);
+
+                for (int i = 0; i < commentsNodeList.getLength(); i++) {
+                    Node node = commentsNodeList.item(i);
+                    if (node.getNodeType() == Node.ELEMENT_NODE) {
+                        Element e = (Element) node;
+                        JiraComment comment = new JiraComment(e.getAttribute(TAG_ID));
+                        String body = e.getAttribute(TAG_NAME);
+                        String author = e.getAttribute(TAG_AUTHOR);
+                        String uauthor = e.getAttribute(TAG_UPDATE_AUTHOR);
+                        comment.setBody(body);
+                        comment.setAuthor(author);
+                        comment.setUpdateAuthor(uauthor);
+                        Date ccreatedDate = null;
+                        Date cupdatedDate = null;
+                        String ccreated = element.getAttributeNS(NAMESPACE, TAG_CREATED_DATE);
+                        if (ccreated != null && ccreated.trim().length() != 0) {
+
+                            calendar.setTimeInMillis(Long.parseLong(ccreated));
+                            ccreatedDate = calendar.getTime();
+
+                        }
+                        String cupdated = element.getAttributeNS(NAMESPACE, TAG_UPDATE_DATE);
+                        if (cupdated != null && cupdated.trim().length() != 0) {
+
+                            calendar.setTimeInMillis(Long.parseLong(cupdated));
+                            cupdatedDate = calendar.getTime();
+
+                        }
+                        comment.setCreated(ccreatedDate);
+                        comment.setUpdated(cupdatedDate);
+
+                        jiraComments.add(comment);
+                    }
+                }
+            }
             //read actions
             String action = element.getAttributeNS(NAMESPACE, TAG_ACTION);
             JiraAction selectedAction = null;
@@ -272,6 +320,8 @@ class TaskPersistenceHandler {
             jiraTask.setAssignee(assignee);
             jiraTask.getActionsProvider().setActions(actions);
             jiraTask.setAction(selectedAction);
+            jiraTask.setComments(jiraComments);
+            jiraTask.setNewComment(newcomment);
 
             return jiraTask;
 
@@ -335,8 +385,9 @@ class TaskPersistenceHandler {
             taskElement.setAttributeNS(NAMESPACE, TAG_DESCRIPTION, task.getDescription());
             taskElement.setAttributeNS(NAMESPACE, TAG_REPOSITORY, task.getTaskRepository().getId());
             taskElement.setAttributeNS(NAMESPACE, TAG_PRIORITY, task.getPriority().getId());
-            if(task.getStatus()!=null)
-            taskElement.setAttributeNS(NAMESPACE, TAG_STATUS, task.getStatus().getId());
+            if (task.getStatus() != null) {
+                taskElement.setAttributeNS(NAMESPACE, TAG_STATUS, task.getStatus().getId());
+            }
             taskElement.setAttributeNS(NAMESPACE, TAG_TYPE, task.getType().getId());
             taskElement.setAttributeNS(NAMESPACE, TAG_PROJECT, task.getProject().getId());
 
@@ -399,6 +450,30 @@ class TaskPersistenceHandler {
             }
             if (task.getUpdated() != null) {
                 taskElement.setAttributeNS(NAMESPACE, TAG_UPDATE_DATE, String.valueOf(task.getUpdated().getTime()));
+            }
+            List<JiraComment> comments = task.getComments();
+            Element commentsElement = getEmptyElement(document, taskElement, TAG_COMMENTS);
+            if (task.getNewComment() != null) {
+                taskElement.setAttribute(TAG_COMMENT, task.getNewComment());
+            } else {
+                taskElement.removeAttribute(TAG_COMMENT);
+            }
+            for (JiraComment comment : comments) {
+                Element element = document.createElement(TAG_COMMENT);
+                commentsElement.appendChild(element);
+                element.setAttribute(TAG_ID, comment.getId());
+                element.setAttribute(TAG_NAME, comment.getBody());
+                element.setAttribute(TAG_AUTHOR, comment.getAuthor());
+                if (comment.getUpdateAuthor() != null) {
+                    element.setAttribute(TAG_UPDATE_AUTHOR, comment.getUpdateAuthor());
+                }
+                if (comment.getCreated() != null) {
+                    element.setAttributeNS(NAMESPACE, TAG_CREATED_DATE, String.valueOf(comment.getCreated().getTime()));
+
+                }
+                if (comment.getUpdated() != null) {
+                    element.setAttributeNS(NAMESPACE, TAG_UPDATE_DATE, String.valueOf(comment.getUpdated().getTime()));
+                }
             }
             //actions
             List<JiraAction> actions = task.getActions();

@@ -74,11 +74,13 @@ public class SynchronizeWithAction extends AbstractAction implements Menu, Popup
         }
 
         public void actionPerformed(ActionEvent e) {
-            folder.setTaskQuery(query);
+            TasksFileSystem fileSystem = Lookup.getDefault().lookup(TasksFileSystem.class);
+            fileSystem.setTaskQuery(folder, query);
             List<TaskElement> taskElements = query.getTaskElements();
             for (TaskElement taskElement : taskElements) {
                 if (!folder.contains(taskElement)) {
-                    folder.addTaskElement(taskElement);
+                    fileSystem.addTaskElement(folder, taskElement);
+
                 }
             }
             TaskFolderRefreshable newTfr = folder.getLookup().lookup(TaskFolderRefreshable.class);

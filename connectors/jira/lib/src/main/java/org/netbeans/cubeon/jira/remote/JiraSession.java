@@ -19,6 +19,7 @@ package org.netbeans.cubeon.jira.remote;
 import com.dolby.jira.net.soap.jira.JiraSoapService;
 import com.dolby.jira.net.soap.jira.JiraSoapServiceServiceLocator;
 import com.dolby.jira.net.soap.jira.RemoteAuthenticationException;
+import com.dolby.jira.net.soap.jira.RemoteComment;
 import com.dolby.jira.net.soap.jira.RemoteComponent;
 import com.dolby.jira.net.soap.jira.RemoteConfiguration;
 import com.dolby.jira.net.soap.jira.RemoteField;
@@ -208,6 +209,22 @@ public class JiraSession {
     public RemoteFilter[] getSavedFilters() throws JiraException {
         try {
             return service.getSavedFilters(token);
+        } catch (Exception ex) {
+            throw new JiraException(ex);
+        }
+    }
+
+    public RemoteComment[] getComments(String issue) throws JiraException {
+        try {
+            return service.getComments(token, issue);
+        } catch (Exception ex) {
+            throw new JiraException(ex);
+        }
+    }
+
+    public void addComment(String issue, RemoteComment comment) throws JiraException {
+        try {
+            service.addComment(token, issue, comment);
         } catch (Exception ex) {
             throw new JiraException(ex);
         }
