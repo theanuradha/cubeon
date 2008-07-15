@@ -16,6 +16,8 @@
  */
 package org.netbeans.cubeon.tasks.spi.query;
 
+import org.netbeans.cubeon.tasks.spi.task.TaskElement;
+
 /**
  *
  * @author Anuradha G
@@ -27,7 +29,8 @@ public class TaskQueryEventAdapter {
 
     public void querySynchronizing() {
     }
-
+    public void taskAdded(TaskElement element) {
+    }
     public void querySynchronized() {
     }
 

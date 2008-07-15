@@ -167,6 +167,12 @@ final class ResultsTopComponent extends TopComponent implements ExplorerManager.
                 @Override
                 public void querySynchronizing() {
                     queryNode.updateNodeTag("Synchronizing...");
+                     array.remove(array.getNodes());
+                }
+
+                @Override
+                public void taskAdded(TaskElement element) {
+                    array.add(new Node[]{new TaskResultNode(element)});
                 }
 
                 @Override
@@ -177,7 +183,8 @@ final class ResultsTopComponent extends TopComponent implements ExplorerManager.
                     task = RequestProcessor.getDefault().create(new Runnable() {
 
                         public void run() {
-                            loadQueries(array, queryNode);
+                             array.remove(array.getNodes());
+                             loadQueries(array, queryNode);
                         }
                     });
                     task.run();
@@ -192,7 +199,7 @@ final class ResultsTopComponent extends TopComponent implements ExplorerManager.
     }
 
     private void loadQueries(Children array, final ResultQueryNode queryNode) {
-        array.remove(array.getNodes());
+        
         List<TaskElement> elements = taskQuery.getTaskElements();
         Collections.sort(elements, new Comparator<TaskElement>() {
 

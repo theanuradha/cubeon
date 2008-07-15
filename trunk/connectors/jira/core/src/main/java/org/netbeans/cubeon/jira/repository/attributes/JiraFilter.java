@@ -28,12 +28,14 @@ public class JiraFilter {
     private final String id;
     private final String name;
     private final String description;
+    private final String author;
 
-    public JiraFilter(JiraTaskRepository repository, String id, String name, String description) {
+    public JiraFilter(JiraTaskRepository repository, String id, String name, String description, String author) {
         this.repository = repository;
         this.id = id;
         this.name = name;
         this.description = description;
+        this.author = author;
     }
 
     public String getDescription() {
@@ -48,13 +50,17 @@ public class JiraFilter {
         return name;
     }
 
+    public String getAuthor() {
+        return author;
+    }
+
     public JiraTaskRepository getRepository() {
         return repository;
     }
 
     @Override
     public String toString() {
-        return name+" : "+description;
+        return name + " : " + description;
     }
 
     @Override
@@ -82,6 +88,4 @@ public class JiraFilter {
         hash = 67 * hash + (this.id != null ? this.id.hashCode() : 0);
         return hash;
     }
-    
-
 }

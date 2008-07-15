@@ -19,6 +19,7 @@ package org.netbeans.cubeon.jira.query;
 import java.util.Collection;
 import org.netbeans.cubeon.tasks.spi.Extension;
 import org.netbeans.cubeon.tasks.spi.query.TaskQueryEventAdapter;
+import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
@@ -67,6 +68,15 @@ public class QueryExtension implements Extension {
         }
 
     }
+
+    void fireTaskAdded(TaskElement element) {
+        Collection<? extends TaskQueryEventAdapter> adapters = lookup.lookupAll(TaskQueryEventAdapter.class);
+        for (TaskQueryEventAdapter adapter : adapters) {
+            adapter.taskAdded(element);
+        }
+
+    }
+
     void fireSynchronized() {
         Collection<? extends TaskQueryEventAdapter> adapters = lookup.lookupAll(TaskQueryEventAdapter.class);
         for (TaskQueryEventAdapter adapter : adapters) {
@@ -74,6 +84,7 @@ public class QueryExtension implements Extension {
         }
 
     }
+
     void fireRemoved() {
         Collection<? extends TaskQueryEventAdapter> adapters = lookup.lookupAll(TaskQueryEventAdapter.class);
         for (TaskQueryEventAdapter adapter : adapters) {

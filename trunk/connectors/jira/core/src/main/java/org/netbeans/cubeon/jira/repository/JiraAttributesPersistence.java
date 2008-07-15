@@ -89,6 +89,7 @@ class JiraAttributesPersistence {
     private static final String TAG_LEAD = "lead";
     private static final String TAG_CONFIGURATIONS = "Configurations";
     private static final String TAG_VOTING = "voting";
+    private static final String TAG_AUTHOR = "author";
     private final JiraTaskRepository repository;
     private final FileObject baseDir;
     private final Object LOCK = new Object();
@@ -266,6 +267,7 @@ class JiraAttributesPersistence {
             filter.setAttribute(TAG_ID, remoteFilter.getId());
             filter.setAttribute(TAG_NAME, remoteFilter.getName());
             filter.setAttribute(TAG_DESCRIPTION, remoteFilter.getDescription());
+            filter.setAttribute(TAG_AUTHOR, remoteFilter.getAuthor());
         }
 
     }
@@ -520,8 +522,9 @@ class JiraAttributesPersistence {
                     String id = element.getAttribute(TAG_ID);
                     String name = element.getAttribute(TAG_NAME);
                     String description = element.getAttribute(TAG_DESCRIPTION);
+                    String author = element.getAttribute(TAG_AUTHOR);
 
-                    filters.add(new JiraFilter(repository, id, name, description));
+                    filters.add(new JiraFilter(repository, id, name, description,author));
 
                 }
             }
