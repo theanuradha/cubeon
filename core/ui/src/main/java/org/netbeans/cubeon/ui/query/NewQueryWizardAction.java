@@ -26,6 +26,7 @@ import org.openide.util.Lookup;
 public final class NewQueryWizardAction extends AbstractAction {
 
     private WizardDescriptor.Panel<WizardObject>[] panels;
+    private TaskRepository taskRepository;
 
     public NewQueryWizardAction(String name) {
 
@@ -34,6 +35,10 @@ public final class NewQueryWizardAction extends AbstractAction {
 
     private void init(String name) {
         putValue(NAME, name);
+    }
+
+    public void preferredRepository(TaskRepository repository) {
+        this.taskRepository = repository;
     }
 
     /**
@@ -55,8 +60,11 @@ public final class NewQueryWizardAction extends AbstractAction {
                     return o1.getName().compareTo(o2.getName());
                 }
             });
-            if (repositorys.size() == 1) {
-                panels = new WizardDescriptor.Panel[]{new TaskQueryAttributesWizard(repositorys.get(0))};
+            if (taskRepository != null || repositorys.size() == 1) {
+                if (taskRepository == null) {
+                    taskRepository = repositorys.get(0);
+                }
+                panels = new WizardDescriptor.Panel[]{new TaskQueryAttributesWizard(taskRepository)};
             } else {
                 panels = new WizardDescriptor.Panel[]{
                             new ChooseRepositoryWizard(repositorys),

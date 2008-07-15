@@ -151,6 +151,14 @@ public class JiraUtils {
         issue.setType(jiraTask.getType() == null ? prefedTaskType.getId() : jiraTask.getType().getId());
         issue.setPriority(jiraTask.getPriority() == null ? prefredPriority.getId() : jiraTask.getPriority().getId());
         issue.setEnvironment(jiraTask.getEnvironment());
+        List<Component> components = jiraTask.getComponents();
+        List<RemoteComponent> remoteComponents = new ArrayList<RemoteComponent>();
+
+        for (Component component : components) {
+            remoteComponents.add(new RemoteComponent(component.getId(), component.getName()));
+        }
+
+        issue.setComponents(remoteComponents.toArray(new RemoteComponent[remoteComponents.size()]));
         List<Version> affectedVersions = jiraTask.getAffectedVersions();
         RemoteVersion[] versions = new RemoteVersion[affectedVersions.size()];
         for (int i = 0; i < affectedVersions.size(); i++) {

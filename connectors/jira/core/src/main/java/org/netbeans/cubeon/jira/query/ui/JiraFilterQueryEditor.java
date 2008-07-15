@@ -63,6 +63,7 @@ public class JiraFilterQueryEditor extends javax.swing.JPanel implements Explore
     public JiraFilterQueryEditor(JiraQuerySupport jiraQuerySupport) {
         initComponents();
         this.jiraQuerySupport = jiraQuerySupport;
+        beanTreeView.setRootVisible(false);
         explorerManager.addPropertyChangeListener(new PropertyChangeListener() {
 
             public void propertyChange(PropertyChangeEvent evt) {
@@ -81,7 +82,11 @@ public class JiraFilterQueryEditor extends javax.swing.JPanel implements Explore
 
     private void loadFilters() {
         List<JiraFilter> filters = jiraQuerySupport.getJiraTaskRepository().getRepositoryAttributes().getFilters();
+
+
         Children.Array array = new Children.Array();
+        Children.Array myArray = new Children.Array();
+        Children.Array publicArray = new Children.Array();
         AbstractNode root = new AbstractNode(array) {
 
             @Override
@@ -95,13 +100,55 @@ public class JiraFilterQueryEditor extends javax.swing.JPanel implements Explore
             }
         };
         root.setDisplayName("Jira Repository Filters");
+        Node my = new AbstractNode(myArray) {
 
+            @Override
+            public String getDisplayName() {
+                return "My Repository Filters";
+            }
+
+            @Override
+            public Image getOpenedIcon(int type) {
+                return getIcon(type);
+            }
+
+            @Override
+            public Image getIcon(int type) {
+                return jiraQuerySupport.getJiraTaskRepository().getImage();
+            }
+        };
+        array.add(new Node[]{
+                    my, new AbstractNode(publicArray) {
+
+                @Override
+                public String getDisplayName() {
+                    return "Public Repository Filters";
+                }
+
+                @Override
+                public Image getOpenedIcon(int type) {
+                    return getIcon(type);
+                }
+
+                @Override
+                public Image getIcon(int type) {
+                    return jiraQuerySupport.getJiraTaskRepository().getImage();
+                }
+            }
+                });
 
         for (JiraFilter jiraFilter : filters) {
-            array.add(new Node[]{new FilterNode(jiraFilter)});
-
+            if (jiraQuerySupport.getJiraTaskRepository().getUserName().equals(
+                    jiraFilter.getAuthor())) {
+                myArray.add(new Node[]{new FilterNode(jiraFilter)});
+            } else {
+                publicArray.add(new Node[]{new FilterNode(jiraFilter)});
+            }
         }
         explorerManager.setRootContext(root);
+        beanTreeView.expandNode(my);
+        explorerManager.setExploredContext(my);
+
     }
 
     public void setQuery(JiraFilterQuery query) {

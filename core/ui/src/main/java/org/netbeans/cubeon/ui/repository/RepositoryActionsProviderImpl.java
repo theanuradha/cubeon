@@ -19,6 +19,8 @@ package org.netbeans.cubeon.ui.repository;
 import javax.swing.Action;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepositoryActionsProvider;
+import org.netbeans.cubeon.ui.query.NewQueryWizardAction;
+import org.netbeans.cubeon.ui.taskelemet.NewTaskWizardAction;
 
 /**
  *
@@ -31,7 +33,10 @@ public class RepositoryActionsProviderImpl implements TaskRepositoryActionsProvi
     }
 
     public Action[] getActions(TaskRepository repository) {
-
-        return new Action[]{};
+        NewTaskWizardAction taskWizardAction = new NewTaskWizardAction("New Task");
+        taskWizardAction.preferredRepository(repository);
+        NewQueryWizardAction queryWizardAction = new NewQueryWizardAction("New Query");
+        queryWizardAction.preferredRepository(repository);
+        return new Action[]{taskWizardAction, queryWizardAction, null};
     }
 }
