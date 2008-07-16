@@ -25,12 +25,15 @@ package org.netbeans.cubeon.jira.tasks.ui;
 import java.awt.Image;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.Action;
+import javax.swing.border.TitledBorder;
 import org.netbeans.cubeon.jira.repository.attributes.JiraComment;
 import org.netbeans.cubeon.jira.tasks.JiraTask;
 import org.openide.explorer.ExplorerManager;
@@ -57,7 +60,29 @@ public class JiraCommentsEditor extends javax.swing.JPanel implements ExplorerMa
     public JiraCommentsEditor(JiraTaskEditorUI editorUI) {
         this.editorUI = editorUI;
         initComponents();
+       
+        explorerManager.addPropertyChangeListener(new PropertyChangeListener() {
 
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (ExplorerManager.PROP_SELECTED_NODES.equals(evt.getPropertyName())) {
+                    Node[] selectedNodes = explorerManager.getSelectedNodes();
+                    if (selectedNodes.length > 0) {
+                        JiraComment comment = selectedNodes[0].getLookup().lookup(JiraComment.class);
+                        if (comment != null) {
+                            lblAuthor.setText(comment.getAuthor()+" Wrote :");
+                            txtDisplayComment.setText(comment.getBody());
+                             pnlComment.setVisible(true);
+                        }else{
+                        txtDisplayComment.setText(null);
+                        pnlComment.setVisible(false);
+                        }
+                    } else {
+                        txtDisplayComment.setText(null);
+                         pnlComment.setVisible(false);
+                    }
+                }
+            }
+        });
     }
 
     public ExplorerManager getExplorerManager() {
@@ -75,6 +100,8 @@ public class JiraCommentsEditor extends javax.swing.JPanel implements ExplorerMa
     }
 
     private void loadComments() {
+        txtDisplayComment.setText(null);
+        pnlComment.setVisible(false);
         final JiraTask jiraTask = editorUI.getJiraTask();
         Children.Array array = new Children.Array();
         Node node = new AbstractNode(array) {
@@ -206,15 +233,18 @@ public class JiraCommentsEditor extends javax.swing.JPanel implements ExplorerMa
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        javax.swing.JScrollPane jScrollPane1 = treeView;
         lblCommemt = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         txtComment = new javax.swing.JEditorPane();
+        pnlComments = new javax.swing.JPanel();
+        javax.swing.JScrollPane jScrollPane1 = treeView;
+        pnlComment = new javax.swing.JPanel();
+        jsDisplay = new javax.swing.JScrollPane();
+        txtDisplayComment = new javax.swing.JTextArea();
+        lblAuthor = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setName(NbBundle.getMessage(JiraCommentsEditor.class, "LBL_Comments","-")); // NOI18N
-
-        jScrollPane1.setBorder(javax.swing.BorderFactory.createEtchedBorder(null, javax.swing.UIManager.getDefaults().getColor("CheckBoxMenuItem.selectionBackground")));
 
         lblCommemt.setFont(new java.awt.Font("Tahoma", 1, 11));
         lblCommemt.setForeground(new java.awt.Color(102, 102, 102));
@@ -223,23 +253,67 @@ public class JiraCommentsEditor extends javax.swing.JPanel implements ExplorerMa
         jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane2.setViewportView(txtComment);
 
+        pnlComments.setBackground(new java.awt.Color(255, 255, 255));
+        pnlComments.setBorder(javax.swing.BorderFactory.createEtchedBorder(null, javax.swing.UIManager.getDefaults().getColor("CheckBoxMenuItem.selectionBackground")));
+        pnlComments.setLayout(new java.awt.BorderLayout());
+
+        jScrollPane1.setBorder(null);
+        pnlComments.add(jScrollPane1, java.awt.BorderLayout.CENTER);
+
+        pnlComment.setBackground(new java.awt.Color(255, 255, 255));
+
+        jsDisplay.setBorder(null);
+        jsDisplay.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        txtDisplayComment.setColumns(20);
+        txtDisplayComment.setEditable(false);
+        txtDisplayComment.setLineWrap(true);
+        txtDisplayComment.setRows(5);
+        txtDisplayComment.setWrapStyleWord(true);
+        jsDisplay.setViewportView(txtDisplayComment);
+
+        lblAuthor.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        lblAuthor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/cubeon/jira/comment.png"))); // NOI18N
+        lblAuthor.setText(NbBundle.getMessage(JiraCommentsEditor.class, "JiraCommentsEditor.lblAuthor.text", new Object[] {})); // NOI18N
+
+        org.jdesktop.layout.GroupLayout pnlCommentLayout = new org.jdesktop.layout.GroupLayout(pnlComment);
+        pnlComment.setLayout(pnlCommentLayout);
+        pnlCommentLayout.setHorizontalGroup(
+            pnlCommentLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(lblAuthor, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 711, Short.MAX_VALUE)
+            .add(pnlCommentLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(jsDisplay, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 711, Short.MAX_VALUE))
+        );
+        pnlCommentLayout.setVerticalGroup(
+            pnlCommentLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(pnlCommentLayout.createSequentialGroup()
+                .add(lblAuthor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 17, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(91, Short.MAX_VALUE))
+            .add(pnlCommentLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(org.jdesktop.layout.GroupLayout.TRAILING, pnlCommentLayout.createSequentialGroup()
+                    .addContainerGap(23, Short.MAX_VALUE)
+                    .add(jsDisplay, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 85, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+        );
+
+        pnlComments.add(pnlComment, java.awt.BorderLayout.SOUTH);
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+            .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 691, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 691, Short.MAX_VALUE)
-                    .add(lblCommemt, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 691, Short.MAX_VALUE))
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jScrollPane2)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, lblCommemt, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 715, Short.MAX_VALUE)
+                    .add(pnlComments, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 715, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                .add(pnlComments, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 218, Short.MAX_VALUE)
+                .add(11, 11, 11)
                 .add(lblCommemt)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 147, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -248,7 +322,12 @@ public class JiraCommentsEditor extends javax.swing.JPanel implements ExplorerMa
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jsDisplay;
+    private javax.swing.JLabel lblAuthor;
     private javax.swing.JLabel lblCommemt;
+    private javax.swing.JPanel pnlComment;
+    private javax.swing.JPanel pnlComments;
     private javax.swing.JEditorPane txtComment;
+    private javax.swing.JTextArea txtDisplayComment;
     // End of variables declaration//GEN-END:variables
 }

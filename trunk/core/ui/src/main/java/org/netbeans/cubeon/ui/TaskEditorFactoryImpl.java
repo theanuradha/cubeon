@@ -18,11 +18,8 @@ package org.netbeans.cubeon.ui;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
-import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider.EditorAttributeHandler;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.util.Exceptions;
 
@@ -32,25 +29,30 @@ import org.openide.util.Exceptions;
  */
 public class TaskEditorFactoryImpl implements TaskEditorFactory {
 
-    private final Map<TaskElement, TaskEditorTopComponent> map =
-            new HashMap<TaskElement, TaskEditorTopComponent>();
+    private final List<TaskEditorTopComponent> editorTopComponents =
+            new ArrayList<TaskEditorTopComponent>();
 
     private TaskEditorTopComponent createTaskEditor(TaskElement element) {
         TaskEditorTopComponent topComponent = new TaskEditorTopComponent(this, element);
-        map.put(element, topComponent);
+        synchronized (this) {
+            editorTopComponents.add(topComponent);
+        }
         return topComponent;
     }
 
     public void notifyRemove(TaskElement element) {
         synchronized (this) {
-            map.remove(element);
+            TaskEditorTopComponent find = find(element);
+            if (find != null) {
+                editorTopComponents.remove(find);
+            }
         }
     }
 
     public void openTask(TaskElement element) {
         TaskEditorTopComponent topComponent = null;
         synchronized (this) {
-            topComponent = map.get(element);
+            topComponent = find(element);
         }
         if (topComponent == null) {
             topComponent = createTaskEditor(element);
@@ -62,7 +64,7 @@ public class TaskEditorFactoryImpl implements TaskEditorFactory {
     public void closeTask(TaskElement element) {
         TaskEditorTopComponent topComponent = null;
         synchronized (this) {
-            topComponent = map.get(element);
+            topComponent = find(element);
         }
         if (topComponent != null) {
             //component will call  notifyRemove
@@ -73,19 +75,25 @@ public class TaskEditorFactoryImpl implements TaskEditorFactory {
     public boolean isOpen(TaskElement element) {
         TaskEditorTopComponent topComponent = null;
         synchronized (this) {
-            topComponent = map.get(element);
+            topComponent = find(element);
         }
         return topComponent != null;
     }
 
     public List<TaskElement> getTasks() {
-        return new ArrayList<TaskElement>(map.keySet());
+        List<TaskElement> elements = new ArrayList<TaskElement>(editorTopComponents.size());
+        synchronized (this) {
+            for (TaskEditorTopComponent component : editorTopComponents) {
+                elements.add(component.gettTaskElement());
+            }
+        }
+        return elements;
     }
 
     public void refresh(TaskElement element) {
         TaskEditorTopComponent topComponent = null;
         synchronized (this) {
-            topComponent = map.get(element);
+            topComponent = find(element);
         }
         if (topComponent != null) {
             topComponent.refresh();
@@ -95,7 +103,7 @@ public class TaskEditorFactoryImpl implements TaskEditorFactory {
     public void save(TaskElement element) {
         TaskEditorTopComponent topComponent = null;
         synchronized (this) {
-            topComponent = map.get(element);
+            topComponent = find(element);
         }
         if (topComponent != null) {
             try {
@@ -104,5 +112,14 @@ public class TaskEditorFactoryImpl implements TaskEditorFactory {
                 Exceptions.printStackTrace(ex);
             }
         }
+    }
+
+    private TaskEditorTopComponent find(TaskElement element) {
+        for (TaskEditorTopComponent taskEditorTopComponent : editorTopComponents) {
+            if (element.equals(taskEditorTopComponent.gettTaskElement())) {
+                return taskEditorTopComponent;
+            }
+        }
+        return null;
     }
 }
