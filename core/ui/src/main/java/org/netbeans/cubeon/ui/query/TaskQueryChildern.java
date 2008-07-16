@@ -16,11 +16,17 @@
  */
 package org.netbeans.cubeon.ui.query;
 
+import java.util.List;
+import org.netbeans.cubeon.tasks.core.api.TagNode;
+import org.netbeans.cubeon.tasks.spi.Extension;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuerySupportProvider;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
+import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
+import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -28,26 +34,79 @@ import org.openide.nodes.Node;
  */
 public class TaskQueryChildern extends Children.Keys<TaskQuery> {
 
-    private TaskQuerySupportProvider provider;
+    private final TaskQuerySupportProvider provider;
+    private final TaskRepository repository;
+    private final DummyQuery dummyQuery = new DummyQuery();
 
     public TaskQueryChildern(TaskRepository repository) {
         this.provider = repository.getLookup().lookup(TaskQuerySupportProvider.class);
         assert provider != null;
+        this.repository = repository;
     }
 
     @Override
     protected Node[] createNodes(TaskQuery query) {
+        if (dummyQuery.equals(query)) {
+            NewQueryWizardAction action = new NewQueryWizardAction("New Query");
+            action.preferredRepository(repository);
+            return new Node[]{TagNode.createNode(
+                        NbBundle.getMessage(TaskQueryChildern.class, "LBL_Query_Information_Name",
+                        repository.getName()), NbBundle.getMessage(TaskQueryChildern.class, "LBL_Query_Information_Description",
+                        repository.getName()), action, action)
+                    };
+        }
         return new Node[]{new TaskQueryNode(query)};
     }
 
     @Override
     protected void addNotify() {
+        List<TaskQuery> taskQuerys = provider.getTaskQuerys();
+        if (taskQuerys.size() == 0) {
+            taskQuerys.add(dummyQuery);
+        }
 
-        setKeys(provider.getTaskQuerys());
+        setKeys(taskQuerys);
 
     }
 
     public void refreshNodes() {
         addNotify();
+    }
+
+    /**
+     * Dummy Query Object
+     */
+    private class DummyQuery implements TaskQuery {
+
+        public String getId() {
+            return null;
+        }
+
+        public String getName() {
+            return null;
+        }
+
+        public String getDescription() {
+            return null;
+        }
+
+        public TaskRepository getTaskRepository() {
+            return null;
+        }
+
+        public Lookup getLookup() {
+            return null;
+        }
+
+        public void synchronize() {
+        }
+
+        public List<TaskElement> getTaskElements() {
+            return null;
+        }
+
+        public Extension getExtension() {
+            return null;
+        }
     }
 }

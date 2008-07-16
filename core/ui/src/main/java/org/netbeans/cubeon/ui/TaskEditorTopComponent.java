@@ -38,7 +38,7 @@ import org.openide.windows.TopComponent;
 final class TaskEditorTopComponent extends TopComponent implements SaveCookie, ChangeListener {
 
     private static final String PREFERRED_ID = "TaskEditorTopComponent";
-    private TaskElement element;
+    private final TaskElement element;
     private final TaskElementNode editorNode;
     private final EditorAttributeHandler eah;
     private final Extension extension;
@@ -246,4 +246,10 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
     public EditorAttributeHandler getAttributeHandler() {
         return eah;
     }
+
+    public TaskElement gettTaskElement() {
+        return element;
+    }
+
+
 }

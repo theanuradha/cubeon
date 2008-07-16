@@ -29,6 +29,8 @@ import org.openide.util.Utilities;
  */
 public class NodeUtils {
 
+
+
     /**
      * Returns default folder icon as {@link java.awt.Image}. Never returns
      * <code>null</code>.
