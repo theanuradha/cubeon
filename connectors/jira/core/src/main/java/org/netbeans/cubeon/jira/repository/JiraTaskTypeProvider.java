@@ -29,7 +29,7 @@ import org.netbeans.cubeon.tasks.spi.repository.TaskTypeProvider;
  */
 public class JiraTaskTypeProvider implements TaskTypeProvider {
 
-    public List<TaskType> taskTypes = new ArrayList<TaskType>(0);
+    public List<JiraTaskType> taskTypes = new ArrayList<JiraTaskType>(0);
 
     public JiraTaskTypeProvider() {
     }
@@ -39,8 +39,13 @@ public class JiraTaskTypeProvider implements TaskTypeProvider {
         return new ArrayList<TaskType>(taskTypes);
     }
 
-    public TaskType getTaskTypeById(String id) {
-        for (TaskType type : getTaskTypes()) {
+    public List<JiraTaskType> getJiraTaskTypes() {
+
+        return new ArrayList<JiraTaskType>(taskTypes);
+    }
+
+    public JiraTaskType getTaskTypeById(String id) {
+        for (JiraTaskType type : taskTypes) {
             if (type.getId().equals(id)) {
                 return type;
             }
@@ -49,15 +54,15 @@ public class JiraTaskTypeProvider implements TaskTypeProvider {
         return null;
     }
 
-    public TaskType getPrefedTaskType() {
+    public JiraTaskType getPrefedTaskType() {
         if (!taskTypes.isEmpty()) {
             return taskTypes.get(0);
         }
         return null;
     }
 
-    public void setTaskTypes(List<TaskType> taskTypes) {
-        this.taskTypes = new ArrayList<TaskType>(taskTypes);
+    public void setTaskTypes(List<JiraTaskType> taskTypes) {
+        this.taskTypes = new ArrayList<JiraTaskType>(taskTypes);
     }
 
     public TaskType getTaskType(TaskElement element) {

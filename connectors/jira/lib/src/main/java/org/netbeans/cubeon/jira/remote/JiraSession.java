@@ -237,4 +237,13 @@ public class JiraSession {
             throw new JiraException(ex);
         }
     }
+    public RemoteIssueType[] getSubTaskIssueTypes() throws JiraException {
+        try {
+            return service.getSubTaskIssueTypes(token);
+        } catch (Exception ex) {
+            throw new JiraException(ex);
+        }
+    }
+
+
 }
