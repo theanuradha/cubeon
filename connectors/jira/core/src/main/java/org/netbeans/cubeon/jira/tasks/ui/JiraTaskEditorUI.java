@@ -193,9 +193,9 @@ public class JiraTaskEditorUI extends javax.swing.JPanel {
 
         JiraTaskTypeProvider jttp = taskRepository.getJiraTaskTypeProvider();
         for (JiraTaskType type : jttp.getJiraTaskTypes()) {
-            if (!type.isSubTask()) {
+            //if (!type.isSubTask()) {
                 cmbType.addItem(type);
-            }
+            //}
         }
 
         cmbType.setSelectedItem(jiraTask.getType());
