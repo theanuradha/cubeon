@@ -85,6 +85,7 @@ class JiraAttributesPersistence {
     private static final String TAG_RESOLUTION = "resolution";
     private static final String TAG_ID = "id";
     private static final String TAG_NAME = "name";
+    private static final String TAG_SUB_TYPE = "subtype";
     private static final String TAG_DESCRIPTION = "description";
     private static final String TAG_LEAD = "lead";
     private static final String TAG_CONFIGURATIONS = "Configurations";
@@ -180,12 +181,21 @@ class JiraAttributesPersistence {
 
             //-----------------------------------------------------------------
             RemoteIssueType[] issueTypes = session.getIssueTypes();
+            RemoteIssueType[] subissueTypes = session.getSubTaskIssueTypes();
             Element typesElement = getEmptyElement(document, attributes, TAG_TYPES);
             for (RemoteIssueType issueType : issueTypes) {
                 Element type = document.createElement(TAG_TYPE);
                 typesElement.appendChild(type);
                 type.setAttribute(TAG_ID, issueType.getId());
                 type.setAttribute(TAG_NAME, issueType.getName());
+                type.setAttribute(TAG_SUB_TYPE, String.valueOf(issueType.isSubTask()));
+            }
+            for (RemoteIssueType issueType : subissueTypes) {
+                Element type = document.createElement(TAG_TYPE);
+                typesElement.appendChild(type);
+                type.setAttribute(TAG_ID, issueType.getId());
+                type.setAttribute(TAG_NAME, issueType.getName());
+                type.setAttribute(TAG_SUB_TYPE, String.valueOf(issueType.isSubTask()));
             }
 
             //-----------------------------------------------------------------
@@ -386,7 +396,7 @@ class JiraAttributesPersistence {
                 //-----------------------------------------
                 Element taskTypes = findElement(attributes, TAG_TYPES, NAMESPACE);
                 NodeList taskTypeNodes = taskTypes.getChildNodes();
-                List<TaskType> types = new ArrayList<TaskType>();
+                List<JiraTaskType> types = new ArrayList<JiraTaskType>();
                 for (int i = 0; i < taskTypeNodes.getLength(); i++) {
 
                     Node node = taskTypeNodes.item(i);
@@ -394,8 +404,10 @@ class JiraAttributesPersistence {
                         Element element = (Element) node;
                         String id = element.getAttribute(TAG_ID);
                         String name = element.getAttribute(TAG_NAME);
+                        String subtype = element.getAttribute(TAG_SUB_TYPE);
 
-                        types.add(new TaskType(repository, id, name));
+                        types.add(new JiraTaskType(repository, id, name,
+                                Boolean.parseBoolean(subtype)));
 
                     }
                 }
@@ -524,7 +536,7 @@ class JiraAttributesPersistence {
                     String description = element.getAttribute(TAG_DESCRIPTION);
                     String author = element.getAttribute(TAG_AUTHOR);
 
-                    filters.add(new JiraFilter(repository, id, name, description,author));
+                    filters.add(new JiraFilter(repository, id, name, description, author));
 
                 }
             }
