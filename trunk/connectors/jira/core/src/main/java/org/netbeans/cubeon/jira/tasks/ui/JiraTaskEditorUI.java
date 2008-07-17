@@ -51,6 +51,7 @@ import org.netbeans.cubeon.jira.repository.JiraRepositoryAttributes;
 import org.netbeans.cubeon.jira.repository.JiraTaskPriorityProvider;
 import org.netbeans.cubeon.jira.repository.JiraTaskRepository;
 import org.netbeans.cubeon.jira.repository.JiraTaskResolutionProvider;
+import org.netbeans.cubeon.jira.repository.JiraTaskType;
 import org.netbeans.cubeon.jira.repository.JiraTaskTypeProvider;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Component;
@@ -191,8 +192,10 @@ public class JiraTaskEditorUI extends javax.swing.JPanel {
         cmbType.removeAllItems();
 
         JiraTaskTypeProvider jttp = taskRepository.getJiraTaskTypeProvider();
-        for (TaskType type : jttp.getTaskTypes()) {
-            cmbType.addItem(type);
+        for (JiraTaskType type : jttp.getJiraTaskTypes()) {
+            if (!type.isSubTask()) {
+                cmbType.addItem(type);
+            }
         }
 
         cmbType.setSelectedItem(jiraTask.getType());
