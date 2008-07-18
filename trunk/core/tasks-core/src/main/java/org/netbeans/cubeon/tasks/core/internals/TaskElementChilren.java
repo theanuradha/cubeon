@@ -80,6 +80,8 @@ public class TaskElementChilren extends Children.Keys<TaskElement> implements Re
         System.out.println(folder.getName());
 
         List<TaskElement> elements = new ArrayList<TaskElement>();
+        //remove all before add new ones
+        setKeys(elements);
         List<TaskElementFilter> filters = new ArrayList<TaskElementFilter>();
         for (TaskElementFilter taskElementFilter : Lookup.getDefault().lookupAll(TaskElementFilter.class)) {
             if (taskElementFilter.isEnable()) {
