@@ -42,21 +42,10 @@ public class TaskElementChilren extends Children.Keys<TaskElement> implements Re
 
     }
 
-    public void clear() {
-        Node[] ns = getNodes();
-        for (Node node : ns) {
-            try {
-                node.destroy();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
-
-
-    }
-
     public void refreshContent() {
-        addNotify();
+        if (isInitialized()) {
+            addNotify();
+        }
     }
 
     private static boolean isFilterd(TaskElement element, List<TaskElementFilter> filters) {
@@ -72,7 +61,7 @@ public class TaskElementChilren extends Children.Keys<TaskElement> implements Re
 
     @Override
     protected Node[] createNodes(TaskElement element) {
-        return new Node[]{factory.createTaskElementNode(folder,element,true)};
+        return new Node[]{factory.createTaskElementNode(folder, element, true)};
     }
 
     @Override

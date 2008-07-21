@@ -26,8 +26,11 @@ import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskElementChangeAdapter;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.ui.internals.TaskElementNode;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.cookies.SaveCookie;
 import org.openide.nodes.Node;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -72,7 +75,7 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
                 JButton button = new JButton(action);
                 button.setText(null);
                 button.setOpaque(false);
-                jToolBar1.add(button, 0);
+                jToolBar1.add(button,0);
             }
         }
 
@@ -216,11 +219,32 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
     protected void componentClosed() {
         extension.remove(changeAdapter);
         factoryImpl.notifyRemove(element);
-        try {
-            editorNode.destroy();
-        } catch (IOException ex) {
-            ex.printStackTrace();
+    }
+
+    @Override
+    public boolean canClose() {
+        if (editorNode.isModified()) {
+            NotifyDescriptor d =
+                    new NotifyDescriptor.Confirmation(NbBundle.getMessage(TaskEditorTopComponent.class,
+                    "LBL_Task_Modified", new Object[]{"'"+element.getId()+" : "+element.getName()+"'"}),
+                    NbBundle.getMessage(TaskEditorTopComponent.class, "CTL_Question"),
+                    NotifyDescriptor.YES_NO_CANCEL_OPTION);
+            Object notify = DialogDisplayer.getDefault().notify(d);
+            if (notify == NotifyDescriptor.OK_OPTION) {
+                try {
+                    save();
+                } catch (IOException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
+            } else if (notify == NotifyDescriptor.NO_OPTION) {
+
+                editorNode.setModified(false);
+            } else if (notify == NotifyDescriptor.CANCEL_OPTION) {
+                return false;
+            }
         }
+
+        return true;
     }
 
     private void buildEditor() {
@@ -250,6 +274,4 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
     public TaskElement gettTaskElement() {
         return element;
     }
-
-
 }

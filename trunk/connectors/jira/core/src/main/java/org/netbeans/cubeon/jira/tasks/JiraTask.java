@@ -20,6 +20,7 @@ import java.awt.Image;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import org.netbeans.cubeon.jira.repository.JiraTaskRepository;
@@ -68,6 +69,7 @@ public class JiraTask implements TaskElement {
     private List<JiraProject.Version> affectedVersions = new ArrayList<JiraProject.Version>(0);
     private List<JiraProject.Version> fixVersions = new ArrayList<JiraProject.Version>(0);
     private List<JiraComment> comments = new ArrayList<JiraComment>();
+    private List<String> editFieldIds = new ArrayList<String>();
     private JiraActionsProvider actionsProvider = new JiraActionsProvider();
     private JiraAction action;
     private String newComment;
@@ -319,6 +321,22 @@ public class JiraTask implements TaskElement {
 
     public JiraActionsProvider getActionsProvider() {
         return actionsProvider;
+    }
+
+    public boolean removeEditFieldId(String id) {
+        return editFieldIds.remove(id);
+    }
+
+    public void setEditFieldIds(List<String> editFieldIds) {
+        this.editFieldIds = new ArrayList<String>(editFieldIds);
+    }
+
+    public boolean addEditFieldId(String ids) {
+        return editFieldIds.add(ids);
+    }
+
+    public List<String> getEditFieldIds() {
+        return new ArrayList<String>(editFieldIds);
     }
 
     @Override

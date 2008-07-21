@@ -38,6 +38,7 @@ import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.task.TaskResolution;
 import org.netbeans.cubeon.tasks.spi.task.TaskType;
+import static org.netbeans.cubeon.jira.repository.JiraKeys.*;
 
 /**
  *
@@ -49,63 +50,63 @@ public class JiraUtils {
         List<RemoteFieldValue> fieldValues = new ArrayList<RemoteFieldValue>();
         String description = task.getDescription();
         if (!issue.getDescription().equals(description)) {
-            fieldValues.add(new RemoteFieldValue("description", new String[]{description}));
+            fieldValues.add(new RemoteFieldValue(DESCRIPTION, new String[]{description}));
         }
 
         String environment = task.getEnvironment();
         if (issue.getEnvironment() == null || !issue.getEnvironment().equals(environment)) {
-            fieldValues.add(new RemoteFieldValue("environment", new String[]{environment}));
+            fieldValues.add(new RemoteFieldValue(ENVIRONMENT, new String[]{environment}));
         }
         String name = task.getName();
         if (!name.equals(issue.getSummary())) {
-            fieldValues.add(new RemoteFieldValue("summary", new String[]{name}));
+            fieldValues.add(new RemoteFieldValue(SUMMERY, new String[]{name}));
         }
         TaskType type = task.getType();
         if (type != null && !type.getId().equals(issue.getType())) {
-            fieldValues.add(new RemoteFieldValue("issuetype", new String[]{type.getId()}));
+            fieldValues.add(new RemoteFieldValue(TYPE, new String[]{type.getId()}));
         }
         TaskPriority priority = task.getPriority();
         if (priority != null && !priority.getId().equals(issue.getPriority())) {
-            fieldValues.add(new RemoteFieldValue("priority", new String[]{priority.getId()}));
+            fieldValues.add(new RemoteFieldValue(PRIORITY, new String[]{priority.getId()}));
         }
         if (task.getAssignee() == null || !task.getAssignee().equals(issue.getAssignee())) {
-            fieldValues.add(new RemoteFieldValue("assignee", new String[]{task.getAssignee()}));
+            fieldValues.add(new RemoteFieldValue(ASSIGNEE, new String[]{task.getAssignee()}));
         }
 //        TaskResolution resolution = task.getResolution();
 //        if (resolution != null && !resolution.getId().equals(issue.getResolution())) {
 //            fieldValues.add(new RemoteFieldValue("resolution", new String[]{resolution.getId()}));
 //        }
 
-        if (issue.getResolution() == null) {
-            List<Component> components = task.getComponents();
-            List<String> componentIds = new ArrayList<String>();
 
-            for (Component component : components) {
-                componentIds.add(component.getId());
-            }
-            fieldValues.add(new RemoteFieldValue("components",
-                    componentIds.toArray(new String[componentIds.size()])));
-//----------------------------
-            List<Version> affectedVersions = task.getAffectedVersions();
-            List<String> affectedVersionIds = new ArrayList<String>();
+        List<Component> components = task.getComponents();
+        List<String> componentIds = new ArrayList<String>();
 
-            for (Version version : affectedVersions) {
-                affectedVersionIds.add(version.getId());
-            }
-
-            fieldValues.add(new RemoteFieldValue("versions",
-                    affectedVersionIds.toArray(new String[affectedVersionIds.size()])));
-//----------------------------
-            List<Version> fixVersions = task.getFixVersions();
-            List<String> fixVersionsIds = new ArrayList<String>();
-
-            for (Version version : fixVersions) {
-                fixVersionsIds.add(version.getId());
-            }
-
-            fieldValues.add(new RemoteFieldValue("fixVersions",
-                    fixVersionsIds.toArray(new String[fixVersionsIds.size()])));
+        for (Component component : components) {
+            componentIds.add(component.getId());
         }
+        fieldValues.add(new RemoteFieldValue(COMPONENTS,
+                componentIds.toArray(new String[componentIds.size()])));
+//----------------------------
+        List<Version> affectedVersions = task.getAffectedVersions();
+        List<String> affectedVersionIds = new ArrayList<String>();
+
+        for (Version version : affectedVersions) {
+            affectedVersionIds.add(version.getId());
+        }
+
+        fieldValues.add(new RemoteFieldValue(VERSIONS,
+                affectedVersionIds.toArray(new String[affectedVersionIds.size()])));
+//----------------------------
+        List<Version> fixVersions = task.getFixVersions();
+        List<String> fixVersionsIds = new ArrayList<String>();
+
+        for (Version version : fixVersions) {
+            fixVersionsIds.add(version.getId());
+        }
+
+        fieldValues.add(new RemoteFieldValue(FIX_VERSIONS,
+                fixVersionsIds.toArray(new String[fixVersionsIds.size()])));
+
         return fieldValues.toArray(new RemoteFieldValue[fieldValues.size()]);
     }
 
@@ -115,13 +116,13 @@ public class JiraUtils {
 
         TaskResolution resolution = task.getResolution();
         List<String> filedIds = action.getFiledIds();
-        if (filedIds.contains("resolution") && resolution != null && !resolution.getId().equals(issue.getResolution())) {
-            fieldValues.add(new RemoteFieldValue("resolution", new String[]{resolution.getId()}));
+        if (filedIds.contains(RESOLUTION) && resolution != null && !resolution.getId().equals(issue.getResolution())) {
+            fieldValues.add(new RemoteFieldValue(RESOLUTION, new String[]{resolution.getId()}));
         }
-        if (filedIds.contains("assignee")) {
-            fieldValues.add(new RemoteFieldValue("assignee", new String[]{task.getAssignee()}));
+        if (filedIds.contains(ASSIGNEE)) {
+            fieldValues.add(new RemoteFieldValue(ASSIGNEE, new String[]{task.getAssignee()}));
         }
-        if (filedIds.contains("fixVersions")) {
+        if (filedIds.contains(FIX_VERSIONS)) {
             List<Version> fixVersions = task.getFixVersions();
             List<String> fixVersionsIds = new ArrayList<String>();
 
@@ -129,7 +130,7 @@ public class JiraUtils {
                 fixVersionsIds.add(version.getId());
             }
 
-            fieldValues.add(new RemoteFieldValue("fixVersions",
+            fieldValues.add(new RemoteFieldValue(FIX_VERSIONS,
                     fixVersionsIds.toArray(new String[fixVersionsIds.size()])));
         }
         return fieldValues.toArray(new RemoteFieldValue[fieldValues.size()]);
@@ -148,6 +149,7 @@ public class JiraUtils {
         issue.setDescription(jiraTask.getDescription());
         issue.setProject(jiraTask.getProject() == null ? prefredProject.getId() : jiraTask.getProject().getId());
         issue.setReporter(repository.getUserName());
+        issue.setAssignee(jiraTask.getAssignee());
         issue.setType(jiraTask.getType() == null ? prefedTaskType.getId() : jiraTask.getType().getId());
         issue.setPriority(jiraTask.getPriority() == null ? prefredPriority.getId() : jiraTask.getPriority().getId());
         issue.setEnvironment(jiraTask.getEnvironment());
@@ -276,5 +278,12 @@ public class JiraUtils {
             jiraComments.add(jiraComment);
         }
         jiraTask.setComments(jiraComments);
+
+        List<String> editFieldIds = new ArrayList<String>();
+        RemoteField[] fieldsForEdit = repository.getSession().getFieldsForEdit(issue.getKey());
+        for (RemoteField rf : fieldsForEdit) {
+            editFieldIds.add(rf.getId());
+        }
+        jiraTask.setEditFieldIds(editFieldIds);
     }
 }

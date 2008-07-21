@@ -72,10 +72,11 @@ public class JiraFilterQuery extends AbstractJiraQuery {
                 public void run() {
                     synchronized (JiraFilterQuery.this) {
                         extension.fireSynchronizing();
+                        ProgressHandle handle = ProgressHandleFactory.createHandle("Synchronizing Query : " + getName());
+                        handle.start();
+                        handle.switchToIndeterminate();
                         try {
-                            ProgressHandle handle = ProgressHandleFactory.createHandle("Synchronizing Query : " + getName());
-                            handle.start();
-                            handle.switchToIndeterminate();
+
 
                             try {
                                 JiraSession session = repository.getSession();
@@ -83,8 +84,11 @@ public class JiraFilterQuery extends AbstractJiraQuery {
                                 RemoteIssue[] remoteIssues = session.getIssuesFromFilter(filter.getId());
 
                                 ids.clear();
-                                for (RemoteIssue remoteIssue : remoteIssues) {
-                                    handle.progress(remoteIssue.getKey() + " :" + remoteIssue.getSummary());
+                                handle.switchToDeterminate(remoteIssues.length);
+
+                                for (int i = 0; i < remoteIssues.length; i++) {
+                                    RemoteIssue remoteIssue = remoteIssues[i];
+                                    handle.progress(remoteIssue.getKey() + " :" + remoteIssue.getSummary(), i);
                                     TaskElement element = repository.getTaskElementById(remoteIssue.getKey());
                                     if (element != null) {
                                         repository.update(remoteIssue, element.getLookup().lookup(JiraTask.class));
@@ -97,12 +101,14 @@ public class JiraFilterQuery extends AbstractJiraQuery {
                                     extension.fireTaskAdded(element);
                                     ids.add(element.getId());
                                 }
+
                             } catch (JiraException ex) {
                                 Exceptions.printStackTrace(ex);
                             }
+
+                        } finally {
                             repository.getQuerySupport().modifyTaskQuery(JiraFilterQuery.this);
                             handle.finish();
-                        } finally {
                             extension.fireSynchronized();
                         }
                     }

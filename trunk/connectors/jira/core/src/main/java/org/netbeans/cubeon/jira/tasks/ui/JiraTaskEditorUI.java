@@ -45,6 +45,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import org.netbeans.cubeon.jira.repository.JiraKeys;
 import org.netbeans.cubeon.jira.repository.attributes.JiraAction;
 import org.netbeans.cubeon.jira.tasks.actions.UpdateTaskAction;
 import org.netbeans.cubeon.jira.repository.JiraRepositoryAttributes;
@@ -57,6 +58,8 @@ import org.netbeans.cubeon.jira.repository.attributes.JiraProject;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Component;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Version;
 import org.netbeans.cubeon.jira.tasks.JiraTask;
+import org.netbeans.cubeon.jira.tasks.actions.OpenInBrowserTaskAction;
+import org.netbeans.cubeon.jira.tasks.actions.OpenTaskHistoryAction;
 import org.netbeans.cubeon.jira.tasks.actions.SubmitTaskAction;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
@@ -149,17 +152,22 @@ public class JiraTaskEditorUI extends javax.swing.JPanel {
             });
         }
     };
+    private final OpenInBrowserTaskAction openInBrowserTaskAction;
+    private final OpenTaskHistoryAction openTaskHistoryAction;
 
     /** Creates new form TaskEditorUI */
     public JiraTaskEditorUI(JiraTask jiraTask) {
         this.jiraTask = jiraTask;
         initComponents();
         commentsEditor = new JiraCommentsEditor(this);
+
+        openInBrowserTaskAction = new OpenInBrowserTaskAction(jiraTask);
+        openTaskHistoryAction = new OpenTaskHistoryAction(jiraTask);
         refresh();
     }
 
-    private void loadAttributes() {
-        JiraTaskRepository taskRepository = jiraTask.getTaskRepository().getLookup().lookup(JiraTaskRepository.class);
+    private void loadAttributes(JiraTaskRepository taskRepository) {
+
         JiraRepositoryAttributes attributes = taskRepository.getRepositoryAttributes();
 
         cmbProject.removeAllItems();
@@ -227,7 +235,7 @@ public class JiraTaskEditorUI extends javax.swing.JPanel {
         } else {
             cmbActions.setSelectedItem(defaultStatus);
         }
-        loadAction(jiraTask.getAction());
+
 
     }
 
@@ -256,10 +264,13 @@ public class JiraTaskEditorUI extends javax.swing.JPanel {
                 cmbResolution.setSelectedIndex(-1);
             } else {
                 cmbResolution.setSelectedItem(jiraTask.getResolution());
+                //if task completed disable assignee
+                txtAssignee.setEditable(false);
             }
+
         } else {
             List<String> filedIds = action.getFiledIds();
-            if (filedIds.contains("resolution")) {
+            if (filedIds.contains(JiraKeys.RESOLUTION)) {
                 cmbResolution.setEnabled(true);
                 if (cmbResolution.getSelectedIndex() == -1 && cmbResolution.getItemCount() > 0) {
                     cmbResolution.setSelectedIndex(0);
@@ -268,6 +279,8 @@ public class JiraTaskEditorUI extends javax.swing.JPanel {
                 cmbResolution.setEnabled(false);
                 cmbResolution.setSelectedIndex(-1);
             }
+            txtAssignee.setEditable(filedIds.contains(JiraKeys.ASSIGNEE));
+            lstFixVersion.setEnabled(filedIds.contains(JiraKeys.FIX_VERSIONS));
         }
     }
 
@@ -385,7 +398,11 @@ public class JiraTaskEditorUI extends javax.swing.JPanel {
     }
 
     public List<Action> getActions() {
-        return Arrays.<Action>asList(new SubmitTaskAction(jiraTask), new UpdateTaskAction(jiraTask));
+        return Arrays.<Action>asList(
+                openInBrowserTaskAction,
+                openTaskHistoryAction,
+                new SubmitTaskAction(jiraTask),
+                new UpdateTaskAction(jiraTask));
     }
 
     /** This method is called from within the constructor to
@@ -704,7 +721,8 @@ public class JiraTaskEditorUI extends javax.swing.JPanel {
         lblReportedBy.setText(jiraTask.getReporter());
         txtAssignee.setText(jiraTask.getAssignee());
         loadDates(jiraTask);
-        loadAttributes();
+        JiraTaskRepository taskRepository = jiraTask.getTaskRepository().getLookup().lookup(JiraTaskRepository.class);
+        loadAttributes(taskRepository);
         commentsEditor.refresh();
         txtOutline.getDocument().addDocumentListener(documentListener);
         txtAssignee.getDocument().addDocumentListener(documentListener);
@@ -725,18 +743,43 @@ public class JiraTaskEditorUI extends javax.swing.JPanel {
         lstComponents.getSelectionModel().addListSelectionListener(listSelectionListener);
 
 
+
+
         if (jiraTask.isLocal()) {
             cmbActions.setEnabled(false);
             cmbResolution.setEnabled(false);
             lstFixVersion.setEnabled(false);
-        //todo add other stuff
+
         } else {
             cmbProject.setEnabled(false);
+            cmbActions.setEnabled(true);
+
+            validateFiledsForEdit(jiraTask);
+
+
         }
+
+        loadAction(jiraTask.getAction());
+        openInBrowserTaskAction.setEnabled(!jiraTask.isLocal());
+        openTaskHistoryAction.setEnabled(!jiraTask.isLocal());
     }
 
     JiraTask getJiraTask() {
         return jiraTask;
+    }
+
+    private void validateFiledsForEdit(JiraTask jiraTask) {
+        List<String> editFieldIds = jiraTask.getEditFieldIds();
+
+        txtAssignee.setEditable(editFieldIds.contains(JiraKeys.ASSIGNEE));
+        txtDescription.setEditable(editFieldIds.contains(JiraKeys.DESCRIPTION));
+        txtOutline.setEditable(editFieldIds.contains(JiraKeys.SUMMERY));
+        lstComponents.setEnabled(editFieldIds.contains(JiraKeys.COMPONENTS));
+        lstAffectVersion.setEnabled(editFieldIds.contains(JiraKeys.VERSIONS));
+        lstFixVersion.setEnabled(editFieldIds.contains(JiraKeys.FIX_VERSIONS));
+        txtEnvironment.setEnabled(editFieldIds.contains(JiraKeys.ENVIRONMENT));
+        cmbPriority.setEnabled(editFieldIds.contains(JiraKeys.PRIORITY));
+        cmbType.setEnabled(editFieldIds.contains(JiraKeys.TYPE));
     }
 
     JiraCommentsEditor getCommentsEditor() {
