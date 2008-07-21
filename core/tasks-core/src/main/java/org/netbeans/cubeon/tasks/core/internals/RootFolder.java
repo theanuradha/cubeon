@@ -27,6 +27,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import org.netbeans.cubeon.tasks.core.spi.TaskExplorerViewActionsProvider;
 import org.openide.nodes.AbstractNode;
+import org.openide.nodes.Node;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.actions.Presenter;
@@ -78,6 +79,14 @@ class RootFolder extends TaskFolderImpl {
                 return actions.toArray(new Action[0]);
             }
         };
+    }
+
+    @Override
+    public void refreshNode() {
+        for (TaskFolderImpl taskFolderImpl : taskFolders) {
+            taskFolderImpl.refreshNode();
+        }
+
     }
 
 

@@ -112,6 +112,34 @@ class TaskPersistenceHandler {
 
     }
 
+    List<String> getTaskIds() {
+        List<String> ids = new ArrayList<String>();
+        synchronized (LOCK) {
+            Document document = getDocument();
+            Element root = getRootElement(document);
+            Element tasksElement = findElement(root, TAG_TASKS, NAMESPACE);
+            //check tasksElement null and create element
+            if (tasksElement == null) {
+                tasksElement = document.createElementNS(NAMESPACE, TAG_TASKS);
+                root.appendChild(tasksElement);
+            }
+
+            NodeList taskNodes =
+                    tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_TASK);
+
+            for (int i = 0; i < taskNodes.getLength(); i++) {
+                Node node = taskNodes.item(i);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element element = (Element) node;
+                    String id = element.getAttributeNS(NAMESPACE, TAG_ID);
+                    ids.add(id);
+                }
+            }
+
+        }
+        return ids;
+    }
+
     JiraTask getTaskElementById(String id) {
         Document taskDocument = getTaskDocument(id);
         Element rootElement = getRootElement(taskDocument);
@@ -299,9 +327,19 @@ class TaskPersistenceHandler {
                     actions.add(jiraAction);
                 }
             }
-
-
-
+            List<String> editFieldIds = new ArrayList<String>();
+            Element editFieldsElement = findElement(element, TAG_FIELDS, NAMESPACE);
+            if (editFieldsElement != null) {
+                NodeList editFieldsNodeList = editFieldsElement.getElementsByTagNameNS(NAMESPACE, TAG_FIELD);
+                for (int j = 0; j < editFieldsNodeList.getLength(); j++) {
+                    Node fnode = editFieldsNodeList.item(j);
+                    if (fnode.getNodeType() == Node.ELEMENT_NODE) {
+                        Element fe = (Element) fnode;
+                        String fid = fe.getTextContent();
+                        editFieldIds.add(fid);
+                    }
+                }
+            }
             JiraTask jiraTask = new JiraTask(id, name, description, jiraTaskRepository);
             jiraTask.setProject(project);
             jiraTask.setLocal(local);
@@ -321,6 +359,7 @@ class TaskPersistenceHandler {
             jiraTask.getActionsProvider().setActions(actions);
             jiraTask.setAction(selectedAction);
             jiraTask.setComments(jiraComments);
+            jiraTask.setEditFieldIds(editFieldIds);
             jiraTask.setNewComment(newcomment);
 
             return jiraTask;
@@ -492,6 +531,14 @@ class TaskPersistenceHandler {
                     field.appendChild(text);
                     fieldselement.appendChild(field);
                 }
+            }
+            List<String> editFieldIds = task.getEditFieldIds();
+            Element editFieldsElement = getEmptyElement(document, taskElement, TAG_FIELDS);
+            for (String id : editFieldIds) {
+                Text text = document.createTextNode(id);
+                Element field = document.createElement(TAG_FIELD);
+                field.appendChild(text);
+                editFieldsElement.appendChild(field);
             }
             saveTask(document, task.getId());
         }

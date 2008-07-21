@@ -172,6 +172,7 @@ final class ResultsTopComponent extends TopComponent implements ExplorerManager.
 
                 @Override
                 public void taskAdded(TaskElement element) {
+                    queryNode.updateNodeTag("Synchronizing...");
                     array.add(new Node[]{new TaskResultNode(element)});
                 }
 

@@ -39,6 +39,7 @@ import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
+import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 
@@ -47,7 +48,11 @@ import org.openide.util.lookup.Lookups;
  * @author Anuradha
  */
 public class JiraTaskRepository implements TaskRepository {
+    //locks
 
+    private final Object SYNCHRONIZE_LOCK = new Object();
+    private final Object FILTER_UPDATE_LOCK = new Object();
+    //----
     private final JiraTaskRepositoryProvider provider;
     private final String id;
     private String name;
@@ -124,8 +129,38 @@ public class JiraTaskRepository implements TaskRepository {
         return Utilities.loadImage("org/netbeans/cubeon/jira/repository/jira-repository.png");
     }
 
-    public void validate(TaskElement element) {
-        throw new UnsupportedOperationException();
+    public void synchronize() {
+        RequestProcessor.getDefault().post(new Runnable() {
+
+            public void run() {
+                synchronized (SYNCHRONIZE_LOCK) {
+                    List<String> taskIds = handler.getTaskIds();
+                    if (taskIds.isEmpty()) {
+                        return;
+                    }
+                    ProgressHandle handle = ProgressHandleFactory.createHandle("Synchronizing Tasks : " + getName());
+                    handle.start(taskIds.size());
+                    try {
+                        for (String id : taskIds) {
+                            TaskElement taskElement = getTaskElementById(id);
+                            if (taskElement != null) {
+                                JiraTask jiraTask = taskElement.getLookup().lookup(JiraTask.class);
+                                handle.progress(jiraTask.getId() + " : " + jiraTask.getName(), taskIds.indexOf(id));
+                                try {
+                                    update(jiraTask);
+                                } catch (JiraException ex) {
+                                    Logger.getLogger(JiraTaskRepository.class.getName()).warning(ex.getMessage());
+                                }
+
+                            }
+
+                        }
+                    } finally {
+                        handle.finish();
+                    }
+                }
+            }
+        });
     }
 
     public TaskElement createTaskElement(String summery, String description) {
@@ -214,8 +249,10 @@ public class JiraTaskRepository implements TaskRepository {
         try {
 
             ProgressHandle handle = ProgressHandleFactory.createHandle(getName() + ": Updating Filters");
-            attributesPersistence.refreshFilters(handle);
-            loadFilters();
+            synchronized (FILTER_UPDATE_LOCK) {
+                attributesPersistence.refreshFilters(handle);
+                loadFilters();
+            }
             handle.finish();
         } catch (JiraException ex) {
             Logger.getLogger(JiraAttributesPersistence.class.getName()).
@@ -273,96 +310,90 @@ public class JiraTaskRepository implements TaskRepository {
         return null;
     }
 
-    public void update(JiraTask task) {
+    public void update(JiraTask task) throws JiraException {
         synchronized (task) {
-            try {
-                JiraSession js = getSession();
-                RemoteIssue issue = js.getIssue(task.getId());
-                update(issue, task);
-            } catch (JiraException ex) {
-                Exceptions.printStackTrace(ex);
-            }
+
+            JiraSession js = getSession();
+            RemoteIssue issue = js.getIssue(task.getId());
+            update(issue, task);
+
         }
 
     }
 
-    public void update(RemoteIssue issue, JiraTask task) {
+    public void update(RemoteIssue issue, JiraTask task) throws JiraException {
         synchronized (task) {
             if (!task.isLocal()) {
-                try {
 
-                    JiraUtils.maregeToTask(this, issue, task);
-                    persist(task);
-                    TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
-                    factory.refresh(task);
-                } catch (JiraException ex) {
-                    Exceptions.printStackTrace(ex);
-                }
+
+                JiraUtils.maregeToTask(this, issue, task);
+                persist(task);
+                TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
+                factory.refresh(task);
+
             }
         }
 
     }
 
-    public void submit(JiraTask task) {
+    public void submit(JiraTask task) throws JiraException {
         synchronized (task) {
-            try {
-                if (task.isLocal()) {
-                    JiraUtils.createTaskElement(this, task);
-                } else {
 
-                    JiraSession js = getSession();
-                    RemoteFieldValue[] fieldValues = JiraUtils.changedFieldValues(js.getIssue(task.getId()), task);
-                    if (fieldValues.length > 0) {
-                        RemoteIssue updateTask = js.updateTask(task.getId(), fieldValues);
-                        JiraUtils.maregeToTask(this, updateTask, task);
+            if (task.isLocal()) {
+                JiraUtils.createTaskElement(this, task);
+            } else {
 
-                        RemoteIssue remoteIssue = null;
-                        if (task.getAction() != null) {
-                            remoteIssue = js.progressWorkflowAction(task.getId(),
-                                    task.getAction().getId(),
-                                    JiraUtils.changedFieldValuesForAction(task.getAction(),
-                                    updateTask, task));
+                JiraSession js = getSession();
+                RemoteFieldValue[] fieldValues = JiraUtils.changedFieldValues(js.getIssue(task.getId()), task);
+                if (fieldValues.length > 0) {
+                    RemoteIssue updateTask = js.updateTask(task.getId(), fieldValues);
+                    JiraUtils.maregeToTask(this, updateTask, task);
 
-                        }
-                        if (task.getNewComment() != null && task.getNewComment().trim().length() > 0) {
-                            RemoteComment comment = new RemoteComment();
-                            comment.setAuthor(getUserName());
-                            comment.setBody(task.getNewComment());
-                            js.addComment(task.getId(), comment);
-                            task.setNewComment(null);
-                            remoteIssue = js.getIssue(task.getId());
-                        }
-                        if (remoteIssue != null) {
-                            JiraUtils.maregeToTask(this, remoteIssue, task);
-                        }
-                        persist(task);
-                    } else {
-                        RemoteIssue remoteIssue = null;
-                        if (task.getAction() != null) {
-                            remoteIssue = js.progressWorkflowAction(task.getId(),
-                                    task.getAction().getId(),
-                                    JiraUtils.changedFieldValuesForAction(task.getAction(),
-                                    js.getIssue(task.getId()), task));
+                    RemoteIssue remoteIssue = null;
+                    if (task.getAction() != null) {
+                        remoteIssue = js.progressWorkflowAction(task.getId(),
+                                task.getAction().getId(),
+                                JiraUtils.changedFieldValuesForAction(task.getAction(),
+                                updateTask, task));
 
-                        }
-                        if (task.getNewComment() != null && task.getNewComment().trim().length() > 0) {
-                            RemoteComment comment = new RemoteComment();
-                            comment.setAuthor(getUserName());
-                            comment.setBody(task.getNewComment());
-                            js.addComment(task.getId(), comment);
-                            task.setNewComment(null);
-                            remoteIssue = js.getIssue(task.getId());
-                        }
-                        if (remoteIssue != null) {
-                            JiraUtils.maregeToTask(this, remoteIssue, task);
-                            persist(task);
-                        }
                     }
+                    if (task.getNewComment() != null && task.getNewComment().trim().length() > 0) {
+                        RemoteComment comment = new RemoteComment();
+                        comment.setAuthor(getUserName());
+                        comment.setBody(task.getNewComment());
+                        js.addComment(task.getId(), comment);
+                        task.setNewComment(null);
+                        remoteIssue = js.getIssue(task.getId());
+                    }
+                    if (remoteIssue != null) {
+                        JiraUtils.maregeToTask(this, remoteIssue, task);
+                    }
+                    persist(task);
+                } else {
+                    RemoteIssue remoteIssue = null;
+                    if (task.getAction() != null) {
+                        remoteIssue = js.progressWorkflowAction(task.getId(),
+                                task.getAction().getId(),
+                                JiraUtils.changedFieldValuesForAction(task.getAction(),
+                                js.getIssue(task.getId()), task));
 
+                    }
+                    if (task.getNewComment() != null && task.getNewComment().trim().length() > 0) {
+                        RemoteComment comment = new RemoteComment();
+                        comment.setAuthor(getUserName());
+                        comment.setBody(task.getNewComment());
+                        js.addComment(task.getId(), comment);
+                        task.setNewComment(null);
+                        remoteIssue = js.getIssue(task.getId());
+                    }
+                    if (remoteIssue != null) {
+                        JiraUtils.maregeToTask(this, remoteIssue, task);
+                        persist(task);
+                    }
                 }
-            } catch (JiraException ex) {
-                Exceptions.printStackTrace(ex);
+
             }
+
         }
     }
 

@@ -165,10 +165,9 @@ public class TaskElementNode extends AbstractNode {
 
     }
 
-    @Override
-    public void destroy() throws IOException {
-        super.destroy();
-        extension.remove(changeAdapter);
+
+    public boolean isModified() {
+        return getDataObject().isModified();
     }
 
     public void setModified(boolean modified) {

@@ -28,7 +28,6 @@ import com.dolby.jira.net.soap.jira.RemoteFilter;
 import com.dolby.jira.net.soap.jira.RemoteIssue;
 import com.dolby.jira.net.soap.jira.RemoteIssueType;
 import com.dolby.jira.net.soap.jira.RemoteNamedObject;
-import com.dolby.jira.net.soap.jira.RemotePermissionException;
 import com.dolby.jira.net.soap.jira.RemotePriority;
 import com.dolby.jira.net.soap.jira.RemoteProject;
 import com.dolby.jira.net.soap.jira.RemoteResolution;
@@ -174,6 +173,14 @@ public class JiraSession {
         }
     }
 
+    public RemoteField[] getFieldsForEdit(String issueId) throws JiraException {
+        try {
+            return service.getFieldsForEdit(token, issueId);
+        } catch (Exception ex) {
+            throw new JiraException(ex);
+        }
+    }
+
     public RemoteIssue[] getIssuesFromTextSearch(String text) throws JiraException {
         try {
             return service.getIssuesFromTextSearch(token, text);
@@ -237,6 +244,7 @@ public class JiraSession {
             throw new JiraException(ex);
         }
     }
+
     public RemoteIssueType[] getSubTaskIssueTypes() throws JiraException {
         try {
             return service.getSubTaskIssueTypes(token);
@@ -244,6 +252,4 @@ public class JiraSession {
             throw new JiraException(ex);
         }
     }
-
-
 }

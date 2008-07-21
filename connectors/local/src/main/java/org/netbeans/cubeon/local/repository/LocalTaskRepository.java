@@ -131,8 +131,8 @@ public class LocalTaskRepository implements TaskRepository {
         }
     }
 
-    public void reset(TaskElement element) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void synchronize (){
+       //do nothing
     }
 
     public LocalTaskPriorityProvider getLocalTaskPriorityProvider() {

@@ -37,6 +37,7 @@ public class RepositoryActionsProviderImpl implements TaskRepositoryActionsProvi
         taskWizardAction.preferredRepository(repository);
         NewQueryWizardAction queryWizardAction = new NewQueryWizardAction("New Query");
         queryWizardAction.preferredRepository(repository);
-        return new Action[]{taskWizardAction, queryWizardAction, null};
+        return new Action[]{taskWizardAction, queryWizardAction, 
+        null,new SynchronizeTasksAction(repository),null} ;
     }
 }

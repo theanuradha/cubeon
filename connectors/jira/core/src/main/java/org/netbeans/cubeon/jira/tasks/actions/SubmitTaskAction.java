@@ -21,9 +21,11 @@ import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
+import org.netbeans.cubeon.jira.remote.JiraException;
 import org.netbeans.cubeon.jira.repository.JiraTaskRepository;
 import org.netbeans.cubeon.jira.tasks.JiraTask;
 import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
@@ -55,7 +57,11 @@ public class SubmitTaskAction extends AbstractAction {
                 TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
                 factory.save(task);
                 JiraTaskRepository repository = task.getTaskRepository().getLookup().lookup(JiraTaskRepository.class);
-                repository.submit(task);
+                try {
+                    repository.submit(task);
+                } catch (JiraException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
                 factory.refresh(task);
 
                 handle.finish();

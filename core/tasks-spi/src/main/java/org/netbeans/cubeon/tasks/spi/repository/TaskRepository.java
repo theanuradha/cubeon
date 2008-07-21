@@ -18,7 +18,6 @@ package org.netbeans.cubeon.tasks.spi.repository;
 
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import java.awt.Image;
-import java.util.List;
 import org.openide.util.Lookup;
 
 /**
@@ -29,7 +28,7 @@ public interface TaskRepository {
 
     public enum State {
 
-         ACTIVE, SYNCHRONIZING,INACTIVE
+        ACTIVE, SYNCHRONIZING, INACTIVE
     }
 
     /**
@@ -62,11 +61,6 @@ public interface TaskRepository {
      */
     Image getImage();
 
-    /**
-     *
-     * @param element
-     */
-    void validate(TaskElement element);
 
     /*Task Element related */
     /**
@@ -74,7 +68,6 @@ public interface TaskRepository {
      * @return
      */
     public TaskElement createTaskElement(String summery, String description);
-
 
     /**
      * 
@@ -90,10 +83,9 @@ public interface TaskRepository {
     void persist(TaskElement element);
 
     /**
-     * reset modifid attributes
-     * @param element 
+     * 
      */
-    void reset(TaskElement element);
+    void synchronize();
 
     /**
      *

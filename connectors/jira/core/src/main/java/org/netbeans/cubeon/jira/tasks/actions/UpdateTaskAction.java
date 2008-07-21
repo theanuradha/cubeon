@@ -21,8 +21,10 @@ import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
+import org.netbeans.cubeon.jira.remote.JiraException;
 import org.netbeans.cubeon.jira.repository.JiraTaskRepository;
 import org.netbeans.cubeon.jira.tasks.JiraTask;
+import org.openide.util.Exceptions;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 
@@ -53,8 +55,11 @@ public class UpdateTaskAction extends AbstractAction {
                 handle.start();
                 handle.switchToIndeterminate();
                 JiraTaskRepository repository = task.getTaskRepository().getLookup().lookup(JiraTaskRepository.class);
-
-                repository.update(task);
+                try {
+                    repository.update(task);
+                } catch (JiraException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
                 handle.finish();
                 setEnabled(true);
             }
