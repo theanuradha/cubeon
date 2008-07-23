@@ -17,19 +17,26 @@
 package org.netbeans.cubeon.ui.query;
 
 import java.awt.Image;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import javax.swing.Action;
 import org.netbeans.cubeon.tasks.spi.repository.TaskPriorityProvider;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.repository.TaskStatusProvider;
 import org.netbeans.cubeon.tasks.spi.repository.TaskTypeProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
+import org.netbeans.cubeon.tasks.spi.task.TaskElementActionsProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
 import org.netbeans.cubeon.ui.taskelemet.CopyDetailsAction;
 import org.netbeans.cubeon.ui.taskelemet.MoveToAction;
+import org.netbeans.cubeon.ui.taskelemet.MoveToDefault;
 import org.netbeans.cubeon.ui.taskelemet.OpenAction;
 import org.netbeans.cubeon.ui.taskelemet.OpenInBrowserAction;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -58,13 +65,45 @@ public class TaskResultNode extends AbstractNode {
 
     @Override
     public Action[] getActions(boolean arg0) {
-        return new Action[]{
-                    new OpenAction(element),
-                    new OpenInBrowserAction(element),
-                    null,
-                    new CopyDetailsAction(element),
-                    new MoveToAction(null, element)
-                };
+        List<Action> actions = new ArrayList<Action>();
+        actions.add(new OpenAction(element));
+        actions.add(new OpenInBrowserAction(element));
+        actions.add(null);
+        actions.add(new CopyDetailsAction(element));
+
+        actions.add(null);
+
+        actions.add(new MoveToAction(null, element));
+        final List<TaskElementActionsProvider> providers =
+                new ArrayList<TaskElementActionsProvider>(
+                Lookup.getDefault().lookupAll(TaskElementActionsProvider.class));
+        Collections.sort(providers, new Comparator<TaskElementActionsProvider>() {
+
+            public int compare(TaskElementActionsProvider o1, TaskElementActionsProvider o2) {
+                return o1.getPosition() - o2.getPosition();
+            }
+        });
+        boolean sepetatorAdded = false;
+        for (TaskElementActionsProvider provider : providers) {
+            Action[] as = provider.getActions(element);
+            for (Action action : as) {
+                //check null and addSeparator
+                if (action == null) {
+                    //check sepetatorAdd to prevent adding duplicate Separators
+                    if (!sepetatorAdded) {
+                        //mark sepetatorAdd to true
+                        sepetatorAdded = true;
+                        actions.add(action);
+
+                    }
+                    continue;
+                }
+                actions.add(action);
+                sepetatorAdded = false;
+            }
+        }
+
+        return actions.toArray(new Action[0]);
     }
 
     @Override

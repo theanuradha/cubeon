@@ -36,7 +36,7 @@ public class OpenTaskHistoryAction extends AbstractAction {
 
     public OpenTaskHistoryAction(JiraTask task) {
         this.task = task;
-        putValue(NAME, "Task Change History");
+        putValue(NAME, "Open Change History");
         putValue(SHORT_DESCRIPTION, "Show Task Change History");
         putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/jira/history.png")));
     }
