@@ -37,7 +37,7 @@ public class SynchronizeTaskAction extends AbstractAction {
 
         this.task = task;
         putValue(NAME, "Synchronize");
-        putValue(SHORT_DESCRIPTION, "Synchronize Remote Repository");
+        putValue(SHORT_DESCRIPTION, "Synchronize");
         putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/ui/refresh.png")));
     }
 
