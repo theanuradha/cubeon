@@ -54,6 +54,7 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
         this.factoryImpl = factoryImpl;
         initComponents();
         jButton1.setAction(new SynchronizeTaskAction(element));
+        jButton1.setText(null);
         jToolBar1.setLayout(new FlowLayout(FlowLayout.RIGHT, 0, 0));
         Lookup lookup = element.getLookup();
 
