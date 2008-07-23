@@ -30,6 +30,7 @@ import org.netbeans.cubeon.jira.repository.attributes.JiraProject;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Component;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Version;
 import org.netbeans.cubeon.jira.repository.ui.JiraActionsProvider;
+import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
 import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
@@ -380,6 +381,8 @@ public class JiraTask implements TaskElement {
     }
 
     public void synchronize() {
+        TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
+        factory.save(this);
         try {
             taskRepository.update(this);
         } catch (JiraException ex) {
