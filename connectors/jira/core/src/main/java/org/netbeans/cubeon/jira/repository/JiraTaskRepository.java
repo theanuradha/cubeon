@@ -196,7 +196,6 @@ public class JiraTaskRepository implements TaskRepository {
         handler.persist(jiraTask);
     }
 
-
     public String getPassword() {
         return password;
     }
@@ -247,18 +246,21 @@ public class JiraTaskRepository implements TaskRepository {
     }
 
     public void updateFilters() {
+        ProgressHandle handle = ProgressHandleFactory.createHandle(getName() + ": Updating Filters");
         try {
 
-            ProgressHandle handle = ProgressHandleFactory.createHandle(getName() + ": Updating Filters");
+
             synchronized (FILTER_UPDATE_LOCK) {
                 attributesPersistence.refreshFilters(handle);
                 loadFilters();
             }
-            handle.finish();
+
         } catch (JiraException ex) {
             Logger.getLogger(JiraAttributesPersistence.class.getName()).
                     log(Level.WARNING, ex.getMessage());
 
+        } finally {
+            handle.finish();
         }
     }
 
@@ -396,13 +398,13 @@ public class JiraTaskRepository implements TaskRepository {
 
             }
             task.setModifiedFlag(false);
-             task.getExtension().fireStateChenged();
+            task.getExtension().fireStateChenged();
         }
     }
 
     public synchronized JiraSession getSession() throws JiraException {
         if (session == null) {
-            session = new JiraSession(url, getUserName(), password);
+            reconnect();
         }
         return session;
     }
@@ -413,6 +415,19 @@ public class JiraTaskRepository implements TaskRepository {
 
     public JiraQuerySupport getQuerySupport() {
         return querySupport;
+    }
+
+    public synchronized void reconnect() throws JiraException {
+        ProgressHandle handle = ProgressHandleFactory.createHandle("Connecting to : " + getName());
+        handle.start();
+        handle.switchToIndeterminate();
+        try {
+            session = null;
+            //try to reconnect
+            session = new JiraSession(url, getUserName(), password);
+        } finally {
+            handle.finish();
+        }
     }
 
     @Override
