@@ -19,6 +19,8 @@ package org.netbeans.cubeon.ui.internals;
 import java.awt.Image;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import javax.swing.Action;
 import org.netbeans.cubeon.tasks.spi.Extension;
@@ -148,6 +150,12 @@ public class TaskRepositoryNode extends AbstractNode {
         final List<TaskRepositoryActionsProvider> providers =
                 new ArrayList<TaskRepositoryActionsProvider>(
                 Lookup.getDefault().lookupAll(TaskRepositoryActionsProvider.class));
+        Collections.sort(providers, new Comparator<TaskRepositoryActionsProvider>() {
+
+            public int compare(TaskRepositoryActionsProvider o1, TaskRepositoryActionsProvider o2) {
+                return o1.getPosition()-o2.getPosition() ;
+            }
+        });
         boolean sepetatorAdded = false;
         for (TaskRepositoryActionsProvider provider : providers) {
             Action[] as = provider.getActions(repository);

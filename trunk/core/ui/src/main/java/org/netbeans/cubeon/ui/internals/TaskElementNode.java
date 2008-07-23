@@ -20,6 +20,8 @@ import java.awt.Image;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import javax.swing.Action;
 import org.netbeans.cubeon.tasks.core.api.TaskFolder;
@@ -30,7 +32,6 @@ import org.netbeans.cubeon.tasks.spi.Extension;
 import org.netbeans.cubeon.tasks.spi.repository.TaskPriorityProvider;
 import org.netbeans.cubeon.tasks.spi.repository.TaskStatusProvider;
 import org.netbeans.cubeon.tasks.spi.repository.TaskTypeProvider;
-import org.netbeans.cubeon.tasks.spi.task.TaskContainer;
 import org.netbeans.cubeon.tasks.spi.task.TaskElementActionsProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElementChangeAdapter;
 import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
@@ -81,7 +82,7 @@ public class TaskElementNode extends AbstractNode {
             }
         };
         node.extendedActions = extendedActions;
-        
+
         return node;
     }
 
@@ -211,6 +212,12 @@ public class TaskElementNode extends AbstractNode {
             final List<TaskElementActionsProvider> providers =
                     new ArrayList<TaskElementActionsProvider>(
                     Lookup.getDefault().lookupAll(TaskElementActionsProvider.class));
+            Collections.sort(providers, new Comparator<TaskElementActionsProvider>() {
+
+                public int compare(TaskElementActionsProvider o1, TaskElementActionsProvider o2) {
+                    return o1.getPosition() - o2.getPosition();
+                }
+            });
             boolean sepetatorAdded = false;
             for (TaskElementActionsProvider provider : providers) {
                 Action[] as = provider.getActions(element);

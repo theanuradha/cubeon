@@ -38,9 +38,11 @@ public class RepositoryActionsImpl implements TaskRepositoryActionsProvider {
         JiraTaskRepository jtr = repository.getLookup().lookup(JiraTaskRepository.class);
         if (jtr != null) {
             List<Action> actions = new ArrayList<Action>();
-            actions.add(new UpdateAttributesAction(jtr));
 
-            return actions.toArray( new Action[actions.size()] );
+            actions.add(new ReconnectAction(jtr));
+            actions.add(new UpdateAttributesAction(jtr));
+            actions.add(null);
+            return actions.toArray(new Action[actions.size()]);
         }
         return new Action[0];
     }
