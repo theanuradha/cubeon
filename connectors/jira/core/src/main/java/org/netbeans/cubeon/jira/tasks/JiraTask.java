@@ -20,7 +20,6 @@ import java.awt.Image;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import org.netbeans.cubeon.jira.repository.JiraTaskRepository;
@@ -58,6 +57,7 @@ public class JiraTask implements TaskElement {
     private TaskResolution resolution;
     private Date created;
     private Date updated;
+    private boolean  modifiedFlag;
     private TaskEditorProvider editorProvider;
     private JiraTaskElementExtension extension;
     private boolean local;
@@ -238,6 +238,8 @@ public class JiraTask implements TaskElement {
         this.updated = updated;
     }
 
+
+
     public boolean isLocal() {
         return local;
     }
@@ -339,6 +341,14 @@ public class JiraTask implements TaskElement {
         return new ArrayList<String>(editFieldIds);
     }
 
+    public boolean isModifiedFlag() {
+        return modifiedFlag;
+    }
+
+    public void setModifiedFlag(boolean modifiedFlag) {
+        this.modifiedFlag = modifiedFlag;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -364,4 +374,10 @@ public class JiraTask implements TaskElement {
         hash = 79 * hash + (this.taskRepository != null ? this.taskRepository.hashCode() : 0);
         return hash;
     }
+
+    public JiraTaskElementExtension getExtension() {
+        return extension;
+    }
+
+    
 }

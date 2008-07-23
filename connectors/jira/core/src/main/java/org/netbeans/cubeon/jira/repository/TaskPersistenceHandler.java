@@ -90,6 +90,7 @@ class TaskPersistenceHandler {
     private static final String TAG_ACTION = "action";
     private static final String TAG_FIELDS = "fields";
     private static final String TAG_FIELD = "field";
+    private static final String TAG_MODIFIED_FLAG = "modified_flag";
     //----------------------------------------------------
     private JiraTaskRepository jiraTaskRepository;
     private final FileObject baseDir;
@@ -169,6 +170,11 @@ class TaskPersistenceHandler {
             boolean local = false;
             if (localTag != null) {
                 local = Boolean.parseBoolean(localTag);
+            }
+            String modifiedTag = element.getAttributeNS(NAMESPACE, TAG_MODIFIED_FLAG);
+            boolean modified = false;
+            if (modifiedTag != null) {
+                modified = Boolean.parseBoolean(modifiedTag);
             }
             //read resolution
             String resolution = element.getAttributeNS(NAMESPACE, TAG_RESOLUTION);
@@ -343,6 +349,7 @@ class TaskPersistenceHandler {
             JiraTask jiraTask = new JiraTask(id, name, description, jiraTaskRepository);
             jiraTask.setProject(project);
             jiraTask.setLocal(local);
+            jiraTask.setModifiedFlag(modified);
             jiraTask.setEnvironment(environment);
             jiraTask.setPriority(taskPriority);
             jiraTask.setStatus(taskStatus);
@@ -439,6 +446,9 @@ class TaskPersistenceHandler {
 
             if (task.isLocal()) {
                 taskElement.setAttributeNS(NAMESPACE, TAG_LOCAL, String.valueOf(task.isLocal()));
+            }
+            if (task.isModifiedFlag()) {
+                taskElement.setAttributeNS(NAMESPACE, TAG_MODIFIED_FLAG, String.valueOf(task.isModifiedFlag()));
             }
 
             if (task.getEnvironment() != null) {

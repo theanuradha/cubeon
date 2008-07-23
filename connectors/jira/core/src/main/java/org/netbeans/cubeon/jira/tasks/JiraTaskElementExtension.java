@@ -49,7 +49,7 @@ public class JiraTaskElementExtension implements Extension {
 
 
     //events---------------------------
-    void fireNameChenged() {
+    public void fireNameChenged() {
         Collection<? extends TaskElementChangeAdapter> adapters = lookup.lookupAll(TaskElementChangeAdapter.class);
         for (TaskElementChangeAdapter adapter : adapters) {
             adapter.nameChenged();
@@ -57,28 +57,28 @@ public class JiraTaskElementExtension implements Extension {
 
     }
 
-    void fireDescriptionChenged() {
+    public void fireDescriptionChenged() {
         Collection<? extends TaskElementChangeAdapter> adapters = lookup.lookupAll(TaskElementChangeAdapter.class);
         for (TaskElementChangeAdapter adapter : adapters) {
             adapter.descriptionChenged();
         }
     }
 
-    void firePriorityChenged() {
+    public void firePriorityChenged() {
         Collection<? extends TaskElementChangeAdapter> adapters = lookup.lookupAll(TaskElementChangeAdapter.class);
         for (TaskElementChangeAdapter adapter : adapters) {
             adapter.priorityChenged();
         }
     }
 
-    void fireStatusChenged() {
+    public void fireStatusChenged() {
         Collection<? extends TaskElementChangeAdapter> adapters = lookup.lookupAll(TaskElementChangeAdapter.class);
         for (TaskElementChangeAdapter adapter : adapters) {
             adapter.statusChenged();
         }
     }
 
-    void fireTypeChenged() {
+    public void fireTypeChenged() {
         Collection<? extends TaskElementChangeAdapter> adapters = lookup.lookupAll(TaskElementChangeAdapter.class);
         for (TaskElementChangeAdapter adapter : adapters) {
             adapter.typeChenged();
@@ -86,10 +86,18 @@ public class JiraTaskElementExtension implements Extension {
 
     }
 
-    void fireResolutionChenged() {
+    public void fireResolutionChenged() {
         Collection<? extends TaskElementChangeAdapter> adapters = lookup.lookupAll(TaskElementChangeAdapter.class);
         for (TaskElementChangeAdapter adapter : adapters) {
             adapter.resolutionChenged();
+        }
+
+    }
+
+    public void fireStateChenged() {
+        Collection<? extends TaskElementChangeAdapter> adapters = lookup.lookupAll(TaskElementChangeAdapter.class);
+        for (TaskElementChangeAdapter adapter : adapters) {
+            adapter.stateChange();
         }
 
     }

@@ -38,6 +38,8 @@ public class QueryEditAction extends AbstractAction {
     public QueryEditAction(TaskQuery query) {
         this.query = query;
         putValue(NAME, "Edit Query");
+        TaskQuerySupportProvider provider = query.getTaskRepository().getLookup().lookup(TaskQuerySupportProvider.class);
+        setEnabled(provider.canModify(query));
     }
 
     public void actionPerformed(ActionEvent e) {

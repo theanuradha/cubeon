@@ -129,6 +129,10 @@ public class JiraTaskRepository implements TaskRepository {
         return Utilities.loadImage("org/netbeans/cubeon/jira/repository/jira-repository.png");
     }
 
+    public List<String> getTaskIds() {
+        return handler.getTaskIds();
+    }
+
     public void synchronize() {
         RequestProcessor.getDefault().post(new Runnable() {
 
@@ -174,7 +178,7 @@ public class JiraTaskRepository implements TaskRepository {
         return jiraTask;
     }
 
-    public synchronized TaskElement getTaskElementById(String id) {
+    public synchronized JiraTask getTaskElementById(String id) {
         JiraTask get = map.get(id);
         if (get == null) {
 
@@ -192,9 +196,6 @@ public class JiraTaskRepository implements TaskRepository {
         handler.persist(jiraTask);
     }
 
-    public void reset(TaskElement element) {
-        throw new UnsupportedOperationException();
-    }
 
     public String getPassword() {
         return password;
@@ -330,7 +331,8 @@ public class JiraTaskRepository implements TaskRepository {
                 persist(task);
                 TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
                 factory.refresh(task);
-
+                task.setModifiedFlag(false);
+                task.getExtension().fireStateChenged();
             }
         }
 
@@ -393,7 +395,8 @@ public class JiraTaskRepository implements TaskRepository {
                 }
 
             }
-
+            task.setModifiedFlag(false);
+             task.getExtension().fireStateChenged();
         }
     }
 

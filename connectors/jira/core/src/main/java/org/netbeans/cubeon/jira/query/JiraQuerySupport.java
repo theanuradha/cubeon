@@ -35,10 +35,12 @@ public class JiraQuerySupport implements TaskQuerySupportProvider {
     private JiraTaskRepository repository;
     private JiraRepositoryExtension extension;
     private PersistenceHandler handler;
+    private final JiraOGChangesQuery outgoingQuery;
 
     public JiraQuerySupport(JiraTaskRepository repository, JiraRepositoryExtension extension) {
         this.repository = repository;
         this.extension = extension;
+        outgoingQuery = new JiraOGChangesQuery(repository);
         handler = new PersistenceHandler(this, repository.getBaseDir());
         handler.refresh();
 
@@ -54,13 +56,15 @@ public class JiraQuerySupport implements TaskQuerySupportProvider {
 
     }
 
-    public void refresh(){
-      handler.refresh();
+    public void refresh() {
+        handler.refresh();
 
     }
 
     public List<TaskQuery> getTaskQuerys() {
-        return new ArrayList<TaskQuery>(taskQuerys);
+        ArrayList<TaskQuery> arrayList = new ArrayList<TaskQuery>(taskQuerys);
+        arrayList.add(0, outgoingQuery);
+        return arrayList;
     }
 
     public void reset(TaskQuery query) {
@@ -100,7 +104,11 @@ public class JiraQuerySupport implements TaskQuerySupportProvider {
     }
 
     public void addTaskQuery(TaskQuery query) {
+
         AbstractJiraQuery localQuery = query.getLookup().lookup(AbstractJiraQuery.class);
+        if (localQuery.getType() == AbstractJiraQuery.Type.UTIL) {
+            return;
+        }
         handler.addTaskQuery(localQuery);
         taskQuerys.add(query);
 
@@ -109,12 +117,18 @@ public class JiraQuerySupport implements TaskQuerySupportProvider {
 
     public void modifyTaskQuery(TaskQuery query) {
         AbstractJiraQuery localQuery = query.getLookup().lookup(AbstractJiraQuery.class);
+        if (localQuery.getType() == AbstractJiraQuery.Type.UTIL) {
+            return;
+        }
         handler.addTaskQuery(localQuery);
         localQuery.getJiraExtension().fireAttributesUpdated();
     }
 
     public void removeTaskQuery(TaskQuery query) {
         AbstractJiraQuery localQuery = query.getLookup().lookup(AbstractJiraQuery.class);
+        if (localQuery.getType() == AbstractJiraQuery.Type.UTIL) {
+            return;
+        }
         handler.removeTaskQuery(localQuery);
         taskQuerys.remove(localQuery);
         extension.fireQueryRemoved(localQuery);
@@ -128,5 +142,27 @@ public class JiraQuerySupport implements TaskQuerySupportProvider {
             }
         }
         return null;
+    }
+
+    public boolean canModify(TaskQuery query) {
+        AbstractJiraQuery localQuery = query.getLookup().lookup(AbstractJiraQuery.class);
+        switch (localQuery.getType()) {
+            case FILTER:
+                return true;
+            case UTIL:
+                return false;
+        }
+        return false;
+    }
+
+    public boolean canRemove(TaskQuery query) {
+        AbstractJiraQuery localQuery = query.getLookup().lookup(AbstractJiraQuery.class);
+        switch (localQuery.getType()) {
+            case FILTER:
+                return true;
+            case UTIL:
+                return false;
+        }
+        return false;
     }
 }

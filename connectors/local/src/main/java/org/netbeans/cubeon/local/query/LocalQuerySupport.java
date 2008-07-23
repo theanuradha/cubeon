@@ -44,8 +44,8 @@ public class LocalQuerySupport implements TaskQuerySupportProvider {
 
     }
 
-    public LocalQuery createTaskQuery(String name,String description) {
-        return new LocalQuery(handler.nextTaskId(),name, repository);
+    public LocalQuery createTaskQuery(String name, String description) {
+        return new LocalQuery(handler.nextTaskId(), name, repository);
     }
 
     public List<TaskQuery> getTaskQuerys() {
@@ -74,7 +74,7 @@ public class LocalQuerySupport implements TaskQuerySupportProvider {
     }
 
     public void addTaskQuery(TaskQuery query) {
-         LocalQuery localQuery = query.getLookup().lookup(LocalQuery.class);
+        LocalQuery localQuery = query.getLookup().lookup(LocalQuery.class);
         handler.addTaskQuery(localQuery);
         taskQuerys.add(query);
 
@@ -82,7 +82,7 @@ public class LocalQuerySupport implements TaskQuerySupportProvider {
     }
 
     public void modifyTaskQuery(TaskQuery query) {
-         LocalQuery localQuery = query.getLookup().lookup(LocalQuery.class);
+        LocalQuery localQuery = query.getLookup().lookup(LocalQuery.class);
         handler.addTaskQuery(localQuery);
         localQuery.getLocalExtension().fireAttributesUpdated();
     }
@@ -102,5 +102,13 @@ public class LocalQuerySupport implements TaskQuerySupportProvider {
             }
         }
         return null;
+    }
+
+    public boolean canModify(TaskQuery query) {
+        return true;
+    }
+
+    public boolean canRemove(TaskQuery query) {
+        return true;
     }
 }

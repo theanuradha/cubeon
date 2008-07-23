@@ -40,13 +40,10 @@ public interface TaskQuerySupportProvider {
      */
     List<TaskQuery> getTaskQuerys();
 
-
-
-     /**
+    /**
      * save modifid attributes
      * @param query
      */
-
     void addTaskQuery(TaskQuery query);
 
     /**
@@ -61,11 +58,9 @@ public interface TaskQuerySupportProvider {
      */
     void removeTaskQuery(TaskQuery query);
 
-    /**
-     * reset modifid attributes
-     * @param query
-     */
-    void reset(TaskQuery query);
+    boolean canModify(TaskQuery query);
+
+    boolean canRemove(TaskQuery query);
 
     /**
      *
