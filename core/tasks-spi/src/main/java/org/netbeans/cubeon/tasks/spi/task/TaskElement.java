@@ -74,4 +74,9 @@ public interface TaskElement {
      * @return
      */
     URL getUrl();
+
+    /**
+     *
+     */
+    void synchronize();
 }

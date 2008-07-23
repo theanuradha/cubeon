@@ -22,6 +22,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.netbeans.cubeon.jira.remote.JiraException;
 import org.netbeans.cubeon.jira.repository.JiraTaskRepository;
 import org.netbeans.cubeon.jira.repository.attributes.JiraAction;
 import org.netbeans.cubeon.jira.repository.attributes.JiraComment;
@@ -36,6 +37,7 @@ import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskResolution;
 import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
 import org.netbeans.cubeon.tasks.spi.task.TaskType;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
@@ -57,7 +59,7 @@ public class JiraTask implements TaskElement {
     private TaskResolution resolution;
     private Date created;
     private Date updated;
-    private boolean  modifiedFlag;
+    private boolean modifiedFlag;
     private TaskEditorProvider editorProvider;
     private JiraTaskElementExtension extension;
     private boolean local;
@@ -238,8 +240,6 @@ public class JiraTask implements TaskElement {
         this.updated = updated;
     }
 
-
-
     public boolean isLocal() {
         return local;
     }
@@ -379,5 +379,11 @@ public class JiraTask implements TaskElement {
         return extension;
     }
 
-    
+    public void synchronize() {
+        try {
+            taskRepository.update(this);
+        } catch (JiraException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+    }
 }

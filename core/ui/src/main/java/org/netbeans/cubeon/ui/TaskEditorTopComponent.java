@@ -26,6 +26,7 @@ import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskElementChangeAdapter;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.ui.internals.TaskElementNode;
+import org.netbeans.cubeon.ui.taskelemet.SynchronizeTaskAction;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.cookies.SaveCookie;
@@ -52,6 +53,7 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
         this.element = element;
         this.factoryImpl = factoryImpl;
         initComponents();
+        jButton1.setAction(new SynchronizeTaskAction(element));
         jToolBar1.setLayout(new FlowLayout(FlowLayout.RIGHT, 0, 0));
         Lookup lookup = element.getLookup();
 
@@ -75,7 +77,7 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
                 JButton button = new JButton(action);
                 button.setText(null);
                 button.setOpaque(false);
-                jToolBar1.add(button,0);
+                jToolBar1.add(button);
             }
         }
 
@@ -150,11 +152,6 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
         jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton1.setOpaque(false);
         jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
         jToolBar1.add(jButton1);
 
         org.jdesktop.layout.GroupLayout headerLayout = new org.jdesktop.layout.GroupLayout(header);
@@ -178,10 +175,6 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
 
         add(base, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        refresh();//GEN-LAST:event_jButton1ActionPerformed
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel base;

@@ -14,28 +14,13 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.ui.taskelemet;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.swing.Action;
-import org.netbeans.cubeon.tasks.spi.task.TaskElement;
-import org.netbeans.cubeon.tasks.spi.task.TaskElementActionsProvider;
+package org.netbeans.cubeon.jira.repository.attributes;
 
 /**
  *
  * @author Anuradha
  */
-public class TaskElementActionsProviderImpl implements TaskElementActionsProvider {
+public class JiraChangeSet {
 
-    public int getPosition() {
-        return 1000;
-    }
-
-    public Action[] getActions(TaskElement element) {
-        List<Action> actions = new ArrayList<Action>();
-      
-
-        return actions.toArray(new Action[actions.size()]);
-    }
 }

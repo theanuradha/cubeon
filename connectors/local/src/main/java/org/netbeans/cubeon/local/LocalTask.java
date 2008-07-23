@@ -44,8 +44,8 @@ public class LocalTask implements TaskElement {
     private String urlString;
     private LocalTaskRepository taskRepository;
     private TaskPriority priority;
-    private TaskStatus status ;
-    private TaskType type ;
+    private TaskStatus status;
+    private TaskType type;
     private Date created;
     private Date updated;
     private final TaskEditorProvider editorProvider;
@@ -60,14 +60,13 @@ public class LocalTask implements TaskElement {
         extension = new LocalTaskElementExtension(this);
         editorProvider = new TaskEditorProviderImpl(this);
         priority = taskRepository.getLocalTaskPriorityProvider().getDefaultPriority();
-        status=taskRepository.getLocalTaskStatusProvider().NEW;
-        type=taskRepository.getLocalTaskTypeProvider().TASK;
+        status = taskRepository.getLocalTaskStatusProvider().NEW;
+        type = taskRepository.getLocalTaskTypeProvider().TASK;
     }
 
     public String getId() {
         return id;
     }
-
 
     public String getName() {
         return name;
@@ -175,5 +174,9 @@ public class LocalTask implements TaskElement {
 
     public void setUpdated(Date updated) {
         this.updated = updated;
+    }
+
+    public void synchronize() {
+        //do nothing
     }
 }

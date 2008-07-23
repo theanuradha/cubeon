@@ -31,9 +31,9 @@ import org.netbeans.cubeon.tasks.spi.task.TaskElementActionsProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
 import org.netbeans.cubeon.ui.taskelemet.CopyDetailsAction;
 import org.netbeans.cubeon.ui.taskelemet.MoveToAction;
-import org.netbeans.cubeon.ui.taskelemet.MoveToDefault;
 import org.netbeans.cubeon.ui.taskelemet.OpenAction;
 import org.netbeans.cubeon.ui.taskelemet.OpenInBrowserAction;
+import org.netbeans.cubeon.ui.taskelemet.SynchronizeTaskAction;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.util.Lookup;
@@ -102,7 +102,10 @@ public class TaskResultNode extends AbstractNode {
                 sepetatorAdded = false;
             }
         }
-
+        if (!sepetatorAdded) {
+            actions.add(null);
+        }
+        actions.add(new SynchronizeTaskAction(element));
         return actions.toArray(new Action[0]);
     }
 
