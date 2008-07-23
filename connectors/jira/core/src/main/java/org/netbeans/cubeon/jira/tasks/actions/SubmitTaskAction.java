@@ -40,7 +40,7 @@ public class SubmitTaskAction extends AbstractAction {
 
     public SubmitTaskAction(JiraTask task) {
         this.task = task;
-        putValue(NAME, "Submit");
+        putValue(NAME, "Submit Local Changes");
         putValue(SHORT_DESCRIPTION, "Submit Task Changes");
         putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/jira/task-submit.png")));
     }

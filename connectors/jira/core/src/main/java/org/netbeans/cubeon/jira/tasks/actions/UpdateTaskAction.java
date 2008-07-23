@@ -39,7 +39,7 @@ public class UpdateTaskAction extends AbstractAction {
     public UpdateTaskAction(JiraTask task) {
 
         this.task = task;
-        putValue(NAME, "Update");
+        putValue(NAME, "Update Task");
         putValue(SHORT_DESCRIPTION, "Update Remote Changes");
         putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/jira/task-update.png")));
     }
