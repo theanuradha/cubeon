@@ -316,7 +316,7 @@ public class JiraTaskEditorUI extends javax.swing.JPanel {
         }
     }
 
-    public TaskElement save() {
+    public JiraTask save() {
         if (!txtOutline.getText().trim().equals(jiraTask.getName())) {
             jiraTask.setName(txtOutline.getText().trim());
         }

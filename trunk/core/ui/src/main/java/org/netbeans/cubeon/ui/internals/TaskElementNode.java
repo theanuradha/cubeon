@@ -81,6 +81,7 @@ public class TaskElementNode extends AbstractNode {
             }
         };
         node.extendedActions = extendedActions;
+        
         return node;
     }
 
@@ -135,6 +136,11 @@ public class TaskElementNode extends AbstractNode {
                 fireDisplayNameChange(getDisplayName() + "_#", element.getName());
                 setShortDescription(extractTaskDescription(element));
             }
+
+            @Override
+            public void stateChange() {
+                fireIconChange();
+            }
         };
         extension.add(changeAdapter);
     }
@@ -164,7 +170,6 @@ public class TaskElementNode extends AbstractNode {
         return buffer.toString();
 
     }
-
 
     public boolean isModified() {
         return getDataObject().isModified();

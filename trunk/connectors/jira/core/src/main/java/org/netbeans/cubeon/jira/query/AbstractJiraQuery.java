@@ -33,7 +33,7 @@ public abstract class AbstractJiraQuery implements TaskQuery {
 
     public enum Type {
 
-        FILTER
+        FILTER,UTIL
     }
 
     public AbstractJiraQuery(JiraTaskRepository repository, String id) {

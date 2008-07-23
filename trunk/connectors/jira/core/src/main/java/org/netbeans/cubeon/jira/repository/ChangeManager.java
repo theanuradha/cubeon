@@ -14,48 +14,13 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.tasks.spi.task;
+
+package org.netbeans.cubeon.jira.repository;
 
 /**
  *
- * @author Anuradha
+ * @author Anuradha G
  */
-public class TaskElementChangeAdapter {
+public class ChangeManager {
 
-    /**
-     * 
-     */
-    public void nameChenged() {
-    }
-
-    /**
-     * 
-     */
-    public void descriptionChenged() {
-    }
-
-    /**
-     * 
-     */
-    public void priorityChenged() {
-    }
-
-    /**
-     * 
-     */
-    public void statusChenged() {
-    }
-
-    public void stateChange(){}
-    /**
-     * 
-     */
-    public void typeChenged() {
-    }
-
-    /**
-     *
-     */
-    public void resolutionChenged() {
-    }
 }

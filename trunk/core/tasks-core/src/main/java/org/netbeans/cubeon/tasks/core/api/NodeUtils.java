@@ -52,6 +52,13 @@ public class NodeUtils {
         assert base != null;
         return base;
     }
+    public static Image incomingBadge(){
+      return Utilities.loadImage("org/netbeans/cubeon/tasks/core/incoming.png");
+    }
+
+    public static Image outgoingBadge(){
+      return Utilities.loadImage("org/netbeans/cubeon/tasks/core/outgoing.png");
+    }
 
     public static Image getTaskPriorityImage(TaskPriority priority) {
         Image badge;

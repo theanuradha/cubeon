@@ -32,9 +32,10 @@ public class JiraAttributeHandler implements EditorAttributeHandler {
 
     private final JiraTask jiraTask;
     private final JiraTaskEditorUI editorUI;
+
     public JiraAttributeHandler(JiraTask jiraTask) {
         this.jiraTask = jiraTask;
-        editorUI=new JiraTaskEditorUI(jiraTask);
+        editorUI = new JiraTaskEditorUI(jiraTask);
     }
 
     public String getName() {
@@ -54,7 +55,7 @@ public class JiraAttributeHandler implements EditorAttributeHandler {
     }
 
     public void removeChangeListener(ChangeListener changeListener) {
-         editorUI.removeChangeListener(changeListener);
+        editorUI.removeChangeListener(changeListener);
     }
 
     public List<Action> getActions() {
@@ -62,7 +63,7 @@ public class JiraAttributeHandler implements EditorAttributeHandler {
     }
 
     public JComponent[] getComponent() {
-          return new JComponent[]{editorUI, editorUI.getCommentsEditor()};
+        return new JComponent[]{editorUI, editorUI.getCommentsEditor()};
     }
 
     public void refresh() {
@@ -70,6 +71,9 @@ public class JiraAttributeHandler implements EditorAttributeHandler {
     }
 
     public TaskElement save() {
-       return  editorUI.save();
+        JiraTask task = editorUI.save();
+        task.setModifiedFlag(true);
+        task.getExtension().fireStateChenged();
+        return task;
     }
 }

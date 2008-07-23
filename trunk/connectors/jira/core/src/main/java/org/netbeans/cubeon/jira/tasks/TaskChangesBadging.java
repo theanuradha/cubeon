@@ -14,25 +14,29 @@
  *  limitations under the License.
  *  under the License.
  */
-
 package org.netbeans.cubeon.jira.tasks;
 
 import java.awt.Image;
+import org.netbeans.cubeon.tasks.core.api.NodeUtils;
 import org.netbeans.cubeon.tasks.spi.task.TaskBadgeProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
+import org.openide.util.Utilities;
 
 /**
  *
- * @author Anuradha
+ * @author Anuradha G
  */
-public class TaskChangesBadging implements TaskBadgeProvider{
+public class TaskChangesBadging implements TaskBadgeProvider {
 
     public Image bageTaskIcon(TaskElement element, Image image) {
         JiraTask jiraTask = element.getLookup().lookup(JiraTask.class);
-        if(jiraTask!=null){
-          
+        if (jiraTask != null) {
+            if (jiraTask.isModifiedFlag()) {
+                //for now disable this
+               // Image outgoingBadge = NodeUtils.outgoingBadge();
+               // image = Utilities.mergeImages(image,outgoingBadge , -10, 0);
+            }
         }
         return image;
     }
-
 }

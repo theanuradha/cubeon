@@ -37,6 +37,8 @@ public class DeleteTaskQuery extends AbstractAction {
         this.query = query;
         putValue(NAME, "Delete");
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke("DELETE"));//NOI18N
+        TaskQuerySupportProvider provider = query.getTaskRepository().getLookup().lookup(TaskQuerySupportProvider.class);
+        setEnabled(provider.canRemove(query));
     }
 
     public void actionPerformed(ActionEvent e) {
