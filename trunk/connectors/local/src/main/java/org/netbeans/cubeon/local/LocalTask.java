@@ -22,6 +22,7 @@ import java.net.URL;
 import java.util.Date;
 import org.netbeans.cubeon.local.internals.TaskEditorProviderImpl;
 import org.netbeans.cubeon.local.repository.*;
+import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
 import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
@@ -177,6 +178,8 @@ public class LocalTask implements TaskElement {
     }
 
     public void synchronize() {
-        //do nothing
+        TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
+        factory.save(this);
+                factory.refresh(this);
     }
 }
