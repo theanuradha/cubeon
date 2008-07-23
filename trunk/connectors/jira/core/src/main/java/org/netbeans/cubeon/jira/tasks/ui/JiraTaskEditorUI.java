@@ -47,7 +47,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.netbeans.cubeon.jira.repository.JiraKeys;
 import org.netbeans.cubeon.jira.repository.attributes.JiraAction;
-import org.netbeans.cubeon.jira.tasks.actions.UpdateTaskAction;
 import org.netbeans.cubeon.jira.repository.JiraRepositoryAttributes;
 import org.netbeans.cubeon.jira.repository.JiraTaskPriorityProvider;
 import org.netbeans.cubeon.jira.repository.JiraTaskRepository;
@@ -61,7 +60,6 @@ import org.netbeans.cubeon.jira.tasks.JiraTask;
 import org.netbeans.cubeon.jira.tasks.actions.OpenInBrowserTaskAction;
 import org.netbeans.cubeon.jira.tasks.actions.OpenTaskHistoryAction;
 import org.netbeans.cubeon.jira.tasks.actions.SubmitTaskAction;
-import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.task.TaskResolution;
 import org.netbeans.cubeon.tasks.spi.task.TaskType;
@@ -401,8 +399,7 @@ public class JiraTaskEditorUI extends javax.swing.JPanel {
         return Arrays.<Action>asList(
                 openInBrowserTaskAction,
                 openTaskHistoryAction,
-                new SubmitTaskAction(jiraTask),
-                new UpdateTaskAction(jiraTask));
+                new SubmitTaskAction(jiraTask));
     }
 
     /** This method is called from within the constructor to

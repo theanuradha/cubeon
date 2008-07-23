@@ -40,6 +40,7 @@ import org.netbeans.cubeon.ui.taskelemet.MoveToAction;
 import org.netbeans.cubeon.ui.taskelemet.MoveToDefault;
 import org.netbeans.cubeon.ui.taskelemet.OpenAction;
 import org.netbeans.cubeon.ui.taskelemet.OpenInBrowserAction;
+import org.netbeans.cubeon.ui.taskelemet.SynchronizeTaskAction;
 import org.openide.cookies.SaveCookie;
 import org.openide.filesystems.FileObject;
 import org.openide.loaders.DataLoader;
@@ -202,7 +203,7 @@ public class TaskElementNode extends AbstractNode {
             actions.add(new MoveToDefault(container, element));
         }
         actions.add(null);
-
+        boolean sepetatorAdded = false;
         actions.add(new MoveToAction(container, element));
 
         if (extendedActions) {
@@ -218,7 +219,7 @@ public class TaskElementNode extends AbstractNode {
                     return o1.getPosition() - o2.getPosition();
                 }
             });
-            boolean sepetatorAdded = false;
+
             for (TaskElementActionsProvider provider : providers) {
                 Action[] as = provider.getActions(element);
                 for (Action action : as) {
@@ -238,6 +239,10 @@ public class TaskElementNode extends AbstractNode {
                 }
             }
         }
+        if (!sepetatorAdded) {
+            actions.add(null);
+        }
+        actions.add(new SynchronizeTaskAction(element));
         return actions.toArray(new Action[0]);
     }
 

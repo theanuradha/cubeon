@@ -38,10 +38,8 @@ public class JiraTaskActionsProviderImpl implements TaskElementActionsProvider {
         JiraTask jiraTask = element.getLookup().lookup(JiraTask.class);
         if (jiraTask != null) {
             actions.add(null);
-            actions.add(new OpenTaskHistoryAction(jiraTask));
-            actions.add(null);
             actions.add(new SubmitTaskAction(jiraTask));
-            actions.add(new UpdateTaskAction(jiraTask));
+            actions.add(new OpenTaskHistoryAction(jiraTask));
             actions.add(null);
 
         }
