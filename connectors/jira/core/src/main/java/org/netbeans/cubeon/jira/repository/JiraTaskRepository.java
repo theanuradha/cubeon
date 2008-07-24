@@ -341,6 +341,12 @@ public class JiraTaskRepository implements TaskRepository {
     public void update(RemoteIssue issue, JiraTask task) throws JiraException {
         synchronized (task) {
             if (!task.isLocal()) {
+                JiraRemoteTask jiraRemoteTask = getJiraRemoteTaskCache(task.getId());
+                if (jiraRemoteTask != null && jiraRemoteTask.getUpdated().getTime() == issue.getUpdated().getTime().getTime()) {
+                    Logger.getLogger(getClass().getName()).info("Skip : "+issue.getKey());
+                    return;
+                }
+
                 JiraRemoteTask cacheRemoteTask = JiraUtils.issueToTask(this, issue);
                 //make cache up to date
                 cache(cacheRemoteTask);
@@ -350,7 +356,7 @@ public class JiraTaskRepository implements TaskRepository {
 
                 TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
                 factory.refresh(task);
-                task.setModifiedFlag(false);
+                
                 task.getExtension().fireStateChenged();
             }
         }
@@ -460,5 +466,9 @@ public class JiraTaskRepository implements TaskRepository {
         hash = 97 * hash + (this.provider != null ? this.provider.hashCode() : 0);
         hash = 97 * hash + (this.id != null ? this.id.hashCode() : 0);
         return hash;
+    }
+
+    void remove(JiraTask jiraTask) {
+        handler.removeTaskElement(jiraTask);
     }
 }
