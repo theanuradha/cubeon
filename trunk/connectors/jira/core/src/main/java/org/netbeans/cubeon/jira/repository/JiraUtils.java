@@ -177,9 +177,11 @@ public class JiraUtils {
         jiraTask.setUrlString(repository.getURL() + "/browse/" + issue.getKey());//NOI18N
         jiraTask.setId(issue.getKey());
         jiraTask.setLocal(false);
-        JiraRemoteTask remoteTask = issueToTask(repository, issue);
-        JiraUtils.maregeToTask(repository, remoteTask, jiraTask);
-        repository.cache(remoteTask);
+        JiraRemoteTask remoteTask = repository.getJiraRemoteTaskCache(issue.getKey());
+
+        JiraUtils.maregeToTask(repository, issue, remoteTask, jiraTask);
+
+        repository.cache(issueToTask(repository, issue));
         repository.persist(jiraTask);
         repository.getExtension().fireIdChanged(old, jiraTask.getId());
         return jiraTask;
@@ -210,46 +212,55 @@ public class JiraUtils {
         jiraTask.setUpdated(remoteTask.getUpdated());
     }
 
-    public static void maregeToTask(JiraTaskRepository repository, JiraRemoteTask remoteTask, JiraTask jiraTask) throws JiraException {
-        jiraTask.setName(remoteTask.getName());
-        jiraTask.setDescription(remoteTask.getDescription());
-        jiraTask.setEnvironment(remoteTask.getEnvironment());
-        jiraTask.setProject(remoteTask.getProject());
-        jiraTask.setType(remoteTask.getType());
-        jiraTask.setPriority(remoteTask.getPriority());
-
-        if (jiraTask.getStatus() == null ||
-                !remoteTask.getStatus().equals(jiraTask.getStatus())) {
-            jiraTask.setAction(null);
-            jiraTask.setResolution(remoteTask.getResolution());
-
-            jiraTask.setStatus(remoteTask.getStatus());
+    public static void maregeToTask(JiraTaskRepository repository, RemoteIssue issue, JiraRemoteTask remoteTask, JiraTask jiraTask) throws JiraException {
+        if (remoteTask == null) {
+            remoteTask = issueToTask(repository, issue);
         }
 
-        jiraTask.setReporter(remoteTask.getReporter());
-        jiraTask.setAssignee(remoteTask.getAssignee());
+        if (!remoteTask.getName().equals(issue.getSummary())) {
+            jiraTask.setName(issue.getSummary());
+        }
+        if (!remoteTask.getDescription().equals(issue.getDescription())) {
+            jiraTask.setDescription(issue.getDescription());
+        }
+        if (!remoteTask.getEnvironment().equals(issue.getEnvironment())) {
+            jiraTask.setEnvironment(issue.getEnvironment());
+        }
+        if (!remoteTask.getProject().getId().equals(issue.getProject())) {
+            jiraTask.setProject(repository.getRepositoryAttributes().getProjectById(issue.getProject()));
+        }
+        if (!remoteTask.getType().getId().equals(issue.getType())) {
+            jiraTask.setType(repository.getJiraTaskTypeProvider().getTaskTypeById(issue.getType()));
+        }
+        if (!remoteTask.getPriority().getId().equals(issue.getPriority())) {
+            jiraTask.setPriority(repository.getJiraTaskPriorityProvider().getTaskPriorityById(issue.getPriority()));
+        }
 
+        if (remoteTask.getStatus() == null ||
+                !remoteTask.getStatus().getId().equals(issue.getStatus())) {
+            jiraTask.setAction(null);
+            jiraTask.setResolution(repository.getJiraTaskResolutionProvider().getTaskResolutionById(issue.getResolution()));
+
+            jiraTask.setStatus(repository.getJiraTaskStatusProvider().getTaskStatusById(issue.getStatus()));
+        }
+        if (!remoteTask.getReporter().equals(issue.getReporter())) {
+            jiraTask.setReporter(issue.getReporter());
+        }
+        if (remoteTask.getAssignee() == null || !remoteTask.getAssignee().equals(issue.getAssignee())) {
+            jiraTask.setAssignee(remoteTask.getAssignee());
+        }
         //----------------------------------------------------------------------
-
+        
         jiraTask.setComponents(remoteTask.getComponents());
-
         //----------------------------------------------------------------------
-
         jiraTask.setAffectedVersions(remoteTask.getAffectedVersions());
         //----------------------------------------------------------------------
-
         jiraTask.setFixVersions(remoteTask.getFixVersions());
         //----------------------------------------------------------------------
 
-
-
-
         jiraTask.setCreated(remoteTask.getCreated());
-
-
         jiraTask.setUpdated(remoteTask.getUpdated());
-
-
+        
         List<JiraAction> actions = new ArrayList<JiraAction>();
         RemoteNamedObject[] availableActions = repository.getSession().
                 getAvailableActions(remoteTask.getId());

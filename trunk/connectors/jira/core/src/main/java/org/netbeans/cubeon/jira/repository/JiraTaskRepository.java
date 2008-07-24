@@ -361,12 +361,12 @@ public class JiraTaskRepository implements TaskRepository {
 
                 } else {
 
+
+                    JiraUtils.maregeToTask(this, issue, getJiraRemoteTaskCache(task.getId()), task);
+                    persist(task);
                     JiraRemoteTask cacheRemoteTask = JiraUtils.issueToTask(this, issue);
                     //make cache up to date
                     cache(cacheRemoteTask);
-                    JiraUtils.maregeToTask(this, cacheRemoteTask, task);
-                    persist(task);
-
 
                     TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
                     factory.refresh(task);
@@ -386,21 +386,24 @@ public class JiraTaskRepository implements TaskRepository {
             } else {
 
                 JiraSession js = getSession();
-                JiraRemoteTask remoteTask = getJiraRemoteTaskCache(task.getId());
-                RemoteFieldValue[] fieldValues = JiraUtils.changedFieldValues(remoteTask, task);
+
+                RemoteFieldValue[] fieldValues = JiraUtils.changedFieldValues(getJiraRemoteTaskCache(task.getId()), task);
                 RemoteIssue remoteIssue = null;
                 if (fieldValues.length > 0) {
                     RemoteIssue updateTask = js.updateTask(task.getId(), fieldValues);
-                    remoteTask = JiraUtils.issueToTask(this, updateTask);
-                    JiraUtils.maregeToTask(this, remoteTask, task);
+
+                    JiraUtils.maregeToTask(this, updateTask, getJiraRemoteTaskCache(task.getId()), task);
+                    //make cache up to date
+                    cache(JiraUtils.issueToTask(this, remoteIssue));
                 }
 
                 if (task.getAction() != null) {
                     remoteIssue = js.progressWorkflowAction(task.getId(),
                             task.getAction().getId(),
                             JiraUtils.changedFieldValuesForAction(task.getAction(),
-                            remoteTask, task));
-                    remoteTask = JiraUtils.issueToTask(this, remoteIssue);
+                            getJiraRemoteTaskCache(task.getId()), task));
+                    //make cache up to date
+                    cache(JiraUtils.issueToTask(this, remoteIssue));
                 }
                 if (task.getNewComment() != null && task.getNewComment().trim().length() > 0) {
                     RemoteComment comment = new RemoteComment();
@@ -409,18 +412,12 @@ public class JiraTaskRepository implements TaskRepository {
                     js.addComment(task.getId(), comment);
                     task.setNewComment(null);
                     remoteIssue = js.getIssue(task.getId());
-                    remoteTask = JiraUtils.issueToTask(this, remoteIssue);
+
+                    JiraUtils.maregeToTask(this, remoteIssue, getJiraRemoteTaskCache(task.getId()), task);
+                    //make cache up to date
+                    cache(JiraUtils.issueToTask(this, remoteIssue));
                 }
 
-
-                if (remoteIssue != null) {
-                    remoteTask = JiraUtils.issueToTask(this, remoteIssue);
-
-                    JiraUtils.maregeToTask(this, remoteTask, task);
-                }
-                //make cache up to date
-                cache(remoteTask);
-                task.setModifiedFlag(false);
                 persist(task);
             }
 
