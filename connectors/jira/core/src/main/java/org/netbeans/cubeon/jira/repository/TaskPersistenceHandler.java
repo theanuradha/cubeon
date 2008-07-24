@@ -98,14 +98,14 @@ class TaskPersistenceHandler {
     private FileObject tasksFolder;
     private static final Object LOCK = new Object();
 
-    TaskPersistenceHandler(JiraTaskRepository localTaskRepository, FileObject fileObject) {
+    TaskPersistenceHandler(JiraTaskRepository localTaskRepository, FileObject parent, String foldername) {
         this.jiraTaskRepository = localTaskRepository;
-        this.baseDir = fileObject;
+        this.baseDir = parent;
 
-        tasksFolder = fileObject.getFileObject("tasks");
+        tasksFolder = parent.getFileObject(foldername);
         if (tasksFolder == null) {
             try {
-                tasksFolder = fileObject.createFolder("tasks");
+                tasksFolder = parent.createFolder(foldername);
             } catch (IOException ex) {
                 Logger.getLogger(TaskPersistenceHandler.class.getName()).log(Level.WARNING, ex.getMessage());
             }

@@ -33,6 +33,7 @@ import org.netbeans.cubeon.jira.repository.attributes.JiraComment;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Component;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Version;
+import org.netbeans.cubeon.jira.tasks.JiraRemoteTask;
 import org.netbeans.cubeon.jira.tasks.JiraTask;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
@@ -285,5 +286,91 @@ public class JiraUtils {
             editFieldIds.add(rf.getId());
         }
         jiraTask.setEditFieldIds(editFieldIds);
+
+
+    }
+
+    public static JiraRemoteTask issueToTask(JiraTaskRepository repository, RemoteIssue issue) throws JiraException {
+        JiraRemoteTask jiraTask = new JiraRemoteTask(repository, issue.getKey(), issue.getSummary(), issue.getDescription());
+
+        jiraTask.setEnvironment(issue.getEnvironment());
+        JiraProject project = repository.getRepositoryAttributes().
+                getProjectById(issue.getProject());
+        jiraTask.setProject(project);
+        jiraTask.setType(repository.getJiraTaskTypeProvider().getTaskTypeById(issue.getType()));
+        jiraTask.setPriority(repository.getJiraTaskPriorityProvider().getTaskPriorityById(issue.getPriority()));
+
+
+        jiraTask.setResolution(repository.getJiraTaskResolutionProvider().getTaskResolutionById(issue.getResolution()));
+
+        jiraTask.setStatus(repository.getJiraTaskStatusProvider().getTaskStatusById(issue.getStatus()));
+
+
+        jiraTask.setReporter(issue.getReporter());
+        jiraTask.setAssignee(issue.getAssignee());
+
+        //----------------------------------------------------------------------
+        RemoteComponent[] components = issue.getComponents();
+        List<JiraProject.Component> cs = new ArrayList<JiraProject.Component>();
+        for (RemoteComponent rc : components) {
+            Component component = project.getComponentById(rc.getId());
+            if (component != null) {
+                cs.add(component);
+            }
+        }
+        jiraTask.setComponents(cs);
+
+        //----------------------------------------------------------------------
+        RemoteVersion[] affectsRemoteVersions = issue.getAffectsVersions();
+        List<JiraProject.Version> affectsVersions = new ArrayList<JiraProject.Version>();
+        for (RemoteVersion rv : affectsRemoteVersions) {
+            Version version = project.getVersionById(rv.getId());
+            if (version != null) {
+                affectsVersions.add(version);
+            }
+        }
+        jiraTask.setAffectedVersions(affectsVersions);
+        //----------------------------------------------------------------------
+        RemoteVersion[] rvs = issue.getFixVersions();
+        List<JiraProject.Version> fixVersions = new ArrayList<JiraProject.Version>();
+        for (RemoteVersion rv : rvs) {
+            Version version = project.getVersionById(rv.getId());
+            if (version != null) {
+                fixVersions.add(version);
+            }
+        }
+        jiraTask.setFixVersions(fixVersions);
+        //----------------------------------------------------------------------
+
+        Calendar created = issue.getCreated();
+        if (created != null) {
+            jiraTask.setCreated(created.getTime());
+        }
+        Calendar updated = issue.getUpdated();
+        if (updated != null) {
+            jiraTask.setUpdated(updated.getTime());
+        }
+
+
+        RemoteComment[] comments = repository.getSession().getComments(issue.getKey());
+        List<JiraComment> jiraComments = new ArrayList<JiraComment>();
+        for (RemoteComment comment : comments) {
+            JiraComment jiraComment = new JiraComment(comment.getId());
+            jiraComment.setAuthor(comment.getAuthor());
+
+            jiraComment.setBody(comment.getBody());
+            jiraComment.setCreated(comment.getCreated().getTime());
+
+            jiraComment.setUpdateAuthor(comment.getUpdateAuthor());
+            if (comment.getUpdated() != null) {
+                jiraComment.setUpdated(comment.getUpdated().getTime());
+            }
+            jiraComments.add(jiraComment);
+        }
+        jiraTask.setComments(jiraComments);
+
+
+
+        return jiraTask;
     }
 }
