@@ -246,7 +246,9 @@ public class JiraTaskRepository implements TaskRepository {
     }
 
     public void updateFilters() {
-        ProgressHandle handle = ProgressHandleFactory.createHandle(getName() + ": Updating Filters");
+        ProgressHandle handle = ProgressHandleFactory.createHandle(getName() + " : Updating Filters");
+        handle.start();
+        handle.switchToIndeterminate();
         try {
 
 

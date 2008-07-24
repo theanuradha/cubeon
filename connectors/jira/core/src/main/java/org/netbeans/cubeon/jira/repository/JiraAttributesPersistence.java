@@ -40,7 +40,6 @@ import org.netbeans.cubeon.jira.repository.attributes.JiraProject;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.task.TaskResolution;
 import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
-import org.netbeans.cubeon.tasks.spi.task.TaskType;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
@@ -259,8 +258,7 @@ class JiraAttributesPersistence {
                 attributes = document.createElement(TAG_ROOT);
                 root.appendChild(attributes);
             }
-            progressHandle.start();
-            progressHandle.switchToIndeterminate();
+
             progressHandle.progress("Requsting Repository Filters");
             _refreshFilters(session, document, attributes);
             save(document);
