@@ -41,6 +41,8 @@ public class JiraTaskActionsProviderImpl implements TaskElementActionsProvider {
             actions.add(new SubmitTaskAction(jiraTask));
             actions.add(new OpenTaskHistoryAction(jiraTask));
             actions.add(null);
+            actions.add(new RevertChangesAction(jiraTask));
+            actions.add(null);
 
         }
 

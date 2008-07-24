@@ -178,7 +178,7 @@ public class JiraUtils {
         jiraTask.setId(issue.getKey());
         jiraTask.setLocal(false);
         JiraRemoteTask remoteTask = issueToTask(repository, issue);
-        JiraUtils.maregeToTask(repository, issue,remoteTask, jiraTask);
+        JiraUtils.maregeToTask(repository, remoteTask, jiraTask);
         repository.cache(remoteTask);
         repository.persist(jiraTask);
         repository.getExtension().fireIdChanged(old, jiraTask.getId());
@@ -187,85 +187,83 @@ public class JiraUtils {
 
     }
 
-    public static void maregeToTask(JiraTaskRepository repository, RemoteIssue issue,JiraRemoteTask remoteTask, JiraTask jiraTask) throws JiraException {
-        jiraTask.setName(issue.getSummary());
-        jiraTask.setDescription(issue.getDescription());
-        jiraTask.setEnvironment(issue.getEnvironment());
-        JiraProject project = repository.getRepositoryAttributes().
-                getProjectById(issue.getProject());
-        jiraTask.setProject(project);
-        jiraTask.setType(repository.getJiraTaskTypeProvider().getTaskTypeById(issue.getType()));
-        jiraTask.setPriority(repository.getJiraTaskPriorityProvider().getTaskPriorityById(issue.getPriority()));
+    public static void remoteToTask(JiraTaskRepository repository, JiraRemoteTask remoteTask, JiraTask jiraTask) {
+        jiraTask.setName(remoteTask.getName());
+        jiraTask.setDescription(remoteTask.getDescription());
+        jiraTask.setEnvironment(remoteTask.getEnvironment());
+        jiraTask.setProject(remoteTask.getProject());
+        jiraTask.setType(remoteTask.getType());
+        jiraTask.setPriority(remoteTask.getPriority());
+        jiraTask.setAction(null);
+        jiraTask.setResolution(remoteTask.getResolution());
+        jiraTask.setStatus(remoteTask.getStatus());
+        jiraTask.setReporter(remoteTask.getReporter());
+        jiraTask.setAssignee(remoteTask.getAssignee());
+        //----------------------------------------------------------------------
+        jiraTask.setComponents(remoteTask.getComponents());
+        //----------------------------------------------------------------------
+        jiraTask.setAffectedVersions(remoteTask.getAffectedVersions());
+        //----------------------------------------------------------------------
+        jiraTask.setFixVersions(remoteTask.getFixVersions());
+        //----------------------------------------------------------------------
+        jiraTask.setCreated(remoteTask.getCreated());
+        jiraTask.setUpdated(remoteTask.getUpdated());
+    }
+
+    public static void maregeToTask(JiraTaskRepository repository, JiraRemoteTask remoteTask, JiraTask jiraTask) throws JiraException {
+        jiraTask.setName(remoteTask.getName());
+        jiraTask.setDescription(remoteTask.getDescription());
+        jiraTask.setEnvironment(remoteTask.getEnvironment());
+        jiraTask.setProject(remoteTask.getProject());
+        jiraTask.setType(remoteTask.getType());
+        jiraTask.setPriority(remoteTask.getPriority());
 
         if (jiraTask.getStatus() == null ||
-                !issue.getStatus().equals(jiraTask.getStatus().getId())) {
+                !remoteTask.getStatus().equals(jiraTask.getStatus())) {
             jiraTask.setAction(null);
-            jiraTask.setResolution(repository.getJiraTaskResolutionProvider().getTaskResolutionById(issue.getResolution()));
+            jiraTask.setResolution(remoteTask.getResolution());
 
-            jiraTask.setStatus(repository.getJiraTaskStatusProvider().getTaskStatusById(issue.getStatus()));
+            jiraTask.setStatus(remoteTask.getStatus());
         }
 
-        jiraTask.setReporter(issue.getReporter());
-        jiraTask.setAssignee(issue.getAssignee());
-
-        //----------------------------------------------------------------------
-        RemoteComponent[] components = issue.getComponents();
-        List<JiraProject.Component> cs = new ArrayList<JiraProject.Component>();
-        for (RemoteComponent rc : components) {
-            Component component = project.getComponentById(rc.getId());
-            if (component != null) {
-                cs.add(component);
-            }
-        }
-        jiraTask.setComponents(cs);
+        jiraTask.setReporter(remoteTask.getReporter());
+        jiraTask.setAssignee(remoteTask.getAssignee());
 
         //----------------------------------------------------------------------
-        RemoteVersion[] affectsRemoteVersions = issue.getAffectsVersions();
-        List<JiraProject.Version> affectsVersions = new ArrayList<JiraProject.Version>();
-        for (RemoteVersion rv : affectsRemoteVersions) {
-            Version version = project.getVersionById(rv.getId());
-            if (version != null) {
-                affectsVersions.add(version);
-            }
-        }
-        jiraTask.setAffectedVersions(affectsVersions);
+
+        jiraTask.setComponents(remoteTask.getComponents());
+
         //----------------------------------------------------------------------
-        RemoteVersion[] rvs = issue.getFixVersions();
-        List<JiraProject.Version> fixVersions = new ArrayList<JiraProject.Version>();
-        for (RemoteVersion rv : rvs) {
-            Version version = project.getVersionById(rv.getId());
-            if (version != null) {
-                fixVersions.add(version);
-            }
-        }
-        jiraTask.setFixVersions(fixVersions);
+
+        jiraTask.setAffectedVersions(remoteTask.getAffectedVersions());
+        //----------------------------------------------------------------------
+
+        jiraTask.setFixVersions(remoteTask.getFixVersions());
         //----------------------------------------------------------------------
 
 
 
-        Calendar created = issue.getCreated();
-        if (created != null) {
-            jiraTask.setCreated(created.getTime());
-        }
-        Calendar updated = issue.getUpdated();
-        if (updated != null) {
-            jiraTask.setUpdated(updated.getTime());
-        }
+
+        jiraTask.setCreated(remoteTask.getCreated());
+
+
+        jiraTask.setUpdated(remoteTask.getUpdated());
+
 
         List<JiraAction> actions = new ArrayList<JiraAction>();
         RemoteNamedObject[] availableActions = repository.getSession().
-                getAvailableActions(issue.getKey());
+                getAvailableActions(remoteTask.getId());
         for (RemoteNamedObject rno : availableActions) {
             JiraAction action = new JiraAction(rno.getId(), rno.getName());
             RemoteField[] fields = repository.getSession().
-                    getFieldsForAction(issue.getKey(), rno.getId());
+                    getFieldsForAction(remoteTask.getId(), rno.getId());
             for (RemoteField rf : fields) {
                 action.addFiled(rf.getId());
             }
             actions.add(action);
         }
         jiraTask.setActions(actions);
-        RemoteComment[] comments = repository.getSession().getComments(issue.getKey());
+        RemoteComment[] comments = repository.getSession().getComments(remoteTask.getId());
         List<JiraComment> jiraComments = new ArrayList<JiraComment>();
         for (RemoteComment comment : comments) {
             JiraComment jiraComment = new JiraComment(comment.getId());
@@ -283,7 +281,7 @@ public class JiraUtils {
         jiraTask.setComments(jiraComments);
 
         List<String> editFieldIds = new ArrayList<String>();
-        RemoteField[] fieldsForEdit = repository.getSession().getFieldsForEdit(issue.getKey());
+        RemoteField[] fieldsForEdit = repository.getSession().getFieldsForEdit(remoteTask.getId());
         for (RemoteField rf : fieldsForEdit) {
             editFieldIds.add(rf.getId());
         }
