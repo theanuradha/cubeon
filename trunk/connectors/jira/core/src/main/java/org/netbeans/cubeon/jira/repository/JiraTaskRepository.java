@@ -343,21 +343,22 @@ public class JiraTaskRepository implements TaskRepository {
             if (!task.isLocal()) {
                 JiraRemoteTask jiraRemoteTask = getJiraRemoteTaskCache(task.getId());
                 if (jiraRemoteTask != null && jiraRemoteTask.getUpdated().getTime() == issue.getUpdated().getTime().getTime()) {
-                    Logger.getLogger(getClass().getName()).info("Skip : "+issue.getKey());
-                    return;
+                    Logger.getLogger(getClass().getName()).info("Skip : " + issue.getKey());
+
+                } else {
+
+                    JiraRemoteTask cacheRemoteTask = JiraUtils.issueToTask(this, issue);
+                    //make cache up to date
+                    cache(cacheRemoteTask);
+                    JiraUtils.maregeToTask(this, issue, cacheRemoteTask, task);
+                    persist(task);
+
+
+                    TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
+                    factory.refresh(task);
+
+                    task.getExtension().fireStateChenged();
                 }
-
-                JiraRemoteTask cacheRemoteTask = JiraUtils.issueToTask(this, issue);
-                //make cache up to date
-                cache(cacheRemoteTask);
-                JiraUtils.maregeToTask(this, issue, cacheRemoteTask, task);
-                persist(task);
-
-
-                TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
-                factory.refresh(task);
-                
-                task.getExtension().fireStateChenged();
             }
         }
 
