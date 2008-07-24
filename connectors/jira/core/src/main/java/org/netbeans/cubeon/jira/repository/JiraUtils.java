@@ -47,30 +47,30 @@ import static org.netbeans.cubeon.jira.repository.JiraKeys.*;
  */
 public class JiraUtils {
 
-    public static RemoteFieldValue[] changedFieldValues(RemoteIssue issue, JiraTask task) {
+    public static RemoteFieldValue[] changedFieldValues(JiraRemoteTask remoteTask, JiraTask task) {
         List<RemoteFieldValue> fieldValues = new ArrayList<RemoteFieldValue>();
         String description = task.getDescription();
-        if (!issue.getDescription().equals(description)) {
+        if (!remoteTask.getDescription().equals(description)) {
             fieldValues.add(new RemoteFieldValue(DESCRIPTION, new String[]{description}));
         }
 
         String environment = task.getEnvironment();
-        if (issue.getEnvironment() == null || !issue.getEnvironment().equals(environment)) {
+        if (remoteTask.getEnvironment() == null || !remoteTask.getEnvironment().equals(environment)) {
             fieldValues.add(new RemoteFieldValue(ENVIRONMENT, new String[]{environment}));
         }
         String name = task.getName();
-        if (!name.equals(issue.getSummary())) {
+        if (!name.equals(remoteTask.getName())) {
             fieldValues.add(new RemoteFieldValue(SUMMERY, new String[]{name}));
         }
         TaskType type = task.getType();
-        if (type != null && !type.getId().equals(issue.getType())) {
+        if (type != null && !type.equals(remoteTask.getType())) {
             fieldValues.add(new RemoteFieldValue(TYPE, new String[]{type.getId()}));
         }
         TaskPriority priority = task.getPriority();
-        if (priority != null && !priority.getId().equals(issue.getPriority())) {
+        if (priority != null && !priority.equals(remoteTask.getPriority())) {
             fieldValues.add(new RemoteFieldValue(PRIORITY, new String[]{priority.getId()}));
         }
-        if (task.getAssignee() == null || !task.getAssignee().equals(issue.getAssignee())) {
+        if (task.getAssignee() == null || !task.getAssignee().equals(remoteTask.getAssignee())) {
             fieldValues.add(new RemoteFieldValue(ASSIGNEE, new String[]{task.getAssignee()}));
         }
 //        TaskResolution resolution = task.getResolution();
@@ -111,13 +111,13 @@ public class JiraUtils {
         return fieldValues.toArray(new RemoteFieldValue[fieldValues.size()]);
     }
 
-    public static RemoteFieldValue[] changedFieldValuesForAction(JiraAction action, RemoteIssue issue, JiraTask task) {
+    public static RemoteFieldValue[] changedFieldValuesForAction(JiraAction action, JiraRemoteTask remoteTask, JiraTask task) {
         List<RemoteFieldValue> fieldValues = new ArrayList<RemoteFieldValue>();
 
 
         TaskResolution resolution = task.getResolution();
         List<String> filedIds = action.getFiledIds();
-        if (filedIds.contains(RESOLUTION) && resolution != null && !resolution.getId().equals(issue.getResolution())) {
+        if (filedIds.contains(RESOLUTION) && resolution != null && !resolution.equals(remoteTask.getResolution())) {
             fieldValues.add(new RemoteFieldValue(RESOLUTION, new String[]{resolution.getId()}));
         }
         if (filedIds.contains(ASSIGNEE)) {
@@ -177,7 +177,9 @@ public class JiraUtils {
         jiraTask.setUrlString(repository.getURL() + "/browse/" + issue.getKey());//NOI18N
         jiraTask.setId(issue.getKey());
         jiraTask.setLocal(false);
-        JiraUtils.maregeToTask(repository, issue, jiraTask);
+        JiraRemoteTask remoteTask = issueToTask(repository, issue);
+        JiraUtils.maregeToTask(repository, issue,remoteTask, jiraTask);
+        repository.cache(remoteTask);
         repository.persist(jiraTask);
         repository.getExtension().fireIdChanged(old, jiraTask.getId());
         return jiraTask;
@@ -185,7 +187,7 @@ public class JiraUtils {
 
     }
 
-    public static void maregeToTask(JiraTaskRepository repository, RemoteIssue issue, JiraTask jiraTask) throws JiraException {
+    public static void maregeToTask(JiraTaskRepository repository, RemoteIssue issue,JiraRemoteTask remoteTask, JiraTask jiraTask) throws JiraException {
         jiraTask.setName(issue.getSummary());
         jiraTask.setDescription(issue.getDescription());
         jiraTask.setEnvironment(issue.getEnvironment());

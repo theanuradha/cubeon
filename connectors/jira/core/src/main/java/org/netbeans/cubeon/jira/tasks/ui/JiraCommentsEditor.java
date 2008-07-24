@@ -33,7 +33,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.Action;
-import javax.swing.border.TitledBorder;
 import org.netbeans.cubeon.jira.repository.attributes.JiraComment;
 import org.netbeans.cubeon.jira.tasks.JiraTask;
 import org.openide.explorer.ExplorerManager;
@@ -94,9 +93,8 @@ public class JiraCommentsEditor extends javax.swing.JPanel implements ExplorerMa
         loadComments();
         txtComment.setText(editorUI.getJiraTask().getNewComment());
         txtComment.getDocument().addDocumentListener(editorUI.documentListener);
-        if (editorUI.getJiraTask().isLocal()) {
-            txtComment.setEditable(false);
-        }
+        txtComment.setEditable(editorUI.getJiraTask().isLocal());
+        
     }
 
     private void loadComments() {
