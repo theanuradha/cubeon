@@ -199,6 +199,20 @@ public class JiraTaskRepository implements TaskRepository {
         handler.persist(jiraTask);
     }
 
+    public void revert(JiraTask task) {
+        synchronized (task) {
+            task.setNewComment(null);
+            JiraUtils.remoteToTask(this, getJiraRemoteTaskCache(task.getId()), task);
+            task.setModifiedFlag(false);
+            persist(task);
+            task.getExtension().fireStateChenged();
+        }
+    }
+
+    void remove(JiraTask jiraTask) {
+        handler.removeTaskElement(jiraTask);
+    }
+
     public void cache(JiraRemoteTask remoteTask) {
 
         cache.persist(remoteTask);
@@ -350,7 +364,7 @@ public class JiraTaskRepository implements TaskRepository {
                     JiraRemoteTask cacheRemoteTask = JiraUtils.issueToTask(this, issue);
                     //make cache up to date
                     cache(cacheRemoteTask);
-                    JiraUtils.maregeToTask(this, issue, cacheRemoteTask, task);
+                    JiraUtils.maregeToTask(this, cacheRemoteTask, task);
                     persist(task);
 
 
@@ -378,7 +392,7 @@ public class JiraTaskRepository implements TaskRepository {
                 if (fieldValues.length > 0) {
                     RemoteIssue updateTask = js.updateTask(task.getId(), fieldValues);
                     remoteTask = JiraUtils.issueToTask(this, updateTask);
-                    JiraUtils.maregeToTask(this, updateTask, remoteTask, task);
+                    JiraUtils.maregeToTask(this, remoteTask, task);
                 }
 
                 if (task.getAction() != null) {
@@ -402,7 +416,7 @@ public class JiraTaskRepository implements TaskRepository {
                 if (remoteIssue != null) {
                     remoteTask = JiraUtils.issueToTask(this, remoteIssue);
 
-                    JiraUtils.maregeToTask(this, remoteIssue, remoteTask, task);
+                    JiraUtils.maregeToTask(this, remoteTask, task);
                 }
                 //make cache up to date
                 cache(remoteTask);
@@ -467,9 +481,5 @@ public class JiraTaskRepository implements TaskRepository {
         hash = 97 * hash + (this.provider != null ? this.provider.hashCode() : 0);
         hash = 97 * hash + (this.id != null ? this.id.hashCode() : 0);
         return hash;
-    }
-
-    void remove(JiraTask jiraTask) {
-        handler.removeTaskElement(jiraTask);
     }
 }
