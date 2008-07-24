@@ -344,7 +344,7 @@ public class JiraTaskRepository implements TaskRepository {
                 JiraRemoteTask cacheRemoteTask = JiraUtils.issueToTask(this, issue);
                 //make cache up to date
                 cache(cacheRemoteTask);
-                JiraUtils.maregeToTask(this, issue, task);
+                JiraUtils.maregeToTask(this, issue, cacheRemoteTask, task);
                 persist(task);
 
 
@@ -365,62 +365,45 @@ public class JiraTaskRepository implements TaskRepository {
             } else {
 
                 JiraSession js = getSession();
-                RemoteFieldValue[] fieldValues = JiraUtils.changedFieldValues(js.getIssue(task.getId()), task);
+                JiraRemoteTask remoteTask = getJiraRemoteTaskCache(task.getId());
+                RemoteFieldValue[] fieldValues = JiraUtils.changedFieldValues(remoteTask, task);
+                RemoteIssue remoteIssue = null;
                 if (fieldValues.length > 0) {
                     RemoteIssue updateTask = js.updateTask(task.getId(), fieldValues);
-                    JiraUtils.maregeToTask(this, updateTask, task);
-
-                    RemoteIssue remoteIssue = null;
-                    if (task.getAction() != null) {
-                        remoteIssue = js.progressWorkflowAction(task.getId(),
-                                task.getAction().getId(),
-                                JiraUtils.changedFieldValuesForAction(task.getAction(),
-                                updateTask, task));
-
-                    }
-                    if (task.getNewComment() != null && task.getNewComment().trim().length() > 0) {
-                        RemoteComment comment = new RemoteComment();
-                        comment.setAuthor(getUserName());
-                        comment.setBody(task.getNewComment());
-                        js.addComment(task.getId(), comment);
-                        task.setNewComment(null);
-                        remoteIssue = js.getIssue(task.getId());
-                    }
-                    if (remoteIssue != null) {
-                        JiraRemoteTask cacheRemoteTask = JiraUtils.issueToTask(this, remoteIssue);
-                        //make cache up to date
-                        cache(cacheRemoteTask);
-                        JiraUtils.maregeToTask(this, remoteIssue, task);
-                    }
-                    persist(task);
-                } else {
-                    RemoteIssue remoteIssue = null;
-                    if (task.getAction() != null) {
-                        remoteIssue = js.progressWorkflowAction(task.getId(),
-                                task.getAction().getId(),
-                                JiraUtils.changedFieldValuesForAction(task.getAction(),
-                                js.getIssue(task.getId()), task));
-
-                    }
-                    if (task.getNewComment() != null && task.getNewComment().trim().length() > 0) {
-                        RemoteComment comment = new RemoteComment();
-                        comment.setAuthor(getUserName());
-                        comment.setBody(task.getNewComment());
-                        js.addComment(task.getId(), comment);
-                        task.setNewComment(null);
-                        remoteIssue = js.getIssue(task.getId());
-                    }
-                    if (remoteIssue != null) {
-                        JiraRemoteTask cacheRemoteTask = JiraUtils.issueToTask(this, remoteIssue);
-                        //make cache up to date
-                        cache(cacheRemoteTask);
-                        JiraUtils.maregeToTask(this, remoteIssue, task);
-                        persist(task);
-                    }
+                    remoteTask = JiraUtils.issueToTask(this, updateTask);
+                    JiraUtils.maregeToTask(this, updateTask, remoteTask, task);
                 }
 
+                if (task.getAction() != null) {
+                    remoteIssue = js.progressWorkflowAction(task.getId(),
+                            task.getAction().getId(),
+                            JiraUtils.changedFieldValuesForAction(task.getAction(),
+                            remoteTask, task));
+                    remoteTask = JiraUtils.issueToTask(this, remoteIssue);
+                }
+                if (task.getNewComment() != null && task.getNewComment().trim().length() > 0) {
+                    RemoteComment comment = new RemoteComment();
+                    comment.setAuthor(getUserName());
+                    comment.setBody(task.getNewComment());
+                    js.addComment(task.getId(), comment);
+                    task.setNewComment(null);
+                    remoteIssue = js.getIssue(task.getId());
+                    remoteTask = JiraUtils.issueToTask(this, remoteIssue);
+                }
+
+
+                if (remoteIssue != null) {
+                    remoteTask = JiraUtils.issueToTask(this, remoteIssue);
+
+                    JiraUtils.maregeToTask(this, remoteIssue, remoteTask, task);
+                }
+                //make cache up to date
+                cache(remoteTask);
+                task.setModifiedFlag(false);
+                persist(task);
             }
-            task.setModifiedFlag(false);
+
+
             task.getExtension().fireStateChenged();
         }
     }
