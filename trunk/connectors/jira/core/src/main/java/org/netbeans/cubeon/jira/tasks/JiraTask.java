@@ -20,15 +20,10 @@ import java.awt.Image;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import org.netbeans.cubeon.jira.remote.JiraException;
 import org.netbeans.cubeon.jira.repository.JiraTaskRepository;
 import org.netbeans.cubeon.jira.repository.attributes.JiraAction;
-import org.netbeans.cubeon.jira.repository.attributes.JiraComment;
-import org.netbeans.cubeon.jira.repository.attributes.JiraProject;
-import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Component;
-import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Version;
 import org.netbeans.cubeon.jira.repository.ui.JiraActionsProvider;
 import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
 import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider;
@@ -47,70 +42,37 @@ import org.openide.util.lookup.Lookups;
  *
  * @author Anuradha G
  */
-public class JiraTask implements TaskElement {
+public class JiraTask extends JiraRemoteTask implements TaskElement {
 
-    private String id;
-    private String name;
-    private String description;
-    private String urlString;
     private JiraTaskRepository taskRepository;
-    private TaskPriority priority;
-    private TaskStatus status;
-    private TaskType type;
-    private TaskResolution resolution;
-    private Date created;
-    private Date updated;
-    private boolean modifiedFlag;
-    private TaskEditorProvider editorProvider;
-    private JiraTaskElementExtension extension;
     private boolean local;
-    private JiraProject project;
-    private String environment;
-    private String reporter;
-    private String assignee;
-    private List<JiraProject.Component> components = new ArrayList<JiraProject.Component>(0);
-    private List<JiraProject.Version> affectedVersions = new ArrayList<JiraProject.Version>(0);
-    private List<JiraProject.Version> fixVersions = new ArrayList<JiraProject.Version>(0);
-    private List<JiraComment> comments = new ArrayList<JiraComment>();
     private List<String> editFieldIds = new ArrayList<String>();
     private JiraActionsProvider actionsProvider = new JiraActionsProvider();
     private JiraAction action;
+    private String urlString;
     private String newComment;
+    private boolean modifiedFlag;
+    private TaskEditorProvider editorProvider;
+    private JiraTaskElementExtension extension;
 
     public JiraTask(String id, String name, String description,
             JiraTaskRepository taskRepository) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
+        super(id, name, description);
         this.taskRepository = taskRepository;
         extension = new JiraTaskElementExtension(this);
         editorProvider = new TaskEditorProviderImpl(this);
 
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
+    @Override
     public void setName(String name) {
-        this.name = name;
+        super.setName(name);
         extension.fireNameChenged();
     }
 
-    public String getDescription() {
-        return description;
-    }
-
+    @Override
     public void setDescription(String description) {
-        this.description = description;
+       super.setDescription(description);
         extension.fireDescriptionChenged();
     }
 
@@ -122,60 +84,32 @@ public class JiraTask implements TaskElement {
         return Lookups.fixed(this, editorProvider, extension);
     }
 
-    public TaskPriority getPriority() {
-        return priority;
-    }
-
+    @Override
     public void setPriority(TaskPriority priority) {
-        this.priority = priority;
+        super.setPriority(priority);
         extension.firePriorityChenged();
     }
 
-    public TaskStatus getStatus() {
-        return status;
-    }
-
+    @Override
     public void setStatus(TaskStatus status) {
-        this.status = status;
+        super.setStatus(status);
         extension.fireStatusChenged();
     }
 
-    public TaskType getType() {
-        return type;
-    }
-
+    @Override
     public void setType(TaskType type) {
-        this.type = type;
+        super.setType(type);
         extension.fireTypeChenged();
     }
 
-    public TaskResolution getResolution() {
-        return resolution;
-    }
-
+    @Override
     public void setResolution(TaskResolution resolution) {
-        this.resolution = resolution;
+       super.setResolution(resolution);
         extension.fireResolutionChenged();
     }
 
-    public JiraProject getProject() {
-        return project;
-    }
-
-    public void setProject(JiraProject project) {
-        this.project = project;
-    }
-
-    public String getEnvironment() {
-        return environment;
-    }
-
-    public void setEnvironment(String environment) {
-        this.environment = environment;
-    }
-
     public boolean isCompleted() {
-        return resolution != null;
+        return getResolution() != null;
     }
 
     public Image getImage() {
@@ -225,69 +159,12 @@ public class JiraTask implements TaskElement {
         return null;
     }
 
-    public Date getCreated() {
-        return created;
-    }
-
-    public void setCreated(Date created) {
-        this.created = created;
-    }
-
-    public Date getUpdated() {
-        return updated;
-    }
-
-    public void setUpdated(Date updated) {
-        this.updated = updated;
-    }
-
     public boolean isLocal() {
         return local;
     }
 
     public void setLocal(boolean local) {
         this.local = local;
-    }
-
-    public List<Version> getAffectedVersions() {
-        return new ArrayList<Version>(affectedVersions);
-    }
-
-    public void setAffectedVersions(List<Version> affectedVersions) {
-        this.affectedVersions = new ArrayList<Version>(affectedVersions);
-    }
-
-    public List<Component> getComponents() {
-        return new ArrayList<Component>(components);
-    }
-
-    public void setComponents(List<Component> components) {
-        this.components = new ArrayList<Component>(components);
-    }
-
-    public List<Version> getFixVersions() {
-        return new ArrayList<Version>(fixVersions);
-    }
-
-    public void setFixVersions(List<Version> fixVersions) {
-        this.fixVersions = new ArrayList<Version>(fixVersions);
-
-    }
-
-    public String getAssignee() {
-        return assignee;
-    }
-
-    public void setAssignee(String assignee) {
-        this.assignee = assignee;
-    }
-
-    public String getReporter() {
-        return reporter;
-    }
-
-    public void setReporter(String reporter) {
-        this.reporter = reporter;
     }
 
     public JiraAction getAction() {
@@ -312,14 +189,6 @@ public class JiraTask implements TaskElement {
 
     public void setActions(List<JiraAction> actions) {
         actionsProvider.setActions(actions);
-    }
-
-    public List<JiraComment> getComments() {
-        return new ArrayList<JiraComment>(comments);
-    }
-
-    public void setComments(List<JiraComment> comments) {
-        this.comments = new ArrayList<JiraComment>(comments);
     }
 
     public JiraActionsProvider getActionsProvider() {
@@ -359,7 +228,7 @@ public class JiraTask implements TaskElement {
             return false;
         }
         final JiraTask other = (JiraTask) obj;
-        if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
+        if (this.getId() != other.getId() && (this.getId() == null || !this.getId().equals(other.getId()))) {
             return false;
         }
         if (this.taskRepository != other.taskRepository && (this.taskRepository == null || !this.taskRepository.equals(other.taskRepository))) {
@@ -371,7 +240,7 @@ public class JiraTask implements TaskElement {
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 79 * hash + (this.id != null ? this.id.hashCode() : 0);
+        hash = 79 * hash + (this.getId() != null ? this.getId().hashCode() : 0);
         hash = 79 * hash + (this.taskRepository != null ? this.taskRepository.hashCode() : 0);
         return hash;
     }

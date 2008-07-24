@@ -202,4 +202,28 @@ public class JiraRemoteTask {
     public void setComments(List<JiraComment> comments) {
         this.comments = new ArrayList<JiraComment>(comments);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final JiraRemoteTask other = (JiraRemoteTask) obj;
+        if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 71 * hash + (this.id != null ? this.id.hashCode() : 0);
+        return hash;
+    }
+
+    
 }
