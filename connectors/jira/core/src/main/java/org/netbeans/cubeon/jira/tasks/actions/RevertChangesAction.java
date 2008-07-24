@@ -34,12 +34,14 @@ public class RevertChangesAction extends AbstractAction {
         this.task = task;
         putValue(NAME, "Revert Local Changes");
         putValue(SHORT_DESCRIPTION, "Revert Local Changes");
-        //putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/jira/history.png")));
+    //putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/jira/history.png")));
     }
 
     public void actionPerformed(ActionEvent e) {
-        task.getTaskRepository().revert(task);
         TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
+        factory.save(task);
+        task.getTaskRepository().revert(task);
+
         factory.refresh(task);
     }
 }
