@@ -202,7 +202,7 @@ public class TaskElementNode extends AbstractNode {
         if (container != null) {
             actions.add(new MoveToDefault(container, element));
         }
-        actions.add(null);
+        
         boolean sepetatorAdded = false;
         actions.add(new MoveToAction(container, element));
 
