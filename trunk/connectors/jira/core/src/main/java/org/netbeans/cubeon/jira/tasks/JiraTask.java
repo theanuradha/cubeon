@@ -29,7 +29,6 @@ import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
 import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
-import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskResolution;
 import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
 import org.netbeans.cubeon.tasks.spi.task.TaskType;
@@ -44,7 +43,7 @@ import org.openide.util.lookup.Lookups;
  */
 public class JiraTask extends JiraRemoteTask implements TaskElement {
 
-    private JiraTaskRepository taskRepository;
+   
     private boolean local;
     private List<String> editFieldIds = new ArrayList<String>();
     private JiraActionsProvider actionsProvider = new JiraActionsProvider();
@@ -57,8 +56,8 @@ public class JiraTask extends JiraRemoteTask implements TaskElement {
 
     public JiraTask(String id, String name, String description,
             JiraTaskRepository taskRepository) {
-        super(id, name, description);
-        this.taskRepository = taskRepository;
+        super(taskRepository,id, name, description);
+      
         extension = new JiraTaskElementExtension(this);
         editorProvider = new TaskEditorProviderImpl(this);
 
@@ -76,10 +75,7 @@ public class JiraTask extends JiraRemoteTask implements TaskElement {
         extension.fireDescriptionChenged();
     }
 
-    public TaskRepository getTaskRepository() {
-        return taskRepository;
-    }
-
+   
     public Lookup getLookup() {
         return Lookups.fixed(this, editorProvider, extension);
     }
@@ -212,39 +208,14 @@ public class JiraTask extends JiraRemoteTask implements TaskElement {
     }
 
     public boolean isModifiedFlag() {
-        return modifiedFlag;
+        return modifiedFlag || local;
     }
 
     public void setModifiedFlag(boolean modifiedFlag) {
         this.modifiedFlag = modifiedFlag;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final JiraTask other = (JiraTask) obj;
-        if (this.getId() != other.getId() && (this.getId() == null || !this.getId().equals(other.getId()))) {
-            return false;
-        }
-        if (this.taskRepository != other.taskRepository && (this.taskRepository == null || !this.taskRepository.equals(other.taskRepository))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 79 * hash + (this.getId() != null ? this.getId().hashCode() : 0);
-        hash = 79 * hash + (this.taskRepository != null ? this.taskRepository.hashCode() : 0);
-        return hash;
-    }
-
+    
     public JiraTaskElementExtension getExtension() {
         return extension;
     }

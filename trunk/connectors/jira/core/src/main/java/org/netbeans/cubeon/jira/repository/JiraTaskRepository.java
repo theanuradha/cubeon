@@ -146,9 +146,9 @@ public class JiraTaskRepository implements TaskRepository {
                     handle.start(taskIds.size());
                     try {
                         for (String id : taskIds) {
-                            TaskElement taskElement = getTaskElementById(id);
-                            if (taskElement != null) {
-                                JiraTask jiraTask = taskElement.getLookup().lookup(JiraTask.class);
+                            JiraTask jiraTask = getTaskElementById(id);
+                            if (jiraTask != null && !jiraTask.isLocal()) {
+
                                 handle.progress(jiraTask.getId() + " : " + jiraTask.getName(), taskIds.indexOf(id));
                                 try {
                                     update(jiraTask);

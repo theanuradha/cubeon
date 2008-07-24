@@ -20,6 +20,7 @@ import org.netbeans.cubeon.jira.repository.attributes.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.netbeans.cubeon.jira.repository.JiraTaskRepository;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Component;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Version;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
@@ -50,14 +51,20 @@ public class JiraRemoteTask {
     private List<JiraProject.Version> affectedVersions = new ArrayList<JiraProject.Version>(0);
     private List<JiraProject.Version> fixVersions = new ArrayList<JiraProject.Version>(0);
     private List<JiraComment> comments = new ArrayList<JiraComment>();
+    protected JiraTaskRepository taskRepository;
 
-    public JiraRemoteTask(String id, String name, String description) {
+    public JiraRemoteTask(JiraTaskRepository taskRepository, String id, String name, String description) {
+        this.taskRepository = taskRepository;
         this.id = id;
         this.name = name;
         this.description = description;
 
 
 
+    }
+
+    public JiraTaskRepository getTaskRepository() {
+        return taskRepository;
     }
 
     public String getId() {
@@ -211,8 +218,11 @@ public class JiraRemoteTask {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final JiraRemoteTask other = (JiraRemoteTask) obj;
-        if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
+        final JiraTask other = (JiraTask) obj;
+        if (this.getId() != other.getId() && (this.getId() == null || !this.getId().equals(other.getId()))) {
+            return false;
+        }
+        if (this.taskRepository != other.taskRepository && (this.taskRepository == null || !this.taskRepository.equals(other.taskRepository))) {
             return false;
         }
         return true;
@@ -221,9 +231,8 @@ public class JiraRemoteTask {
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 71 * hash + (this.id != null ? this.id.hashCode() : 0);
+        hash = 79 * hash + (this.getId() != null ? this.getId().hashCode() : 0);
+        hash = 79 * hash + (this.taskRepository != null ? this.taskRepository.hashCode() : 0);
         return hash;
     }
-
-    
 }
