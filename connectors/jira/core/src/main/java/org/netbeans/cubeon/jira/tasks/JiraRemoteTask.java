@@ -14,8 +14,9 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.jira.repository.attributes;
+package org.netbeans.cubeon.jira.tasks;
 
+import org.netbeans.cubeon.jira.repository.attributes.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
