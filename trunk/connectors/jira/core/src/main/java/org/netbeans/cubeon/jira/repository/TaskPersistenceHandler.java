@@ -406,6 +406,25 @@ class TaskPersistenceHandler {
         return null;
     }
 
+    JiraRemoteTask getJiraRemoteTaskById(String id) {
+        Document taskDocument = getTaskDocument(id);
+        Element rootElement = getRootElement(taskDocument);
+        Element element = findElement(rootElement, TAG_TASK, NAMESPACE);
+        if (element != null) {
+            String name = element.getAttributeNS(NAMESPACE, TAG_NAME);
+            String description = element.getAttributeNS(NAMESPACE, TAG_DESCRIPTION);
+
+
+            JiraRemoteTask jiraTask = new JiraRemoteTask(jiraTaskRepository, id, name, description);
+            readRemoteTask(element, jiraTask);
+
+
+            return jiraTask;
+
+        }
+        return null;
+    }
+
     void vaidate(TaskElement element) {
         //do validations changes here
     }
