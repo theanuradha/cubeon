@@ -32,6 +32,7 @@ import org.netbeans.cubeon.jira.query.JiraQuerySupport;
 import org.netbeans.cubeon.jira.remote.JiraException;
 import org.netbeans.cubeon.jira.remote.JiraSession;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject;
+import org.netbeans.cubeon.jira.tasks.JiraRemoteTask;
 import org.netbeans.cubeon.jira.tasks.JiraTask;
 import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
@@ -71,6 +72,7 @@ public class JiraTaskRepository implements TaskRepository {
     private final JiraRepositoryAttributes repositoryAttributes = new JiraRepositoryAttributes();
     private final JiraQuerySupport querySupport;
     private final TaskPersistenceHandler handler;
+    private final TaskPersistenceHandler cache;
     private Map<String, JiraTask> map = new HashMap<String, JiraTask>();
     private FileObject baseDir;
     private State state = State.INACTIVE;
@@ -92,7 +94,8 @@ public class JiraTaskRepository implements TaskRepository {
             }
         }
         attributesPersistence = new JiraAttributesPersistence(this, baseDir);
-        handler = new TaskPersistenceHandler(this, baseDir);
+        handler = new TaskPersistenceHandler(this, baseDir, "tasks");
+        cache = new TaskPersistenceHandler(this, baseDir, "cache");
         querySupport = new JiraQuerySupport(this, extension);
     }
 
@@ -196,8 +199,17 @@ public class JiraTaskRepository implements TaskRepository {
         handler.persist(jiraTask);
     }
 
+    public void cache(JiraRemoteTask remoteTask) {
+
+        cache.persist(remoteTask);
+    }
+
     public String getPassword() {
         return password;
+    }
+
+    public JiraRemoteTask getJiraRemoteTaskCache(String id) {
+        return cache.getJiraRemoteTaskById(id);
     }
 
     public void setPassword(String password) {
@@ -329,10 +341,13 @@ public class JiraTaskRepository implements TaskRepository {
     public void update(RemoteIssue issue, JiraTask task) throws JiraException {
         synchronized (task) {
             if (!task.isLocal()) {
-
-
+                JiraRemoteTask cacheRemoteTask = JiraUtils.issueToTask(this, issue);
+                //make cache up to date
+                cache(cacheRemoteTask);
                 JiraUtils.maregeToTask(this, issue, task);
                 persist(task);
+
+
                 TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
                 factory.refresh(task);
                 task.setModifiedFlag(false);
@@ -372,6 +387,9 @@ public class JiraTaskRepository implements TaskRepository {
                         remoteIssue = js.getIssue(task.getId());
                     }
                     if (remoteIssue != null) {
+                        JiraRemoteTask cacheRemoteTask = JiraUtils.issueToTask(this, remoteIssue);
+                        //make cache up to date
+                        cache(cacheRemoteTask);
                         JiraUtils.maregeToTask(this, remoteIssue, task);
                     }
                     persist(task);
@@ -393,6 +411,9 @@ public class JiraTaskRepository implements TaskRepository {
                         remoteIssue = js.getIssue(task.getId());
                     }
                     if (remoteIssue != null) {
+                        JiraRemoteTask cacheRemoteTask = JiraUtils.issueToTask(this, remoteIssue);
+                        //make cache up to date
+                        cache(cacheRemoteTask);
                         JiraUtils.maregeToTask(this, remoteIssue, task);
                         persist(task);
                     }
