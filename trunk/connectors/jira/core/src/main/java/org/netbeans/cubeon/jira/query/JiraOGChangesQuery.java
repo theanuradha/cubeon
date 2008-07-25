@@ -17,7 +17,9 @@
 package org.netbeans.cubeon.jira.query;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
@@ -35,7 +37,7 @@ import org.openide.util.lookup.Lookups;
 public class JiraOGChangesQuery extends AbstractJiraQuery {
 
     private AtomicBoolean inezilized = new AtomicBoolean(true);
-    private List<String> ids = new ArrayList<String>();
+    private Set<String> ids = new HashSet<String>();
 
     public JiraOGChangesQuery(JiraTaskRepository repository) {
         super(repository, "_outgoing");

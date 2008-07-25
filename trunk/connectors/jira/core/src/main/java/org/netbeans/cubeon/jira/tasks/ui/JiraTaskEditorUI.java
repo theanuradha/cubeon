@@ -366,6 +366,7 @@ public class JiraTaskEditorUI extends javax.swing.JPanel {
             }
         }
         jiraTask.setFixVersions(fixVersions);
+        jiraTask.setModifiedFlag(true);
         jiraTask.getTaskRepository().persist(jiraTask);
         loadDates(jiraTask);
         return jiraTask;
