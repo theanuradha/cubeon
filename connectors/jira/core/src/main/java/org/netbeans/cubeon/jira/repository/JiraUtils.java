@@ -176,7 +176,7 @@ public class JiraUtils {
         JiraRemoteTask remoteTask = issueToTask(repository, issue);
 
         remoteToTask(repository, remoteTask, jiraTask);
-
+        readWorkFlow(repository, jiraTask);
         repository.cache(issueToTask(repository, issue));
         repository.persist(jiraTask);
         repository.getExtension().fireIdChanged(old, jiraTask.getId());

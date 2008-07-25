@@ -326,7 +326,7 @@ class PersistenceHandler {
     }
 
     private static Element findElement(Element parent, String name, String namespace) {
-        Element result = null;
+
         NodeList l = parent.getChildNodes();
         int len = l.getLength();
         for (int i = 0; i < len; i++) {
@@ -334,14 +334,10 @@ class PersistenceHandler {
                 Element el = (Element) l.item(i);
                 if (name.equals(el.getLocalName()) &&
                         ((namespace == el.getNamespaceURI()) /*check both namespaces are null*/ || (namespace != null && namespace.equals(el.getNamespaceURI())))) {
-                    if (result == null) {
-                        result = el;
-                    } else {
-                        return null;
-                    }
+                    return el;
                 }
             }
         }
-        return result;
+        return null;
     }
 }
