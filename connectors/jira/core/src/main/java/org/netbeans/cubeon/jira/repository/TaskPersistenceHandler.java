@@ -437,33 +437,33 @@ class TaskPersistenceHandler {
         taskElement.setAttributeNS(NAMESPACE, TAG_PRIORITY, task.getPriority().getId());
         if (task.getStatus() != null) {
             taskElement.setAttributeNS(NAMESPACE, TAG_STATUS, task.getStatus().getId());
-        }else{
-          taskElement.removeAttribute(TAG_STATUS);
-        
+        } else {
+            taskElement.removeAttribute(TAG_STATUS);
+
         }
         taskElement.setAttributeNS(NAMESPACE, TAG_TYPE, task.getType().getId());
         taskElement.setAttributeNS(NAMESPACE, TAG_PROJECT, task.getProject().getId());
 
         if (task.getReporter() != null) {
             taskElement.setAttributeNS(NAMESPACE, TAG_REPORTER, task.getReporter());
-        }else{
-          taskElement.removeAttribute(TAG_REPORTER);
-        
+        } else {
+            taskElement.removeAttribute(TAG_REPORTER);
+
         }
         if (task.getAssignee() != null) {
             taskElement.setAttributeNS(NAMESPACE, TAG_ASSIGNEE, task.getAssignee());
-        }else{
-          taskElement.removeAttribute(TAG_ASSIGNEE);
-        
+        } else {
+            taskElement.removeAttribute(TAG_ASSIGNEE);
+
         }
 
 
 
         if (task.getEnvironment() != null) {
             taskElement.setAttributeNS(NAMESPACE, TAG_ENVIRONMENT, task.getEnvironment());
-        }else{
-          taskElement.removeAttribute(TAG_ENVIRONMENT);
-        
+        } else {
+            taskElement.removeAttribute(TAG_ENVIRONMENT);
+
         }
 
         Element componentsElement = getEmptyElement(document, taskElement, TAG_COMPONENTS);
@@ -587,9 +587,13 @@ class TaskPersistenceHandler {
 
             if (task.isLocal()) {
                 taskElement.setAttributeNS(NAMESPACE, TAG_LOCAL, String.valueOf(task.isLocal()));
+            } else {
+                taskElement.removeAttribute(TAG_LOCAL);
             }
             if (task.isModifiedFlag()) {
                 taskElement.setAttributeNS(NAMESPACE, TAG_MODIFIED_FLAG, String.valueOf(task.isModifiedFlag()));
+            } else {
+                taskElement.removeAttribute(TAG_MODIFIED_FLAG);
             }
 
             if (task.getUrlString() != null) {
