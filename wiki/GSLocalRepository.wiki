@@ -1,0 +1,14 @@
+#LocalRepository.
+
+= Getting Started with Local Repository =
+
+ Cube°n Local Repository is for user that want to track there task like TODO Plan etc..
+ Thay can create task with priority (P1,P2 etc..), status(Open,Started etc..) type (Task,) etc and manage there task.
+
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
