@@ -217,7 +217,7 @@ public class JiraUtils {
         if (!remoteTask.getName().equals(issue.getSummary())) {
             jiraTask.setName(issue.getSummary());
         }
-        if (!remoteTask.getDescription().equals(issue.getDescription())) {
+        if (!(issue.getDescription() == null ? "" : issue.getDescription()).equals(remoteTask.getDescription())) {
             jiraTask.setDescription(issue.getDescription());
         }
         if (!(issue.getEnvironment() == null ? "" : issue.getEnvironment()).equals(remoteTask.getEnvironment())) {
