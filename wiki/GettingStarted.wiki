@@ -7,7 +7,7 @@
      * [http://www.atlassian.com/software/jira/ Jira Repository Connector]     
 
   * Task Context *
-     TODO
+     TODO (Plan for grant project)
 
   * Task Monitoring and Filtering *
-     Future
+     TODO (future)
