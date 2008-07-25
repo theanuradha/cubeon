@@ -220,7 +220,7 @@ public class JiraUtils {
         if (!remoteTask.getDescription().equals(issue.getDescription())) {
             jiraTask.setDescription(issue.getDescription());
         }
-        if ( !remoteTask.getEnvironment().equals(issue.getEnvironment())) {
+        if (!(issue.getEnvironment() == null ? "" : issue.getEnvironment()).equals(remoteTask.getEnvironment())) {
             jiraTask.setEnvironment(issue.getEnvironment());
         }
         if (!remoteTask.getProject().getId().equals(issue.getProject())) {
@@ -243,7 +243,7 @@ public class JiraUtils {
         if (!remoteTask.getReporter().equals(issue.getReporter())) {
             jiraTask.setReporter(issue.getReporter());
         }
-        if ( !remoteTask.getAssignee().equals(issue.getAssignee())) {
+        if (!(issue.getAssignee() == null ? "" : issue.getAssignee()).equals(remoteTask.getAssignee())) {
             jiraTask.setAssignee(issue.getAssignee());
         }
         //----------------------------------------------------------------------
