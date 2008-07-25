@@ -2,9 +2,9 @@
 #Getting Started with Cube°n.
 
 = Getting Started with Cube°n =
-
-Add your content here.
-
+  *Task Repository Connectors*
+     *Local Repository
+     *[Jira Repository Connecter http://www.atlassian.com/software/jira/]     
 
 = Details =
 
