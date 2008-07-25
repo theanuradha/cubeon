@@ -173,9 +173,9 @@ public class JiraUtils {
         jiraTask.setUrlString(repository.getURL() + "/browse/" + issue.getKey());//NOI18N
         jiraTask.setId(issue.getKey());
         jiraTask.setLocal(false);
-        JiraRemoteTask remoteTask = repository.getJiraRemoteTaskCache(issue.getKey());
+        JiraRemoteTask remoteTask = issueToTask(repository, issue);
 
-        JiraUtils.maregeToTask(repository, issue, remoteTask, jiraTask);
+        remoteToTask(repository, remoteTask, jiraTask);
 
         repository.cache(issueToTask(repository, issue));
         repository.persist(jiraTask);
@@ -212,6 +212,7 @@ public class JiraUtils {
     public static void maregeToTask(JiraTaskRepository repository, RemoteIssue issue, JiraRemoteTask remoteTask, JiraTask jiraTask) throws JiraException {
         if (remoteTask == null) {
             remoteTask = issueToTask(repository, issue);
+            remoteToTask(repository, remoteTask, jiraTask);
         }
 
         if (!remoteTask.getName().equals(issue.getSummary())) {
