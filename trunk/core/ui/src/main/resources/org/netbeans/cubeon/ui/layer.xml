@@ -41,12 +41,15 @@
             <file name="TaskRepositoriesTopComponent.settings" url="TaskRepositoriesTopComponentSettings.xml"/>
         </folder>
         <folder name="Modes">
-            <folder name="commonpalette">
+            <folder name="explorer">
                 <file name="TaskExplorerTopComponent.wstcref" url="TaskExplorerTopComponentWstcref.xml"/>
+            </folder>
+            <folder name="navigator">
+                <file name="TaskRepositoriesTopComponent.wstcref" url="TaskRepositoriesTopComponentWstcref.xml"/>
             </folder>
             <folder name="output">
                 <file name="ResultsTopComponent.wstcref" url="ResultsTopComponentWstcref.xml"/>
-                <file name="TaskRepositoriesTopComponent.wstcref" url="TaskRepositoriesTopComponentWstcref.xml"/>
+
             </folder>
         </folder>
     </folder>
