@@ -437,21 +437,33 @@ class TaskPersistenceHandler {
         taskElement.setAttributeNS(NAMESPACE, TAG_PRIORITY, task.getPriority().getId());
         if (task.getStatus() != null) {
             taskElement.setAttributeNS(NAMESPACE, TAG_STATUS, task.getStatus().getId());
+        }else{
+          taskElement.removeAttribute(TAG_STATUS);
+        
         }
         taskElement.setAttributeNS(NAMESPACE, TAG_TYPE, task.getType().getId());
         taskElement.setAttributeNS(NAMESPACE, TAG_PROJECT, task.getProject().getId());
 
         if (task.getReporter() != null) {
             taskElement.setAttributeNS(NAMESPACE, TAG_REPORTER, task.getReporter());
+        }else{
+          taskElement.removeAttribute(TAG_REPORTER);
+        
         }
         if (task.getAssignee() != null) {
             taskElement.setAttributeNS(NAMESPACE, TAG_ASSIGNEE, task.getAssignee());
+        }else{
+          taskElement.removeAttribute(TAG_ASSIGNEE);
+        
         }
 
 
 
         if (task.getEnvironment() != null) {
             taskElement.setAttributeNS(NAMESPACE, TAG_ENVIRONMENT, task.getEnvironment());
+        }else{
+          taskElement.removeAttribute(TAG_ENVIRONMENT);
+        
         }
 
         Element componentsElement = getEmptyElement(document, taskElement, TAG_COMPONENTS);
