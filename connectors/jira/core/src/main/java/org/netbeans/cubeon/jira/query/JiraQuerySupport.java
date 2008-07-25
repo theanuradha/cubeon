@@ -165,4 +165,10 @@ public class JiraQuerySupport implements TaskQuerySupportProvider {
         }
         return false;
     }
+
+    public JiraOGChangesQuery getOutgoingQuery() {
+        return outgoingQuery;
+    }
+
+    
 }

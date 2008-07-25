@@ -197,6 +197,12 @@ public class JiraTaskRepository implements TaskRepository {
         JiraTask jiraTask = element.getLookup().lookup(JiraTask.class);
         assert jiraTask != null;
         handler.persist(jiraTask);
+        //notify to outgoing query about modified state
+        if (jiraTask.isModifiedFlag()) {
+            querySupport.getOutgoingQuery().addTaskId(id);
+        } else {
+            querySupport.getOutgoingQuery().removeTaskId(id);
+        }
     }
 
     public void revert(JiraTask task) {
