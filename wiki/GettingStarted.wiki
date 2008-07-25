@@ -4,7 +4,7 @@
 = Getting Started with Cube°n =
   * Task Repository Connectors*
      * Local Repository
-     * [ http://www.atlassian.com/software/jira/ Jira Repository Connecter ]     
+     * [http://www.atlassian.com/software/jira/ Jira Repository Connecter]     
 
 = Details =
 
