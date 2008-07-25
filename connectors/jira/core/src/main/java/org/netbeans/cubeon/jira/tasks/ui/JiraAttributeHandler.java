@@ -71,8 +71,9 @@ public class JiraAttributeHandler implements EditorAttributeHandler {
     }
 
     public TaskElement save() {
+       
         JiraTask task = editorUI.save();
-        task.setModifiedFlag(true);
+        
         task.getExtension().fireStateChenged();
         return task;
     }
