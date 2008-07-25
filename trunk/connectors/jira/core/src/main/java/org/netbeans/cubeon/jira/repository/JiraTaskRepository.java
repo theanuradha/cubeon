@@ -199,9 +199,9 @@ public class JiraTaskRepository implements TaskRepository {
         handler.persist(jiraTask);
         //notify to outgoing query about modified state
         if (jiraTask.isModifiedFlag()) {
-            querySupport.getOutgoingQuery().addTaskId(id);
+            querySupport.getOutgoingQuery().addTaskId(element.getId());
         } else {
-            querySupport.getOutgoingQuery().removeTaskId(id);
+            querySupport.getOutgoingQuery().removeTaskId(element.getId());
         }
     }
 
