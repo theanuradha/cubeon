@@ -106,4 +106,14 @@ public class JiraOGChangesQuery extends AbstractJiraQuery {
 
         return elements;
     }
+
+    public void removeTaskId(String id) {
+        ids.remove(id);
+        extension.fireSynchronized();
+    }
+
+    public void addTaskId(String id) {
+        ids.add(id);
+        extension.fireSynchronized();
+    }
 }
