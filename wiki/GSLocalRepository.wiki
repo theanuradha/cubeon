@@ -1,5 +1,3 @@
-#LocalRepository.
-
 = Getting Started with Local Repository =
 
  Cube°n Local Repository is for user that want to track there task like TODO Plan etc..
