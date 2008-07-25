@@ -93,7 +93,7 @@ public class JiraCommentsEditor extends javax.swing.JPanel implements ExplorerMa
         loadComments();
         txtComment.setText(editorUI.getJiraTask().getNewComment());
         txtComment.getDocument().addDocumentListener(editorUI.documentListener);
-        txtComment.setEditable(editorUI.getJiraTask().isLocal());
+        txtComment.setEditable(!editorUI.getJiraTask().isLocal());
         
     }
 
