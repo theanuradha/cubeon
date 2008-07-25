@@ -127,6 +127,7 @@ class TaskFolderImpl implements TaskFolder, TaskFolderRefreshable {
         TaskFolderImpl impl = folder.getLookup().lookup(TaskFolderImpl.class);
         assert impl != null;
         taskFolders.add(impl);
+        impl.parent = this;
         return impl;
     }
 
@@ -145,13 +146,13 @@ class TaskFolderImpl implements TaskFolder, TaskFolderRefreshable {
         return new ArrayList<TaskFolder>(taskFolders);
     }
 
-     TaskElement addTaskElement(TaskElement element) {
+    TaskElement addTaskElement(TaskElement element) {
 
         taskElements.add(element);
         return element;
     }
 
-     boolean removeTaskElement(TaskElement element) {
+    boolean removeTaskElement(TaskElement element) {
 
         taskElements.remove(element);
         return true;
@@ -187,7 +188,7 @@ class TaskFolderImpl implements TaskFolder, TaskFolderRefreshable {
         return taskElements.contains(element);
     }
 
-     void setTaskQuery(TaskQuery query) {
+    void setTaskQuery(TaskQuery query) {
         deregisterEventAdapter();
         this.taskQuery = query;
 
