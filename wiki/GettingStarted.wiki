@@ -9,5 +9,5 @@
   * Task Context *
      TODO (Plan for grant project)
 
-  * Task Monitoring and Filtering *
+  * Focused UI *
      TODO (future)
