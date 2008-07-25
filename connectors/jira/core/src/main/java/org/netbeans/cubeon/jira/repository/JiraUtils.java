@@ -220,7 +220,7 @@ public class JiraUtils {
         if (!remoteTask.getDescription().equals(issue.getDescription())) {
             jiraTask.setDescription(issue.getDescription());
         }
-        if (!(remoteTask.getEnvironment() == (issue.getEnvironment())/*check both null*/) || !remoteTask.getEnvironment().equals(issue.getEnvironment())) {
+        if (!(remoteTask.getEnvironment() == null && (issue.getEnvironment()) == null/*check both null*/) || !remoteTask.getEnvironment().equals(issue.getEnvironment())) {
             jiraTask.setEnvironment(issue.getEnvironment());
         }
         if (!remoteTask.getProject().getId().equals(issue.getProject())) {
@@ -243,7 +243,7 @@ public class JiraUtils {
         if (!remoteTask.getReporter().equals(issue.getReporter())) {
             jiraTask.setReporter(issue.getReporter());
         }
-        if (!(remoteTask.getAssignee() == issue.getAssignee()/*check both null*/) || !remoteTask.getAssignee().equals(issue.getAssignee())) {
+        if (!(remoteTask.getAssignee() == null && issue.getAssignee() == null/*check both null*/) || !remoteTask.getAssignee().equals(issue.getAssignee())) {
             jiraTask.setAssignee(issue.getAssignee());
         }
         //----------------------------------------------------------------------
