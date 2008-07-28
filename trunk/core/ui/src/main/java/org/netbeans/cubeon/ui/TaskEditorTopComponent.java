@@ -198,14 +198,17 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
     public void save() throws IOException {
         eah.save();
         editorNode.setModified(false);
+         setName(eah.getName());
     }
 
     public void refresh() {
         eah.refresh();
         editorNode.setModified(false);
+         setName(eah.getName());
     }
 
     public void stateChanged(ChangeEvent e) {
+        setName(eah.getName()+"*");
         editorNode.setModified(true);
     }
 

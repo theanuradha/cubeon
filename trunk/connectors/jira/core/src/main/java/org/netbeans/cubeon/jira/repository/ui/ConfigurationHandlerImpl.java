@@ -49,6 +49,9 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
             txtName.setText(taskRepository.getName());
             txtUiserId.setText(repository.getUserName());
             txtPassword.setText(repository.getPassword());
+            if (repository.getProjectKey() != null) {
+                txtId.setText(repository.getURL() + "/browse/" + repository.getProjectKey());
+            }
         } else {
             txtName.requestFocus();
         }
@@ -63,7 +66,16 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
 
         repository.setUserName(txtUiserId.getText().trim());
         repository.setPassword(new String(txtPassword.getPassword()));
-        repository.setURL(txtId.getText().trim());
+        String url = txtId.getText().trim();
+        if (url.contains("/browse/")) {
+            String[] tages = url.split("/browse/");
+            url = tages[0];
+            repository.setProjectKey(tages[1]);
+        } else {
+            repository.setProjectKey(null);
+        }
+
+        repository.setURL(url);
         return repository;
     }
 
@@ -222,17 +234,28 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
         jProgressBar1.setVisible(true);
         btnValidate.setEnabled(false);
 
-        RequestProcessor.getDefault().post(new Runnable() {                                                
+        RequestProcessor.getDefault().post(new Runnable() {
 
             public void run() {
                 try {
-                    new JiraSession(txtId.getText().trim(),
+                    String url = txtId.getText().trim();
+                    String key = null;
+                    if (url.contains("/browse/")) {
+                        String[] tages = url.split("/browse/");
+                        url = tages[0];
+                        key = tages[1];
+                    }
+
+                    JiraSession session = new JiraSession(url,
                             txtUiserId.getText().trim(), new String(txtPassword.getPassword()));
-                    lblNotify.setText("Configuration valid.");                                           
-                    lblNotify.setForeground(Color.blue);//GEN-HEADEREND:event_btnValidateActionPerformed
+                    if (key != null) {
+                        session.getProjectByKey(key);
+                    }
+                    lblNotify.setText("Configuration valid.");
+                    lblNotify.setForeground(Color.blue);
                 } catch (JiraException ex) {
                     lblNotify.setText("<html>" + ex.getMessage() + "</html>");
-                    lblNotify.setForeground(Color.RED);//GEN-LAST:event_btnValidateActionPerformed
+                    lblNotify.setForeground(Color.RED);
                 } finally {
                     jProgressBar1.setVisible(false);
                     btnValidate.setEnabled(true);
@@ -240,7 +263,7 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
             }
         });
 
-    }
+    }//GEN-LAST:event_btnValidateActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnValidate;
     private javax.swing.JLabel jLabel1;

@@ -17,8 +17,6 @@
 
 package org.netbeans.cubeon.jira.remote;
 
-import java.io.IOException;
-
 /**
  *
  * @author Anuradha

@@ -21,6 +21,7 @@ import org.netbeans.cubeon.tasks.spi.Extension;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.repository.RepositoryEventAdapter;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
+import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
@@ -53,6 +54,7 @@ public class JiraRepositoryExtension implements Extension {
         return lookup;
     }
     //events---------------------------
+
     public void fireNameChenged() {
         Collection<? extends RepositoryEventAdapter> adapters = lookup.lookupAll(RepositoryEventAdapter.class);
         for (RepositoryEventAdapter adapter : adapters) {
@@ -75,7 +77,6 @@ public class JiraRepositoryExtension implements Extension {
         }
     }
 
-
     public void fireQueryRemoved(TaskQuery query) {
         Collection<? extends RepositoryEventAdapter> adapters = lookup.lookupAll(RepositoryEventAdapter.class);
         for (RepositoryEventAdapter adapter : adapters) {
@@ -89,10 +90,18 @@ public class JiraRepositoryExtension implements Extension {
             adapter.stateChanged(state);
         }
     }
-     public void fireIdChanged(String oldId,String newId) {
+
+    public void fireIdChanged(String oldId, String newId) {
         Collection<? extends RepositoryEventAdapter> adapters = lookup.lookupAll(RepositoryEventAdapter.class);
         for (RepositoryEventAdapter adapter : adapters) {
             adapter.taskElementIdChenged(oldId, newId);
+        }
+    }
+
+    public void fireTaskRemoved(TaskElement element) {
+        Collection<? extends RepositoryEventAdapter> adapters = lookup.lookupAll(RepositoryEventAdapter.class);
+        for (RepositoryEventAdapter adapter : adapters) {
+            adapter.taskElementRemoved(element);
         }
     }
 }

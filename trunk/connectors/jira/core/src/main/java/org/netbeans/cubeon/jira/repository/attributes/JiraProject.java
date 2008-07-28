@@ -31,7 +31,8 @@ public class JiraProject {
     private final String lead;
     private List<Component> components = new ArrayList<Component>(0);
     private List<Version> versions = new ArrayList<Version>(0);
-
+    private List<JiraUser> users = new ArrayList<JiraUser>(0);
+    
     public JiraProject(String id, String name, String description, String lead) {
         this.id = id;
         this.name = name;
@@ -92,6 +93,22 @@ public class JiraProject {
         return null;
     }
 
+    public List<JiraUser> getUsers() {
+        return new ArrayList<JiraUser>(users);
+    }
+
+    public void setUsers(List<JiraUser> users) {
+        this.users = new ArrayList<JiraUser>(users);
+    }
+
+    public JiraUser getUserById(String id) {
+        for (JiraUser user : users) {
+            if (user.getId().equals(id)) {
+                return user;
+            }
+        }
+        return null;
+    }
     public static class Version {
 
         private final String id;
