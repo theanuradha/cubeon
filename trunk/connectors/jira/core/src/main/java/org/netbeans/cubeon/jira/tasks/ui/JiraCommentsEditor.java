@@ -272,7 +272,7 @@ public class JiraCommentsEditor extends javax.swing.JPanel implements ExplorerMa
         txtDisplayComment.setWrapStyleWord(true);
         jsDisplay.setViewportView(txtDisplayComment);
 
-        lblAuthor.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        lblAuthor.setFont(new java.awt.Font("Tahoma", 1, 11));
         lblAuthor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/cubeon/jira/comment.png"))); // NOI18N
         lblAuthor.setText(NbBundle.getMessage(JiraCommentsEditor.class, "JiraCommentsEditor.lblAuthor.text", new Object[] {})); // NOI18N
 
@@ -325,7 +325,7 @@ public class JiraCommentsEditor extends javax.swing.JPanel implements ExplorerMa
                 .add(11, 11, 11)
                 .add(lblCommemt)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 147, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
