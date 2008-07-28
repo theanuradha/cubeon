@@ -131,14 +131,14 @@ class PersistenceHandler {
         save(document);
     }
 
-    void persistFolder(TaskFolderImpl folderImpl,String newName) {
+    void persistFolder(TaskFolderImpl folderImpl, String newName) {
         Document document = getDocument();
         Element root = getRootElement(document);
         Element foldersElement = findElement(root, TAG_FOLDERS, NAMESPACE);
         //check foldersElement not null and remove element
         if (foldersElement != null) {
             Element folderElement = findFolderElement(document, root, folderImpl);
-            folderElement.setAttribute(TAG_NAME,newName);
+            folderElement.setAttribute(TAG_NAME, newName);
             folderElement.setAttribute(TAG_DESCRIPTION, folderImpl.getDescription());
         }
         save(document);
@@ -180,22 +180,23 @@ class PersistenceHandler {
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element element = (Element) node;
                     Element tasksElement = findElement(element, TAG_TASKS, NAMESPACE);
-                    NodeList taskNodes =
-                            tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_TASK);
+                    if (tasksElement != null) {
+                        NodeList taskNodes =
+                                tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_TASK);
 
-                    for (int j = 0; j < taskNodes.getLength(); j++) {
-                        Node taskNode = taskNodes.item(j);
-                        if (taskNode.getNodeType() == Node.ELEMENT_NODE) {
-                            Element taskElement = (Element) taskNode;
-                            String id = taskElement.getAttributeNS(NAMESPACE, TAG_ID);
-                            if (oldId.equals(id)) {
+                        for (int j = 0; j < taskNodes.getLength(); j++) {
+                            Node taskNode = taskNodes.item(j);
+                            if (taskNode.getNodeType() == Node.ELEMENT_NODE) {
+                                Element taskElement = (Element) taskNode;
+                                String id = taskElement.getAttributeNS(NAMESPACE, TAG_ID);
+                                if (oldId.equals(id)) {
 
-                                taskElement.setAttributeNS(NAMESPACE, TAG_ID, newId);
-                                break;
+                                    taskElement.setAttributeNS(NAMESPACE, TAG_ID, newId);
+                                    break;
+                                }
                             }
                         }
                     }
-
                     save(document);
 
                 }
@@ -425,7 +426,7 @@ class PersistenceHandler {
     }
 
     private static Element findElement(Element parent, String name, String namespace) {
-        
+
         NodeList l = parent.getChildNodes();
         int len = l.getLength();
         for (int i = 0; i < len; i++) {
