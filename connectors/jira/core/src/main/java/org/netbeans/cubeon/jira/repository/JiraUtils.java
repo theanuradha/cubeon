@@ -179,6 +179,8 @@ public class JiraUtils {
         readWorkFlow(repository, jiraTask);
         repository.cache(issueToTask(repository, issue));
         repository.persist(jiraTask);
+        //remove old id from outgoing query
+        repository.getQuerySupport().getOutgoingQuery().removeTaskId(old);
         repository.getExtension().fireIdChanged(old, jiraTask.getId());
         return jiraTask;
 
@@ -453,6 +455,7 @@ public class JiraUtils {
 
         return versionIds.size() > 0;
     }
+
 }
 
 

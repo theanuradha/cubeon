@@ -67,6 +67,12 @@ public class DefaultFileSystem implements TasksFileSystem {
             public void taskElementIdChenged(String oldId, String newId) {
                 handler.changeTaskElementId(oldId, newId);
             }
+
+            @Override
+            public void taskElementRemoved(TaskElement element) {
+                super.taskElementRemoved(element);
+            }
+
         };
         TaskRepositoryHandler repositoryHandler = context.getLookup().lookup(TaskRepositoryHandler.class);
         for (TaskRepository repository : repositoryHandler.getTaskRepositorys()) {

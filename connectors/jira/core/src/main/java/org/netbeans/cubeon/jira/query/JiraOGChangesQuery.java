@@ -78,7 +78,7 @@ public class JiraOGChangesQuery extends AbstractJiraQuery {
                         List<String> taskIds = repository.getTaskIds();
                         for (String id : taskIds) {
                             JiraTask jt = repository.getTaskElementById(id);
-                            if (jt.isModifiedFlag()) {
+                            if (jt!=null && jt.isModifiedFlag()) {
                                 ids.add(id);
                             }
                         }

@@ -17,6 +17,7 @@
 package org.netbeans.cubeon.tasks.spi.repository;
 
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
+import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 
 /**
  *
@@ -33,6 +34,9 @@ public class RepositoryEventAdapter {
     public void taskElementIdChenged(String oldId, String newId) {
     }
 
+    public void taskElementRemoved(TaskElement element) {
+    }
+
     /**
      *
      */
@@ -45,5 +49,6 @@ public class RepositoryEventAdapter {
     public void queryRemoved(TaskQuery query) {
     }
 
-    public void stateChanged(TaskRepository.State state){}
+    public void stateChanged(TaskRepository.State state) {
+    }
 }

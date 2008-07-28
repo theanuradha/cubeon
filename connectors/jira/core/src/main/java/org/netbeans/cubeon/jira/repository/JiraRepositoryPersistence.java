@@ -46,6 +46,7 @@ class JiraRepositoryPersistence {
     private static final String TAG_ID = "id";
     private static final String TAG_USERID = "user";
     private static final String TAG_URL = "url";
+    private static final String TAG_PROJECT = "project";
     private static final String TAG_PASSWORD_HASH = "password";
     private static final String TAG_NAME = "name";
     private static final String TAG_DESCRIPTION = "description";
@@ -92,6 +93,11 @@ class JiraRepositoryPersistence {
         repositoryElement.setAttributeNS(NAMESPACE, TAG_DESCRIPTION, repository.getDescription());
         repositoryElement.setAttributeNS(NAMESPACE, TAG_USERID, repository.getUserName());
         repositoryElement.setAttributeNS(NAMESPACE, TAG_URL, repository.getURL());
+        if (repository.getProjectKey() != null && repository.getProjectKey().trim().length() > 0) {
+            repositoryElement.setAttributeNS(NAMESPACE, TAG_PROJECT, repository.getProjectKey());
+        } else {
+            repositoryElement.removeAttributeNS(NAMESPACE, TAG_PROJECT);
+        }
         repositoryElement.setAttributeNS(NAMESPACE, TAG_PASSWORD_HASH, repository.getPassword());//FIXME add hash
 
         putConfigurationFragment(repositorysElement);
@@ -147,12 +153,19 @@ class JiraRepositoryPersistence {
                     String description = element.getAttribute(TAG_DESCRIPTION);
                     String url = element.getAttribute(TAG_URL);
                     String user = element.getAttribute(TAG_USERID);
+                    String project = element.getAttribute(TAG_PROJECT);
+
                     String password = element.getAttribute(TAG_PASSWORD_HASH);//FIXME
                     //FIXME
                     JiraTaskRepository jiraTaskRepository = new JiraTaskRepository(provider, id, name, description);
                     jiraTaskRepository.setUserName(user);
                     jiraTaskRepository.setPassword(password);
                     jiraTaskRepository.setURL(url);
+                    if (project == null || project.trim().length() == 0) {
+                        jiraTaskRepository.setProjectKey(null);
+                    } else {
+                        jiraTaskRepository.setProjectKey(project);
+                    }
                     jiraTaskRepository.loadAttributes();
                     repositorys.add(jiraTaskRepository);
                 }
@@ -164,11 +177,6 @@ class JiraRepositoryPersistence {
 
 
     }
-
-
-
-
-
 
     //xml related
     private Element getConfigurationFragment(final String elementName, final String namespace) {
@@ -261,7 +269,7 @@ class JiraRepositoryPersistence {
     }
 
     private static Element findElement(Element parent, String name, String namespace) {
-        
+
         NodeList l = parent.getChildNodes();
         int len = l.getLength();
         for (int i = 0; i < len; i++) {

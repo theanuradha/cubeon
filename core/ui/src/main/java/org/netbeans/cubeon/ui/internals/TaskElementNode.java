@@ -202,7 +202,7 @@ public class TaskElementNode extends AbstractNode {
         if (container != null) {
             actions.add(new MoveToDefault(container, element));
         }
-        
+
         boolean sepetatorAdded = false;
         actions.add(new MoveToAction(container, element));
 
@@ -253,7 +253,8 @@ public class TaskElementNode extends AbstractNode {
 
             buffer.append(TAG);
         }
-        buffer.append("<xmp>").append(element.getName()).append("</xmp>");
+        buffer.append("<xmp>").append(element.getName());
+        buffer.append("</xmp>");
         buffer.append("</html>");
         return buffer.toString();
     }

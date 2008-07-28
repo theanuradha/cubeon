@@ -30,6 +30,8 @@ import com.dolby.jira.net.soap.jira.RemoteIssueType;
 import com.dolby.jira.net.soap.jira.RemoteNamedObject;
 import com.dolby.jira.net.soap.jira.RemotePriority;
 import com.dolby.jira.net.soap.jira.RemoteProject;
+import com.dolby.jira.net.soap.jira.RemoteProjectRole;
+import com.dolby.jira.net.soap.jira.RemoteProjectRoleActors;
 import com.dolby.jira.net.soap.jira.RemoteResolution;
 import com.dolby.jira.net.soap.jira.RemoteStatus;
 import com.dolby.jira.net.soap.jira.RemoteVersion;
@@ -47,8 +49,6 @@ public class JiraSession {
 
     public JiraSession(String url, String user, String pass) throws JiraException {
         try {
-
-
             JiraSoapServiceServiceLocator fJiraSoapServiceGetter = new JiraSoapServiceServiceLocator();
 
             String serverURL = url;
@@ -248,6 +248,38 @@ public class JiraSession {
     public RemoteIssueType[] getSubTaskIssueTypes() throws JiraException {
         try {
             return service.getSubTaskIssueTypes(token);
+        } catch (Exception ex) {
+            throw new JiraException(ex);
+        }
+    }
+
+    public RemoteProject getProjectByKey(String key) throws JiraException {
+        try {
+            return service.getProjectByKey(token, key);
+        } catch (Exception ex) {
+            throw new JiraException(ex);
+        }
+    }
+
+    public RemoteProjectRole getRemoteProjectRoleByKey(String key) throws JiraException {
+        try {
+            return null;
+        } catch (Exception ex) {
+            throw new JiraException(ex);
+        }
+    }
+
+    public RemoteProjectRole[] getRemoteProjectRoles() throws JiraException {
+        try {
+            return service.getProjectRoles(token);
+        } catch (Exception ex) {
+            throw new JiraException(ex);
+        }
+    }
+    
+    public RemoteProjectRoleActors getProjectRoleActors(RemoteProjectRole rpr,RemoteProject project) throws JiraException{
+    try {
+            return service.getProjectRoleActors(token, rpr, project);
         } catch (Exception ex) {
             throw new JiraException(ex);
         }

@@ -49,27 +49,31 @@ import org.openide.util.lookup.Lookups;
  * @author Anuradha
  */
 public class JiraTaskRepository implements TaskRepository {
-    //locks
 
-    private final Object SYNCHRONIZE_LOCK = new Object();
-    private final Object FILTER_UPDATE_LOCK = new Object();
-    //----
     private final JiraTaskRepositoryProvider provider;
     private final String id;
     private String name;
     private String description;
+    /**
+     * Url of the Repository 
+     * Ex:http://jira.repository 
+     */
     private String url;
+    /**this is key of the project if repository for singel project   
+     * ex(CN is key for http://jira.repository/browse/CN)
+     * if null it will download all projects
+     */
+    private String projectKey;
     //----------------------------
     private String userName;
     private String password;
     //----------------------------
     private final JiraRepositoryExtension extension;
-    private final JiraAttributesPersistence attributesPersistence;    //::::::::::::::::
     private final JiraTaskPriorityProvider jtpp = new JiraTaskPriorityProvider();
     private final JiraTaskTypeProvider jttp = new JiraTaskTypeProvider();
     private final JiraTaskStatusProvider jtsp = new JiraTaskStatusProvider();
     private final JiraTaskResolutionProvider jtrp = new JiraTaskResolutionProvider();
-    private final JiraRepositoryAttributes repositoryAttributes = new JiraRepositoryAttributes();
+    private final JiraRepositoryAttributes repositoryAttributes;
     private final JiraQuerySupport querySupport;
     private final TaskPersistenceHandler handler;
     private final TaskPersistenceHandler cache;
@@ -77,6 +81,10 @@ public class JiraTaskRepository implements TaskRepository {
     private FileObject baseDir;
     private State state = State.INACTIVE;
     private volatile JiraSession session;
+    //locks
+    private final Object SYNCHRONIZE_LOCK = new Object();
+    private final Object FILTER_UPDATE_LOCK = new Object();
+    //----
 
     public JiraTaskRepository(JiraTaskRepositoryProvider provider,
             String id, String name, String description) {
@@ -93,7 +101,8 @@ public class JiraTaskRepository implements TaskRepository {
                 Exceptions.printStackTrace(ex);
             }
         }
-        attributesPersistence = new JiraAttributesPersistence(this, baseDir);
+
+        repositoryAttributes = new JiraRepositoryAttributes(this);
         handler = new TaskPersistenceHandler(this, baseDir, "tasks");
         cache = new TaskPersistenceHandler(this, baseDir, "cache");
         querySupport = new JiraQuerySupport(this, extension);
@@ -253,6 +262,14 @@ public class JiraTaskRepository implements TaskRepository {
         this.url = url;
     }
 
+    public String getProjectKey() {
+        return projectKey;
+    }
+
+    public void setProjectKey(String projectKey) {
+        this.projectKey = projectKey;
+    }
+
     public JiraTaskRepositoryProvider getProvider() {
         return provider;
     }
@@ -266,7 +283,7 @@ public class JiraTaskRepository implements TaskRepository {
         try {
             setState(State.SYNCHRONIZING);
             ProgressHandle handle = ProgressHandleFactory.createHandle(getName() + ": Updating Attributes");
-            attributesPersistence.refresh(handle);
+            repositoryAttributes.refresh(handle);
             loadAttributes();
             handle.finish();
         } catch (JiraException ex) {
@@ -286,7 +303,7 @@ public class JiraTaskRepository implements TaskRepository {
 
 
             synchronized (FILTER_UPDATE_LOCK) {
-                attributesPersistence.refreshFilters(handle);
+                repositoryAttributes.refreshFilters(handle);
                 loadFilters();
             }
 
@@ -300,13 +317,13 @@ public class JiraTaskRepository implements TaskRepository {
     }
 
     public synchronized void loadAttributes() {
-        attributesPersistence.loadAttributes();
+        repositoryAttributes.loadAttributes();
         querySupport.refresh();
         setState(State.ACTIVE);
     }
 
     public synchronized void loadFilters() {
-        attributesPersistence.loadFilters();
+        repositoryAttributes.loadFilters();
         querySupport.refresh();
 
     }
