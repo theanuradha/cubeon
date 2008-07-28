@@ -18,6 +18,7 @@ package org.netbeans.cubeon.jira.repository.attributes;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.netbeans.cubeon.tasks.spi.task.TaskType;
 
 /**
  *
@@ -32,7 +33,8 @@ public class JiraProject {
     private List<Component> components = new ArrayList<Component>(0);
     private List<Version> versions = new ArrayList<Version>(0);
     private List<JiraUser> users = new ArrayList<JiraUser>(0);
-    
+    private List<String> types = new ArrayList<String>(0);
+
     public JiraProject(String id, String name, String description, String lead) {
         this.id = id;
         this.name = name;
@@ -68,6 +70,7 @@ public class JiraProject {
     public void setComponents(List<Component> components) {
         this.components = new ArrayList<Component>(components);
     }
+
     public Component getComponentById(String id) {
         for (Component component : components) {
             if (component.getId().equals(id)) {
@@ -76,6 +79,7 @@ public class JiraProject {
         }
         return null;
     }
+
     public List<Version> getVersions() {
         return new ArrayList<Version>(versions);
     }
@@ -101,6 +105,14 @@ public class JiraProject {
         this.users = new ArrayList<JiraUser>(users);
     }
 
+    public boolean isTypesSupported(TaskType type) {
+        return types.contains(type.getId());
+    }
+
+    public void setTypes(List<String> ids) {
+        this.types = new ArrayList<String>(ids);
+    }
+
     public JiraUser getUserById(String id) {
         for (JiraUser user : users) {
             if (user.getId().equals(id)) {
@@ -109,6 +121,7 @@ public class JiraProject {
         }
         return null;
     }
+
     public static class Version {
 
         private final String id;

@@ -29,9 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.netbeans.api.progress.ProgressHandle;
@@ -591,6 +589,25 @@ class JiraAttributesPersistence {
             }
             jiraProject.setVersions(vs);
         }
+        
+        //load types
+ List<String> ids = new ArrayList<String>();
+        Element types = findElement(element, TAG_TYPES, NAMESPACE);
+        if (types != null) {
+           
+            NodeList typeIdNodeList = types.getChildNodes();
+            for (int j = 0; j < typeIdNodeList.getLength(); j++) {
+
+                Node typeNode = typeIdNodeList.item(j);
+                if (typeNode.getNodeType() == Node.ELEMENT_NODE) {
+
+                    String tid = ((Element) typeNode).getAttribute(TAG_ID);
+                    
+                    ids.add(tid);
+                }
+            }
+        }
+        jiraProject.setTypes(ids);
         //load users
 
         Element users = findElement(element, TAG_USERS, NAMESPACE);
