@@ -26,6 +26,7 @@ import com.dolby.jira.net.soap.jira.RemoteVersion;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.logging.Logger;
 import org.netbeans.cubeon.jira.remote.JiraException;
 import org.netbeans.cubeon.jira.remote.JiraSession;
 import org.netbeans.cubeon.jira.repository.attributes.JiraAction;
@@ -49,61 +50,67 @@ public class JiraUtils {
 
     public static RemoteFieldValue[] changedFieldValues(JiraRemoteTask remoteTask, JiraTask task) {
         List<RemoteFieldValue> fieldValues = new ArrayList<RemoteFieldValue>();
+        List<String> editFieldIds = task.getEditFieldIds();
         String description = task.getDescription();
-        if (!remoteTask.getDescription().equals(description)) {
+
+        if (editFieldIds.contains(DESCRIPTION) && !remoteTask.getDescription().equals(description)) {
             fieldValues.add(new RemoteFieldValue(DESCRIPTION, new String[]{description}));
         }
 
         String environment = task.getEnvironment();
-        if (remoteTask.getEnvironment() == null || !remoteTask.getEnvironment().equals(environment)) {
+        if (editFieldIds.contains(ENVIRONMENT) && remoteTask.getEnvironment() == null || !remoteTask.getEnvironment().equals(environment)) {
             fieldValues.add(new RemoteFieldValue(ENVIRONMENT, new String[]{environment}));
         }
         String name = task.getName();
-        if (!name.equals(remoteTask.getName())) {
+        if (editFieldIds.contains(SUMMERY) && !name.equals(remoteTask.getName())) {
             fieldValues.add(new RemoteFieldValue(SUMMERY, new String[]{name}));
         }
         TaskType type = task.getType();
-        if (type != null && !type.equals(remoteTask.getType())) {
+        if (editFieldIds.contains(TYPE) && type != null && !type.equals(remoteTask.getType())) {
             fieldValues.add(new RemoteFieldValue(TYPE, new String[]{type.getId()}));
         }
         TaskPriority priority = task.getPriority();
-        if (priority != null && !priority.equals(remoteTask.getPriority())) {
+        if (editFieldIds.contains(PRIORITY) && priority != null && !priority.equals(remoteTask.getPriority())) {
             fieldValues.add(new RemoteFieldValue(PRIORITY, new String[]{priority.getId()}));
         }
-        if (task.getAssignee() == null || !task.getAssignee().equals(remoteTask.getAssignee())) {
+        if (editFieldIds.contains(ASSIGNEE) && task.getAssignee() == null || !task.getAssignee().equals(remoteTask.getAssignee())) {
             fieldValues.add(new RemoteFieldValue(ASSIGNEE, new String[]{task.getAssignee()}));
         }
 
+        if (editFieldIds.contains(COMPONENTS)) {
+            List<Component> components = task.getComponents();
+            List<String> componentIds = new ArrayList<String>();
 
-        List<Component> components = task.getComponents();
-        List<String> componentIds = new ArrayList<String>();
-
-        for (Component component : components) {
-            componentIds.add(component.getId());
+            for (Component component : components) {
+                componentIds.add(component.getId());
+            }
+            fieldValues.add(new RemoteFieldValue(COMPONENTS,
+                    componentIds.toArray(new String[componentIds.size()])));
         }
-        fieldValues.add(new RemoteFieldValue(COMPONENTS,
-                componentIds.toArray(new String[componentIds.size()])));
 //----------------------------
-        List<Version> affectedVersions = task.getAffectedVersions();
-        List<String> affectedVersionIds = new ArrayList<String>();
+        if (editFieldIds.contains(VERSIONS)) {
+            List<Version> affectedVersions = task.getAffectedVersions();
+            List<String> affectedVersionIds = new ArrayList<String>();
 
-        for (Version version : affectedVersions) {
-            affectedVersionIds.add(version.getId());
+            for (Version version : affectedVersions) {
+                affectedVersionIds.add(version.getId());
+            }
+
+            fieldValues.add(new RemoteFieldValue(VERSIONS,
+                    affectedVersionIds.toArray(new String[affectedVersionIds.size()])));
         }
-
-        fieldValues.add(new RemoteFieldValue(VERSIONS,
-                affectedVersionIds.toArray(new String[affectedVersionIds.size()])));
 //----------------------------
-        List<Version> fixVersions = task.getFixVersions();
-        List<String> fixVersionsIds = new ArrayList<String>();
+        if (editFieldIds.contains(FIX_VERSIONS)) {
+            List<Version> fixVersions = task.getFixVersions();
+            List<String> fixVersionsIds = new ArrayList<String>();
 
-        for (Version version : fixVersions) {
-            fixVersionsIds.add(version.getId());
+            for (Version version : fixVersions) {
+                fixVersionsIds.add(version.getId());
+            }
+
+            fieldValues.add(new RemoteFieldValue(FIX_VERSIONS,
+                    fixVersionsIds.toArray(new String[fixVersionsIds.size()])));
         }
-
-        fieldValues.add(new RemoteFieldValue(FIX_VERSIONS,
-                fixVersionsIds.toArray(new String[fixVersionsIds.size()])));
-
         return fieldValues.toArray(new RemoteFieldValue[fieldValues.size()]);
     }
 
@@ -317,27 +324,35 @@ public class JiraUtils {
     }
 
     public static void readWorkFlow(JiraTaskRepository repository, JiraTask jiraTask) throws JiraException {
-        List<JiraAction> actions = new ArrayList<JiraAction>();
-        RemoteNamedObject[] availableActions = repository.getSession().
-                getAvailableActions(jiraTask.getId());
-        for (RemoteNamedObject rno : availableActions) {
-            JiraAction action = new JiraAction(rno.getId(), rno.getName());
-            RemoteField[] fields = repository.getSession().
-                    getFieldsForAction(jiraTask.getId(), rno.getId());
-            for (RemoteField rf : fields) {
-                action.addFiled(rf.getId());
+        try {
+            List<JiraAction> actions = new ArrayList<JiraAction>();
+            RemoteNamedObject[] availableActions = repository.getSession().
+                    getAvailableActions(jiraTask.getId());
+            if (availableActions != null) {
+                for (RemoteNamedObject rno : availableActions) {
+                    JiraAction action = new JiraAction(rno.getId(), rno.getName());
+                    RemoteField[] fields = repository.getSession().
+                            getFieldsForAction(jiraTask.getId(), rno.getId());
+                    for (RemoteField rf : fields) {
+                        action.addFiled(rf.getId());
+                    }
+                    actions.add(action);
+                }
             }
-            actions.add(action);
-        }
-        jiraTask.setActions(actions);
+            jiraTask.setActions(actions);
 
 
-        List<String> editFieldIds = new ArrayList<String>();
-        RemoteField[] fieldsForEdit = repository.getSession().getFieldsForEdit(jiraTask.getId());
-        for (RemoteField rf : fieldsForEdit) {
-            editFieldIds.add(rf.getId());
+            List<String> editFieldIds = new ArrayList<String>();
+
+            RemoteField[] fieldsForEdit = repository.getSession().getFieldsForEdit(jiraTask.getId());
+            for (RemoteField rf : fieldsForEdit) {
+                editFieldIds.add(rf.getId());
+            }
+            jiraTask.setEditFieldIds(editFieldIds);
+        } catch (JiraException jiraException) {
+            Logger.getLogger(JiraTaskRepository.class.getName()).warning(jiraException.getMessage());
         }
-        jiraTask.setEditFieldIds(editFieldIds);
+
     }
 
     public static JiraRemoteTask issueToTask(JiraTaskRepository repository, RemoteIssue issue) throws JiraException {
@@ -455,7 +470,6 @@ public class JiraUtils {
 
         return versionIds.size() > 0;
     }
-
 }
 
 
