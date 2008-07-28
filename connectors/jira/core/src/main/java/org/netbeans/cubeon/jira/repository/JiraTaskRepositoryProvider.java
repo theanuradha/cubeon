@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.netbeans.cubeon.jira.remote.JiraException;
 import org.netbeans.cubeon.jira.repository.ui.ConfigurationHandlerImpl;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepositoryType;
@@ -88,7 +89,15 @@ public class JiraTaskRepositoryProvider implements TaskRepositoryType {
             RequestProcessor.getDefault().post(new Runnable() {
 
                 public void run() {
-                    jiraTaskRepository.updateAttributes();
+                    try {
+                        //reconnect and update repository
+                        jiraTaskRepository.reconnect();
+                        jiraTaskRepository.updateAttributes();
+                        jiraTaskRepository.synchronize();
+                    } catch (JiraException ex) {
+                        Exceptions.printStackTrace(ex);
+                    }
+
                 }
             });
 
