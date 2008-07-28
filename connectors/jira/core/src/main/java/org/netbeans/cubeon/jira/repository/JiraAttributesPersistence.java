@@ -125,7 +125,7 @@ class JiraAttributesPersistence {
             progressHandle.switchToIndeterminate();
             Element projectsElement = getEmptyElement(document, attributesElement, TAG_PROJECTS);
 
-            
+
             if (attributes.getRepository().getProjectKey() == null) {
                 LOG.log(Level.INFO, "requsting projects");
                 progressHandle.progress("Requsting Projects Information");
@@ -137,7 +137,7 @@ class JiraAttributesPersistence {
                 for (RemoteProject rp : projects) {
                     Element project = document.createElement(TAG_PROJECT);
                     projectsElement.appendChild(project);
-                    _refreshProject(document, project, progressHandle, session,  rp);
+                    _refreshProject(document, project, progressHandle, session, rp);
                 }
             } else {
                 String projectKey = attributes.getRepository().getProjectKey();
@@ -149,7 +149,7 @@ class JiraAttributesPersistence {
                     RemoteProject rp = session.getProjectByKey(jiraProject.getId());
                     Element project = document.createElement(TAG_PROJECT);
                     projectsElement.appendChild(project);
-                    _refreshProject(document, project, progressHandle, session,  rp);
+                    _refreshProject(document, project, progressHandle, session, rp);
                     refreshedflag = refreshedflag || projectKey.equals(jiraProject.getId());
                 }
                 if (!refreshedflag) {
@@ -158,7 +158,7 @@ class JiraAttributesPersistence {
                     RemoteProject rp = session.getProjectByKey(projectKey);
                     Element project = document.createElement(TAG_PROJECT);
                     projectsElement.appendChild(project);
-                    _refreshProject(document, project, progressHandle, session,  rp);
+                    _refreshProject(document, project, progressHandle, session, rp);
                 }
             }
 
@@ -391,7 +391,7 @@ class JiraAttributesPersistence {
             JiraSession session = attributes.getRepository().getSession();
             RemoteProject project = session.getProjectByKey(key);
             synchronized (LOCK) {
-                Document document = getDocument(true);
+                Document document = getDocument(false);
                 Element root = getRootElement(document);
                 Element attributesElement = findElement(root, TAG_ROOT, NAMESPACE);
 
@@ -426,9 +426,9 @@ class JiraAttributesPersistence {
                     projectsElement.appendChild((projectElement =
                             document.createElement(TAG_PROJECT)));
                 }
-                
+
                 _refreshProject(document, projectElement, progressHandle, session,
-                         project);
+                        project);
                 JiraProject _readJiraProject = _readJiraProject(projectElement);
                 save(document);
                 return _readJiraProject;
@@ -450,15 +450,15 @@ class JiraAttributesPersistence {
         project.setAttribute(TAG_NAME, rp.getName());
         project.setAttribute(TAG_DESCRIPTION, rp.getDescription());
         project.setAttribute(TAG_LEAD, rp.getLead());
-        /*
+
         RemoteIssueType[] issueTypes = session.getIssueTypesForProject(rp.getId());
         Element types = document.createElement(TAG_TYPES);
         project.appendChild(types);
         for (RemoteIssueType rit : issueTypes) {
-        Element type = document.createElement(TAG_TYPE);
-        types.appendChild(type);
-        type.setAttribute(TAG_ID, rit.getId());
-        }*/
+            Element type = document.createElement(TAG_TYPE);
+            types.appendChild(type);
+            type.setAttribute(TAG_ID, rit.getId());
+        }
         LOG.log(Level.INFO, "requsting Components ");
         RemoteComponent[] remoteComponents = session.getComponents(rp.getKey());
         Element components = document.createElement(TAG_COMPONENTS);
@@ -484,29 +484,29 @@ class JiraAttributesPersistence {
         }
         //Set<String> userIds = new HashSet<String>();
         Element usersElement = getEmptyElement(document, project, TAG_USERS);
-        /*for (RemoteProjectRole remoteProjectRole : projectRoles) {
+    /*for (RemoteProjectRole remoteProjectRole : projectRoles) {
 
 
-            LOG.log(Level.INFO, "ProjectRole : " + remoteProjectRole.getName() + " : " + remoteProjectRole.getDescription());
-            RemoteProjectRoleActors actors = session.getProjectRoleActors(remoteProjectRole, rp);
-            RemoteRoleActor[] roleActors = actors.getRoleActors();
-            for (RemoteRoleActor rra : roleActors) {
+    LOG.log(Level.INFO, "ProjectRole : " + remoteProjectRole.getName() + " : " + remoteProjectRole.getDescription());
+    RemoteProjectRoleActors actors = session.getProjectRoleActors(remoteProjectRole, rp);
+    RemoteRoleActor[] roleActors = actors.getRoleActors();
+    for (RemoteRoleActor rra : roleActors) {
 
 
-                RemoteUser[] users = rra.getUsers();
-                for (RemoteUser ru : users) {
-                    if (userIds.contains(ru.getName())) {
-                        continue;
-                    }
-                    userIds.add(ru.getName());
-                    LOG.log(Level.INFO, "USER : " + ru.getName() + " : " + ru.getFullname());
-                    Element userElement = document.createElement(TAG_USER);
-                    usersElement.appendChild(userElement);
-                    userElement.setAttribute(TAG_ID, ru.getName());
-                    userElement.setAttribute(TAG_NAME, ru.getFullname());
-                }
-            }
-        }*/
+    RemoteUser[] users = rra.getUsers();
+    for (RemoteUser ru : users) {
+    if (userIds.contains(ru.getName())) {
+    continue;
+    }
+    userIds.add(ru.getName());
+    LOG.log(Level.INFO, "USER : " + ru.getName() + " : " + ru.getFullname());
+    Element userElement = document.createElement(TAG_USER);
+    usersElement.appendChild(userElement);
+    userElement.setAttribute(TAG_ID, ru.getName());
+    userElement.setAttribute(TAG_NAME, ru.getFullname());
+    }
+    }
+    }*/
 
     }
 
