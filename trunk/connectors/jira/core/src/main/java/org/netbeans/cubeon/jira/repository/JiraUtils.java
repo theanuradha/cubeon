@@ -185,6 +185,7 @@ public class JiraUtils {
         remoteToTask(repository, remoteTask, jiraTask);
         readWorkFlow(repository, jiraTask);
         repository.cache(issueToTask(repository, issue));
+        jiraTask.setModifiedFlag(false);
         repository.persist(jiraTask);
         //remove old id from outgoing query
         repository.getQuerySupport().getOutgoingQuery().removeTaskId(old);
