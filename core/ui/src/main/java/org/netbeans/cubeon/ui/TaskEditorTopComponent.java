@@ -61,7 +61,7 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
         TaskEditorProvider editorProvider = lookup.lookup(TaskEditorProvider.class);
         eah = editorProvider.createEditorAttributeHandler();
 
-        setName(eah.getName());
+        _updateNameInEDT(eah.getName());
         extension = element.getLookup().lookup(Extension.class);
         setIcon(element.getImage());
         TaskRepository taskRepository = element.getTaskRepository();
@@ -91,7 +91,7 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
                 EventQueue.invokeLater(new Runnable() {
 
                     public void run() {
-                        setName(eah.getName());
+                        _updateNameInEDT(eah.getName());
                         lblHeader.setText(eah.getDisplayName());
                     }
                 });
@@ -103,7 +103,7 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
                 EventQueue.invokeLater(new Runnable() {
 
                     public void run() {
-                        setName(eah.getName());
+                        _updateNameInEDT(eah.getName());
                         setIcon(element.getImage());
                     }
                 });
@@ -198,17 +198,17 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
     public void save() throws IOException {
         eah.save();
         editorNode.setModified(false);
-         setName(eah.getName());
+         _updateNameInEDT(eah.getName());
     }
 
     public void refresh() {
         eah.refresh();
         editorNode.setModified(false);
-         setName(eah.getName());
+         _updateNameInEDT(eah.getName());
     }
 
     public void stateChanged(ChangeEvent e) {
-        setName(eah.getName()+"*");
+        _updateNameInEDT(eah.getName()+"*");
         editorNode.setModified(true);
     }
 
@@ -270,5 +270,14 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
 
     public TaskElement gettTaskElement() {
         return element;
+    }
+    private void _updateNameInEDT(final String name){
+        EventQueue.invokeLater(new Runnable() {
+
+            public void run() {
+               setName(name);
+            }
+        });
+     
     }
 }
