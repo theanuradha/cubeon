@@ -34,8 +34,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.Action;
 import org.netbeans.cubeon.jira.repository.attributes.JiraComment;
-import org.netbeans.cubeon.jira.repository.attributes.JiraProject;
-import org.netbeans.cubeon.jira.repository.attributes.JiraUser;
 import org.netbeans.cubeon.jira.tasks.JiraTask;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.BeanTreeView;
@@ -61,27 +59,25 @@ public class JiraCommentsEditor extends javax.swing.JPanel implements ExplorerMa
     public JiraCommentsEditor(JiraTaskEditorUI editorUI) {
         this.editorUI = editorUI;
         initComponents();
-
+       
         explorerManager.addPropertyChangeListener(new PropertyChangeListener() {
 
             public void propertyChange(PropertyChangeEvent evt) {
                 if (ExplorerManager.PROP_SELECTED_NODES.equals(evt.getPropertyName())) {
                     Node[] selectedNodes = explorerManager.getSelectedNodes();
                     if (selectedNodes.length > 0) {
-                        JiraProject project = selectedNodes[0].getLookup().lookup(JiraProject.class);
                         JiraComment comment = selectedNodes[0].getLookup().lookup(JiraComment.class);
-                        if (project != null && comment != null) {
-                            JiraUser user = project.getUserById(comment.getId());
-                            lblAuthor.setText((user == null ? comment.getAuthor() : user.getName()) + " Wrote :");
+                        if (comment != null) {
+                            lblAuthor.setText(comment.getAuthor()+" Wrote :");
                             txtDisplayComment.setText(comment.getBody());
-                            pnlComment.setVisible(true);
-                        } else {
-                            txtDisplayComment.setText(null);
-                            pnlComment.setVisible(false);
+                             pnlComment.setVisible(true);
+                        }else{
+                        txtDisplayComment.setText(null);
+                        pnlComment.setVisible(false);
                         }
                     } else {
                         txtDisplayComment.setText(null);
-                        pnlComment.setVisible(false);
+                         pnlComment.setVisible(false);
                     }
                 }
             }
@@ -98,7 +94,7 @@ public class JiraCommentsEditor extends javax.swing.JPanel implements ExplorerMa
         txtComment.setText(editorUI.getJiraTask().getNewComment());
         txtComment.getDocument().addDocumentListener(editorUI.documentListener);
         txtComment.setEditable(!editorUI.getJiraTask().isLocal());
-
+        
     }
 
     private void loadComments() {
@@ -133,19 +129,17 @@ public class JiraCommentsEditor extends javax.swing.JPanel implements ExplorerMa
             }
         };
         for (JiraComment comment : jiraTask.getComments()) {
-            array.add(new Node[]{new CommentNode(jiraTask.getProject(), comment)});
+            array.add(new Node[]{new CommentNode(comment)});
         }
         explorerManager.setRootContext(node);
     }
 
     private class CommentNode extends AbstractNode {
 
-        private JiraProject project;
         private JiraComment comment;
 
-        public CommentNode(JiraProject project, JiraComment comment) {
-            super(Children.LEAF, Lookups.fixed(comment, project));
-            this.project = project;
+        public CommentNode(JiraComment comment) {
+            super(Children.LEAF, Lookups.fixed(comment));
             this.comment = comment;
             setDisplayName(comment.getBody());
             setShortDescription(buildHtmlDescription(comment));
@@ -154,8 +148,8 @@ public class JiraCommentsEditor extends javax.swing.JPanel implements ExplorerMa
         @Override
         public String getHtmlDisplayName() {
             StringBuffer buffer = new StringBuffer();
-            JiraUser userById = project.getUserById(comment.getAuthor());
-            buffer.append(userById == null ? comment.getAuthor() : userById).append(" : ");
+
+            buffer.append(comment.getAuthor()).append(" : ");
             if (comment.getCreated() != null) {
                 buffer.append(dateFormat.format(comment.getCreated())).append(" :");
             }
@@ -177,7 +171,7 @@ public class JiraCommentsEditor extends javax.swing.JPanel implements ExplorerMa
 
         @Override
         public Transferable drag() throws IOException {
-            return new StringSelection(reply(project, comment));
+            return new StringSelection(reply(comment));
         }
     }
 
@@ -214,9 +208,8 @@ public class JiraCommentsEditor extends javax.swing.JPanel implements ExplorerMa
         return list;
     }
 
-    private String reply(JiraProject project, JiraComment comment) {
-        JiraUser userById = project.getUserById(comment.getAuthor());
-        StringBuffer buffer = new StringBuffer((userById == null ? comment.getAuthor() : userById).toString());
+    private String reply(JiraComment comment) {
+        StringBuffer buffer = new StringBuffer(comment.getAuthor());
         buffer.append(" Wrote").append(",");
         List<String> multiLine = splitMultiLine(comment.getBody());
         for (String line : multiLine) {
