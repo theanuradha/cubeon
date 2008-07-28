@@ -22,12 +22,8 @@ import com.dolby.jira.net.soap.jira.RemoteFilter;
 import com.dolby.jira.net.soap.jira.RemoteIssueType;
 import com.dolby.jira.net.soap.jira.RemotePriority;
 import com.dolby.jira.net.soap.jira.RemoteProject;
-import com.dolby.jira.net.soap.jira.RemoteProjectRole;
-import com.dolby.jira.net.soap.jira.RemoteProjectRoleActors;
 import com.dolby.jira.net.soap.jira.RemoteResolution;
-import com.dolby.jira.net.soap.jira.RemoteRoleActor;
 import com.dolby.jira.net.soap.jira.RemoteStatus;
-import com.dolby.jira.net.soap.jira.RemoteUser;
 import com.dolby.jira.net.soap.jira.RemoteVersion;
 import java.io.IOException;
 import java.io.InputStream;
@@ -129,7 +125,7 @@ class JiraAttributesPersistence {
             progressHandle.switchToIndeterminate();
             Element projectsElement = getEmptyElement(document, attributesElement, TAG_PROJECTS);
 
-            RemoteProjectRole[] rprs = session.getRemoteProjectRoles();
+            
             if (attributes.getRepository().getProjectKey() == null) {
                 LOG.log(Level.INFO, "requsting projects");
                 progressHandle.progress("Requsting Projects Information");
@@ -141,7 +137,7 @@ class JiraAttributesPersistence {
                 for (RemoteProject rp : projects) {
                     Element project = document.createElement(TAG_PROJECT);
                     projectsElement.appendChild(project);
-                    _refreshProject(document, project, progressHandle, session, rprs, rp);
+                    _refreshProject(document, project, progressHandle, session,  rp);
                 }
             } else {
                 String projectKey = attributes.getRepository().getProjectKey();
@@ -153,7 +149,7 @@ class JiraAttributesPersistence {
                     RemoteProject rp = session.getProjectByKey(jiraProject.getId());
                     Element project = document.createElement(TAG_PROJECT);
                     projectsElement.appendChild(project);
-                    _refreshProject(document, project, progressHandle, session, rprs, rp);
+                    _refreshProject(document, project, progressHandle, session,  rp);
                     refreshedflag = refreshedflag || projectKey.equals(jiraProject.getId());
                 }
                 if (!refreshedflag) {
@@ -162,7 +158,7 @@ class JiraAttributesPersistence {
                     RemoteProject rp = session.getProjectByKey(projectKey);
                     Element project = document.createElement(TAG_PROJECT);
                     projectsElement.appendChild(project);
-                    _refreshProject(document, project, progressHandle, session, rprs, rp);
+                    _refreshProject(document, project, progressHandle, session,  rp);
                 }
             }
 
@@ -430,9 +426,9 @@ class JiraAttributesPersistence {
                     projectsElement.appendChild((projectElement =
                             document.createElement(TAG_PROJECT)));
                 }
-                RemoteProjectRole[] remoteProjectRoles = session.getRemoteProjectRoles();
+                
                 _refreshProject(document, projectElement, progressHandle, session,
-                        remoteProjectRoles, project);
+                         project);
                 JiraProject _readJiraProject = _readJiraProject(projectElement);
                 save(document);
                 return _readJiraProject;
@@ -445,7 +441,7 @@ class JiraAttributesPersistence {
 
     }
 
-    private void _refreshProject(Document document, Element project, ProgressHandle progressHandle, JiraSession session, RemoteProjectRole[] projectRoles, RemoteProject rp) throws JiraException {
+    private void _refreshProject(Document document, Element project, ProgressHandle progressHandle, JiraSession session, RemoteProject rp) throws JiraException {
 
         LOG.log(Level.INFO, "project :" + rp.getKey() + " : " + rp.getName());
         progressHandle.progress("Project :" + rp.getName() + " : " + rp.getName());
@@ -486,9 +482,9 @@ class JiraAttributesPersistence {
             version.setAttribute(TAG_ID, rv.getId());
             version.setAttribute(TAG_NAME, rv.getName());
         }
-        Set<String> userIds = new HashSet<String>();
+        //Set<String> userIds = new HashSet<String>();
         Element usersElement = getEmptyElement(document, project, TAG_USERS);
-        for (RemoteProjectRole remoteProjectRole : projectRoles) {
+        /*for (RemoteProjectRole remoteProjectRole : projectRoles) {
 
 
             LOG.log(Level.INFO, "ProjectRole : " + remoteProjectRole.getName() + " : " + remoteProjectRole.getDescription());
@@ -510,7 +506,7 @@ class JiraAttributesPersistence {
                     userElement.setAttribute(TAG_NAME, ru.getFullname());
                 }
             }
-        }
+        }*/
 
     }
 
