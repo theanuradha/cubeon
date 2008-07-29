@@ -17,7 +17,6 @@
 package org.netbeans.cubeon.tasks.core.internals;
 
 import org.netbeans.cubeon.tasks.core.api.*;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -32,7 +31,7 @@ import org.openide.util.Lookup;
  *
  * @author Anuradha
  */
-public class TaskElementChilren extends Children.Keys<TaskElement> implements RefreshableChildren {
+public class TaskElementChilren extends Children.Keys<List<TaskElement>> implements RefreshableChildren {
 
     private final TaskFolder folder;
     TaskNodeFactory factory = Lookup.getDefault().lookup(TaskNodeFactory.class);
@@ -60,8 +59,12 @@ public class TaskElementChilren extends Children.Keys<TaskElement> implements Re
     }
 
     @Override
-    protected Node[] createNodes(TaskElement element) {
-        return new Node[]{factory.createTaskElementNode(folder, element, true)};
+    protected Node[] createNodes(List<TaskElement> elements) {
+        List<Node> ns = new ArrayList<Node>();
+        for (TaskElement node : elements) {
+            ns.add(factory.createTaskElementNode(folder, node, true));
+        }
+        return ns.toArray(new Node[ns.size()]);
     }
 
     @Override
@@ -69,8 +72,7 @@ public class TaskElementChilren extends Children.Keys<TaskElement> implements Re
         System.out.println(folder.getName());
 
         List<TaskElement> elements = new ArrayList<TaskElement>();
-        //remove all before add new ones
-        setKeys(elements);
+
         List<TaskElementFilter> filters = new ArrayList<TaskElementFilter>();
         for (TaskElementFilter taskElementFilter : Lookup.getDefault().lookupAll(TaskElementFilter.class)) {
             if (taskElementFilter.isEnable()) {
@@ -89,7 +91,10 @@ public class TaskElementChilren extends Children.Keys<TaskElement> implements Re
                 Collections.sort(elements, comparator.getComparator());
             }
         }
-        setKeys(elements);
+        //workaround for hash code and equal methode chahges
+        List<List<TaskElement>> tes = new ArrayList<List<TaskElement>>(1);
+        tes.add(elements);
+        setKeys(tes);
     }
 
     public Children getChildren() {

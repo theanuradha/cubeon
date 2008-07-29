@@ -53,7 +53,7 @@ public class JiraOGChangesQuery extends AbstractJiraQuery {
     }
 
     public String getDescription() {
-        return "Query that show all task that contain outgoing changes";
+        return "Query that show all task that contain outgoing changes to "+getTaskRepository().getName();
     }
 
     public Lookup getLookup() {

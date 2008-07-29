@@ -109,6 +109,10 @@ public class JiraProject {
         return types.contains(type.getId());
     }
 
+    public List<String> getTypes() {
+        return new ArrayList<String>(types);
+    }
+
     public void setTypes(List<String> ids) {
         this.types = new ArrayList<String>(ids);
     }
