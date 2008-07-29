@@ -70,9 +70,16 @@ public class DefaultFileSystem implements TasksFileSystem {
 
             @Override
             public void taskElementRemoved(TaskElement element) {
-                super.taskElementRemoved(element);
+                List<TaskFolder> subFolders = getRootTaskFolder().getSubFolders();
+                for (TaskFolder taskFolder : subFolders) {
+                    if (taskFolder.contains(element)) {
+                        TaskFolderImpl folderImpl = taskFolder.getLookup().lookup(TaskFolderImpl.class);
+                        assert folderImpl != null;
+                        folderImpl.removeTaskElement(element);
+                        handler.removeTaskElement(folderImpl, element);
+                    }
+                }
             }
-
         };
         TaskRepositoryHandler repositoryHandler = context.getLookup().lookup(TaskRepositoryHandler.class);
         for (TaskRepository repository : repositoryHandler.getTaskRepositorys()) {

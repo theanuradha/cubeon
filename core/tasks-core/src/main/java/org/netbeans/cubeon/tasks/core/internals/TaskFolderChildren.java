@@ -16,6 +16,7 @@
  */
 package org.netbeans.cubeon.tasks.core.internals;
 
+import java.util.Collections;
 import java.util.List;
 import org.netbeans.cubeon.tasks.core.api.RefreshableChildren;
 import org.netbeans.cubeon.tasks.core.api.TaskFolder;
@@ -36,8 +37,10 @@ class TaskFolderChildren extends Children.Keys<TaskFolder> implements Refreshabl
     }
 
     public void refreshContent() {
-         System.out.println(folder.getName() );
-        addNotify();
+        if (isInitialized()) {
+            System.out.println(folder.getName());
+            addNotify();
+        }
     }
 
     @Override

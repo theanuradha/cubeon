@@ -111,9 +111,10 @@ public class JiraTask extends JiraRemoteTask implements TaskElement {
     public Image getImage() {
         Image image = Utilities.loadImage("org/netbeans/cubeon/local/nodes/task.png");
         //FIXME
-        List<TaskType> taskTypes = taskRepository.getJiraTaskTypeProvider().getTaskTypes();
+        if(getProject()!=null){
+        List<String> taskTypes = getProject().getTypes();
 
-        int indexOf = taskTypes.indexOf(getType());
+        int indexOf = taskTypes.indexOf(getType().getId());
 
         switch (indexOf) {
             case 0:
@@ -131,7 +132,7 @@ public class JiraTask extends JiraRemoteTask implements TaskElement {
 
         }
 
-
+        }
         return image;
     }
 
