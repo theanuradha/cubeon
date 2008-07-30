@@ -21,7 +21,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.netbeans.cubeon.local.LocalTask;
 import org.netbeans.cubeon.local.repository.ui.ConfigurationHandlerImpl;
+import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
+import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepositoryType;
 import org.openide.filesystems.FileObject;
@@ -96,7 +99,17 @@ public class LocalTaskRepositoryProvider implements TaskRepositoryType {
         if (localTaskRepository != null) {
             persistence.removeRepository(localTaskRepository);
             taskRepositorys.remove(repository);
-
+            List<LocalTask> localTasks = localTaskRepository.getLocalTasks();
+            TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
+            for (LocalTask localTask : localTasks) {
+                localTaskRepository.getExtension().fireTaskRemoved(localTask);
+                factory.closeTask(localTask);
+            }
+            List<TaskQuery> querys = localTaskRepository.getQuerySupport().getTaskQuerys();
+            for (TaskQuery taskQuery : querys) {
+                localTaskRepository.getQuerySupport().removeTaskQuery(taskQuery);
+            }
+            localTaskRepository.delete();
             return true;
         }
 
