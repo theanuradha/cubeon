@@ -78,6 +78,7 @@
             </packagings>
             <goals>
                 <goal>clean</goal>
+                <goal>install</goal>
                 
                 
                 
