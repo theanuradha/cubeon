@@ -325,6 +325,20 @@ class PersistenceHandler {
 
     }
 
+    public void delete() {
+        FileObject config = baseDir.getFileObject(localTaskRepository.getId() + FILESYSTEM_FILE_TAG);
+
+        try {
+            if (config != null) {
+               
+                config.delete();
+            }
+
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        } 
+    }
+
     private static Element findElement(Element parent, String name, String namespace) {
 
         NodeList l = parent.getChildNodes();

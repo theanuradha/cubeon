@@ -298,7 +298,7 @@ class PersistenceHandler {
             root.appendChild(foldersElement);
         }
 
-        List<Element> backlisted = new ArrayList<Element>();
+        
         NodeList folderNodes =
                 foldersElement.getElementsByTagNameNS(NAMESPACE, TAG_FOLDER);
         for (int i = 0; i < folderNodes.getLength(); i++) {
@@ -334,13 +334,7 @@ class PersistenceHandler {
 
                                 if (te != null) {
                                     taskElements.add(te);
-                                } else {
-                                    //backlist missingids
-                                    backlisted.add(element);
-                                }
-                            } else {
-                                //macklist missing id
-                                backlisted.add(element);
+                                } 
                             }
                         }
                     }
@@ -348,14 +342,6 @@ class PersistenceHandler {
                 }
                 folderImpl.setTaskElements(taskElements);
             }
-        }
-        //remove missing ids
-        if (backlisted.size() > 0) {
-            for (Element element : backlisted) {
-                foldersElement.removeChild(element);
-            }
-
-            save(document);
         }
     }
 

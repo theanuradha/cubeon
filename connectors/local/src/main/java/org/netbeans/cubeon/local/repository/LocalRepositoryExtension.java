@@ -20,6 +20,7 @@ import java.util.Collection;
 import org.netbeans.cubeon.tasks.spi.Extension;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.repository.RepositoryEventAdapter;
+import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
@@ -79,6 +80,12 @@ public class LocalRepositoryExtension implements Extension {
         Collection<? extends RepositoryEventAdapter> adapters = lookup.lookupAll(RepositoryEventAdapter.class);
         for (RepositoryEventAdapter adapter : adapters) {
             adapter.queryRemoved(query);
+        }
+    }
+     public void fireTaskRemoved(TaskElement  element) {
+        Collection<? extends RepositoryEventAdapter> adapters = lookup.lookupAll(RepositoryEventAdapter.class);
+        for (RepositoryEventAdapter adapter : adapters) {
+            adapter.taskElementRemoved(element);
         }
     }
 }

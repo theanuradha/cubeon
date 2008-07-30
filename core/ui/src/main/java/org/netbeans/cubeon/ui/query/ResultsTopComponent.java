@@ -16,6 +16,7 @@
  */
 package org.netbeans.cubeon.ui.query;
 
+import java.awt.EventQueue;
 import java.awt.Image;
 import java.io.Serializable;
 import java.util.Collections;
@@ -114,8 +115,12 @@ final class ResultsTopComponent extends TopComponent implements ExplorerManager.
     @Override
     public void componentOpened() {
         if (taskQuery == null) {
-            explorerManager.setRootContext(new EmptyNode("No task query seleted to show results"));
+            explorerManager.setRootContext(_createNoQueryNode());
         }
+    }
+
+    private Node _createNoQueryNode() {
+        return new EmptyNode("No task query seleted to show results");
     }
 
     @Override
@@ -167,7 +172,7 @@ final class ResultsTopComponent extends TopComponent implements ExplorerManager.
                 @Override
                 public void querySynchronizing() {
                     queryNode.updateNodeTag("Synchronizing...");
-                     array.remove(array.getNodes());
+                    array.remove(array.getNodes());
                 }
 
                 @Override
@@ -184,11 +189,24 @@ final class ResultsTopComponent extends TopComponent implements ExplorerManager.
                     task = RequestProcessor.getDefault().create(new Runnable() {
 
                         public void run() {
-                             array.remove(array.getNodes());
-                             loadQueries(array, queryNode);
+                            array.remove(array.getNodes());
+                            loadQueries(array, queryNode);
                         }
                     });
                     task.run();
+                }
+
+                @Override
+                public void removed() {
+                    EventQueue.invokeLater(new Runnable() {
+
+                        public void run() {
+                            if (task != null && !task.isFinished()) {
+                                task.cancel();
+                            }
+                            explorerManager.setRootContext(_createNoQueryNode());
+                        }
+                    });
                 }
             };
             taskQuery.getExtension().add(adapter);
@@ -200,7 +218,7 @@ final class ResultsTopComponent extends TopComponent implements ExplorerManager.
     }
 
     private void loadQueries(Children array, final ResultQueryNode queryNode) {
-        
+
         List<TaskElement> elements = taskQuery.getTaskElements();
         Collections.sort(elements, new Comparator<TaskElement>() {
 

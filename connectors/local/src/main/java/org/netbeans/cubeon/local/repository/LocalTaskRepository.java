@@ -147,8 +147,8 @@ public class LocalTaskRepository implements TaskRepository {
         return lttp;
     }
 
-    public void validate(TaskElement element) {
-        persistenceHandler.vaidate(element);
+    public void delete() {
+        persistenceHandler.delete();
     }
 
     public Image getImage() {

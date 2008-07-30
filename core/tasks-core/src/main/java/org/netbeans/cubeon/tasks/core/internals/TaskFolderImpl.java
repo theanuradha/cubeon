@@ -22,6 +22,7 @@ import java.util.List;
 import org.netbeans.cubeon.tasks.core.api.RefreshableChildren;
 import org.netbeans.cubeon.tasks.core.api.TaskFolder;
 import org.netbeans.cubeon.tasks.core.api.TaskFolderRefreshable;
+import org.netbeans.cubeon.tasks.core.api.TasksFileSystem;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.query.TaskQueryEventAdapter;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
@@ -80,7 +81,9 @@ class TaskFolderImpl implements TaskFolder, TaskFolderRefreshable {
 
             @Override
             public void removed() {
-                setTaskQuery(null);
+                TasksFileSystem fileSystem = Lookup.getDefault().lookup(TasksFileSystem.class);
+                //remove query
+                fileSystem.setTaskQuery(TaskFolderImpl.this, null);
             }
         };
 
@@ -195,6 +198,7 @@ class TaskFolderImpl implements TaskFolder, TaskFolderRefreshable {
         if (query != null) {
 
             registerEventAdapter();
+        } else {
         }
 
         if (folderNode instanceof TaskFolderNode) {

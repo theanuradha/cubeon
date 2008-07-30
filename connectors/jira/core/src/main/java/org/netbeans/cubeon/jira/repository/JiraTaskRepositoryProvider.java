@@ -23,8 +23,12 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.netbeans.cubeon.jira.remote.JiraException;
 import org.netbeans.cubeon.jira.repository.ui.ConfigurationHandlerImpl;
+import org.netbeans.cubeon.jira.tasks.JiraTask;
+import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
+import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepositoryType;
+import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.filesystems.Repository;
@@ -114,7 +118,28 @@ public class JiraTaskRepositoryProvider implements TaskRepositoryType {
         if (jiraTaskRepository != null) {
             persistence.removeRepository(jiraTaskRepository);
             taskRepositorys.remove(repository);
+            List<String> taskIds = jiraTaskRepository.getTaskIds();
+            TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
+            for (String id : taskIds) {
+                JiraTask task = jiraTaskRepository.getTaskElementById(id);
+                if (task != null) {
+                    jiraTaskRepository.getExtension().fireTaskRemoved(task);
+                    factory.closeTask(task);
+                }
 
+            }
+            List<TaskQuery> querys = jiraTaskRepository.getQuerySupport().getTaskQuerys();
+            for (TaskQuery query : querys) {
+                jiraTaskRepository.getQuerySupport().removeTaskQuery(query);
+            }
+         
+            try {
+                FileObject baseDir1 = jiraTaskRepository.getBaseDir();
+ 
+                baseDir1.delete();
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
             return true;
         }
 

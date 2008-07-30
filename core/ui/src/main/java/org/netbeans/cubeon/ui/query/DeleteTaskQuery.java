@@ -44,7 +44,7 @@ public class DeleteTaskQuery extends AbstractAction {
     public void actionPerformed(ActionEvent e) {
         NotifyDescriptor d =
                 new NotifyDescriptor.Confirmation(
-                "Delete Query : " + query.getName() + " ?", "Task Query Delete",
+                "Delete Query : " + query.getName() + " ?",
                 NotifyDescriptor.OK_CANCEL_OPTION);
         Object notify = DialogDisplayer.getDefault().notify(d);
         if (notify == NotifyDescriptor.OK_OPTION) {
