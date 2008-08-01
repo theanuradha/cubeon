@@ -20,6 +20,7 @@ import org.netbeans.cubeon.tasks.core.api.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.netbeans.cubeon.tasks.core.api.TaskFolder;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskElementComparator;
 import org.netbeans.cubeon.tasks.spi.task.TaskElementFilter;
@@ -31,7 +32,7 @@ import org.openide.util.Lookup;
  *
  * @author Anuradha
  */
-public class TaskElementChilren extends Children.Keys<List<TaskElement>> implements RefreshableChildren {
+public class TaskElementChilren extends Children.Keys<TaskElementChilren.TaskKey> implements RefreshableChildren {
 
     private final TaskFolder folder;
     TaskNodeFactory factory = Lookup.getDefault().lookup(TaskNodeFactory.class);
@@ -59,17 +60,14 @@ public class TaskElementChilren extends Children.Keys<List<TaskElement>> impleme
     }
 
     @Override
-    protected Node[] createNodes(List<TaskElement> elements) {
-        List<Node> ns = new ArrayList<Node>();
-        for (TaskElement node : elements) {
-            ns.add(factory.createTaskElementNode(folder, node, true));
-        }
-        return ns.toArray(new Node[ns.size()]);
+    protected Node[] createNodes(TaskKey id) {
+
+        return new Node[]{factory.createTaskElementNode(folder, id.getElement(), true)};
+
     }
 
     @Override
     protected void addNotify() {
-        System.out.println(folder.getName());
 
         List<TaskElement> elements = new ArrayList<TaskElement>();
 
@@ -86,18 +84,35 @@ public class TaskElementChilren extends Children.Keys<List<TaskElement>> impleme
             }
             elements.add(taskElement);
         }
+
+
         for (TaskElementComparator comparator : Lookup.getDefault().lookupAll(TaskElementComparator.class)) {
             if (comparator.isEnable()) {
                 Collections.sort(elements, comparator.getComparator());
             }
         }
-        //workaround for hash code and equal methode chahges
-        List<List<TaskElement>> tes = new ArrayList<List<TaskElement>>(1);
-        tes.add(elements);
-        setKeys(tes);
+        //workaround for task id changing and missmatch hash code
+        List<TaskKey> keys = new ArrayList<TaskKey>(elements.size());
+        for (TaskElement element : elements) {
+            keys.add(new TaskKey(element));
+        }
+        setKeys(keys);
     }
 
     public Children getChildren() {
         return this;
+    }
+
+    public static class TaskKey {
+
+        private TaskElement element;
+
+        public TaskKey(TaskElement element) {
+            this.element = element;
+        }
+
+        public TaskElement getElement() {
+            return element;
+        }
     }
 }

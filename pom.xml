@@ -146,6 +146,7 @@
         <module>core</module>
         <module>extensions</module>
         <module>connectors</module>
+        <module>context</module>
     </modules>
     <repositories>
         <repository>

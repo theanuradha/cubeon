@@ -33,6 +33,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.Action;
 import javax.swing.DefaultListModel;
 import javax.swing.DefaultListSelectionModel;
@@ -75,6 +77,7 @@ public class JiraTaskEditorUI extends javax.swing.JPanel {
     private JiraTask jiraTask;
     private JiraAction defaultStatus;
     private final JiraCommentsEditor commentsEditor;
+    private AtomicBoolean modifiedFlag = new AtomicBoolean(false);
     final DocumentListener documentListener = new DocumentListener() {
 
         public void insertUpdate(DocumentEvent arg0) {
@@ -201,7 +204,7 @@ public class JiraTaskEditorUI extends javax.swing.JPanel {
 
         JiraTaskTypeProvider jttp = taskRepository.getJiraTaskTypeProvider();
         for (JiraTaskType type : jttp.getJiraTaskTypes()) {
-            if (!type.isSubTask()&& jiraTask.getProject().isTypesSupported(type)) {
+            if (!type.isSubTask() && jiraTask.getProject().isTypesSupported(type)) {
                 cmbType.addItem(type);
             }
         }
@@ -368,7 +371,10 @@ public class JiraTaskEditorUI extends javax.swing.JPanel {
             }
         }
         jiraTask.setFixVersions(fixVersions);
-        jiraTask.setModifiedFlag(true);
+        //set as modified if already or actuvaly modified 
+        if (jiraTask.isModifiedFlag() || modifiedFlag.get()) {
+            jiraTask.setModifiedFlag(true);
+        }
         jiraTask.getTaskRepository().persist(jiraTask);
         submitTaskAction.setEnabled(jiraTask.isModifiedFlag());
         loadDates(jiraTask);
@@ -384,6 +390,7 @@ public class JiraTaskEditorUI extends javax.swing.JPanel {
         while (it.hasNext()) {
             it.next().stateChanged(ev);
         }
+        modifiedFlag.set(true);
     }
 
     private void loadDates(JiraTask jiraTask) {
@@ -764,6 +771,7 @@ public class JiraTaskEditorUI extends javax.swing.JPanel {
         openInBrowserTaskAction.setEnabled(!jiraTask.isLocal());
         openTaskHistoryAction.setEnabled(!jiraTask.isLocal());
         submitTaskAction.setEnabled(jiraTask.isModifiedFlag());
+        modifiedFlag.set(false);
     }
 
     JiraTask getJiraTask() {
