@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>org.netbeans.cubeon</groupId>
+        <artifactId>cubeon-context</artifactId>
+        <version>${cubeon.release}</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>cubeon-context-spi</artifactId>
+    <packaging>nbm</packaging>
+    <name>Cube°n Context SPI</name>
+    <description>Cube°n Task Context SPI</description>
+    <version>${cubeon.release}</version>
+    <dependencies>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util</artifactId>
+            <version>${netbeans.release}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-filesystems</artifactId>
+            <version>${netbeans.release}</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>nbm-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>
