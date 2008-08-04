@@ -48,7 +48,7 @@ made subject to such option by the copyright holder.
             <folder name="x-java">
                 <folder name="Popup">
                     <file name="org-netbeans-cubeon-java-bridge-TaskContextAction.instance">    
-                        <attr name="position" intvalue="5000"/>
+                        <attr name="position" intvalue="7000"/>
                     </file>
                 </folder>
             </folder>
