@@ -37,31 +37,13 @@ import org.openide.util.lookup.Lookups;
 public class JavaResource implements TaskResource {
 
     private String path;
-    private DataObject dataObject;
 
     public JavaResource(String path) {
         this.path = path;
     }
 
-    JavaResource(String path, DataObject dataObject) {
-        this(path);
-        this.dataObject = dataObject;
-    }
-
     public String getPath() {
         return path;
-    }
-
-    private void _load() {
-        try {
-            ClassPath cp = ClassPathSupport.createClassPath(GlobalPathRegistry.getDefault().getSourceRoots().toArray(new FileObject[0]));
-            FileObject fileObject = cp.findResource(path);
-            dataObject = DataObject.find(fileObject);
-
-        } catch (DataObjectNotFoundException ex) {
-
-            Logger.getLogger(JavaResource.class.getName()).fine("Missing : " + path);
-        }
     }
 
     public String getName() {
@@ -84,8 +66,17 @@ public class JavaResource implements TaskResource {
     }
 
     private Node getResourceNode() {
-        if (dataObject == null) {
-            _load();
+        DataObject dataObject = null;
+        try {
+            ClassPath cp = ClassPathSupport.createClassPath(GlobalPathRegistry.getDefault().getSourceRoots().toArray(new FileObject[0]));
+            FileObject fileObject = cp.findResource(path);
+            if (fileObject != null) {
+                dataObject = DataObject.find(fileObject);
+            }
+
+        } catch (DataObjectNotFoundException ex) {
+
+            Logger.getLogger(JavaResource.class.getName()).fine("Missing : " + path);
         }
         if (dataObject != null) {
             return dataObject.getNodeDelegate();
