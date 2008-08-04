@@ -12,7 +12,8 @@
     <description>Cube°n API/SPI's</description>
     <version>${cubeon.release}</version>
     <modules>
-        
+        <module>context-task-link</module>
+        <module>java-bridge</module>
     </modules>
     <build>
         <pluginManagement>

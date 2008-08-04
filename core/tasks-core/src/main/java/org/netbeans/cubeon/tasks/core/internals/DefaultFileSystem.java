@@ -23,6 +23,8 @@ import org.netbeans.cubeon.tasks.core.api.CubeonContext;
 import org.netbeans.cubeon.tasks.core.api.TaskFolder;
 import org.netbeans.cubeon.tasks.core.api.TaskRepositoryHandler;
 import org.netbeans.cubeon.tasks.core.api.TasksFileSystem;
+import org.netbeans.cubeon.tasks.core.spi.TaskNodeView;
+import org.netbeans.cubeon.tasks.core.views.CategorizedTaskNodeView;
 import org.netbeans.cubeon.tasks.spi.Extension;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.repository.RepositoryEventAdapter;
@@ -158,5 +160,13 @@ public class DefaultFileSystem implements TasksFileSystem {
 
     public TaskFolder newFolder(String folderName, String folderDescription) {
         return new TaskFolderImpl(null, folderName, folderDescription);
+    }
+
+    public TaskNodeView getFilesystemView() {
+        TaskNodeView contextView = null;
+        Lookup.getDefault().lookupAll(TaskNodeView.class);//FIXME may be lookup bug
+        contextView = Lookup.getDefault().lookup(CategorizedTaskNodeView.class);
+        assert contextView != null;
+        return contextView;
     }
 }

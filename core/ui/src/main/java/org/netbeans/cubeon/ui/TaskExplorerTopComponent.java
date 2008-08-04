@@ -16,7 +16,6 @@
  */
 package org.netbeans.cubeon.ui;
 
-import java.awt.EventQueue;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyVetoException;
@@ -26,12 +25,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
+import org.netbeans.cubeon.context.api.TaskContextManager;
 import org.netbeans.cubeon.tasks.core.api.NodeUtils;
 import org.netbeans.cubeon.tasks.core.api.TaskFolder;
 import org.netbeans.cubeon.tasks.core.api.TasksFileSystem;
@@ -40,6 +39,7 @@ import org.netbeans.cubeon.ui.taskelemet.NewTaskWizardAction;
 import org.netbeans.cubeon.ui.taskfolder.RefreshTaskFolderAction;
 import org.openide.awt.DropDownButtonFactory;
 import org.openide.explorer.ExplorerManager;
+import org.openide.explorer.ExplorerUtils;
 import org.openide.explorer.view.BeanTreeView;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
@@ -75,6 +75,8 @@ public final class TaskExplorerTopComponent extends TopComponent implements Expl
         setIcon(Utilities.loadImage(ICON_PATH, true));
         taskTreeView.setRootVisible(false);
         unloadViewMenu();
+        associateLookup (ExplorerUtils.createLookup(explorerManager, getActionMap()));
+
         viewMenu.addPopupMenuListener(new PopupMenuListener() {
 
             public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
@@ -123,7 +125,7 @@ public final class TaskExplorerTopComponent extends TopComponent implements Expl
         preferences.put(SELECTED_VIEW, view.getId());
         final Node node = view.getRootContext();
         explorerManager.setRootContext(node);
-          
+        focas.setAction(new Context());
         expand();
     }
 
@@ -141,6 +143,7 @@ public final class TaskExplorerTopComponent extends TopComponent implements Expl
                 break;
             }
         }
+        goBackToRoot.setVisible(true);
         goBackToRoot.setAction(new GoBack());
     }
 
@@ -150,6 +153,7 @@ public final class TaskExplorerTopComponent extends TopComponent implements Expl
         }
         explorerManager.setRootContext(selectedView.getRootContext());
         expand();
+        goBackToRoot.setVisible(false);
         goBackToRoot.setAction(null);
     }
 
@@ -276,7 +280,7 @@ private void refreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
 }//GEN-LAST:event_refreshActionPerformed
 
 private void downMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downMenuActionPerformed
-    Node node = selectedView.getRootContext();
+    Node node = explorerManager.getRootContext();
     JPopupMenu contextMenu = node.getContextMenu();
     contextMenu.show(downMenu, 0, downMenu.getHeight());
 }//GEN-LAST:event_downMenuActionPerformed
@@ -292,6 +296,7 @@ private void downMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JToolBar subToolbar;
     private javax.swing.JButton taskView;
     // End of variables declaration//GEN-END:variables
+
     /**
      * Gets default instance. Do not use directly: reserved for *.settings files only,
      * i.e. deserialization routines; otherwise you could get a non-deserialized instance.
@@ -381,6 +386,36 @@ private void downMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
         public Object readResolve() {
             return TaskExplorerTopComponent.getDefault();
+        }
+    }
+
+    private class Context extends AbstractAction {
+
+        private final TaskContextManager contextManager;
+
+        public Context() {
+            contextManager = Lookup.getDefault().lookup(TaskContextManager.class);
+            if (contextManager.getContextView().equals(selectedView)) {
+                putValue(SHORT_DESCRIPTION, "Hide Task Context");
+                putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/ui/focus_on.png")));
+            } else {
+                putValue(SHORT_DESCRIPTION, "Show Task Context");
+                putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/ui/focus_off.png")));
+            }
+
+
+
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            if (contextManager.getContextView().equals(selectedView)) {
+                TasksFileSystem fileSystem = Lookup.getDefault().lookup(TasksFileSystem.class);
+                selectView(fileSystem.getFilesystemView());
+            } else {
+                selectView(contextManager.getContextView());
+            }
+
+
         }
     }
 

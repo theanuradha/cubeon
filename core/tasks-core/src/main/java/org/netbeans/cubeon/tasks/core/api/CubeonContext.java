@@ -14,9 +14,9 @@
  *  limitations under the License.
  *  under the License.
  */
-
 package org.netbeans.cubeon.tasks.core.api;
 
+import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.util.Lookup;
 
 /**
@@ -24,6 +24,14 @@ import org.openide.util.Lookup;
  * @author Anuradha G
  */
 public interface CubeonContext {
-    
-  Lookup getLookup();
+
+    Lookup getLookup();
+
+    void setActive(TaskElement task);
+
+    TaskElement getActive();
+
+    void addContextListener(CubeonContextListener l);
+
+    void removeContextListener(CubeonContextListener l);
 }

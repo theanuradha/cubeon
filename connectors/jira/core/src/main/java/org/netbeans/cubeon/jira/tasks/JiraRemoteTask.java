@@ -43,7 +43,7 @@ public class JiraRemoteTask {
     private TaskResolution resolution;
     private Date created;
     private Date updated;
-    private JiraProject project;
+    private String project;
     private String environment;
     private String reporter;
     private String assignee;
@@ -130,11 +130,11 @@ public class JiraRemoteTask {
     }
 
     public JiraProject getProject() {
-        return project;
+        return taskRepository.getRepositoryAttributes().getProjectById(project);
     }
 
     public void setProject(JiraProject project) {
-        this.project = project;
+        this.project = project.getId();
     }
 
     public String getEnvironment() {

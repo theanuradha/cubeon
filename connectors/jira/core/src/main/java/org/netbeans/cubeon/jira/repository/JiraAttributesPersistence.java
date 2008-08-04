@@ -29,6 +29,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,6 +40,7 @@ import org.netbeans.cubeon.jira.remote.JiraException;
 import org.netbeans.cubeon.jira.remote.JiraSession;
 import org.netbeans.cubeon.jira.repository.attributes.JiraFilter;
 import org.netbeans.cubeon.jira.repository.attributes.JiraProject;
+import org.netbeans.cubeon.jira.repository.attributes.JiraProject.Version;
 import org.netbeans.cubeon.jira.repository.attributes.JiraUser;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.task.TaskResolution;
@@ -86,6 +89,9 @@ class JiraAttributesPersistence {
     private static final String TAG_RESOLUTION = "resolution";
     private static final String TAG_ID = "id";
     private static final String TAG_NAME = "name";
+    private static final String TAG_SCEQUENCE = "scequence";
+    private static final String TAG_RELEASED = "released";
+    private static final String TAG_ARCHIVED = "archived";
     private static final String TAG_USERS = "users";
     private static final String TAG_USER = "user";
     private static final String TAG_SUB_TYPE = "subtype";
@@ -479,6 +485,10 @@ class JiraAttributesPersistence {
             versions.appendChild(version);
             version.setAttribute(TAG_ID, rv.getId());
             version.setAttribute(TAG_NAME, rv.getName());
+            version.setAttribute(TAG_RELEASED, String.valueOf(rv.isReleased()));
+            version.setAttribute(TAG_ARCHIVED, String.valueOf(rv.isArchived()));
+            version.setAttribute(TAG_SCEQUENCE, String.valueOf(rv.getSequence()));
+
         }
         //Set<String> userIds = new HashSet<String>();
         Element usersElement = getEmptyElement(document, project, TAG_USERS);
@@ -584,17 +594,31 @@ class JiraAttributesPersistence {
 
                     String vid = ((Element) verstionNode).getAttribute(TAG_ID);
                     String vname = ((Element) verstionNode).getAttribute(TAG_NAME);
-                    vs.add(new JiraProject.Version(vid, vname));
+                    String vreleased = ((Element) verstionNode).getAttribute(TAG_RELEASED);
+                    String varchived = ((Element) verstionNode).getAttribute(TAG_ARCHIVED);
+                    String vscequence = ((Element) verstionNode).getAttribute(TAG_SCEQUENCE);
+                    long scequence = 0l;
+                    if (vscequence.trim().length() > 0) {
+                        scequence = Long.parseLong(vscequence);
+                    }
+                    vs.add(new JiraProject.Version(vid, vname,
+                            Boolean.parseBoolean(vreleased), Boolean.parseBoolean(varchived), scequence));
                 }
             }
+            Collections.sort(vs, new Comparator<JiraProject.Version>() {
+
+                public int compare(Version o1, Version o2) {
+                    return (int) (o1.getScequence() - o2.getScequence());
+                }
+            });
             jiraProject.setVersions(vs);
         }
-        
+
         //load types
- List<String> ids = new ArrayList<String>();
+        List<String> ids = new ArrayList<String>();
         Element types = findElement(element, TAG_TYPES, NAMESPACE);
         if (types != null) {
-           
+
             NodeList typeIdNodeList = types.getChildNodes();
             for (int j = 0; j < typeIdNodeList.getLength(); j++) {
 
@@ -602,7 +626,7 @@ class JiraAttributesPersistence {
                 if (typeNode.getNodeType() == Node.ELEMENT_NODE) {
 
                     String tid = ((Element) typeNode).getAttribute(TAG_ID);
-                    
+
                     ids.add(tid);
                 }
             }

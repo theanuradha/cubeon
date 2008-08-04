@@ -168,7 +168,7 @@
       <!--a fallback to make it work everywhere -->
         <java15.home>${java.home}/..</java15.home>
       <!-- the version of netbeans we depend on-->
-        <netbeans.release>RELEASE60</netbeans.release>
+        <netbeans.release>RELEASE65-SNAPSHOT</netbeans.release>
         <cubeon.release>1.0-SNAPSHOT</cubeon.release>
     </properties>
   <!--reporting>

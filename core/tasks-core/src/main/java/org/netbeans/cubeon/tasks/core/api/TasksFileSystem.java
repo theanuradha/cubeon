@@ -17,6 +17,7 @@
 package org.netbeans.cubeon.tasks.core.api;
 
 import java.util.List;
+import org.netbeans.cubeon.tasks.core.spi.TaskNodeView;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 
@@ -45,5 +46,6 @@ public interface TasksFileSystem {
     void setTaskQuery(TaskFolder folder, TaskQuery query);
 
     public TaskFolder newFolder(String folderName, String folderDescription);
-    //TODO : add backup restore oprations
+
+    TaskNodeView getFilesystemView();
 }

@@ -39,7 +39,7 @@ public class JiraAttributeHandler implements EditorAttributeHandler {
     }
 
     public String getName() {
-        return jiraTask.getName();
+        return jiraTask.getDisplayName();
     }
 
     public String getDisplayName() {
