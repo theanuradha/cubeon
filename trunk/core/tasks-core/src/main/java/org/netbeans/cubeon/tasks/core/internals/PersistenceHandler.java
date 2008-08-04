@@ -220,7 +220,8 @@ class PersistenceHandler {
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element) node;
                 String id = element.getAttributeNS(NAMESPACE, TAG_ID);
-                if (te.getId().equals(id)) {
+                String repo = element.getAttributeNS(NAMESPACE, TAG_REPOSITORY);
+                if (te.getId().equals(id)&& repo.equals(te.getTaskRepository().getId())) {
                     taskElement = element;
                     break;
                 }
