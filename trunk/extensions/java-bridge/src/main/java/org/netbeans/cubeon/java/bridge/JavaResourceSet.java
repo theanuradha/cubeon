@@ -16,6 +16,7 @@
  */
 package org.netbeans.cubeon.java.bridge;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -25,6 +26,7 @@ import org.netbeans.cubeon.context.spi.TaskResource;
 import org.netbeans.cubeon.context.spi.TaskResourceSet;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.nodes.Node;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.Lookups;
 
