@@ -20,10 +20,11 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.netbeans.api.java.classpath.ClassPath;
-import org.netbeans.api.java.classpath.GlobalPathRegistry;
+import org.netbeans.api.project.FileOwnerQuery;
+import org.netbeans.api.project.Project;
 import org.netbeans.cubeon.context.api.TaskContext;
 import org.netbeans.cubeon.context.api.TaskContextManager;
-import org.netbeans.spi.java.classpath.support.ClassPathSupport;
+import org.netbeans.spi.java.classpath.ClassPathProvider;
 import org.openide.filesystems.FileObject;
 import org.openide.loaders.DataObject;
 import org.openide.util.ContextAwareAction;
@@ -94,11 +95,18 @@ public class TaskContextAction extends AbstractAction implements ContextAwareAct
         DataObject dataObject = l.lookup(DataObject.class);
         if (dataObject != null) {
             FileObject primaryFile = dataObject.getPrimaryFile();
-            ClassPath cp = ClassPathSupport.createClassPath(GlobalPathRegistry.getDefault().getSourceRoots().toArray(new FileObject[0]));
-            if (cp.contains(primaryFile)) {
-                FileObject findOwnerRoot = cp.findOwnerRoot(primaryFile);
-                String path = primaryFile.getPath().replace(findOwnerRoot.getPath(), "");
-                return new JavaResource(path);
+            Project owner = FileOwnerQuery.getOwner(primaryFile);
+            if (owner != null) {
+                ClassPathProvider pathProvider = owner.getLookup().lookup(ClassPathProvider.class);
+                if (pathProvider != null) {
+                    ClassPath cp = pathProvider.findClassPath(primaryFile, ClassPath.SOURCE);
+                    if (cp.contains(primaryFile)) {
+                        FileObject findOwnerRoot = cp.findOwnerRoot(primaryFile);
+                        String path = primaryFile.getPath().replace(findOwnerRoot.getPath(), "");
+                        return new JavaResource(path);
+                    }
+                }
+
             }
         }
         return null;
