@@ -17,10 +17,8 @@
 package org.netbeans.cubeon.java.bridge;
 
 import java.util.logging.Logger;
-import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.api.java.classpath.GlobalPathRegistry;
 import org.netbeans.cubeon.context.spi.TaskResource;
-import org.netbeans.spi.java.classpath.support.ClassPathSupport;
 import org.openide.filesystems.FileObject;
 import org.openide.loaders.DataObject;
 import org.openide.loaders.DataObjectNotFoundException;
@@ -51,8 +49,9 @@ public class JavaResource implements TaskResource {
     void init() {
         if (dataObject == null) {
             try {
-                ClassPath cp = ClassPathSupport.createClassPath(GlobalPathRegistry.getDefault().getSourceRoots().toArray(new FileObject[0]));
-                FileObject fileObject = cp.findResource(path);
+                
+               
+                FileObject fileObject = GlobalPathRegistry.getDefault().findResource(path);
                 if (fileObject != null) {
                     dataObject = DataObject.find(fileObject);
                 }
