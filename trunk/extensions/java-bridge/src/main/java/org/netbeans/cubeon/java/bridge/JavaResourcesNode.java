@@ -66,7 +66,7 @@ public class JavaResourcesNode extends AbstractNode {
             @Override
             public Node getNode() {
                 return TagNode.createNode("Loading...", "Loading...",
-                        Utilities.loadImage("org/netbeans/cubeon/java/bridge/wait.png"));
+                        Utilities.loadImage("org/netbeans/cubeon/java/bridge/wait.gif"));
             }
         };
         private TaskElement taskElement;
