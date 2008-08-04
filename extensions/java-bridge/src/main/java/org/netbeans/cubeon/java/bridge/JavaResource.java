@@ -79,12 +79,12 @@ public class JavaResource implements TaskResource {
             Logger.getLogger(JavaResource.class.getName()).fine("Missing : " + path);
         }
         if (dataObject != null) {
-            return dataObject.getNodeDelegate();
+            return dataObject.getNodeDelegate().cloneNode();
         } else {
             Node missing = new AbstractNode(Children.LEAF) {
             };
             missing.setDisplayName(path);
-            missing.setShortDescription("Resource not available in Class Path :" + path);
+            missing.setShortDescription("Source not available in Class Path :" + path);
             return missing;
         }
     }
