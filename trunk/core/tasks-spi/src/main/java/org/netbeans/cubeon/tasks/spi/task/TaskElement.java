@@ -43,6 +43,12 @@ public interface TaskElement {
      * 
      * @return
      */
+    String getDisplayName();
+
+    /**
+     * 
+     * @return
+     */
     String getDescription();
 
     /**

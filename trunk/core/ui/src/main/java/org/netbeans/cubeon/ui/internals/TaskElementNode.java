@@ -23,7 +23,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.swing.Action;
+import org.netbeans.cubeon.tasks.core.api.CubeonContext;
+import org.netbeans.cubeon.tasks.core.api.CubeonContextListener;
 import org.netbeans.cubeon.tasks.core.api.TaskFolder;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskBadgeProvider;
@@ -41,6 +44,7 @@ import org.netbeans.cubeon.ui.taskelemet.MoveToDefault;
 import org.netbeans.cubeon.ui.taskelemet.OpenAction;
 import org.netbeans.cubeon.ui.taskelemet.OpenInBrowserAction;
 import org.netbeans.cubeon.ui.taskelemet.SynchronizeTaskAction;
+import org.netbeans.cubeon.ui.taskelemet.TaskActiveAction;
 import org.openide.cookies.SaveCookie;
 import org.openide.filesystems.FileObject;
 import org.openide.loaders.DataLoader;
@@ -60,20 +64,23 @@ import org.openide.util.lookup.InstanceContent;
 public class TaskElementNode extends AbstractNode {
 
     private static final String TAG = "<font color=\"#808080\"> <s> ";
+    private static final Logger LOG = Logger.getLogger(TaskElementNode.class.getName());
     private final TaskElement element;
     private final Extension extension;
     private SaveCookie cookie;
     private InstanceContent content;
     private DataObject dataObject;
     private final TaskElementChangeAdapter changeAdapter;
+    private final CubeonContextListener contextListener;
     private TaskFolder container;
     private boolean extendedActions;
+    private final CubeonContext context;
 
-    public static TaskElementNode createNode(final TaskFolder container, final TaskElement element, boolean extendedActions) {
+    public static TaskElementNode createNode(Children children, final TaskFolder container, final TaskElement element, boolean extendedActions) {
 
         InstanceContent content = new InstanceContent();
         content.add(element);
-        final TaskElementNode node = new TaskElementNode(container, element, content);
+        final TaskElementNode node = new TaskElementNode(children, container, element, content);
 
         node.content = content;
         node.cookie = new SaveCookie() {
@@ -87,10 +94,10 @@ public class TaskElementNode extends AbstractNode {
         return node;
     }
 
-    public static TaskElementNode createNode(final TaskElement element, SaveCookie cookie) {
+    public static TaskElementNode createNode(Children children, final TaskElement element, SaveCookie cookie) {
         InstanceContent content = new InstanceContent();
         content.add(element);
-        final TaskElementNode node = new TaskElementNode(null, element, content);
+        final TaskElementNode node = new TaskElementNode(children, null, element, content);
 
         node.content = content;
         node.cookie = cookie;
@@ -99,8 +106,9 @@ public class TaskElementNode extends AbstractNode {
         return node;
     }
 
-    private TaskElementNode(final TaskFolder container, final TaskElement element, InstanceContent content) {
-        super(Children.LEAF, new AbstractLookup(content));
+    private TaskElementNode(Children children, final TaskFolder container, final TaskElement element, InstanceContent content) {
+        super(children, new AbstractLookup(content));
+        context = Lookup.getDefault().lookup(CubeonContext.class);
         this.container = container;
         this.element = element;
         setDisplayName(element.getName());
@@ -113,6 +121,21 @@ public class TaskElementNode extends AbstractNode {
                 setModified(false);
             }
         };
+        contextListener = new CubeonContextListener() {
+
+            public void taskActivated(TaskElement element) {
+                if (element.equals(element)) {
+                    fireDisplayNameChange(getDisplayName() + "_#", element.getName());
+                }
+            }
+
+            public void taskDeactivated(TaskElement element) {
+                if (element.equals(element)) {
+                    fireDisplayNameChange(getDisplayName() + "_#", element.getName());
+                }
+            }
+        };
+        context.addContextListener(contextListener);
         changeAdapter = new TaskElementChangeAdapter() {
 
             @Override
@@ -197,6 +220,7 @@ public class TaskElementNode extends AbstractNode {
         List<Action> actions = new ArrayList<Action>();
         actions.add(new OpenAction(element));
         actions.add(new OpenInBrowserAction(element));
+        actions.add(new TaskActiveAction(element));
         actions.add(null);
         actions.add(new CopyDetailsAction(element));
         if (container != null) {
@@ -249,14 +273,26 @@ public class TaskElementNode extends AbstractNode {
     @Override
     public String getHtmlDisplayName() {
         StringBuffer buffer = new StringBuffer("<html>");
+
         if (element.isCompleted()) {
 
             buffer.append(TAG);
         }
-        buffer.append("<xmp>").append(element.getName());
+        if (element.equals(context.getActive())) {
+
+            buffer.append("<b>");
+        }
+
+        buffer.append("<xmp>");
+        buffer.append(element.getDisplayName());
         buffer.append("</xmp>");
         buffer.append("</html>");
         return buffer.toString();
+    }
+
+    @Override
+    public Image getOpenedIcon(int type) {
+        return getIcon(type);
     }
 
     @Override
@@ -290,6 +326,14 @@ public class TaskElementNode extends AbstractNode {
             }
         }
         return dataObject;
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        context.removeContextListener(contextListener);
+        extension.remove(changeAdapter);
+        super.finalize();
+        LOG.fine(new StringBuffer("Finalize Node :").append(element.getDisplayName()).toString());
     }
 }
 

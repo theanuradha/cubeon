@@ -20,6 +20,7 @@ import org.netbeans.cubeon.tasks.core.api.TaskFolder;
 import org.netbeans.cubeon.tasks.core.api.TaskNodeFactory;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
+import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 
 /**
@@ -28,15 +29,23 @@ import org.openide.nodes.Node;
  */
 public class TaskNodeFactoryImpl implements TaskNodeFactory {
 
-    public Node createTaskElementNode(TaskElement element, boolean withChildern) {
-        return TaskElementNode.createNode(null, element,true);
+    public Node createTaskElementNode(TaskElement element, Children children, boolean withActions) {
+        return TaskElementNode.createNode(children, null, element, withActions);
     }
 
     public Node createTaskRepositoryNode(TaskRepository repository, boolean withChildern) {
         return TaskRepositoryNode.createTaskRepositoryNode(repository, withChildern);
     }
 
-    public Node createTaskElementNode(TaskFolder container, TaskElement element, boolean withChildern) {
-        return TaskElementNode.createNode(container, element,true);
+    public Node createTaskElementNode(TaskFolder container, TaskElement element, Children children, boolean withActions) {
+        return TaskElementNode.createNode(children, container, element, withActions);
+    }
+
+    public Node createTaskElementNode(TaskElement element, boolean withActions) {
+        return createTaskElementNode(element, Children.LEAF, withActions);
+    }
+
+    public Node createTaskElementNode(TaskFolder folder, TaskElement element, boolean withActions) {
+        return createTaskElementNode(folder, element, Children.LEAF, withActions);
     }
 }

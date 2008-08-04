@@ -36,7 +36,14 @@ public class TagNode extends AbstractNode {
     private TagNode(String name, String description) {
         super(Children.LEAF);
         setDisplayName(name);
-        setShortDescription("<html>"+description+"</html>");
+        setShortDescription("<html>" + description + "</html>");
+    }
+
+    private TagNode(String name, String description, Image image) {
+        super(Children.LEAF);
+        setDisplayName(name);
+        setShortDescription("<html>" + description + "</html>");
+        this.image = image;
     }
 
     @Override
@@ -62,6 +69,18 @@ public class TagNode extends AbstractNode {
 
     public static Node createNode(String name, String description) {
         return new TagNode(name, description);
+    }
+
+    public static Node createNode(String name, String description, Image image) {
+        return new TagNode(name, description, image);
+    }
+
+    public static Node createNode(String name, String description, Image image,
+            Action preferredAction, Action... actions) {
+        TagNode node = new TagNode(name, description, image);
+        node.preferredAction = preferredAction;
+        node.actions = actions;
+        return node;
     }
 
     public static Node createNode(String name, String description,

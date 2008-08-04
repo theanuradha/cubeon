@@ -73,6 +73,10 @@ public class LocalTask implements TaskElement {
         return name;
     }
 
+    public String getDisplayName() {
+        return name;
+    }
+
     public void setName(String name) {
         this.name = name;
         extension.fireNameChenged();
@@ -180,6 +184,6 @@ public class LocalTask implements TaskElement {
     public void synchronize() {
         TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
         factory.save(this);
-                factory.refresh(this);
+        factory.refresh(this);
     }
 }

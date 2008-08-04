@@ -70,13 +70,13 @@ public class TaskElementChilren extends Children.Keys<TaskElementChilren.TaskKey
     protected void addNotify() {
 
         List<TaskElement> elements = new ArrayList<TaskElement>();
-
         List<TaskElementFilter> filters = new ArrayList<TaskElementFilter>();
         for (TaskElementFilter taskElementFilter : Lookup.getDefault().lookupAll(TaskElementFilter.class)) {
             if (taskElementFilter.isEnable()) {
                 filters.add(taskElementFilter);
             }
         }
+
 
         for (TaskElement taskElement : folder.getTaskElements()) {
             if (isFilterd(taskElement, filters)) {

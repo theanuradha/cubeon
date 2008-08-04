@@ -22,6 +22,16 @@
             <artifactId>org-openide-filesystems</artifactId>
             <version>${netbeans.release}</version>
         </dependency>
+        <dependency>
+            <groupId>org.netbeans.cubeon</groupId>
+            <artifactId>cubeon-tasks-spi</artifactId>
+            <version>${cubeon.release}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-nodes</artifactId>
+            <version>${netbeans.release}</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

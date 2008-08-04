@@ -130,11 +130,20 @@ public class JiraProject {
 
         private final String id;
         private final String name;
+        private final boolean  released;
+        private final boolean  archived;
+        private final long  scequence;
 
-        public Version(String id, String name) {
+        public Version(String id, String name, boolean released,
+                boolean archived, long scequence) {
             this.id = id;
             this.name = name;
+            this.released = released;
+            this.archived = archived;
+            this.scequence = scequence;
         }
+
+        
 
         public String getId() {
             return id;
@@ -144,6 +153,19 @@ public class JiraProject {
             return name;
         }
 
+        public boolean isArchived() {
+            return archived;
+        }
+
+        public boolean isReleased() {
+            return released;
+        }
+
+        public long getScequence() {
+            return scequence;
+        }
+
+        
         @Override
         public String toString() {
             return name;

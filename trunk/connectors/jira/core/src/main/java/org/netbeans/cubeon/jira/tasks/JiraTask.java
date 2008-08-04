@@ -43,7 +43,6 @@ import org.openide.util.lookup.Lookups;
  */
 public class JiraTask extends JiraRemoteTask implements TaskElement {
 
-   
     private boolean local;
     private List<String> editFieldIds = new ArrayList<String>();
     private JiraActionsProvider actionsProvider = new JiraActionsProvider();
@@ -56,11 +55,15 @@ public class JiraTask extends JiraRemoteTask implements TaskElement {
 
     public JiraTask(String id, String name, String description,
             JiraTaskRepository taskRepository) {
-        super(taskRepository,id, name, description);
-      
+        super(taskRepository, id, name, description);
+
         extension = new JiraTaskElementExtension(this);
         editorProvider = new TaskEditorProviderImpl(this);
 
+    }
+
+    public String getDisplayName() {
+        return getId() + " : " + getName();
     }
 
     @Override
@@ -71,11 +74,10 @@ public class JiraTask extends JiraRemoteTask implements TaskElement {
 
     @Override
     public void setDescription(String description) {
-       super.setDescription(description);
+        super.setDescription(description);
         extension.fireDescriptionChenged();
     }
 
-   
     public Lookup getLookup() {
         return Lookups.fixed(this, editorProvider, extension);
     }
@@ -100,7 +102,7 @@ public class JiraTask extends JiraRemoteTask implements TaskElement {
 
     @Override
     public void setResolution(TaskResolution resolution) {
-       super.setResolution(resolution);
+        super.setResolution(resolution);
         extension.fireResolutionChenged();
     }
 
@@ -111,26 +113,26 @@ public class JiraTask extends JiraRemoteTask implements TaskElement {
     public Image getImage() {
         Image image = Utilities.loadImage("org/netbeans/cubeon/local/nodes/task.png");
         //FIXME
-        if(getProject()!=null){
-        List<String> taskTypes = getProject().getTypes();
+        if (getProject() != null) {
+            List<String> taskTypes = getProject().getTypes();
 
-        int indexOf = taskTypes.indexOf(getType().getId());
+            int indexOf = taskTypes.indexOf(getType().getId());
 
-        switch (indexOf) {
-            case 0:
-                image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_defact.png"), 0, 0);
-                break;
-            case 1:
-                image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_enhancement.png"), 0, 0);
-                break;
-            case 2:
-                image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_feature.png"), 0, 0);
-                break;
-            case 3:
-                image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_task.png"), 0, 0);
-                break;
+            switch (indexOf) {
+                case 0:
+                    image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_defact.png"), 0, 0);
+                    break;
+                case 1:
+                    image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_enhancement.png"), 0, 0);
+                    break;
+                case 2:
+                    image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_feature.png"), 0, 0);
+                    break;
+                case 3:
+                    image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_task.png"), 0, 0);
+                    break;
 
-        }
+            }
 
         }
         return image;
@@ -216,7 +218,6 @@ public class JiraTask extends JiraRemoteTask implements TaskElement {
         this.modifiedFlag = modifiedFlag;
     }
 
-    
     public JiraTaskElementExtension getExtension() {
         return extension;
     }

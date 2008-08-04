@@ -30,6 +30,7 @@ import org.netbeans.cubeon.ui.taskelemet.SynchronizeTaskAction;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.cookies.SaveCookie;
+import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
@@ -82,7 +83,7 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
             }
         }
 
-        setActivatedNodes(new Node[]{editorNode = TaskElementNode.createNode(element, this)});
+        setActivatedNodes(new Node[]{editorNode = TaskElementNode.createNode(Children.LEAF ,element,this)});
         eah.addChangeListener(this);
         changeAdapter = new TaskElementChangeAdapter() {
 
