@@ -67,6 +67,11 @@ public class TagNode extends AbstractNode {
         return image;
     }
 
+    @Override
+    public Image getOpenedIcon(int type) {
+        return getIcon(type);
+    }
+
     public static Node createNode(String name, String description) {
         return new TagNode(name, description);
     }
