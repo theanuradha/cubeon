@@ -36,10 +36,32 @@ import org.openide.util.lookup.Lookups;
  */
 public class JavaResource implements TaskResource {
 
-    private String path;
+    private final String path;
+    private DataObject dataObject;
 
     public JavaResource(String path) {
         this.path = path;
+    }
+
+    public JavaResource(String path, DataObject dataObject) {
+        this.path = path;
+        this.dataObject = dataObject;
+    }
+
+    void init() {
+        if (dataObject == null) {
+            try {
+                ClassPath cp = ClassPathSupport.createClassPath(GlobalPathRegistry.getDefault().getSourceRoots().toArray(new FileObject[0]));
+                FileObject fileObject = cp.findResource(path);
+                if (fileObject != null) {
+                    dataObject = DataObject.find(fileObject);
+                }
+
+            } catch (DataObjectNotFoundException ex) {
+
+                Logger.getLogger(JavaResource.class.getName()).fine("Missing : " + path);
+            }
+        }
     }
 
     public String getPath() {
@@ -66,18 +88,8 @@ public class JavaResource implements TaskResource {
     }
 
     private Node getResourceNode() {
-        DataObject dataObject = null;
-        try {
-            ClassPath cp = ClassPathSupport.createClassPath(GlobalPathRegistry.getDefault().getSourceRoots().toArray(new FileObject[0]));
-            FileObject fileObject = cp.findResource(path);
-            if (fileObject != null) {
-                dataObject = DataObject.find(fileObject);
-            }
+        init();
 
-        } catch (DataObjectNotFoundException ex) {
-
-            Logger.getLogger(JavaResource.class.getName()).fine("Missing : " + path);
-        }
         if (dataObject != null) {
             return dataObject.getNodeDelegate().cloneNode();
         } else {

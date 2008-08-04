@@ -20,10 +20,12 @@ import java.awt.Image;
 import javax.swing.Action;
 import org.netbeans.cubeon.context.spi.TaskResource;
 import org.netbeans.cubeon.tasks.core.api.NodeUtils;
+import org.netbeans.cubeon.tasks.core.api.TagNode;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
+import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 
@@ -59,6 +61,14 @@ public class JavaResourcesNode extends AbstractNode {
 
     private static class ResourcesChildern extends Children.Keys<TaskResource> {
 
+        private static final TaskResource LOADINFG = new JavaResource("Loading") {
+
+            @Override
+            public Node getNode() {
+                return TagNode.createNode("Loading...", "Loading...",
+                        Utilities.loadImage("org/netbeans/cubeon/java/bridge/wait.png"));
+            }
+        };
         private TaskElement taskElement;
         private JavaResourceSet resourceSet;
 
@@ -74,7 +84,17 @@ public class JavaResourcesNode extends AbstractNode {
 
         @Override
         protected void addNotify() {
-            setKeys(resourceSet.getResources());
+            setKeys(new TaskResource[]{LOADINFG});
+            RequestProcessor.getDefault().post(new Runnable() {
+
+                public void run() {
+                    for (JavaResource resource : resourceSet.getJavaResources()) {
+                        resource.init();
+                    }
+                    setKeys(resourceSet.getResources());
+                }
+            });
+
         }
     }
 
