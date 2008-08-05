@@ -19,7 +19,10 @@ package org.netbeans.cubeon.local;
 import java.awt.Image;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+import org.netbeans.cubeon.analyzer.spi.StackTraceProvider;
 import org.netbeans.cubeon.local.internals.TaskEditorProviderImpl;
 import org.netbeans.cubeon.local.repository.*;
 import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
@@ -51,6 +54,7 @@ public class LocalTask implements TaskElement {
     private Date updated;
     private final TaskEditorProvider editorProvider;
     private LocalTaskElementExtension extension;
+    private final StackTraceProvider traceProvider;
 
     public LocalTask(String id, String name, String description,
             LocalTaskRepository taskRepository) {
@@ -63,6 +67,13 @@ public class LocalTask implements TaskElement {
         priority = taskRepository.getLocalTaskPriorityProvider().getDefaultPriority();
         status = taskRepository.getLocalTaskStatusProvider().NEW;
         type = taskRepository.getLocalTaskTypeProvider().TASK;
+        traceProvider = new StackTraceProvider() {
+
+            @Override
+            public List<String> getAnalyzableTexts() {
+                return Arrays.asList(getDescription());
+            }
+        };
     }
 
     public String getId() {
@@ -96,7 +107,7 @@ public class LocalTask implements TaskElement {
     }
 
     public Lookup getLookup() {
-        return Lookups.fixed(this, editorProvider, extension);
+        return Lookups.fixed(this, editorProvider, extension, traceProvider);
     }
 
     public TaskPriority getPriority() {
