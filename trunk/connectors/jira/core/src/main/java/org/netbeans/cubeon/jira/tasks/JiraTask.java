@@ -21,9 +21,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import org.netbeans.cubeon.analyzer.spi.StackTraceProvider;
 import org.netbeans.cubeon.jira.remote.JiraException;
 import org.netbeans.cubeon.jira.repository.JiraTaskRepository;
 import org.netbeans.cubeon.jira.repository.attributes.JiraAction;
+import org.netbeans.cubeon.jira.repository.attributes.JiraComment;
 import org.netbeans.cubeon.jira.repository.ui.JiraActionsProvider;
 import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
 import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider;
@@ -52,6 +54,7 @@ public class JiraTask extends JiraRemoteTask implements TaskElement {
     private boolean modifiedFlag;
     private TaskEditorProvider editorProvider;
     private JiraTaskElementExtension extension;
+    private final StackTraceProvider stackTraceProvider;
 
     public JiraTask(String id, String name, String description,
             JiraTaskRepository taskRepository) {
@@ -59,7 +62,19 @@ public class JiraTask extends JiraRemoteTask implements TaskElement {
 
         extension = new JiraTaskElementExtension(this);
         editorProvider = new TaskEditorProviderImpl(this);
+        stackTraceProvider = new StackTraceProvider() {
 
+            @Override
+            public List<String> getAnalyzableTexts() {
+                List<String> stacks = new ArrayList<String>();
+                stacks.add(getDescription());
+                List<JiraComment> comments = getComments();
+                for (JiraComment jiraComment : comments) {
+                    stacks.add(jiraComment.getBody());
+                }
+                return stacks;
+            }
+        };
     }
 
     public String getDisplayName() {
@@ -79,7 +94,7 @@ public class JiraTask extends JiraRemoteTask implements TaskElement {
     }
 
     public Lookup getLookup() {
-        return Lookups.fixed(this, editorProvider, extension);
+        return Lookups.fixed(this, editorProvider, extension,stackTraceProvider);
     }
 
     @Override

@@ -14,8 +14,10 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.java.bridge;
+package org.netbeans.cubeon.java.bridge.stacktrace;
 
+import java.util.List;
+import org.netbeans.cubeon.java.bridge.*;
 import java.awt.Image;
 import javax.swing.Action;
 import org.netbeans.cubeon.context.spi.TaskResource;
@@ -32,12 +34,12 @@ import org.openide.util.lookup.Lookups;
  *
  * @author Anuradha G
  */
-public class JavaResourcesNode extends AbstractNode {
+public class STResourcesNode extends AbstractNode {
 
     private TaskElement taskElement;
-    private JavaResourceSet resourceSet;
+    private STResourceSet resourceSet;
 
-    public JavaResourcesNode(TaskElement taskElement, JavaResourceSet resourceSet) {
+    public STResourcesNode(TaskElement taskElement, STResourceSet resourceSet) {
         super(new ResourcesChildern(taskElement, resourceSet), Lookups.fixed(taskElement, resourceSet));
         this.resourceSet = resourceSet;
         setDisplayName(resourceSet.getName());
@@ -45,7 +47,7 @@ public class JavaResourcesNode extends AbstractNode {
 
     @Override
     public Image getIcon(int type) {
-        return Utilities.loadImage("org/netbeans/cubeon/java/bridge/sourcegroup.png");
+        return Utilities.loadImage("org/netbeans/cubeon/java/bridge/stacktraces.png");
     }
 
     @Override
@@ -69,9 +71,9 @@ public class JavaResourcesNode extends AbstractNode {
             }
         };
         private TaskElement taskElement;
-        private JavaResourceSet resourceSet;
+        private STResourceSet resourceSet;
 
-        public ResourcesChildern(TaskElement taskElement, JavaResourceSet resourceSet) {
+        public ResourcesChildern(TaskElement taskElement, STResourceSet resourceSet) {
             this.taskElement = taskElement;
             this.resourceSet = resourceSet;
         }
@@ -87,13 +89,11 @@ public class JavaResourcesNode extends AbstractNode {
             RequestProcessor.getDefault().post(new Runnable() {
 
                 public void run() {
-                    for (JavaResource resource : resourceSet.getJavaResources()) {
-                        resource.init();
-                    }
+                    final List<TaskResource> resources = resourceSet.getResources();
                     MUTEX.writeAccess(new Runnable() {
 
                         public void run() {
-                            setKeys(resourceSet.getResources());
+                            setKeys(resources);
                         }
                     });
 
