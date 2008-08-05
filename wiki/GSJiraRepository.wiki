@@ -1,5 +1,5 @@
 = Geting Stated With Jira Respository =
-
+http://www.atlassian.com/software/jira/images/badges/v1/md_jira.png
 Add your content here.
 
 
