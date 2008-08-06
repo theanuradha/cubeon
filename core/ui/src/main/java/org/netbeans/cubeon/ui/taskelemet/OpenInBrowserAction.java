@@ -20,6 +20,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.awt.HtmlBrowser.URLDisplayer;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -31,7 +32,7 @@ public class OpenInBrowserAction extends AbstractAction {
 
     public OpenInBrowserAction(TaskElement element) {
         this.element = element;
-        putValue(NAME, "Open with Browser");
+        putValue(NAME, NbBundle.getMessage(OpenInBrowserAction.class, "LBL_Open_with_Browser"));
     }
 
     public void actionPerformed(ActionEvent e) {

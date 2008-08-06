@@ -25,6 +25,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -39,13 +40,13 @@ public class CopyDetailsAction extends AbstractAction implements ClipboardOwner{
        
         this.element = taskElement;
       
-        putValue(NAME, "Copy Details");
+        putValue(NAME, NbBundle.getMessage(CopyDetailsAction.class, "LBL_Copy_Details"));
     }
 
     public void actionPerformed(ActionEvent e) {
 
         Clipboard systemClipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        StringSelection content=new StringSelection(element.getId()+" : "+element.getName());
+        StringSelection content=new StringSelection(element.getDisplayName());
         systemClipboard.setContents(content, this);
         
     }

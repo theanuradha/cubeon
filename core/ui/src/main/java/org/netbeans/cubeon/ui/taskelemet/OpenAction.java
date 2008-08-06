@@ -21,6 +21,7 @@ import javax.swing.AbstractAction;
 import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -32,7 +33,7 @@ public class OpenAction extends AbstractAction {
 
     public OpenAction(TaskElement element) {
         this.element = element;
-        putValue(NAME, "Open");
+        putValue(NAME, NbBundle.getMessage(OpenAction.class, "LBL_Open"));
     }
 
     public void actionPerformed(ActionEvent e) {

@@ -59,7 +59,7 @@ public final class NewTaskWizardAction extends AbstractAction {
         if (panels == null) {
             //lookup CubeonContext
             CubeonContext cubeonContext = Lookup.getDefault().lookup(CubeonContext.class);
-            assert cubeonContext != null : "CubeonContext can't be null";
+            assert cubeonContext != null : "CubeonContext can't be null";//NOI18N
             //lookup TaskRepositoryHandler
             TaskRepositoryHandler repositoryHandler = cubeonContext.getLookup().lookup(TaskRepositoryHandler.class);
 
