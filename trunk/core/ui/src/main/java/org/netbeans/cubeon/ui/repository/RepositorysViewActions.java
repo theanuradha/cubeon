@@ -34,7 +34,7 @@ public class RepositorysViewActions implements RepositorysViewActionsProvider {
         return new Action[]{
                     new NewRepositoryWizardAction(),
                     new NewTaskWizardAction(NbBundle.getMessage(RepositorysViewActions.class, "LBL_Task_New")),
-                    new NewQueryWizardAction("New Query"),
+                    new NewQueryWizardAction(NbBundle.getMessage(RepositorysViewActions.class, "LBL_Query_New")),
                     null,
                     new TaskExplorerAction(NbBundle.getMessage(RepositorysViewActions.class,
                     "LBL_Show_Task_Explore")),

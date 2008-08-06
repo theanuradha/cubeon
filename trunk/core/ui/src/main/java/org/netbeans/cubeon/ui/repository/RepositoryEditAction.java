@@ -23,6 +23,7 @@ import org.netbeans.cubeon.tasks.spi.repository.TaskRepositoryType;
 import org.netbeans.cubeon.ui.repository.NewRepositoryWizardAction.WizardObject;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -34,7 +35,7 @@ public class RepositoryEditAction extends AbstractAction {
 
     public RepositoryEditAction(TaskRepository repository) {
         this.repository = repository;
-        putValue(NAME, "Properties");
+        putValue(NAME, NbBundle.getMessage(RepositoryEditAction.class, "LBL_Properties"));
         setEnabled(repository.getState()==TaskRepository.State.ACTIVE);
     }
 

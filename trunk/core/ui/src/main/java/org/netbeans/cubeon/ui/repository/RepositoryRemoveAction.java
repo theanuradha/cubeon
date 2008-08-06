@@ -47,8 +47,8 @@ public class RepositoryRemoveAction extends AbstractAction {
 
     public void actionPerformed(ActionEvent e) {
         NotifyDescriptor d =
-                new NotifyDescriptor.Confirmation(
-                "Delete Repository : " + repository.getName() + " ?",
+                new NotifyDescriptor.Confirmation(NbBundle.getMessage(
+                RepositoryRemoveAction.class, "LBL_Delete_Confirmation", repository.getName()),
                 NotifyDescriptor.OK_CANCEL_OPTION);
         Object notify = DialogDisplayer.getDefault().notify(d);
         if (notify == NotifyDescriptor.OK_OPTION) {
