@@ -24,6 +24,7 @@ import org.netbeans.cubeon.tasks.spi.query.TaskQuerySupportProvider;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -35,7 +36,7 @@ public class DeleteTaskQuery extends AbstractAction {
 
     public DeleteTaskQuery(TaskQuery query) {
         this.query = query;
-        putValue(NAME, "Delete");
+        putValue(NAME, NbBundle.getMessage(DeleteTaskQuery.class, "LBL_Delete"));
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke("DELETE"));//NOI18N
         TaskQuerySupportProvider provider = query.getTaskRepository().getLookup().lookup(TaskQuerySupportProvider.class);
         setEnabled(provider.canRemove(query));
@@ -44,7 +45,7 @@ public class DeleteTaskQuery extends AbstractAction {
     public void actionPerformed(ActionEvent e) {
         NotifyDescriptor d =
                 new NotifyDescriptor.Confirmation(
-                "Delete Query : " + query.getName() + " ?",
+                NbBundle.getMessage(DeleteTaskQuery.class, "LBL_Delete_Query", query.getName()),
                 NotifyDescriptor.OK_CANCEL_OPTION);
         Object notify = DialogDisplayer.getDefault().notify(d);
         if (notify == NotifyDescriptor.OK_OPTION) {

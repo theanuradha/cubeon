@@ -19,6 +19,7 @@ package org.netbeans.cubeon.ui.query;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -30,7 +31,7 @@ public class SynchronizeQuery extends AbstractAction {
 
     public SynchronizeQuery(TaskQuery query) {
         this.query = query;
-        putValue(NAME, "Synchronize");
+        putValue(NAME, NbBundle.getMessage(SynchronizeQuery.class, "LBL_Synchronize"));
     }
 
     public void actionPerformed(ActionEvent e) {

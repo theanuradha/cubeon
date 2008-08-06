@@ -26,6 +26,7 @@ import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -37,7 +38,7 @@ public class QueryEditAction extends AbstractAction {
 
     public QueryEditAction(TaskQuery query) {
         this.query = query;
-        putValue(NAME, "Edit Query");
+        putValue(NAME, NbBundle.getMessage(QueryEditAction.class, "LBL_Edit_Query"));
         TaskQuerySupportProvider provider = query.getTaskRepository().getLookup().lookup(TaskQuerySupportProvider.class);
         setEnabled(provider.canModify(query));
     }

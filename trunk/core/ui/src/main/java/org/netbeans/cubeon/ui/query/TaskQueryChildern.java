@@ -47,7 +47,7 @@ public class TaskQueryChildern extends Children.Keys<TaskQuery> {
     @Override
     protected Node[] createNodes(TaskQuery query) {
         if (dummyQuery.equals(query)) {
-            NewQueryWizardAction action = new NewQueryWizardAction("New Query");
+            NewQueryWizardAction action = new NewQueryWizardAction(NbBundle.getMessage(TaskQueryChildern.class, "LBL_New_Query"));
             action.preferredRepository(repository);
             return new Node[]{TagNode.createNode(
                         NbBundle.getMessage(TaskQueryChildern.class, "LBL_Query_Information_Name",
