@@ -20,6 +20,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import org.netbeans.cubeon.context.api.TaskContext;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -35,10 +36,10 @@ public class TaskLinkContextAction extends AbstractAction {
         this.element = element;
         resourceSet = context.getLookup().lookup(TaskLinkResourceSet.class);
         if (resourceSet != null && resourceSet.contains(element)) {
-            putValue(NAME, "Remove from Active Task Context");
+            putValue(NAME, NbBundle.getMessage(TaskLinkContextAction.class, "LBL_Remove_Context"));
             remove = true;
         } else {
-            putValue(NAME, "Add to Active Task Context");
+            putValue(NAME, NbBundle.getMessage(TaskLinkContextAction.class, "LBL_Add_Context"));
             remove = false;
 
         }

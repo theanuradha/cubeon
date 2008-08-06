@@ -35,10 +35,10 @@ import org.w3c.dom.NodeList;
  */
 class ResourcesPersistenceHandler {
 
-    private static final String TAG_REPOSITORY = "repository";
-    private static final String TAG_ID = "id";
-    private static final String TAG_TASKS = "tasks";
-    private static final String TAG_TASK = "task";
+    private static final String TAG_REPOSITORY = "repository";//NOI18N
+    private static final String TAG_ID = "id";//NOI18N
+    private static final String TAG_TASKS = "tasks";//NOI18N
+    private static final String TAG_TASK = "task";//NOI18N
     private final TaskContextHandler contextHandler;
 
     ResourcesPersistenceHandler(TaskContextHandler contextHandler) {

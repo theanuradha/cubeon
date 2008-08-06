@@ -19,7 +19,6 @@ package org.netbeans.cubeon.context.task.link;
 import org.netbeans.cubeon.context.spi.TaskResourceSet;
 import org.netbeans.cubeon.context.spi.TaskResouresProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
-import org.openide.nodes.Node;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.Lookups;
 
@@ -28,11 +27,6 @@ import org.openide.util.lookup.Lookups;
  * @author Anuradha
  */
 public class TaskLinkProvider implements TaskResouresProvider {
-
-    
-
-  
-
 
     public Lookup getLookup() {
         return Lookups.fixed(this);
