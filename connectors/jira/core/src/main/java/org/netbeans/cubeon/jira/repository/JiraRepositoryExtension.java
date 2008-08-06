@@ -94,7 +94,7 @@ public class JiraRepositoryExtension implements Extension {
     public void fireIdChanged(String oldId, String newId) {
         Collection<? extends RepositoryEventAdapter> adapters = lookup.lookupAll(RepositoryEventAdapter.class);
         for (RepositoryEventAdapter adapter : adapters) {
-            adapter.taskElementIdChenged(oldId, newId);
+            adapter.taskElementIdChenged(repository.getId(),oldId, newId);
         }
     }
 

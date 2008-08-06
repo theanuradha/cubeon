@@ -24,11 +24,6 @@ import javax.swing.Action;
  */
 public interface TaskExplorerViewActionsProvider {
 
-    /**
-     * Use to sort TaskExplorerViewActionsProvider 
-     * @return Number 
-     */
-    int getPosition();
 
     /**
      * New Menu Actions

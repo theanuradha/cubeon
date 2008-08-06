@@ -29,9 +29,6 @@ import org.openide.util.NbBundle;
  */
 public class RepositorysViewActions implements RepositorysViewActionsProvider {
 
-    public int getPosition() {
-        return 1000;
-    }
 
     public Action[] getActions() {
         return new Action[]{

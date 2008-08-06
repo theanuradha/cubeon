@@ -31,9 +31,7 @@ import org.openide.util.Lookup;
  */
 public class TaskActionsProviderImpl implements TaskElementActionsProvider {
 
-    public int getPosition() {
-        return 1500;
-    }
+
 
     public Action[] getActions(TaskElement element) {
         List<Action> actions = new ArrayList<Action>();

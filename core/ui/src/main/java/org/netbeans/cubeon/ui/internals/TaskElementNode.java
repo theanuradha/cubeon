@@ -237,12 +237,6 @@ public class TaskElementNode extends AbstractNode {
             final List<TaskElementActionsProvider> providers =
                     new ArrayList<TaskElementActionsProvider>(
                     Lookup.getDefault().lookupAll(TaskElementActionsProvider.class));
-            Collections.sort(providers, new Comparator<TaskElementActionsProvider>() {
-
-                public int compare(TaskElementActionsProvider o1, TaskElementActionsProvider o2) {
-                    return o1.getPosition() - o2.getPosition();
-                }
-            });
 
             for (TaskElementActionsProvider provider : providers) {
                 Action[] as = provider.getActions(element);

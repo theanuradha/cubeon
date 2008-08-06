@@ -38,9 +38,6 @@ public class TaskFolderActions implements TaskFolderActionsProvider {
                 };
     }
 
-    public int getPosition() {
-        return 1000;
-    }
 
     public Action[] getActions(TaskFolder taskFolder) {
         List<Action> actions = new ArrayList<Action>();

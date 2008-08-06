@@ -66,8 +66,8 @@ public class DefaultFileSystem implements TasksFileSystem {
         RepositoryEventAdapter adapter = new RepositoryEventAdapter() {
 
             @Override
-            public void taskElementIdChenged(String oldId, String newId) {
-                handler.changeTaskElementId(oldId, newId);
+            public void taskElementIdChenged(String repoId,String oldId, String newId) {
+                handler.changeTaskElementId(repoId,oldId, newId);
             }
 
             @Override

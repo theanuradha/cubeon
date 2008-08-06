@@ -24,11 +24,6 @@ import javax.swing.Action;
  * @author Anuradha
  */
 public interface TaskElementActionsProvider{
-   /**
-     * Use to sort number 
-     * @return Number 
-     */
-    int getPosition();
 
     /**
      *  Actions
