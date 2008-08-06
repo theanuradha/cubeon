@@ -37,7 +37,7 @@ import static org.netbeans.cubeon.tasks.core.internals.CorePreferences.getPrefer
  */
 public class CubeonContextImpl implements CubeonContext {
 
-    private static final String ACTIVE = "active";
+    private static final String ACTIVE = "active"; //NOI18N
     private TaskElement active;
     private final Set<CubeonContextListener> listeners = new HashSet<CubeonContextListener>();
     private final static Logger LOG = Logger.getLogger(CubeonContext.class.getName());
@@ -100,12 +100,12 @@ public class CubeonContextImpl implements CubeonContext {
     }
 
     final void fireTaskActivated(TaskElement element) {
-        LOG.info(new StringBuffer("Task Activated :").append(element.getDisplayName()).toString());
+        LOG.info(new StringBuffer("Task Activated :").append(element.getDisplayName()).toString()); //NOI18N
         Iterator<CubeonContextListener> it;
         synchronized (listeners) {
             it = new HashSet<CubeonContextListener>(listeners).iterator();
         }
-        LOG.fine("Listeners :" + listeners.size());
+        LOG.fine("Listeners :" + listeners.size()); //NOI18N
         while (it.hasNext()) {
             it.next().taskActivated(element);
         }

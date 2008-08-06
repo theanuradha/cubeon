@@ -42,7 +42,7 @@ import org.openide.util.Lookup;
  */
 public class DefaultFileSystem implements TasksFileSystem {
 
-    static final String TASKS_XML_PATH = "cubeon/tasks";
+    static final String TASKS_XML_PATH = "cubeon/tasks"; //NOI18N
     private final PersistenceHandler handler;
 
     public DefaultFileSystem() {

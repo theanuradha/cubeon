@@ -29,7 +29,7 @@ import org.openide.util.NbBundle;
 public class CategorizedTaskNodeView implements TaskNodeView {
 
     public String getId() {
-        return "CategorizedTaskNodeView";
+        return "CategorizedTaskNodeView";//NOI18N
     }
 
     public String getName() {
