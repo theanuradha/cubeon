@@ -21,6 +21,7 @@ import javax.swing.AbstractAction;
 import org.netbeans.cubeon.jira.remote.JiraException;
 import org.netbeans.cubeon.jira.repository.JiraTaskRepository;
 import org.openide.util.Exceptions;
+import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 
 /**
@@ -33,7 +34,7 @@ public class ReconnectAction extends AbstractAction {
 
     public ReconnectAction(JiraTaskRepository repository) {
         this.repository = repository;
-        putValue(NAME, "Reconnect to Repository");
+        putValue(NAME, NbBundle.getMessage(ReconnectAction.class, "LBL_Reconnect_Repository"));
     }
 
     public void actionPerformed(ActionEvent e) {

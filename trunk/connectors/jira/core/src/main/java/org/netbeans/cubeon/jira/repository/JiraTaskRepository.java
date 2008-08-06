@@ -40,6 +40,7 @@ import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
@@ -103,8 +104,8 @@ public class JiraTaskRepository implements TaskRepository {
         }
 
         repositoryAttributes = new JiraRepositoryAttributes(this);
-        handler = new TaskPersistenceHandler(this, baseDir, "tasks");
-        cache = new TaskPersistenceHandler(this, baseDir, "cache");
+        handler = new TaskPersistenceHandler(this, baseDir, "tasks");//NOI18N
+        cache = new TaskPersistenceHandler(this, baseDir, "cache");//NOI18N
         querySupport = new JiraQuerySupport(this, extension);
     }
 
@@ -154,7 +155,9 @@ public class JiraTaskRepository implements TaskRepository {
                     if (taskIds.isEmpty()) {
                         return;
                     }
-                    ProgressHandle handle = ProgressHandleFactory.createHandle("Synchronizing Tasks : " + getName());
+                    ProgressHandle handle = ProgressHandleFactory.createHandle(
+                            NbBundle.getMessage(JiraTaskRepository.class,
+                            "LBL_Synchronizing_Tasks", getName()));
                     handle.start(taskIds.size());
                     try {
                         for (String id : taskIds) {
@@ -282,7 +285,9 @@ public class JiraTaskRepository implements TaskRepository {
 
         try {
             setState(State.SYNCHRONIZING);
-            ProgressHandle handle = ProgressHandleFactory.createHandle(getName() + ": Updating Attributes");
+            ProgressHandle handle = ProgressHandleFactory.createHandle(
+                    NbBundle.getMessage(JiraTaskRepository.class,
+                    "LBL_Updating_Attributes", getName()));
             repositoryAttributes.refresh(handle);
             loadAttributes();
             handle.finish();
@@ -296,7 +301,9 @@ public class JiraTaskRepository implements TaskRepository {
     }
 
     public void updateFilters() {
-        ProgressHandle handle = ProgressHandleFactory.createHandle(getName() + " : Updating Filters");
+        ProgressHandle handle = ProgressHandleFactory.createHandle(
+                NbBundle.getMessage(JiraTaskRepository.class,
+                "LBL_Updating_Filters", getName()));
         handle.start();
         handle.switchToIndeterminate();
         try {
@@ -381,7 +388,7 @@ public class JiraTaskRepository implements TaskRepository {
             if (!task.isLocal()) {
                 JiraRemoteTask jiraRemoteTask = getJiraRemoteTaskCache(task.getId());
                 if (jiraRemoteTask != null && jiraRemoteTask.getUpdated().getTime() == issue.getUpdated().getTime().getTime()) {
-                    Logger.getLogger(getClass().getName()).info("Up to date : " + issue.getKey());
+                    Logger.getLogger(getClass().getName()).info("Up to date : " + issue.getKey());//NOI18N
 
                 } else {
 
@@ -479,7 +486,8 @@ public class JiraTaskRepository implements TaskRepository {
     }
 
     public synchronized void reconnect() throws JiraException {
-        ProgressHandle handle = ProgressHandleFactory.createHandle("Connecting to : " + getName());
+        ProgressHandle handle = ProgressHandleFactory.createHandle(
+                NbBundle.getMessage(JiraTaskRepository.class, "LBL_Connecting", getName()));
         handle.start();
         handle.switchToIndeterminate();
         try {

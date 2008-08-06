@@ -45,7 +45,7 @@ import org.openide.util.lookup.Lookups;
  */
 public class JiraTaskRepositoryProvider implements TaskRepositoryType {
 
-    static final String BASE_PATH = "cubeon/jira_repositories/";
+    static final String BASE_PATH = "cubeon/jira_repositories/";//NOI18N
     private List<JiraTaskRepository> taskRepositorys = new ArrayList<JiraTaskRepository>();
     private final JiraRepositoryPersistence persistence;
     private AtomicBoolean initiailzed = new AtomicBoolean(false);

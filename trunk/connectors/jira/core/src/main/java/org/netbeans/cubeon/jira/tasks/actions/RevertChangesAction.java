@@ -21,6 +21,7 @@ import javax.swing.AbstractAction;
 import org.netbeans.cubeon.jira.tasks.JiraTask;
 import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -32,8 +33,8 @@ public class RevertChangesAction extends AbstractAction {
 
     public RevertChangesAction(JiraTask task) {
         this.task = task;
-        putValue(NAME, "Revert Local Changes");
-        putValue(SHORT_DESCRIPTION, "Revert Local Changes");
+        putValue(NAME, NbBundle.getMessage(RevertChangesAction.class, "LBL_Revert_Local_Changes"));
+        putValue(SHORT_DESCRIPTION, NbBundle.getMessage(RevertChangesAction.class, "LBL_Revert_Local_Changes"));
     //putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/jira/history.png")));
     }
 

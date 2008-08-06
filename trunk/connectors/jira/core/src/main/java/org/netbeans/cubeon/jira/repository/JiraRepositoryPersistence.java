@@ -40,16 +40,16 @@ class JiraRepositoryPersistence {
 
     private static final String REPOSITORYS_FILE_NAME = "repositorys.xml"; //NOI18N
     private static final String NAMESPACE = null;//FIXME add propper namespase
-    private static final String TAG_ROOT = "jira-task-repository-configuration";
-    private static final String TAG_REPOSITORIES = "repositories";
-    private static final String TAG_REPOSITORY = "repository";
-    private static final String TAG_ID = "id";
-    private static final String TAG_USERID = "user";
-    private static final String TAG_URL = "url";
-    private static final String TAG_PROJECT = "project";
-    private static final String TAG_PASSWORD_HASH = "password";
-    private static final String TAG_NAME = "name";
-    private static final String TAG_DESCRIPTION = "description";
+    private static final String TAG_ROOT = "jira-task-repository-configuration";//NOI18N
+    private static final String TAG_REPOSITORIES = "repositories";//NOI18N
+    private static final String TAG_REPOSITORY = "repository";//NOI18N
+    private static final String TAG_ID = "id";//NOI18N
+    private static final String TAG_USERID = "user";//NOI18N
+    private static final String TAG_URL = "url";//NOI18N
+    private static final String TAG_PROJECT = "project";//NOI18N
+    private static final String TAG_PASSWORD_HASH = "password";//NOI18N
+    private static final String TAG_NAME = "name";//NOI18N
+    private static final String TAG_DESCRIPTION = "description";//NOI18N
     private JiraTaskRepositoryProvider provider;
     private FileObject baseDir;
 
@@ -228,7 +228,7 @@ class JiraRepositoryPersistence {
         } else {
 
             doc = XMLUtil.createDocument(TAG_ROOT, null, null, null);
-            doc.createComment("This document contains Local Task Repository informations");
+            doc.createComment("This document contains Local Task Repository informations");//NOI18N
         }
 
         if (doc != null) {

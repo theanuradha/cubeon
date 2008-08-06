@@ -24,6 +24,7 @@ import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import org.netbeans.cubeon.jira.tasks.JiraTask;
 import org.openide.awt.HtmlBrowser.URLDisplayer;
+import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 
 /**
@@ -36,14 +37,14 @@ public class OpenTaskHistoryAction extends AbstractAction {
 
     public OpenTaskHistoryAction(JiraTask task) {
         this.task = task;
-        putValue(NAME, "Open Change History");
-        putValue(SHORT_DESCRIPTION, "Show Task Change History");
+        putValue(NAME, NbBundle.getMessage(OpenTaskHistoryAction.class, "LBL_Open_Change_History"));
+        putValue(SHORT_DESCRIPTION, NbBundle.getMessage(OpenTaskHistoryAction.class, "LBL_Open_Change_History"));
         putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/jira/history.png")));
     }
 
     public void actionPerformed(ActionEvent e) {
         try {
-            URLDisplayer.getDefault().showURL(new URL(task.getUrlString() + "?page=com.atlassian.jira.plugin.system.issuetabpanels:changehistory-tabpanel"));
+            URLDisplayer.getDefault().showURL(new URL(task.getUrlString() + "?page=com.atlassian.jira.plugin.system.issuetabpanels:changehistory-tabpanel"));//NOI18N
         } catch (MalformedURLException ex) {
             Logger.getLogger(OpenTaskHistoryAction.class.getName()).warning(ex.getMessage());
         }
