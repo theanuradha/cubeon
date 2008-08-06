@@ -20,6 +20,7 @@ import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskResolution;
 import java.util.ArrayList;
 import java.util.List;
+import org.netbeans.cubeon.jira.tasks.JiraTask;
 import org.netbeans.cubeon.tasks.spi.repository.TaskResolutionProvider;
 
 /**
@@ -50,10 +51,12 @@ public class JiraTaskResolutionProvider implements TaskResolutionProvider {
     }
 
     public TaskResolution getTaskResolution(TaskElement element) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        JiraTask task = element.getLookup().lookup(JiraTask.class);
+        assert task != null;
+        return task.getResolution();
     }
 
     public void setTaskResolution(TaskElement element, TaskResolution resolution) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //NOTSUPPORTED
     }
 }

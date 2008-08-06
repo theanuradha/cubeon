@@ -23,6 +23,7 @@ import org.netbeans.cubeon.tasks.spi.Extension;
 import org.netbeans.cubeon.tasks.spi.repository.RepositoryEventAdapter;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository.State;
+import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 
 /**
@@ -37,7 +38,7 @@ public class UpdateAttributesAction extends AbstractAction {
 
     public UpdateAttributesAction(JiraTaskRepository repository) {
         this.repository = repository;
-        putValue(NAME, "Update Attributes");
+        putValue(NAME, NbBundle.getMessage(UpdateAttributesAction.class, "LBL_Update_Attributes"));
         setEnabled(repository.getState() == TaskRepository.State.ACTIVE);
         extension = repository.getExtension();
         extension.add(adapter = new RepositoryEventAdapter() {

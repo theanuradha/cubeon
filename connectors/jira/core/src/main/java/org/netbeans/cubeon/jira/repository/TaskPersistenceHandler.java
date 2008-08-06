@@ -58,40 +58,40 @@ class TaskPersistenceHandler {
 
     private static final String FILESYSTEM_FILE_TAG = "repository.xml"; //NOI18N
     private static final String NAMESPACE = null;//FIXME add propper namespase
-    private static final String TAG_ROOT = "tasks";
-    private static final String TAG_REPOSITORY = "repository";
-    private static final String TAG_ID = "id";
-    private static final String TAG_AUTHOR = "author";
-    private static final String TAG_UPDATE_AUTHOR = "uauthor";
-    private static final String TAG_TASKS = "tasks";
-    private static final String TAG_NEXT_ID = "next";
-    private static final String TAG_TASK = "task";
-    private static final String TAG_NAME = "name";
-    private static final String TAG_PRIORITY = "priority";
-    private static final String TAG_STATUS = "status";
-    private static final String TAG_URL = "url";
-    private static final String TAG_TYPE = "type";
-    private static final String TAG_PROJECT = "project";
-    private static final String TAG_ENVIRONMENT = "environment";
-    private static final String TAG_RESOLUTION = "resolution";
-    private static final String TAG_CREATED_DATE = "cdate";
-    private static final String TAG_UPDATE_DATE = "udate";
-    private static final String TAG_DESCRIPTION = "description";
-    private static final String TAG_COMPONENTS = "components";
-    private static final String TAG_AFFECT_VERSIONS = "affect_version";
-    private static final String TAG_FIX_VERSIONS = "fix_version";
-    private static final String TAG_COMPONENT = "component";
-    private static final String TAG_COMMENTS = "comments";
-    private static final String TAG_COMMENT = "comment";
-    private static final String TAG_VERSION = "version";
-    private static final String TAG_LOCAL = "local";
-    private static final String TAG_REPORTER = "reporter";
-    private static final String TAG_ASSIGNEE = "assignee";
-    private static final String TAG_ACTIONS = "actions";
-    private static final String TAG_ACTION = "action";
-    private static final String TAG_FIELDS = "fields";
-    private static final String TAG_FIELD = "field";
-    private static final String TAG_MODIFIED_FLAG = "modified_flag";
+    private static final String TAG_ROOT = "tasks";//NOI18N
+    private static final String TAG_REPOSITORY = "repository";//NOI18N
+    private static final String TAG_ID = "id";//NOI18N
+    private static final String TAG_AUTHOR = "author";//NOI18N
+    private static final String TAG_UPDATE_AUTHOR = "uauthor";//NOI18N
+    private static final String TAG_TASKS = "tasks";//NOI18N
+    private static final String TAG_NEXT_ID = "next";//NOI18N
+    private static final String TAG_TASK = "task";//NOI18N
+    private static final String TAG_NAME = "name";//NOI18N
+    private static final String TAG_PRIORITY = "priority";//NOI18N
+    private static final String TAG_STATUS = "status";//NOI18N
+    private static final String TAG_URL = "url";//NOI18N
+    private static final String TAG_TYPE = "type";//NOI18N
+    private static final String TAG_PROJECT = "project";//NOI18N
+    private static final String TAG_ENVIRONMENT = "environment";//NOI18N
+    private static final String TAG_RESOLUTION = "resolution";//NOI18N
+    private static final String TAG_CREATED_DATE = "cdate";//NOI18N
+    private static final String TAG_UPDATE_DATE = "udate";//NOI18N
+    private static final String TAG_DESCRIPTION = "description";//NOI18N
+    private static final String TAG_COMPONENTS = "components";//NOI18N
+    private static final String TAG_AFFECT_VERSIONS = "affect_version";//NOI18N
+    private static final String TAG_FIX_VERSIONS = "fix_version";//NOI18N
+    private static final String TAG_COMPONENT = "component";//NOI18N
+    private static final String TAG_COMMENTS = "comments";//NOI18N
+    private static final String TAG_COMMENT = "comment";//NOI18N
+    private static final String TAG_VERSION = "version";//NOI18N
+    private static final String TAG_LOCAL = "local";//NOI18N
+    private static final String TAG_REPORTER = "reporter";//NOI18N
+    private static final String TAG_ASSIGNEE = "assignee";//NOI18N
+    private static final String TAG_ACTIONS = "actions";//NOI18N
+    private static final String TAG_ACTION = "action";//NOI18N
+    private static final String TAG_FIELDS = "fields";//NOI18N
+    private static final String TAG_FIELD = "field";//NOI18N
+    private static final String TAG_MODIFIED_FLAG = "modified_flag";//NOI18N
     //----------------------------------------------------
     private JiraTaskRepository jiraTaskRepository;
     private final FileObject baseDir;
@@ -697,7 +697,7 @@ class TaskPersistenceHandler {
 
             save(document);
 
-            FileObject taskFo = tasksFolder.getFileObject(te.getId() + ".xml");
+            FileObject taskFo = tasksFolder.getFileObject(te.getId() + ".xml");//NOI18N
             if (taskFo != null) {
                 try {
                     taskFo.delete();
@@ -763,7 +763,7 @@ class TaskPersistenceHandler {
     }
 
     private Document getTaskDocument(String tag) {
-        final FileObject config = tasksFolder.getFileObject(tag + ".xml");
+        final FileObject config = tasksFolder.getFileObject(tag + ".xml");//NOI18N
         Document doc = null;
         if (config != null) {
             InputStream in = null;
@@ -835,14 +835,14 @@ class TaskPersistenceHandler {
 
     private void saveTask(Document doc, String tag) {
 
-        FileObject config = tasksFolder.getFileObject(tag + ".xml");
+        FileObject config = tasksFolder.getFileObject(tag + ".xml");//NOI18N
 
         FileLock lck = null;
         OutputStream out = null;
         try {
             if (config == null) {
 
-                config = tasksFolder.createData(tag + ".xml");
+                config = tasksFolder.createData(tag + ".xml");//NOI18N
             }
             lck = config.lock();
             out = config.getOutputStream(lck);

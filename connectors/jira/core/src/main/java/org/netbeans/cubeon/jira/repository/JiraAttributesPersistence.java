@@ -48,6 +48,7 @@ import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
+import org.openide.util.NbBundle;
 import org.openide.xml.XMLUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -62,44 +63,44 @@ import org.xml.sax.SAXException;
  */
 class JiraAttributesPersistence {
 
-    private static final String TAG_UNASSIGNED_ISSUES = "unassigned_issues";
-    private static final String TAG_USER_MANAGMENT = "user_managment";
-    private static final String TAG_WATCHING = "watching";
+    private static final String TAG_UNASSIGNED_ISSUES = "unassigned_issues";//NOI18N
+    private static final String TAG_USER_MANAGMENT = "user_managment";//NOI18N
+    private static final String TAG_WATCHING = "watching";//NOI18N
     private static final String FILESYSTEM_FILE_TAG = "attributes.xml"; //NOI18N
     private static final String NAMESPACE = null;//FIXME add propper namespase
-    private static final String TAG_ATTACHMENTS = "attachments";
-    private static final String TAG_ISSUE_LINKING = "Issue_linking";
-    private static final String TAG_ROOT = "attributes";
-    private static final String TAG_PRIORITIES = "priorites";
-    private static final String TAG_PROJECTS = "projects";
-    private static final String TAG_FILTERS = "filters";
-    private static final String TAG_SUB_TASKS = "sub_tasks";
-    private static final String TAG_TYPES = "types";
-    private static final String TAG_COMPONENTS = "components";
-    private static final String TAG_VERSIONS = "versions";
-    private static final String TAG_STATUSES = "statuses";
-    private static final String TAG_RESOLUTIONS = "resolutions";
-    private static final String TAG_PRIORITY = "priority";
-    private static final String TAG_PROJECT = "project";
-    private static final String TAG_FILTER = "filter";
-    private static final String TAG_TYPE = "type";
-    private static final String TAG_COMPONENT = "component";
-    private static final String TAG_VERSION = "version";
-    private static final String TAG_STATUS = "status";
-    private static final String TAG_RESOLUTION = "resolution";
-    private static final String TAG_ID = "id";
-    private static final String TAG_NAME = "name";
-    private static final String TAG_SCEQUENCE = "scequence";
-    private static final String TAG_RELEASED = "released";
-    private static final String TAG_ARCHIVED = "archived";
-    private static final String TAG_USERS = "users";
-    private static final String TAG_USER = "user";
-    private static final String TAG_SUB_TYPE = "subtype";
-    private static final String TAG_DESCRIPTION = "description";
-    private static final String TAG_LEAD = "lead";
-    private static final String TAG_CONFIGURATIONS = "Configurations";
-    private static final String TAG_VOTING = "voting";
-    private static final String TAG_AUTHOR = "author";
+    private static final String TAG_ATTACHMENTS = "attachments";//NOI18N
+    private static final String TAG_ISSUE_LINKING = "Issue_linking";//NOI18N
+    private static final String TAG_ROOT = "attributes";//NOI18N
+    private static final String TAG_PRIORITIES = "priorites";//NOI18N
+    private static final String TAG_PROJECTS = "projects";//NOI18N
+    private static final String TAG_FILTERS = "filters";//NOI18N
+    private static final String TAG_SUB_TASKS = "sub_tasks";//NOI18N
+    private static final String TAG_TYPES = "types";//NOI18N
+    private static final String TAG_COMPONENTS = "components";//NOI18N
+    private static final String TAG_VERSIONS = "versions";//NOI18N
+    private static final String TAG_STATUSES = "statuses";//NOI18N
+    private static final String TAG_RESOLUTIONS = "resolutions";//NOI18N
+    private static final String TAG_PRIORITY = "priority";//NOI18N
+    private static final String TAG_PROJECT = "project";//NOI18N
+    private static final String TAG_FILTER = "filter";//NOI18N
+    private static final String TAG_TYPE = "type";//NOI18N
+    private static final String TAG_COMPONENT = "component";//NOI18N
+    private static final String TAG_VERSION = "version";//NOI18N
+    private static final String TAG_STATUS = "status";//NOI18N
+    private static final String TAG_RESOLUTION = "resolution";//NOI18N
+    private static final String TAG_ID = "id";//NOI18N
+    private static final String TAG_NAME = "name";//NOI18N
+    private static final String TAG_SCEQUENCE = "scequence";//NOI18N
+    private static final String TAG_RELEASED = "released";//NOI18N
+    private static final String TAG_ARCHIVED = "archived";//NOI18N
+    private static final String TAG_USERS = "users";//NOI18N
+    private static final String TAG_USER = "user";//NOI18N
+    private static final String TAG_SUB_TYPE = "subtype";//NOI18N
+    private static final String TAG_DESCRIPTION = "description";//NOI18N
+    private static final String TAG_LEAD = "lead";//NOI18N
+    private static final String TAG_CONFIGURATIONS = "Configurations";//NOI18N
+    private static final String TAG_VOTING = "voting";//NOI18N
+    private static final String TAG_AUTHOR = "author";//NOI18N
     private final JiraRepositoryAttributes attributes;
     private final FileObject baseDir;
     private final Object LOCK = new Object();
@@ -131,12 +132,14 @@ class JiraAttributesPersistence {
 
 
             if (attributes.getRepository().getProjectKey() == null) {
-                LOG.log(Level.INFO, "requsting projects");
-                progressHandle.progress("Requsting Projects Information");
+                LOG.log(Level.INFO, "requsting projects");//NOI18N
+                progressHandle.progress(NbBundle.getMessage(JiraAttributesPersistence.class,
+                        "LBL_Requsting_Projects_Information"));
 
                 RemoteProject[] projects = session.getProjects();
-                LOG.log(Level.INFO, projects.length + " projects found");
-                progressHandle.progress(projects.length + " Projects found");
+                LOG.log(Level.INFO, projects.length + " projects found");//NOI18N
+                progressHandle.progress(NbBundle.getMessage(JiraAttributesPersistence.class,
+                        "LBL_Projects_found", projects.length));
 
                 for (RemoteProject rp : projects) {
                     Element project = document.createElement(TAG_PROJECT);
@@ -148,8 +151,9 @@ class JiraAttributesPersistence {
                 boolean refreshedflag = false;
                 List<JiraProject> projects = attributes.getProjects();
                 for (JiraProject jiraProject : projects) {
-                    LOG.log(Level.INFO, "requsting project : " + jiraProject.getId());
-                    progressHandle.progress("Requsting Project : " + jiraProject.getId() + "Information");
+                    LOG.log(Level.INFO, "requsting project : " + jiraProject.getId());//NOI18N
+                    progressHandle.progress(NbBundle.getMessage(JiraAttributesPersistence.class,
+                            "LBL_Requsting_Project_Information", jiraProject.getId() ));
                     RemoteProject rp = session.getProjectByKey(jiraProject.getId());
                     Element project = document.createElement(TAG_PROJECT);
                     projectsElement.appendChild(project);
@@ -157,8 +161,9 @@ class JiraAttributesPersistence {
                     refreshedflag = refreshedflag || projectKey.equals(jiraProject.getId());
                 }
                 if (!refreshedflag) {
-                    LOG.log(Level.INFO, "requsting project : " + projectKey);
-                    progressHandle.progress("Requsting Project : " + projectKey + "Information");
+                    LOG.log(Level.INFO, "requsting project : " + projectKey);//NOI18N
+                    progressHandle.progress(NbBundle.getMessage(JiraAttributesPersistence.class,
+                            "LBL_Requsting_Project_Information", projectKey ) );
                     RemoteProject rp = session.getProjectByKey(projectKey);
                     Element project = document.createElement(TAG_PROJECT);
                     projectsElement.appendChild(project);
@@ -256,7 +261,8 @@ class JiraAttributesPersistence {
                 root.appendChild(attributesElement);
             }
 
-            progressHandle.progress("Requsting Repository Filters");
+            progressHandle.progress(NbBundle.getMessage(JiraAttributesPersistence.class,
+                    "LBL_Requsting_Repository_Filters"));
             _refreshFilters(session, document, attributesElement);
             save(document);
         }
@@ -382,7 +388,8 @@ class JiraAttributesPersistence {
     }
 
     JiraProject resolveJiraProject(String key) throws JiraException {
-        ProgressHandle progressHandle = ProgressHandleFactory.createHandle("Updating Project :" + key);
+        ProgressHandle progressHandle = ProgressHandleFactory.createHandle(
+                NbBundle.getMessage(JiraAttributesPersistence.class, "LBL_Updating_Project",key));
         return resolveJiraProject(key, progressHandle);
     }
 
@@ -403,8 +410,10 @@ class JiraAttributesPersistence {
                     attributesElement = document.createElement(TAG_ROOT);
                     root.appendChild(attributesElement);
                 }
-                LOG.log(Level.INFO, "requsting project : " + attributes.getRepository().getProjectKey());
-                progressHandle.progress("Requsting Project : " + attributes.getRepository().getProjectKey() + "Information");
+                LOG.log(Level.INFO, "requsting project : " + attributes.getRepository().getProjectKey());//NOI18N
+                progressHandle.progress(
+                        NbBundle.getMessage(JiraAttributesPersistence.class,
+                        "LBL_Requsting_Project_Information",attributes.getRepository().getProjectKey()));
                 Element projectsElement = findElement(attributesElement, TAG_PROJECTS, NAMESPACE);
                 if (projectsElement == null) {
                     attributesElement.appendChild((projectsElement = document.createElement(TAG_PROJECTS)));
@@ -447,8 +456,9 @@ class JiraAttributesPersistence {
 
     private void _refreshProject(Document document, Element project, ProgressHandle progressHandle, JiraSession session, RemoteProject rp) throws JiraException {
 
-        LOG.log(Level.INFO, "project :" + rp.getKey() + " : " + rp.getName());
-        progressHandle.progress("Project :" + rp.getName() + " : " + rp.getName());
+        LOG.log(Level.INFO, "project :" + rp.getKey() + " : " + rp.getName());//NOI18N
+        progressHandle.progress(NbBundle.getMessage(JiraAttributesPersistence.class,
+                "LBL_Project", rp.getName(), rp.getName()));
 
         project.setAttribute(TAG_ID, rp.getKey());
         project.setAttribute(TAG_NAME, rp.getName());
@@ -463,24 +473,24 @@ class JiraAttributesPersistence {
             types.appendChild(type);
             type.setAttribute(TAG_ID, rit.getId());
         }
-        LOG.log(Level.INFO, "requsting Components ");
+        LOG.log(Level.INFO, "requsting Components ");//NOI18N
         RemoteComponent[] remoteComponents = session.getComponents(rp.getKey());
         Element components = document.createElement(TAG_COMPONENTS);
         project.appendChild(components);
         for (RemoteComponent rc : remoteComponents) {
-            LOG.log(Level.INFO, "component :" + rc.getName());
+            LOG.log(Level.INFO, "component :" + rc.getName());//NOI18N
             Element component = document.createElement(TAG_COMPONENT);
             components.appendChild(component);
             component.setAttribute(TAG_ID, rc.getId());
             component.setAttribute(TAG_NAME, rc.getName());
         }
 
-        LOG.log(Level.INFO, "requsting versions ");
+        LOG.log(Level.INFO, "requsting versions ");//NOI18N
         RemoteVersion[] remoteVersions = session.getVersions(rp.getKey());
         Element versions = document.createElement(TAG_VERSIONS);
         project.appendChild(versions);
         for (RemoteVersion rv : remoteVersions) {
-            LOG.log(Level.INFO, "version :" + rv.getName());
+            LOG.log(Level.INFO, "version :" + rv.getName());//NOI18N
             Element version = document.createElement(TAG_VERSION);
             versions.appendChild(version);
             version.setAttribute(TAG_ID, rv.getId());

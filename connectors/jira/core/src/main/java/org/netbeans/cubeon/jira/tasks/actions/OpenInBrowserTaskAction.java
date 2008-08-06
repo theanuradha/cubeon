@@ -21,6 +21,7 @@ import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import org.netbeans.cubeon.jira.tasks.JiraTask;
 import org.openide.awt.HtmlBrowser.URLDisplayer;
+import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 
 /**
@@ -33,8 +34,8 @@ public class OpenInBrowserTaskAction extends AbstractAction {
 
     public OpenInBrowserTaskAction(JiraTask task) {
         this.task = task;
-        putValue(NAME, "Open Task In Browser");
-        putValue(SHORT_DESCRIPTION, "Open Task In Browser");
+        putValue(NAME, NbBundle.getMessage(OpenInBrowserTaskAction.class, "LBL_Open_Task_In_Browser"));
+        putValue(SHORT_DESCRIPTION,  NbBundle.getMessage(OpenInBrowserTaskAction.class, "LBL_Open_Task_In_Browser"));
         putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/jira/web.png")));
     }
 
