@@ -49,7 +49,7 @@ public final class NewQueryWizardAction extends AbstractAction {
         if (panels == null) {
             //lookup CubeonContext
             CubeonContext cubeonContext = Lookup.getDefault().lookup(CubeonContext.class);
-            assert cubeonContext != null : "CubeonContext can't be null";
+            assert cubeonContext != null : "CubeonContext can't be null";//NOI18N
             //lookup TaskRepositoryHandler
             TaskRepositoryHandler repositoryHandler = cubeonContext.getLookup().lookup(TaskRepositoryHandler.class);
 
@@ -82,15 +82,15 @@ public final class NewQueryWizardAction extends AbstractAction {
                 if (c instanceof JComponent) { // assume Swing components
                     JComponent jc = (JComponent) c;
                     // Sets step number of a component
-                    jc.putClientProperty("WizardPanel_contentSelectedIndex", new Integer(i));
+                    jc.putClientProperty("WizardPanel_contentSelectedIndex", new Integer(i));//NOI18N
                     // Sets steps names for a panel
-                    jc.putClientProperty("WizardPanel_contentData", steps);
+                    jc.putClientProperty("WizardPanel_contentData", steps);//NOI18N
                     // Turn on subtitle creation on each step
-                    jc.putClientProperty("WizardPanel_autoWizardStyle", Boolean.FALSE);
+                    jc.putClientProperty("WizardPanel_autoWizardStyle", Boolean.FALSE);//NOI18N
                     // Show steps on the left side with the image on the background
-                    jc.putClientProperty("WizardPanel_contentDisplayed", Boolean.FALSE);
+                    jc.putClientProperty("WizardPanel_contentDisplayed", Boolean.FALSE);//NOI18N
                     // Turn on numbering of all steps
-                    jc.putClientProperty("WizardPanel_contentNumbered", Boolean.FALSE);
+                    jc.putClientProperty("WizardPanel_contentNumbered", Boolean.FALSE);//NOI18N
                 }
             }
         }
@@ -105,7 +105,7 @@ public final class NewQueryWizardAction extends AbstractAction {
         final WizardObject wizardObject = new WizardObject();
         WizardDescriptor wizardDescriptor = new WizardDescriptor(getPanels(), wizardObject);
         // {0} will be replaced by WizardDesriptor.Panel.getComponent().getName()
-        wizardDescriptor.setTitleFormat(new MessageFormat("{0}"));
+        wizardDescriptor.setTitleFormat(new MessageFormat("{0}"));//NOI18N
         Dialog dialog = DialogDisplayer.getDefault().createDialog(wizardDescriptor);
         dialog.setVisible(true);
         dialog.toFront();

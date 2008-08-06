@@ -27,6 +27,7 @@ import org.netbeans.cubeon.tasks.core.api.TasksFileSystem;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.actions.Presenter.Menu;
 import org.openide.util.actions.Presenter.Popup;
 
@@ -40,7 +41,7 @@ public class SynchronizeWithAction extends AbstractAction implements Menu, Popup
 
     public SynchronizeWithAction(TaskQuery query) {
         this.query = query;
-        putValue(NAME, "Synchronize With");
+        putValue(NAME, NbBundle.getMessage(SynchronizeWithAction.class, "LBL_Synchronize_With"));
     }
 
     public void actionPerformed(ActionEvent e) {

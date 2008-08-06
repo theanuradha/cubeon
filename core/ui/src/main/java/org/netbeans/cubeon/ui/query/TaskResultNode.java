@@ -18,8 +18,6 @@ package org.netbeans.cubeon.ui.query;
 
 import java.awt.Image;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import javax.swing.Action;
 import org.netbeans.cubeon.tasks.spi.repository.TaskPriorityProvider;
@@ -37,6 +35,7 @@ import org.netbeans.cubeon.ui.taskelemet.SynchronizeTaskAction;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -112,19 +111,19 @@ public class TaskResultNode extends AbstractNode {
         TaskRepository repository = element.getTaskRepository();
         TaskPriorityProvider tpp = repository.getLookup().lookup(TaskPriorityProvider.class);
         if (tpp != null) {
-            buffer.append("Priority :");
+            buffer.append(NbBundle.getMessage(TaskResultNode.class, "LBL_Priority")).append(":");
             buffer.append(tpp.getTaskPriority(element).toString());
         }
         TaskTypeProvider ttp = repository.getLookup().lookup(TaskTypeProvider.class);
         if (ttp != null) {
-            buffer.append(", Type :");
+            buffer.append(",").append(NbBundle.getMessage(TaskResultNode.class, "LBL_Type")).append(":");
             buffer.append(ttp.getTaskType(element).toString());
         }
         TaskStatusProvider tsp = repository.getLookup().lookup(TaskStatusProvider.class);
         if (tsp != null) {
             TaskStatus taskStatus = tsp.getTaskStatus(element);
             if (taskStatus != null) {
-                buffer.append(", Status :");
+                buffer.append(",").append(NbBundle.getMessage(TaskResultNode.class, "LBL_Status")).append(":");
                 buffer.append(taskStatus);
             }
         }
