@@ -26,6 +26,7 @@ import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.Lookups;
 
 /**
@@ -58,7 +59,7 @@ public class JavaResource implements TaskResource {
 
             } catch (DataObjectNotFoundException ex) {
 
-                Logger.getLogger(JavaResource.class.getName()).fine("Missing : " + path);
+                Logger.getLogger(JavaResource.class.getName()).fine("Missing : " + path);//NOI18N
             }
         }
     }
@@ -95,7 +96,7 @@ public class JavaResource implements TaskResource {
             Node missing = new AbstractNode(Children.LEAF) {
             };
             missing.setDisplayName(path);
-            missing.setShortDescription("Source not available in Class Path :" + path);
+            missing.setShortDescription(NbBundle.getMessage(JavaResource.class, "LBL_Missing_class_path",path));
             return missing;
         }
     }
