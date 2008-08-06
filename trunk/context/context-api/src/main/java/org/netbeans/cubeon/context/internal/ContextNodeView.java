@@ -31,7 +31,7 @@ public class ContextNodeView implements TaskNodeView {
     private final ContextRootNode rootNode = new ContextRootNode(new Array());
 
     public String getId() {
-        return "CONTEXT_VIEW";
+        return "CONTEXT_VIEW";//NOI18N
     }
 
     public String getName() {
