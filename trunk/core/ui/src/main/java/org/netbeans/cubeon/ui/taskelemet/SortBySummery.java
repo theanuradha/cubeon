@@ -20,6 +20,7 @@ import java.util.Comparator;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskElementComparator;
 import org.netbeans.cubeon.ui.UIPreferences;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -27,8 +28,8 @@ import org.netbeans.cubeon.ui.UIPreferences;
  */
 public class SortBySummery implements TaskElementComparator {
 
-    private static final String SORT_BY_SUMMERY = "sort_by_summery";
-    private static final String SORT_BY_SUMMERY_ASCE = "sort_by_summery_asce";
+    private static final String SORT_BY_SUMMERY = "sort_by_summery";//NOI18N
+    private static final String SORT_BY_SUMMERY_ASCE = "sort_by_summery_asce";//NOI18N
     private boolean enabled;
     private boolean asending;
 
@@ -38,11 +39,11 @@ public class SortBySummery implements TaskElementComparator {
     }
 
     public String getName() {
-        return "Summary";
+        return NbBundle.getMessage(SortBySummery.class, "LBL_Summary");
     }
 
     public String getDescription() {
-        return "Sort tasks by summery";
+        return NbBundle.getMessage(SortBySummery.class, "LBL_Summary_Dec");
     }
 
     public boolean isEnable() {

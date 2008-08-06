@@ -21,6 +21,7 @@ import org.netbeans.cubeon.tasks.spi.repository.TaskPriorityProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskElementComparator;
 import org.netbeans.cubeon.ui.UIPreferences;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -28,8 +29,8 @@ import org.netbeans.cubeon.ui.UIPreferences;
  */
 public class SortByPriority implements TaskElementComparator {
 
-    private static final String SORT_BY_PRIORITY = "sort_by_priority";
-    private static final String SORT_BY_PRIORITY_ASCE = "sort_by_priority_asce";
+    private static final String SORT_BY_PRIORITY = "sort_by_priority";//NOI18N
+    private static final String SORT_BY_PRIORITY_ASCE = "sort_by_priority_asce";//NOI18N
     private boolean enabled;
     private boolean asending;
 
@@ -39,11 +40,11 @@ public class SortByPriority implements TaskElementComparator {
     }
 
     public String getName() {
-        return "Priority";
+        return NbBundle.getMessage(SortByPriority.class, "LBL_Priority");
     }
 
     public String getDescription() {
-        return "Sort tasks by priority";
+        return NbBundle.getMessage(SortByPriority.class, "LBL_Priority_Dec");
     }
 
     public boolean isEnable() {

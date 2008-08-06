@@ -22,6 +22,7 @@ import javax.swing.ImageIcon;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
+import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 
@@ -36,8 +37,8 @@ public class SynchronizeTaskAction extends AbstractAction {
     public SynchronizeTaskAction(TaskElement task) {
 
         this.task = task;
-        putValue(NAME, "Synchronize");
-        putValue(SHORT_DESCRIPTION, "Synchronize");
+        putValue(NAME, NbBundle.getMessage(SynchronizeTaskAction.class, "LBL_Synchronize"));
+        putValue(SHORT_DESCRIPTION, NbBundle.getMessage(SynchronizeTaskAction.class, "LBL_Synchronize"));
         putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/ui/refresh.png")));
     }
 

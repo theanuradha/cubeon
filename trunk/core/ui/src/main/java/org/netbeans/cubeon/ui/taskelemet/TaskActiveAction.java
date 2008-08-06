@@ -21,6 +21,7 @@ import javax.swing.AbstractAction;
 import org.netbeans.cubeon.tasks.core.api.CubeonContext;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -35,9 +36,9 @@ public class TaskActiveAction extends AbstractAction {
         context = Lookup.getDefault().lookup(CubeonContext.class);
         this.element = element;
         if (element.equals(context.getActive())) {
-            putValue(NAME, "Deactive");
+            putValue(NAME, NbBundle.getMessage(TaskActiveAction.class, "LBL_Deactive"));
         } else {
-            putValue(NAME, "Activate");
+            putValue(NAME, NbBundle.getMessage(TaskActiveAction.class, "LBL_Activate"));
         }
 
     }
