@@ -21,6 +21,7 @@ import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepositoryActionsProvider;
 import org.netbeans.cubeon.ui.query.NewQueryWizardAction;
 import org.netbeans.cubeon.ui.taskelemet.NewTaskWizardAction;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -30,9 +31,11 @@ public class RepositoryActionsProviderImpl implements TaskRepositoryActionsProvi
 
 
     public Action[] getActions(TaskRepository repository) {
-        NewTaskWizardAction taskWizardAction = new NewTaskWizardAction("New Task");
+        NewTaskWizardAction taskWizardAction = new NewTaskWizardAction(
+                NbBundle.getMessage(RepositoryActionsProviderImpl.class, "LBL_Task_New"));
         taskWizardAction.preferredRepository(repository);
-        NewQueryWizardAction queryWizardAction = new NewQueryWizardAction("New Query");
+        NewQueryWizardAction queryWizardAction = new NewQueryWizardAction(
+                NbBundle.getMessage(RepositoryActionsProviderImpl.class, "LBL_Query_New"));
         queryWizardAction.preferredRepository(repository);
         return new Action[]{
                     taskWizardAction,

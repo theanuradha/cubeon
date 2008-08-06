@@ -14,28 +14,27 @@
  *  limitations under the License.
  *  under the License.
  */
-
 package org.netbeans.cubeon.ui.repository;
 
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
+import org.openide.util.NbBundle;
 
 /**
  *
  * @author Anuradha
  */
-public class SynchronizeTasksAction extends AbstractAction{
+public class SynchronizeTasksAction extends AbstractAction {
+
     private TaskRepository repository;
 
     public SynchronizeTasksAction(TaskRepository repository) {
         this.repository = repository;
-        putValue(NAME, "Synchronize Tasks");
+        putValue(NAME, NbBundle.getMessage(SynchronizeTasksAction.class, "LBL_Synchronize_Tasks"));
     }
-
 
     public void actionPerformed(ActionEvent e) {
-       repository.synchronize();
+        repository.synchronize();
     }
-
 }
