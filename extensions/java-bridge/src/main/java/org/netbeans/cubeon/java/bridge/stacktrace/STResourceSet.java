@@ -26,6 +26,7 @@ import org.netbeans.cubeon.context.spi.TaskResourceSet;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.nodes.Node;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.Lookups;
 
 /**
@@ -45,7 +46,7 @@ public class STResourceSet implements TaskResourceSet {
     }
 
     public String getName() {
-        return "Stack Trace(s)";
+        return NbBundle.getMessage(STResourceSet.class, "LBL_Stack_Trace");
     }
 
     public Node getNode() {

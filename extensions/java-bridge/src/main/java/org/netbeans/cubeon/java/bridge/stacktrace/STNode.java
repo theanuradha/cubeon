@@ -37,6 +37,7 @@ import org.openide.nodes.Node;
 import org.openide.text.Line.Set;
 import org.openide.text.Line.ShowOpenType;
 import org.openide.text.Line.ShowVisibilityType;
+import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 
@@ -82,8 +83,10 @@ public class STNode extends AbstractNode {
         @Override
         protected Node[] createNodes(Line resource) {
             String name = resource.getName();
+            OpenLine openLine = new OpenLine(resource);
             return new Node[]{TagNode.createNode(name, name,
-                        Utilities.loadImage("org/netbeans/cubeon/java/bridge/line.png"), new OpenLine(resource), new Action[0])
+                        Utilities.loadImage("org/netbeans/cubeon/java/bridge/line.png"),
+                        openLine, new Action[]{openLine})
                     };
         }
 
@@ -107,6 +110,7 @@ public class STNode extends AbstractNode {
 
         public OpenLine(Line line) {
             this.line = line;
+            putValue(NAME, NbBundle.getMessage(STNode.class, "LBL_Open_Source"));
         }
 
         public void actionPerformed(ActionEvent e) {

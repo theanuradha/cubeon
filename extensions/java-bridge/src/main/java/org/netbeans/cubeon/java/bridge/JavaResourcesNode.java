@@ -17,6 +17,8 @@
 package org.netbeans.cubeon.java.bridge;
 
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.netbeans.cubeon.context.spi.TaskResource;
 import org.netbeans.cubeon.tasks.core.api.TagNode;
@@ -24,6 +26,7 @@ import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
+import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
@@ -55,16 +58,22 @@ public class JavaResourcesNode extends AbstractNode {
 
     @Override
     public Action[] getActions(boolean context) {
-        return new Action[0];
+        return new Action[]{new AbstractAction(NbBundle.getMessage(JavaResourcesNode.class, "LBL_Refresh")) {
+
+                public void actionPerformed(ActionEvent e) {
+                    refresh();
+                }
+            }
+                };
     }
 
     private static class ResourcesChildern extends Children.Keys<TaskResource> {
 
-        private static final TaskResource LOADINFG = new JavaResource("Loading") {
+        private static final TaskResource LOADINFG = new JavaResource(NbBundle.getMessage(JavaResourcesNode.class, "LBL_Loading")) {
 
             @Override
             public Node getNode() {
-                return TagNode.createNode("Loading...", "Loading...",
+                return TagNode.createNode(getPath(), getPath(),
                         Utilities.loadImage("org/netbeans/cubeon/java/bridge/wait.gif"));
             }
         };
