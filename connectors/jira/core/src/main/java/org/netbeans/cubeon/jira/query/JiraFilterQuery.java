@@ -29,6 +29,7 @@ import org.netbeans.cubeon.jira.tasks.JiraTask;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 import org.openide.util.lookup.Lookups;
 
@@ -72,7 +73,8 @@ public class JiraFilterQuery extends AbstractJiraQuery {
                 public void run() {
                     synchronized (JiraFilterQuery.this) {
                         extension.fireSynchronizing();
-                        ProgressHandle handle = ProgressHandleFactory.createHandle("Synchronizing Query : " + getName());
+                        ProgressHandle handle = ProgressHandleFactory.createHandle(NbBundle.getMessage(JiraFilterQuery.class,
+                                "LBL_Synchronizing_Query", getName()));
                         handle.start();
                         handle.switchToIndeterminate();
                         try {
@@ -80,7 +82,7 @@ public class JiraFilterQuery extends AbstractJiraQuery {
 
                             try {
                                 JiraSession session = repository.getSession();
-                                handle.progress("Requsting Issues From Repository");
+                                handle.progress(NbBundle.getMessage(JiraFilterQuery.class, "LBL_Requsting_Issues_From_Repository"));
                                 RemoteIssue[] remoteIssues = session.getIssuesFromFilter(filter.getId());
 
                                 ids.clear();
