@@ -20,8 +20,6 @@ import java.awt.Image;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.swing.Action;
@@ -63,7 +61,7 @@ import org.openide.util.lookup.InstanceContent;
  */
 public class TaskElementNode extends AbstractNode {
 
-    private static final String TAG = "<font color=\"#808080\"> <s> ";
+    private static final String TAG = "<font color=\"#808080\"> <s> ";//NOI18N
     private static final Logger LOG = Logger.getLogger(TaskElementNode.class.getName());
     private final TaskElement element;
     private final Extension extension;
@@ -125,13 +123,13 @@ public class TaskElementNode extends AbstractNode {
 
             public void taskActivated(TaskElement element) {
                 if (element.equals(element)) {
-                    fireDisplayNameChange(getDisplayName() + "_#", element.getName());
+                    fireDisplayNameChange(getDisplayName() + "_#", element.getName());//NOI18N
                 }
             }
 
             public void taskDeactivated(TaskElement element) {
                 if (element.equals(element)) {
-                    fireDisplayNameChange(getDisplayName() + "_#", element.getName());
+                    fireDisplayNameChange(getDisplayName() + "_#", element.getName());//NOI18N
                 }
             }
         };
@@ -158,7 +156,7 @@ public class TaskElementNode extends AbstractNode {
 
             @Override
             public void statusChenged() {
-                fireDisplayNameChange(getDisplayName() + "_#", element.getName());
+                fireDisplayNameChange(getDisplayName() + "_#", element.getName());//NOI18N
                 setShortDescription(extractTaskDescription(element));
             }
 
@@ -171,14 +169,14 @@ public class TaskElementNode extends AbstractNode {
     }
 
     private static String extractTaskDescription(TaskElement element) {
-        StringBuffer buffer = new StringBuffer("<html>");
-        buffer.append("<b>").append(element.getId()).append(" :</b> ");
-        buffer.append(element.getName()).append("<p>");
+        StringBuffer buffer = new StringBuffer("<html>");//NOI18N
+        buffer.append("<b>").append(element.getId()).append(" :</b> ");//NOI18N
+        buffer.append(element.getName()).append("<p>");//NOI18N
         // buffer.append("<img src=\"").append("ADDURL").append("\" width=\"7\" height=\"16\" />");
         TaskRepository repository = element.getTaskRepository();
         TaskPriorityProvider tpp = repository.getLookup().lookup(TaskPriorityProvider.class);
         if (tpp != null) {
-            buffer.append(tpp.getTaskPriority(element).toString()).append(", ");
+            buffer.append(tpp.getTaskPriority(element).toString()).append(", ");//NOI18N
         }
         TaskTypeProvider ttp = repository.getLookup().lookup(TaskTypeProvider.class);
         if (ttp != null) {
@@ -188,10 +186,10 @@ public class TaskElementNode extends AbstractNode {
         if (tsp != null) {
             TaskStatus taskStatus = tsp.getTaskStatus(element);
             if (taskStatus != null) {
-                buffer.append("<p>").append(taskStatus.toString());
+                buffer.append("<p>").append(taskStatus.toString());//NOI18N
             }
         }
-        buffer.append("</html>");
+        buffer.append("</html>");//NOI18N
         return buffer.toString();
 
     }
@@ -201,7 +199,7 @@ public class TaskElementNode extends AbstractNode {
     }
 
     public void setModified(boolean modified) {
-        setDisplayName(element.getName() + (modified ? "*" : ""));
+        setDisplayName(element.getName() + (modified ? "*" : ""));//NOI18N
         getDataObject().setModified(modified);
         if (modified) {
             content.add(cookie);
@@ -266,7 +264,7 @@ public class TaskElementNode extends AbstractNode {
 
     @Override
     public String getHtmlDisplayName() {
-        StringBuffer buffer = new StringBuffer("<html>");
+        StringBuffer buffer = new StringBuffer("<html>");//NOI18N
 
         if (element.isCompleted()) {
 
@@ -274,13 +272,13 @@ public class TaskElementNode extends AbstractNode {
         }
         if (element.equals(context.getActive())) {
 
-            buffer.append("<b>");
+            buffer.append("<b>");//NOI18N
         }
 
-        buffer.append("<xmp>");
+        buffer.append("<xmp>");//NOI18N
         buffer.append(element.getDisplayName());
-        buffer.append("</xmp>");
-        buffer.append("</html>");
+        buffer.append("</xmp>");//NOI18N
+        buffer.append("</html>");//NOI18N
         return buffer.toString();
     }
 
@@ -327,7 +325,7 @@ public class TaskElementNode extends AbstractNode {
         context.removeContextListener(contextListener);
         extension.remove(changeAdapter);
         super.finalize();
-        LOG.fine(new StringBuffer("Finalize Node :").append(element.getDisplayName()).toString());
+        LOG.fine(new StringBuffer("Finalize Node :").append(element.getDisplayName()).toString());//NOI18N
     }
 }
 

@@ -19,6 +19,7 @@ package org.netbeans.cubeon.ui.filters;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskElementFilter;
 import org.netbeans.cubeon.ui.UIPreferences;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -26,7 +27,7 @@ import org.netbeans.cubeon.ui.UIPreferences;
  */
 public class TaskCompletedFilter implements TaskElementFilter {
 
-    private static final String KEY_CFILTER = "c_filter";
+    private static final String KEY_CFILTER = "c_filter";//NOI18N
     private boolean enable;
 
     public TaskCompletedFilter() {
@@ -34,11 +35,11 @@ public class TaskCompletedFilter implements TaskElementFilter {
     }
 
     public String getName() {
-        return "Filter Completed Tasks";
+        return NbBundle.getMessage(TaskCompletedFilter.class, "LBL_Filter_Completed_Tasks");
     }
 
     public String getDescription() {
-        return "Filter Completed Tasks";
+        return NbBundle.getMessage(TaskCompletedFilter.class, "LBL_Filter_Completed_Tasks");
     }
 
     public boolean isEnable() {
