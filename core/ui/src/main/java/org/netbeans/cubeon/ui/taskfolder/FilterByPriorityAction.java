@@ -86,8 +86,8 @@ public class FilterByPriorityAction extends AbstractAction implements Menu, Popu
                 if (addSeperator) {
                     menu.addSeparator();
                 }
-                JMenuItem repoMenu = new JMenuItem(repository.getName() 
-                        + NbBundle.getMessage(FilterByPriorityAction.class, "LBL_Priorities"),
+                JMenuItem repoMenu = new JMenuItem( NbBundle.getMessage(FilterByPriorityAction.class,
+                        "LBL_Priorities",repository.getName() ),
                         new ImageIcon(repository.getImage()));
                 menu.add(repoMenu);
 
