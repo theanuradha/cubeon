@@ -38,7 +38,7 @@ import org.xml.sax.SAXException;
 public class ContextHandlerImpl implements TaskContextHandler {
 
     private static final String NAMESPACE = null;//FIXME add propper namespase
-    private static final String TAG_ROOT = "context";
+    private static final String TAG_ROOT = "context";//NOI18N
     private final FileObject contextdir;
     private final TaskElement element;
     private final Mutex mutex = new Mutex();
