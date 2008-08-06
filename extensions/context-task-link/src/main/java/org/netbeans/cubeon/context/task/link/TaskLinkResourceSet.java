@@ -26,6 +26,7 @@ import org.netbeans.cubeon.context.spi.TaskResourceSet;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.nodes.Node;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.Lookups;
 
 /**
@@ -99,7 +100,7 @@ public class TaskLinkResourceSet implements TaskResourceSet {
     }
 
     public String getName() {
-        return "Related Tasks";
+        return NbBundle.getMessage(TaskLinkResourceSet.class, "LBL_Related_Tasks");
     }
 
     boolean contains(TaskElement element) {
