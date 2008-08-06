@@ -20,6 +20,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import org.netbeans.cubeon.tasks.core.api.TaskFolder;
 import org.openide.nodes.Node;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -32,23 +33,20 @@ public class NavigateFromHereAction extends AbstractAction {
     public NavigateFromHereAction(TaskFolder folder) {
         this.folder = folder;
         if (isGoInto()) {
-            putValue(NAME, "Navigate From Here");
+            putValue(NAME, NbBundle.getMessage(NavigateFromHereAction.class, "LBL_Navigate_From_Here"));
         } else {
-            putValue(NAME, "Go Back To Root");
+            putValue(NAME, NbBundle.getMessage(NavigateFromHereAction.class, "LBL_Go_Back_ To_ Root"));
         }
-//        Image image = NodeUtils.getTreeFolderIcon(true);
-//        Image badge = Utilities.loadImage("org/netbeans/cubeon/ui/goInTo.png");
-//        putValue(SMALL_ICON, new ImageIcon(Utilities.mergeImages(image, badge, 0, 0)));
 
     }
 
     public void actionPerformed(ActionEvent e) {
         if (isGoInto()) {
             TaskExplorerTopComponent.findInstance().goInto(folder);
-            putValue(NAME, "Navigate From Here");
+            putValue(NAME, NbBundle.getMessage(NavigateFromHereAction.class, "LBL_Navigate_From_Here"));
         } else {
             TaskExplorerTopComponent.findInstance().goToRoot();
-            putValue(NAME, "Go Back To Root");
+            putValue(NAME, NbBundle.getMessage(NavigateFromHereAction.class, "LBL_Go_Back_ To_ Root"));
         }
     }
 
