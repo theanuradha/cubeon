@@ -28,6 +28,7 @@ import org.netbeans.cubeon.tasks.spi.task.TaskElementFilter;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
 import org.netbeans.cubeon.ui.UIPreferences;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -35,8 +36,8 @@ import org.openide.util.Lookup;
  */
 public class PriorityFilter implements TaskElementFilter {
 
-    private static final String KEY_FILTERS = "priority_filters";
-    private static final String TOKEN = ":";
+    private static final String KEY_FILTERS = "priority_filters";//NOI18N
+    private static final String TOKEN = ":";//NOI18N
     private Set<TaskPriority> filters =
             new HashSet<TaskPriority>();
 
@@ -62,11 +63,11 @@ public class PriorityFilter implements TaskElementFilter {
     }
 
     public String getName() {
-        return "Filter By Priority";
+        return NbBundle.getMessage(PriorityFilter.class, "LBL_Filter_By_Priority");
     }
 
     public String getDescription() {
-        return "Filter By Priority";
+        return NbBundle.getMessage(PriorityFilter.class, "LBL_Filter_By_Priority_Dec");
     }
 
     public boolean isEnable() {
