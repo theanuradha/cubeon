@@ -62,7 +62,7 @@ public class TaskExplorerViewActions implements TaskExplorerViewActionsProvider 
                     new AddTaskFolderAction(taskFolder),
                     new NewTaskWizardAction(NbBundle.getMessage(TaskExplorerViewActions.class,
                     "LBL_Task")),
-                    new NewQueryWizardAction("Query...")
+                    new NewQueryWizardAction(NbBundle.getMessage(TaskExplorerViewActions.class, "LBL_Query"))
                 };
     }
 }

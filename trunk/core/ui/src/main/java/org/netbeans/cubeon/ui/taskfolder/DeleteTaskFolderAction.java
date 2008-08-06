@@ -47,8 +47,7 @@ public class DeleteTaskFolderAction extends AbstractAction {
     public void actionPerformed(ActionEvent e) {
         NotifyDescriptor d =
                 new NotifyDescriptor.Confirmation(
-                "Yes to Delete Folder and move Tasks to Uncategorized.\n" +
-                "No to Delete Folder and remove all contaning Tasks.", "Delete Task Folder : " + folder.getName(),
+                NbBundle.getMessage(DeleteTaskFolderAction.class, "LBL_Delete_Folder_Dec"),
                 NotifyDescriptor.YES_NO_CANCEL_OPTION);
         Object notify = DialogDisplayer.getDefault().notify(d);
         TasksFileSystem fileSystem = Lookup.getDefault().lookup(TasksFileSystem.class);

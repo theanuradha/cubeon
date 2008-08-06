@@ -37,6 +37,7 @@ import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
 import org.netbeans.cubeon.ui.TaskExplorerTopComponent;
 import org.netbeans.cubeon.ui.filters.PriorityFilter;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 import org.openide.util.actions.Presenter.Menu;
 import org.openide.util.actions.Presenter.Popup;
@@ -85,7 +86,9 @@ public class FilterByPriorityAction extends AbstractAction implements Menu, Popu
                 if (addSeperator) {
                     menu.addSeparator();
                 }
-                JMenuItem repoMenu = new JMenuItem(repository.getName() + " Priorities", new ImageIcon(repository.getImage()));
+                JMenuItem repoMenu = new JMenuItem(repository.getName() 
+                        + NbBundle.getMessage(FilterByPriorityAction.class, "LBL_Priorities"),
+                        new ImageIcon(repository.getImage()));
                 menu.add(repoMenu);
 
                 List<TaskPriority> prioritys = priorityProvider.getTaskPrioritys();

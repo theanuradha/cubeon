@@ -27,6 +27,7 @@ import org.netbeans.cubeon.tasks.core.api.TaskFolderRefreshable;
 import org.netbeans.cubeon.tasks.spi.task.TaskElementComparator;
 import org.netbeans.cubeon.ui.TaskExplorerTopComponent;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.actions.Presenter.Menu;
 import org.openide.util.actions.Presenter.Popup;
 
@@ -40,7 +41,7 @@ public class ComparatorAction extends AbstractAction implements Menu, Popup {
 
     public ComparatorAction(TaskFolder folder) {
         this.folder = folder;
-        putValue(NAME, "Sort By");
+        putValue(NAME, NbBundle.getMessage(ComparatorAction.class, "LBL_Sort_By"));
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -83,9 +84,9 @@ public class ComparatorAction extends AbstractAction implements Menu, Popup {
             this.comparator = comparator;
             this.ascending = ascending;
             if (ascending) {
-                putValue(NAME, comparator.getName() + " - Ascending");
+                putValue(NAME, comparator.getName() + " - " + NbBundle.getMessage(ComparatorAction.class, "LBL_Ascending"));
             } else {
-                putValue(NAME, comparator.getName() + " - Descending");
+                putValue(NAME, comparator.getName() + " - " + NbBundle.getMessage(ComparatorAction.class, "LBL_Descending"));
             }
         //putValue(SMALL_ICON, new ImageIcon(TaskPriority.getImage(priority)));
         }
