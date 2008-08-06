@@ -39,11 +39,11 @@ public class LocalTaskPriorityProvider implements TaskPriorityProvider {
 
     public LocalTaskPriorityProvider(TaskRepository repository) {
 
-        P1 = new TaskPriority(repository, "P1", "P1");
-        P2 = new TaskPriority(repository, "P2", "P2");
-        P3 = new TaskPriority(repository, "P3", "P3");
-        P4 = new TaskPriority(repository, "P4", "P4");
-        P5 = new TaskPriority(repository, "P5", "P5");
+        P1 = new TaskPriority(repository, "P1", "P1");//NOI18N
+        P2 = new TaskPriority(repository, "P2", "P2");//NOI18N
+        P3 = new TaskPriority(repository, "P3", "P3");//NOI18N
+        P4 = new TaskPriority(repository, "P4", "P4");//NOI18N
+        P5 = new TaskPriority(repository, "P5", "P5");//NOI18N
     }
 
     public List<TaskPriority> getTaskPrioritys() {

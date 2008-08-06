@@ -48,22 +48,22 @@ class PersistenceHandler {
 
     private static final String FILESYSTEM_FILE_TAG = "-query.xml"; //NOI18N
     private static final String NAMESPACE = null;//FIXME add propper namespase
-    private static final String TAG_ROOT = "querys";
-    private static final String TAG_QUERYS = "querys";
-    private static final String TAG_QUERY = "query";
-    private static final String TAG_ID = "id";
-    private static final String TAG_NAME = "name";
-    private static final String TAG_CONTAIN = "contain";
-    private static final String TAG_SUMMARY = "summary";
-    private static final String TAG_DESCRIPTION = "description";
-    private static final String TAG_PRIORITIES = "priorities";
-    private static final String TAG_PRIORITY = "priority";
-    private static final String TAG_STATES = "states";
-    private static final String TAG_STATUS = "status";
-    private static final String TAG_TYPES = "types";
-    private static final String TAG_TYPE = "type";
-    private static final String TAG_MATCH_TYPE = "match_type";
-    private static final String TAG_NEXT_ID = "next";
+    private static final String TAG_ROOT = "querys";//NOI18N
+    private static final String TAG_QUERYS = "querys";//NOI18N
+    private static final String TAG_QUERY = "query";//NOI18N
+    private static final String TAG_ID = "id";//NOI18N
+    private static final String TAG_NAME = "name";//NOI18N
+    private static final String TAG_CONTAIN = "contain";//NOI18N
+    private static final String TAG_SUMMARY = "summary";//NOI18N
+    private static final String TAG_DESCRIPTION = "description";//NOI18N
+    private static final String TAG_PRIORITIES = "priorities";//NOI18N
+    private static final String TAG_PRIORITY = "priority";//NOI18N
+    private static final String TAG_STATES = "states";//NOI18N
+    private static final String TAG_STATUS = "status";//NOI18N
+    private static final String TAG_TYPES = "types";//NOI18N
+    private static final String TAG_TYPE = "type";//NOI18N
+    private static final String TAG_MATCH_TYPE = "match_type";//NOI18N
+    private static final String TAG_NEXT_ID = "next";//NOI18N
     private LocalQuerySupport localQuerySupport;
     private FileObject baseDir;
     private static final Object LOCK = new Object();

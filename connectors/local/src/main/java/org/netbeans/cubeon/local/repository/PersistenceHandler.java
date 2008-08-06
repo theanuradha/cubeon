@@ -48,20 +48,20 @@ class PersistenceHandler {
 
     private static final String FILESYSTEM_FILE_TAG = "-tasks.xml"; //NOI18N
     private static final String NAMESPACE = null;//FIXME add propper namespase
-    private static final String TAG_ROOT = "tasks";
-    private static final String TAG_REPOSITORY = "repository";
-    private static final String TAG_ID = "id";
-    private static final String TAG_TASKS = "tasks";
-    private static final String TAG_NEXT_ID = "next";
-    private static final String TAG_TASK = "task";
-    private static final String TAG_NAME = "name";
-    private static final String TAG_PRIORITY = "priority";
-    private static final String TAG_STATUS = "status";
-    private static final String TAG_URL = "url";
-    private static final String TAG_TYPE = "type";
-    private static final String TAG_CREATED_DATE = "cdate";
-    private static final String TAG_UPDATE_DATE = "udate";
-    private static final String TAG_DESCRIPTION = "description";
+    private static final String TAG_ROOT = "tasks";//NOI18N
+    private static final String TAG_REPOSITORY = "repository";//NOI18N
+    private static final String TAG_ID = "id";//NOI18N
+    private static final String TAG_TASKS = "tasks";//NOI18N
+    private static final String TAG_NEXT_ID = "next";//NOI18N
+    private static final String TAG_TASK = "task";//NOI18N
+    private static final String TAG_NAME = "name";//NOI18N
+    private static final String TAG_PRIORITY = "priority";//NOI18N
+    private static final String TAG_STATUS = "status";//NOI18N
+    private static final String TAG_URL = "url";//NOI18N
+    private static final String TAG_TYPE = "type";//NOI18N
+    private static final String TAG_CREATED_DATE = "cdate";//NOI18N
+    private static final String TAG_UPDATE_DATE = "udate";//NOI18N
+    private static final String TAG_DESCRIPTION = "description";//NOI18N
     private LocalTaskRepository localTaskRepository;
     private FileObject baseDir;
     private static final Object LOCK = new Object();

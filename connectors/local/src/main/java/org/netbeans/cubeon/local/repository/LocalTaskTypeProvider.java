@@ -22,6 +22,7 @@ import org.netbeans.cubeon.local.LocalTask;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskType;
 import org.netbeans.cubeon.tasks.spi.repository.TaskTypeProvider;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -35,10 +36,14 @@ public class LocalTaskTypeProvider implements TaskTypeProvider {
     public final TaskType TASK;
 
     public LocalTaskTypeProvider(LocalTaskRepository repository) {
-        BUG = new TaskType(repository, "defect", "Defect");
-        ENHANCEMENT = new TaskType(repository, "enhancement", "Enhancement");
-        FEATURE = new TaskType(repository, "feature ", "Feature");
-        TASK = new TaskType(repository, "task", "Task");
+        BUG = new TaskType(repository, "defect",//NOI18N
+                NbBundle.getMessage(LocalTaskTypeProvider.class, "LBL_Defect"));
+        ENHANCEMENT = new TaskType(repository, "enhancement",//NOI18N
+                NbBundle.getMessage(LocalTaskTypeProvider.class, "LBL_Enhancement"));
+        FEATURE = new TaskType(repository, "feature ",//NOI18N
+                NbBundle.getMessage(LocalTaskTypeProvider.class, "LBL_Feature"));
+        TASK = new TaskType(repository, "task",//NOI18N
+                NbBundle.getMessage(LocalTaskTypeProvider.class, "LBL_Feature"));
     }
 
     public List<TaskType> getTaskTypes() {
