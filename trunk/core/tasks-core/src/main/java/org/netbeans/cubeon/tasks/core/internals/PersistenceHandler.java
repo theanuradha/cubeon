@@ -47,16 +47,16 @@ class PersistenceHandler {
 
     private static final String FILESYSTEM_FILE_NAME = "tasks.xml"; //NOI18N
     private static final String NAMESPACE = null;//FIXME add propper namespase
-    private static final String TAG_ROOT = "tasks";
-    private static final String TAG_REPOSITORY = "repository";
-    private static final String TAG_ID = "id";
-    private static final String TAG_TASKS = "tasks";
-    private static final String TAG_QUERY = "query";
-    private static final String TAG_TASK = "task";
-    private static final String TAG_NAME = "name";
-    private static final String TAG_DESCRIPTION = "description";
-    private static final String TAG_FOLDERS = "folders";
-    private static final String TAG_FOLDER = "folder";
+    private static final String TAG_ROOT = "tasks"; //NOI18N
+    private static final String TAG_REPOSITORY = "repository"; //NOI18N
+    private static final String TAG_ID = "id"; //NOI18N
+    private static final String TAG_TASKS = "tasks"; //NOI18N
+    private static final String TAG_QUERY = "query"; //NOI18N
+    private static final String TAG_TASK = "task"; //NOI18N
+    private static final String TAG_NAME = "name"; //NOI18N
+    private static final String TAG_DESCRIPTION = "description"; //NOI18N
+    private static final String TAG_FOLDERS = "folders"; //NOI18N
+    private static final String TAG_FOLDER = "folder"; //NOI18N
     private final FileObject fileObject;
     private RootFolder rootfTaskFolder;
     private TaskFolderImpl defaultFolder;
