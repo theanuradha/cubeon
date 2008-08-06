@@ -40,7 +40,7 @@ import org.openide.util.Lookup;
  */
 public class ContextManagerImpl implements TaskContextManager {
 
-    static final String BASE_PATH = "cubeon/contexts/";
+    static final String BASE_PATH = "cubeon/contexts/";//NOI18N
     private FileObject contextDir;
     private static final Object LOCK = new Object();
     private TaskContext activeContext;
