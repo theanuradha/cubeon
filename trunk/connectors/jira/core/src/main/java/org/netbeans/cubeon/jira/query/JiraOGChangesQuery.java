@@ -27,6 +27,7 @@ import org.netbeans.cubeon.jira.repository.JiraTaskRepository;
 import org.netbeans.cubeon.jira.tasks.JiraTask;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 import org.openide.util.lookup.Lookups;
 
@@ -40,7 +41,7 @@ public class JiraOGChangesQuery extends AbstractJiraQuery {
     private Set<String> ids = new HashSet<String>();
 
     public JiraOGChangesQuery(JiraTaskRepository repository) {
-        super(repository, "_outgoing");
+        super(repository, "_outgoing");//NOI18N
     }
 
     @Override
@@ -49,11 +50,11 @@ public class JiraOGChangesQuery extends AbstractJiraQuery {
     }
 
     public String getName() {
-        return "Outgoing Tasks";
+        return NbBundle.getMessage(JiraOGChangesQuery.class, "LBL_Outgoing_Tasks");
     }
 
     public String getDescription() {
-        return "Query that show all task that contain outgoing changes to "+getTaskRepository().getName();
+        return NbBundle.getMessage(JiraOGChangesQuery.class, "LBL_Outgoing_Task_dec",getTaskRepository().getName());
     }
 
     public Lookup getLookup() {
