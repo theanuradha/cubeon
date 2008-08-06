@@ -16,6 +16,8 @@
  */
 package org.netbeans.cubeon.local.query;
 
+import org.openide.util.NbBundle;
+
 /**
  *
  * @author Anuradha G
@@ -36,13 +38,13 @@ public enum MatchType {
     public String toString() {
         switch (i) {
             case 1:
-                return "Contains";
+                return NbBundle.getMessage(MatchType.class, "LBL_Contains");
             case 2:
-                return "Starts With";
+                return NbBundle.getMessage(MatchType.class, "LBL_Starts_With");
             case 3:
-                return "End With";
+                return NbBundle.getMessage(MatchType.class, "LBL_End_With");
             case 4:
-                return "Equals";
+                return NbBundle.getMessage(MatchType.class, "LBL_Equals");
 
         }
         return "<Empty>";

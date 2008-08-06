@@ -28,6 +28,7 @@ import org.netbeans.cubeon.tasks.spi.task.TaskType;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.Lookups;
 
 /**
@@ -64,7 +65,7 @@ public class LocalQuery implements TaskQuery {
     }
 
     public String getDescription() {
-        return "Local Query : " + getName();
+        return NbBundle.getMessage(LocalQuery.class, "LBL_Local_Query",getName()) ;
     }
 
     public void setName(String name) {

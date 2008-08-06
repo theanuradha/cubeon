@@ -22,6 +22,7 @@ import org.netbeans.cubeon.local.LocalTask;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
 import org.netbeans.cubeon.tasks.spi.repository.TaskStatusProvider;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -34,9 +35,12 @@ public class LocalTaskStatusProvider implements TaskStatusProvider {
     public final TaskStatus STARTED;
 
     public LocalTaskStatusProvider(LocalTaskRepository repository) {
-        COMPLETED = new TaskStatus(repository, "completed", "Completed");
-        NEW = new TaskStatus(repository, "new", "New");
-        STARTED = new TaskStatus(repository, "started", "Started");
+        COMPLETED = new TaskStatus(repository, "completed", //NOI18N
+                NbBundle.getMessage(LocalTaskStatusProvider.class, "LBL_Completed"));
+        NEW = new TaskStatus(repository, "new", //NOI18N
+                NbBundle.getMessage(LocalTaskStatusProvider.class, "LBL_New"));
+        STARTED = new TaskStatus(repository, "started",//NOI18N
+                NbBundle.getMessage(LocalTaskStatusProvider.class, "LBL_Started"));
     }
 
     public List<TaskStatus> getStatusList() {

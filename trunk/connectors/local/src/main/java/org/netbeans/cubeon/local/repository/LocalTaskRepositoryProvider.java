@@ -42,7 +42,7 @@ import org.openide.util.lookup.Lookups;
  */
 public class LocalTaskRepositoryProvider implements TaskRepositoryType {
 
-    static final String BASE_PATH = "cubeon/local_repositories/";
+    static final String BASE_PATH = "cubeon/local_repositories/";//NOI18N
     private List<LocalTaskRepository> taskRepositorys = new ArrayList<LocalTaskRepository>();
     private final LocalRepositoryPersistence persistence;
     private AtomicBoolean initiailzed = new AtomicBoolean(false);
