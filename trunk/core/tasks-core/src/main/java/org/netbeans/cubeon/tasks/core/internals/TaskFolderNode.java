@@ -19,8 +19,6 @@ package org.netbeans.cubeon.tasks.core.internals;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -120,19 +118,7 @@ public class TaskFolderNode extends AbstractNode {
                     new ArrayList<TaskFolderActionsProvider>(
                     Lookup.getDefault().lookupAll(TaskFolderActionsProvider.class));
 
-            Collections.sort(providers, new Comparator<TaskFolderActionsProvider>() {
 
-                public int compare(TaskFolderActionsProvider o1,
-                        TaskFolderActionsProvider o2) {
-                    if (o1.getPosition() == o2.getPosition()) {
-                        return 0;
-                    }
-                    if (o1.getPosition() > o2.getPosition()) {
-                        return 1;
-                    }
-                    return -1;
-                }
-            });
             boolean sepetatorAdded = false;
             for (TaskFolderActionsProvider tfap : providers) {
                 Action[] actions = tfap.getNewActions(folder);

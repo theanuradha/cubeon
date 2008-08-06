@@ -165,7 +165,7 @@ class PersistenceHandler {
         save(document);
     }
 
-    void changeTaskElementId(String oldId, String newId) {
+    void changeTaskElementId(String repoId,String oldId, String newId) {
         Document document = getDocument();
         Element root = getRootElement(document);
 
@@ -189,15 +189,17 @@ class PersistenceHandler {
                             if (taskNode.getNodeType() == Node.ELEMENT_NODE) {
                                 Element taskElement = (Element) taskNode;
                                 String id = taskElement.getAttributeNS(NAMESPACE, TAG_ID);
-                                if (oldId.equals(id)) {
+                                String repo = taskElement.getAttributeNS(NAMESPACE, TAG_REPOSITORY);
+                                if (oldId.equals(id)&& repoId.equals(repo)) {
 
                                     taskElement.setAttributeNS(NAMESPACE, TAG_ID, newId);
-                                    break;
+                                    save(document);
+                                    return;
                                 }
                             }
                         }
                     }
-                    save(document);
+                    
 
                 }
             }

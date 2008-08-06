@@ -28,9 +28,6 @@ import org.netbeans.cubeon.ui.taskelemet.NewTaskWizardAction;
  */
 public class RepositoryActionsProviderImpl implements TaskRepositoryActionsProvider {
 
-    public int getPosition() {
-        return 1000;
-    }
 
     public Action[] getActions(TaskRepository repository) {
         NewTaskWizardAction taskWizardAction = new NewTaskWizardAction("New Task");

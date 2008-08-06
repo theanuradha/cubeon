@@ -77,12 +77,6 @@ public class TaskResultNode extends AbstractNode {
         final List<TaskElementActionsProvider> providers =
                 new ArrayList<TaskElementActionsProvider>(
                 Lookup.getDefault().lookupAll(TaskElementActionsProvider.class));
-        Collections.sort(providers, new Comparator<TaskElementActionsProvider>() {
-
-            public int compare(TaskElementActionsProvider o1, TaskElementActionsProvider o2) {
-                return o1.getPosition() - o2.getPosition();
-            }
-        });
         boolean sepetatorAdded = false;
         for (TaskElementActionsProvider provider : providers) {
             Action[] as = provider.getActions(element);
@@ -112,7 +106,7 @@ public class TaskResultNode extends AbstractNode {
     @Override
     public String getHtmlDisplayName() {
         StringBuffer buffer = new StringBuffer("<html>");
-        buffer.append("<xmp>").append(element.getName()).append("</xmp>");
+        buffer.append("<xmp>").append(element.getDisplayName()).append("</xmp>");
         buffer.append("<font color=\"#808080\">");
         buffer.append("  ");
         TaskRepository repository = element.getTaskRepository();

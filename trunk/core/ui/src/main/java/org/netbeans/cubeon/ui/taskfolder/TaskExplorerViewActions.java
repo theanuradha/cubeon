@@ -39,9 +39,6 @@ public class TaskExplorerViewActions implements TaskExplorerViewActionsProvider 
         taskFolder = fileSystem.getRootTaskFolder();
     }
 
-    public int getPosition() {
-        return 1000;
-    }
 
     public Action[] getActions() {
 

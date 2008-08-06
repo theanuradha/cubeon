@@ -29,10 +29,6 @@ import org.netbeans.cubeon.tasks.spi.task.TaskElementActionsProvider;
  */
 public class JiraTaskActionsProviderImpl implements TaskElementActionsProvider {
 
-    public int getPosition() {
-        return 2000;
-    }
-
     public Action[] getActions(TaskElement element) {
         List<Action> actions = new ArrayList<Action>();
         JiraTask jiraTask = element.getLookup().lookup(JiraTask.class);

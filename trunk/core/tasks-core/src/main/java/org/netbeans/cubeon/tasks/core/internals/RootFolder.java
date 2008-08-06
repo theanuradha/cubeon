@@ -18,8 +18,6 @@ package org.netbeans.cubeon.tasks.core.internals;
 
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -27,7 +25,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import org.netbeans.cubeon.tasks.core.spi.TaskExplorerViewActionsProvider;
 import org.openide.nodes.AbstractNode;
-import org.openide.nodes.Node;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.actions.Presenter;
@@ -108,19 +105,6 @@ class RootFolder extends TaskFolderImpl {
                     new ArrayList<TaskExplorerViewActionsProvider>(
                     Lookup.getDefault().lookupAll(TaskExplorerViewActionsProvider.class));
 
-            Collections.sort(providers, new Comparator<TaskExplorerViewActionsProvider>() {
-
-                public int compare(TaskExplorerViewActionsProvider o1,
-                        TaskExplorerViewActionsProvider o2) {
-                    if (o1.getPosition() == o2.getPosition()) {
-                        return 0;
-                    }
-                    if (o1.getPosition() > o2.getPosition()) {
-                        return 1;
-                    }
-                    return -1;
-                }
-            });
             boolean sepetatorAdded = false;
             for (TaskExplorerViewActionsProvider tevap : providers) {
                 Action[] actions = tevap.getNewActions();

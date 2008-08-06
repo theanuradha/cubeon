@@ -29,9 +29,6 @@ import org.netbeans.cubeon.tasks.spi.repository.TaskRepositoryActionsProvider;
  */
 public class RepositoryActionsImpl implements TaskRepositoryActionsProvider {
 
-    public int getPosition() {
-        return 2000;
-    }
 
     public Action[] getActions(TaskRepository repository) {
 

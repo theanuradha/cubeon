@@ -24,11 +24,6 @@ import javax.swing.Action;
  * @author Anuradha
  */
 public interface TaskRepositoryActionsProvider {
- /**
-     * Use to sort number 
-     * @return Number 
-     */
-    int getPosition();
 
     /**
      *  Actions

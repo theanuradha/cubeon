@@ -25,11 +25,6 @@ import org.netbeans.cubeon.tasks.core.api.TaskFolder;
  */
 public interface TaskFolderActionsProvider {
 
-    /**
-     * Use to sort TaskFolderActionsProvider 
-     * @return Number 
-     */
-    int getPosition();
 
     /**
      * New Menu Actions

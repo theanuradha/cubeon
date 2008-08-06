@@ -29,10 +29,13 @@ public class TaskQueryEventAdapter {
 
     public void querySynchronizing() {
     }
+
     public void taskAdded(TaskElement element) {
     }
+
     public void querySynchronized() {
     }
 
-    public void removed(){}
+    public void removed() {
+    }
 }

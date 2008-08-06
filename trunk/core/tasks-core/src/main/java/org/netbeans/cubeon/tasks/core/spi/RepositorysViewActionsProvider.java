@@ -24,11 +24,7 @@ import javax.swing.Action;
  */
 public interface RepositorysViewActionsProvider {
 
-    /**
-     * Use to sort RepositorysViewActionsProvider 
-     * @return Number 
-     */
-    int getPosition();
+
 
     /**
      * Repositort View Menu Actions

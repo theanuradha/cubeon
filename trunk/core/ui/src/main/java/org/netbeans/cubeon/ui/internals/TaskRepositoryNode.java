@@ -150,12 +150,7 @@ public class TaskRepositoryNode extends AbstractNode {
         final List<TaskRepositoryActionsProvider> providers =
                 new ArrayList<TaskRepositoryActionsProvider>(
                 Lookup.getDefault().lookupAll(TaskRepositoryActionsProvider.class));
-        Collections.sort(providers, new Comparator<TaskRepositoryActionsProvider>() {
 
-            public int compare(TaskRepositoryActionsProvider o1, TaskRepositoryActionsProvider o2) {
-                return o1.getPosition()-o2.getPosition() ;
-            }
-        });
         boolean sepetatorAdded = false;
         for (TaskRepositoryActionsProvider provider : providers) {
             Action[] as = provider.getActions(repository);

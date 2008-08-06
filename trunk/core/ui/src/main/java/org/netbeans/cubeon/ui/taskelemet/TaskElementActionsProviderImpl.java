@@ -28,9 +28,7 @@ import org.netbeans.cubeon.tasks.spi.task.TaskElementActionsProvider;
  */
 public class TaskElementActionsProviderImpl implements TaskElementActionsProvider {
 
-    public int getPosition() {
-        return 1000;
-    }
+
 
     public Action[] getActions(TaskElement element) {
         List<Action> actions = new ArrayList<Action>();

@@ -31,7 +31,7 @@ public class RepositoryEventAdapter {
     public void nameChenged() {
     }
 
-    public void taskElementIdChenged(String oldId, String newId) {
+    public void taskElementIdChenged(String repoId,String oldId, String newId) {
     }
 
     public void taskElementRemoved(TaskElement element) {
