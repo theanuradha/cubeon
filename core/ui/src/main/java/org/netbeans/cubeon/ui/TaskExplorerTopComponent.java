@@ -58,8 +58,8 @@ import org.openide.util.Utilities;
 public final class TaskExplorerTopComponent extends TopComponent implements ExplorerManager.Provider {
 
     private static TaskExplorerTopComponent instance;
-    private static final String SELECTED_VIEW = "SELECTED_VIEW";
-    private static final String PREFERRED_ID = "TaskExplorerTopComponent";
+    private static final String SELECTED_VIEW = "SELECTED_VIEW";//NOI18N
+    private static final String PREFERRED_ID = "TaskExplorerTopComponent";//NOI18N
     private final Preferences preferences = NbPreferences.forModule(TaskExplorerTopComponent.class);
     /** path to the icon used by the component and its open action */
     static final String ICON_PATH = "org/netbeans/cubeon/ui/task_explorer.png";
@@ -75,7 +75,7 @@ public final class TaskExplorerTopComponent extends TopComponent implements Expl
         setIcon(Utilities.loadImage(ICON_PATH, true));
         taskTreeView.setRootVisible(false);
         unloadViewMenu();
-        associateLookup (ExplorerUtils.createLookup(explorerManager, getActionMap()));
+        associateLookup(ExplorerUtils.createLookup(explorerManager, getActionMap()));
 
         viewMenu.addPopupMenuListener(new PopupMenuListener() {
 
@@ -393,13 +393,13 @@ private void downMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
         private final TaskContextManager contextManager;
 
-        public Context() {
+        private Context() {
             contextManager = Lookup.getDefault().lookup(TaskContextManager.class);
             if (contextManager.getContextView().equals(selectedView)) {
-                putValue(SHORT_DESCRIPTION, "Hide Task Context");
+                putValue(SHORT_DESCRIPTION, NbBundle.getMessage(TaskExplorerTopComponent.class, "LBL_Hide_Task_Context"));
                 putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/ui/focus_on.png")));
             } else {
-                putValue(SHORT_DESCRIPTION, "Show Task Context");
+                putValue(SHORT_DESCRIPTION, NbBundle.getMessage(TaskExplorerTopComponent.class, "LBL_Show_Task_Context"));
                 putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/ui/focus_off.png")));
             }
 
@@ -422,7 +422,7 @@ private void downMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private class GoBack extends AbstractAction {
 
         public GoBack() {
-            putValue(SHORT_DESCRIPTION, "Go back to Root");
+            putValue(SHORT_DESCRIPTION, NbBundle.getMessage(TaskExplorerTopComponent.class, "LBL_Go_Back_ To_ Root"));
             Image image = NodeUtils.getTreeFolderIcon(false);
             Image badge = Utilities.loadImage("org/netbeans/cubeon/ui/goBack.png");
             Image mergeImages = Utilities.mergeImages(image, badge, 7, 0);

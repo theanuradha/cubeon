@@ -9,8 +9,10 @@ import java.awt.EventQueue;
 import java.awt.FlowLayout;
 
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.List;
+import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -281,4 +283,5 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
         });
      
     }
+ 
 }
