@@ -21,4 +21,4 @@ Select Local Repository and go Next > .
 [http://lh3.ggpht.com/theanuradha/SJqdLvXms_I/AAAAAAAAAJg/kgi7qE2joMc/createLocalrepo.PNG?imgmax=400]
 
 
-Note: Normally no need to create Local Repository ( Default Local Repository is there ). 
+Note: Normally no need to create Local Repository ( Default Local Repository automatically created ). 
