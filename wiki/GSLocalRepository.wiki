@@ -4,19 +4,18 @@
  Cube°n Local Repository is for user that want to track there task like TODO Plan etc..
  Thay can create task with priority (P1,P2 etc..), status(Open,Started etc..) type (Task,) etc and manage there task.
 
-
-= Details =
+== Details ==
 
 By default Cube°n will create Local Repository (Local).If you want you can create more Local Repositories as need.
 
 [http://lh6.ggpht.com/theanuradha/SJqXw4oowmI/AAAAAAAAAII/KxIwkyKZgJo/defaultRepoview.PNG]
 
 Right Click on Repository View And invoke "New Task Repository..." and it will open wizard to select Repository Connector Type (Local,[GSJiraRepository Jira] etc...). 
-Select Local Repository and go next > 
+Select Local Repository and go next > . 
 
 [http://lh3.ggpht.com/theanuradha/SJqbHhSqLMI/AAAAAAAAAJY/fZI-bm1w9HY/selectRepoType.PNG?imgmax=400]
 
-Add Alias and Description and click Finish
+Add a name and description and click Finish.
 
 [http://lh3.ggpht.com/theanuradha/SJqdLvXms_I/AAAAAAAAAJg/kgi7qE2joMc/createLocalrepo.PNG?imgmax=400]
 
