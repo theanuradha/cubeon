@@ -1,3 +1,4 @@
+#labels Featured
 = Getting Started with Local Repository =
 
  Cube°n Local Repository is for user that want to track there task like TODO Plan etc..
@@ -6,7 +7,6 @@
 
 = Details =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+By default Cube°n will create Local Repository (Local).If you want you can create more Local Repositories as need.
+
+[http://lh6.ggpht.com/theanuradha/SJqXw4oowmI/AAAAAAAAAII/KxIwkyKZgJo/defaultRepoview.PNG]
