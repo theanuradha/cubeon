@@ -1,4 +1,4 @@
-= Getting Started with Local Repository =
+= Creating Local Repository =
 
  Cube°n Local Repository is for user that want to track there task like TODO Plan etc..
  Thay can create task with priority (P1,P2 etc..), status(Open,Started etc..) type (Task,) etc and manage there task.
