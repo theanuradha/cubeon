@@ -1,12 +1,11 @@
 #labels Featured
 == Cube°n Features ==
 
-Add your content here.
+ * Task Repository Connectors 
+   * [GSLocalRepository Local Repository]
+      *Support Create/Modify Task with Task Types(Task,Defect,Enhancement andFeature) with  Priorities and Statuses(New,Started and Completed).  
+      *Support Query your local task with Attributes (like All My Completed Tasks )
 
 
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+   * [GSJiraRepository Jira Repository Connector] 
+     
