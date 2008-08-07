@@ -1,0 +1,11 @@
+== Create New Local Repository ==
+
+# Right Click on Repository View And invoke "New Task Repository..." and it will open wizard to select Repository Connector Type (Local,[GSJiraRepository Jira] etc...). 
+Select Local Repository and go Next > . 
+
+[http://lh3.ggpht.com/theanuradha/SJqbHhSqLMI/AAAAAAAAAJY/fZI-bm1w9HY/selectRepoType.PNG?imgmax=400]
+
+
+# Add a name and description and click Finish.
+
+[http://lh3.ggpht.com/theanuradha/SJqdLvXms_I/AAAAAAAAAJg/kgi7qE2joMc/createLocalrepo.PNG?imgmax=400]
