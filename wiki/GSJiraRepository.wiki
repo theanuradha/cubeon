@@ -1,5 +1,5 @@
 == Jira Respository ==
 
-Cube°n Jira Repository is for user that want work with [http://www.atlassian.com/software/jira/ Jira Bug and Issue Tracker]
+Cube°n Jira Repository is for Connect to [http://www.atlassian.com/software/jira/ Jira Bug and Issue Tracker]
 
 http://www.atlassian.com/software/jira/images/badges/v1/lg_jira.png
