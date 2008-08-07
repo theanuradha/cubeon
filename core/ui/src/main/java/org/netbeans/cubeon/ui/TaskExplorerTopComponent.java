@@ -120,13 +120,16 @@ public final class TaskExplorerTopComponent extends TopComponent implements Expl
 
     }
 
-    private synchronized void selectView(final TaskNodeView view) {
-        selectedView = view;
-        preferences.put(SELECTED_VIEW, view.getId());
-        final Node node = view.getRootContext();
-        explorerManager.setRootContext(node);
-        focas.setAction(new Context());
-        expand();
+    synchronized void selectView(final TaskNodeView view) {
+        if (!view.equals(selectedView)) {
+            selectedView = view;
+
+            preferences.put(SELECTED_VIEW, view.getId());
+            final Node node = view.getRootContext();
+            explorerManager.setRootContext(node);
+            focas.setAction(new Context());
+            expand();
+        }
     }
 
     public void goInto(TaskFolder folder) {
@@ -234,6 +237,11 @@ public final class TaskExplorerTopComponent extends TopComponent implements Expl
         taskView.setFocusable(false);
         taskView.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         taskView.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        taskView.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                taskViewActionPerformed(evt);
+            }
+        });
         mainToolBar.add(taskView);
         mainToolBar.add(sep);
 
@@ -284,6 +292,11 @@ private void downMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     JPopupMenu contextMenu = node.getContextMenu();
     contextMenu.show(downMenu, 0, downMenu.getHeight());
 }//GEN-LAST:event_downMenuActionPerformed
+
+private void taskViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_taskViewActionPerformed
+     viewMenu.show(taskView, 0, taskView.getHeight());
+}//GEN-LAST:event_taskViewActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton downMenu;
     private javax.swing.JButton focas;
@@ -397,10 +410,10 @@ private void downMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             contextManager = Lookup.getDefault().lookup(TaskContextManager.class);
             if (contextManager.getContextView().equals(selectedView)) {
                 putValue(SHORT_DESCRIPTION, NbBundle.getMessage(TaskExplorerTopComponent.class, "LBL_Hide_Task_Context"));
-                putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/ui/focus_on.png")));
+                putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/ui/focus_off.png")));
             } else {
                 putValue(SHORT_DESCRIPTION, NbBundle.getMessage(TaskExplorerTopComponent.class, "LBL_Show_Task_Context"));
-                putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/ui/focus_off.png")));
+                putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/ui/focus_on.png")));
             }
 
 
