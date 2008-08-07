@@ -10,3 +10,15 @@
 By default Cube°n will create Local Repository (Local).If you want you can create more Local Repositories as need.
 
 [http://lh6.ggpht.com/theanuradha/SJqXw4oowmI/AAAAAAAAAII/KxIwkyKZgJo/defaultRepoview.PNG]
+
+Right Click on Repository View And invoke "New Task Repository..." and it will open wizard to select Repository Connector Type (like Local,[GSJiraRepository Jira] etc...)  
+
+
+
+
+
+
+
+
+
+Note: Normally no need to create Local Repository ( Default Local Repository is there ). 
