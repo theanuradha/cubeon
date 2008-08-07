@@ -10,7 +10,7 @@
 [http://lh6.ggpht.com/theanuradha/SJqXw4oowmI/AAAAAAAAAII/KxIwkyKZgJo/defaultRepoview.PNG]
 
 # Right Click on Repository View And invoke "New Task Repository..." and it will open wizard to select Repository Connector Type (Local,[GSJiraRepository Jira] etc...). 
-Select Local Repository and go next > . 
+Select Local Repository and go Next > . 
 
 [http://lh3.ggpht.com/theanuradha/SJqbHhSqLMI/AAAAAAAAAJY/fZI-bm1w9HY/selectRepoType.PNG?imgmax=400]
 
