@@ -16,6 +16,7 @@
  */
 package org.netbeans.cubeon.java.bridge;
 
+import java.awt.EventQueue;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
@@ -99,10 +100,10 @@ public class JavaResourcesNode extends AbstractNode {
                     for (JavaResource resource : resourceSet.getJavaResources()) {
                         resource.init();
                     }
-                    MUTEX.writeAccess(new Runnable() {
+                    EventQueue.invokeLater(new Runnable() {
 
                         public void run() {
-                            setKeys(resourceSet.getResources());
+                       setKeys(resourceSet.getResources());
                         }
                     });
 

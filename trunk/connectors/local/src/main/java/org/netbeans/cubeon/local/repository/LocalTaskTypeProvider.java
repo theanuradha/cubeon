@@ -43,7 +43,7 @@ public class LocalTaskTypeProvider implements TaskTypeProvider {
         FEATURE = new TaskType(repository, "feature ",//NOI18N
                 NbBundle.getMessage(LocalTaskTypeProvider.class, "LBL_Feature"));
         TASK = new TaskType(repository, "task",//NOI18N
-                NbBundle.getMessage(LocalTaskTypeProvider.class, "LBL_Feature"));
+                NbBundle.getMessage(LocalTaskTypeProvider.class, "LBL_Task"));
     }
 
     public List<TaskType> getTaskTypes() {

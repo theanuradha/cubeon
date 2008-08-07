@@ -16,6 +16,7 @@
  */
 package org.netbeans.cubeon.java.bridge.stacktrace;
 
+import java.awt.EventQueue;
 import java.util.List;
 import org.netbeans.cubeon.java.bridge.*;
 import java.awt.Image;
@@ -61,7 +62,7 @@ public class STResourcesNode extends AbstractNode {
     @Override
     public Action[] getActions(boolean context) {
         return new Action[]{new AbstractAction(
-                NbBundle.getMessage(STResourcesNode.class, "LBL_Refresh")) {
+                    NbBundle.getMessage(STResourcesNode.class, "LBL_Refresh")) {
 
                 public void actionPerformed(ActionEvent e) {
                     refresh();
@@ -75,12 +76,12 @@ public class STResourcesNode extends AbstractNode {
         private static final TaskResource LOADINFG =
                 new JavaResource(NbBundle.getMessage(STResourcesNode.class, "LBL_Loading")) {
 
-            @Override
-            public Node getNode() {
-                return TagNode.createNode(getPath(), getPath(),
-                        Utilities.loadImage("org/netbeans/cubeon/java/bridge/wait.gif"));
-            }
-        };
+                    @Override
+                    public Node getNode() {
+                        return TagNode.createNode(getPath(), getPath(),
+                                Utilities.loadImage("org/netbeans/cubeon/java/bridge/wait.gif"));
+                    }
+                };
         private TaskElement taskElement;
         private STResourceSet resourceSet;
 
@@ -101,7 +102,7 @@ public class STResourcesNode extends AbstractNode {
 
                 public void run() {
                     final List<TaskResource> resources = resourceSet.getResources();
-                    MUTEX.writeAccess(new Runnable() {
+                    EventQueue.invokeLater(new Runnable() {
 
                         public void run() {
                             setKeys(resources);

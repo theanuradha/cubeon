@@ -67,9 +67,6 @@ public class JiraQuerySupport implements TaskQuerySupportProvider {
         return arrayList;
     }
 
-    public void reset(TaskQuery query) {
-        throw new UnsupportedOperationException();
-    }
 
     public ConfigurationHandler createConfigurationHandler(TaskQuery query) {
         ConfigurationHandler configurationHandler = null;

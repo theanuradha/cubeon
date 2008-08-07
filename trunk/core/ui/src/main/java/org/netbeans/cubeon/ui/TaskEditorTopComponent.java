@@ -9,10 +9,8 @@ import java.awt.EventQueue;
 import java.awt.FlowLayout;
 
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.List;
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -21,6 +19,10 @@ import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import org.netbeans.cubeon.context.api.TaskContextManager;
+import org.netbeans.cubeon.tasks.core.api.CubeonContext;
+import org.netbeans.cubeon.tasks.core.api.CubeonContextListener;
+import org.netbeans.cubeon.tasks.core.api.TasksFileSystem;
 import org.netbeans.cubeon.tasks.spi.Extension;
 import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider.EditorAttributeHandler;
@@ -37,12 +39,13 @@ import org.openide.nodes.Node;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.util.Utilities;
 import org.openide.windows.TopComponent;
 
 /**
  * Top component which displays something.
  */
-final class TaskEditorTopComponent extends TopComponent implements SaveCookie, ChangeListener {
+final class TaskEditorTopComponent extends TopComponent implements SaveCookie, ChangeListener, CubeonContextListener {
 
     private static final String PREFERRED_ID = "TaskEditorTopComponent";
     private final TaskElement element;
@@ -51,10 +54,14 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
     private final Extension extension;
     private final TaskElementChangeAdapter changeAdapter;
     private final TaskEditorFactoryImpl factoryImpl;
+    private final CubeonContext context;
+    private final TaskContextManager contextManager;
 
     TaskEditorTopComponent(TaskEditorFactoryImpl factoryImpl, final TaskElement element) {
         this.element = element;
         this.factoryImpl = factoryImpl;
+        this.context = Lookup.getDefault().lookup(CubeonContext.class);
+        contextManager = Lookup.getDefault().lookup(TaskContextManager.class);
         initComponents();
         jButton1.setAction(new SynchronizeTaskAction(element));
         jButton1.setText(null);
@@ -85,7 +92,7 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
             }
         }
 
-        setActivatedNodes(new Node[]{editorNode = TaskElementNode.createNode(Children.LEAF ,element,this)});
+        setActivatedNodes(new Node[]{editorNode = TaskElementNode.createNode(Children.LEAF, element, this)});
         eah.addChangeListener(this);
         changeAdapter = new TaskElementChangeAdapter() {
 
@@ -114,6 +121,18 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
             }
         };
         extension.add(changeAdapter);
+        _focus();
+        context.addContextListener(this);
+    }
+
+    private void _focus() {
+        if (element.equals(context.getActive())) {
+            focus.setToolTipText(NbBundle.getMessage(TaskEditorTopComponent.class, "LBL_InactiveTask"));
+            focus.setIcon(new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/ui/focus_off.png")));
+        } else {
+            focus.setToolTipText(NbBundle.getMessage(TaskEditorTopComponent.class, "LBL_ActiveTask"));
+            focus.setIcon(new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/ui/focus_on.png")));
+        }
     }
 
     /** This method is called from within the constructor to
@@ -129,6 +148,7 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
         header = new javax.swing.JPanel();
         lblHeader = new javax.swing.JLabel();
         jToolBar1 = new javax.swing.JToolBar();
+        focus = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
 
         setLayout(new java.awt.BorderLayout());
@@ -149,6 +169,19 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
         jToolBar1.setRollover(true);
         jToolBar1.setOpaque(false);
         jToolBar1.setPreferredSize(new java.awt.Dimension(49, 23));
+
+        focus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/cubeon/ui/focus_off.png"))); // NOI18N
+        focus.setToolTipText(NbBundle.getMessage(TaskEditorTopComponent.class, "TaskEditorTopComponent.focus.toolTipText","-")); // NOI18N
+        focus.setFocusable(false);
+        focus.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        focus.setOpaque(false);
+        focus.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        focus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                focusActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(focus);
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/cubeon/ui/refresh.png"))); // NOI18N
         jButton1.setToolTipText(NbBundle.getMessage(TaskEditorTopComponent.class, "TaskEditorTopComponent.jButton1.toolTipText","-")); // NOI18N
@@ -180,8 +213,22 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
         add(base, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void focusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_focusActionPerformed
+        if (element.equals(context.getActive())) {
+            context.setActive(null);
+            TasksFileSystem fileSystem = Lookup.getDefault().lookup(TasksFileSystem.class);
+            TaskExplorerTopComponent.findInstance().selectView(fileSystem.getFilesystemView());
+
+
+        } else {
+            context.setActive(element);
+            TaskExplorerTopComponent.findInstance().selectView(contextManager.getContextView());
+        }
+    }//GEN-LAST:event_focusActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel base;
+    private javax.swing.JButton focus;
     private javax.swing.JPanel header;
     private javax.swing.JButton jButton1;
     private javax.swing.JToolBar jToolBar1;
@@ -201,23 +248,24 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
     public void save() throws IOException {
         eah.save();
         editorNode.setModified(false);
-         _updateNameInEDT(eah.getName());
+        _updateNameInEDT(eah.getName());
     }
 
     public void refresh() {
         eah.refresh();
         editorNode.setModified(false);
-         _updateNameInEDT(eah.getName());
+        _updateNameInEDT(eah.getName());
     }
 
     public void stateChanged(ChangeEvent e) {
-        _updateNameInEDT(eah.getName()+"*");
+        _updateNameInEDT(eah.getName() + "*");
         editorNode.setModified(true);
     }
 
     @Override
     protected void componentClosed() {
         extension.remove(changeAdapter);
+        context.removeContextListener(this);
         factoryImpl.notifyRemove(element);
     }
 
@@ -226,7 +274,7 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
         if (editorNode.isModified()) {
             NotifyDescriptor d =
                     new NotifyDescriptor.Confirmation(NbBundle.getMessage(TaskEditorTopComponent.class,
-                    "LBL_Task_Modified", new Object[]{"'"+element.getId()+" : "+element.getName()+"'"}),
+                    "LBL_Task_Modified", new Object[]{"'" + element.getId() + " : " + element.getName() + "'"}),
                     NbBundle.getMessage(TaskEditorTopComponent.class, "CTL_Question"),
                     NotifyDescriptor.YES_NO_CANCEL_OPTION);
             Object notify = DialogDisplayer.getDefault().notify(d);
@@ -274,14 +322,26 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
     public TaskElement gettTaskElement() {
         return element;
     }
-    private void _updateNameInEDT(final String name){
+
+    private void _updateNameInEDT(final String name) {
         EventQueue.invokeLater(new Runnable() {
 
             public void run() {
-               setName(name);
+                setName(name);
             }
         });
-     
+
     }
- 
+
+    public void taskActivated(TaskElement element) {
+        if (this.element.equals(element)) {
+            _focus();
+        }
+    }
+
+    public void taskDeactivated(TaskElement element) {
+        if (this.element.equals(element)) {
+            _focus();
+        }
+    }
 }
