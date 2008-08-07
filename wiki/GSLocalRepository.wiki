@@ -6,4 +6,4 @@
 # [CreateLocalRepository Create Local repository]
 Note: Normally no need to create Local Repository ( Default Local Repository automatically created ). 
 
-[http://lh6.ggpht.com/theanuradha/SJqXw4oowmI/AAAAAAAAAII/KxIwkyKZgJo/defaultRepoview.PNG]
+           [http://lh6.ggpht.com/theanuradha/SJqXw4oowmI/AAAAAAAAAII/KxIwkyKZgJo/defaultRepoview.PNG]
