@@ -1,7 +1,9 @@
 #labels Featured
-#Getting Started with Cube°n.
-
 = Getting Started with Cube°n =
+  
+
+  [http://lh6.ggpht.com/theanuradha/SJqYKasW5wI/AAAAAAAAAJI/k-_Iu5lq8ps/WindowMenu.PNG]
+
   * Task Repository Connectors*
      * [GSLocalRepository Local Repository]
      * [GSJiraRepository Jira Repository Connector]     
