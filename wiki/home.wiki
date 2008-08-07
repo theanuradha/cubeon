@@ -1,6 +1,0 @@
-#labels Featured
-===Cube°n   Task-Focused Interface for Netbeans===
-
-Cube°n makes tasks a first class part of NetBeans by integrating with an issue tracking system. It then monitors your work activity to identify what's relevant and improves productivity by reducing searching, scrolling, navigation and sharing expertise. Support for integration with JIRA is planned initially, but the abstraction layer will facilitate support of other repositories such as Bugzilla and Trac in the future.
-
-[http://code.google.com/p/cubeon http://cubeon.googlecode.com/files/untitled.PNG]
