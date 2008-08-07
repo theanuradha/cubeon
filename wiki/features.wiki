@@ -9,7 +9,7 @@
     * [GSJiraRepository Jira Repository Connector] 
       * Supports to connect Jira repository base on project wise or repository wise.Ex:  http://jira.atlassian.com/browse/TST or http://jira.atlassian.com/ (this is really useful when working with large repository like http://jira.codehaus.org/ to prevent cache only relevant information locally ).
       * Supports Create/Modify Task *offline/online* and merge task with remote repository.
-      * Rich Task Editor.
+      * Rich Task Editor with attributes editing, workflow actions and comments.  
       * Supports Create Query form remote repository filters. 
       * Supports Customized Jira Repositories including custom workflow.
       * Supports Tracking of Locally Modified tasks and revert modifications  
