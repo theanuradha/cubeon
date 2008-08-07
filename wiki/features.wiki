@@ -12,3 +12,4 @@
       * Rich Task Editor.
       * Supports Create Query form remote repository filters. 
       * Supports Customized Jira Repositories including custom workflow.
+      * Supports Track Locally Modified task and revert modifications  
