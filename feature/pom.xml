@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>org.netbeans.cubeon</groupId>
+        <artifactId>cubeon-parent</artifactId>
+        <version>${cubeon.release}</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>feature</artifactId>
+    <packaging>nbm</packaging>
+    <version>${cubeon.release}</version>
+    <name>Cube°n Kit</name>
+    <description>Cube°n related features</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.netbeans.cubeon</groupId>
+            <artifactId>cubeon-analyzer-spi</artifactId>
+            <version>${cubeon.release}</version>
+            <type>nbm</type>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.cubeon</groupId>
+            <artifactId>cubeon-context-api</artifactId>
+            <version>${cubeon.release}</version>
+            <type>nbm</type>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.cubeon</groupId>
+            <artifactId>cubeon-context-spi</artifactId>
+            <version>${cubeon.release}</version>
+            <type>nbm</type>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.cubeon</groupId>
+            <artifactId>cubeon-context-task-link</artifactId>
+            <version>${cubeon.release}</version>
+            <type>nbm</type>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.cubeon</groupId>
+            <artifactId>cubeon-tasks-core</artifactId>
+            <version>${cubeon.release}</version>
+            <type>nbm</type>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.cubeon</groupId>
+            <artifactId>cubeon-tasks-spi</artifactId>
+            <version>${cubeon.release}</version>
+            <type>nbm</type>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.cubeon</groupId>
+            <artifactId>cubeon-ui</artifactId>
+            <version>${cubeon.release}</version>
+            <type>nbm</type>
+        </dependency>
+
+      
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>nbm-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

@@ -143,10 +143,12 @@
      <!--
       modules
      -->
+
         <module>core</module>
         <module>extensions</module>
         <module>connectors</module>
         <module>context</module>
+        <module>feature</module>
     </modules>
     <repositories>
         <repository>
