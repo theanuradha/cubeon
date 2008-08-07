@@ -14,7 +14,9 @@ After successful install go to *Windows* > *Cube°n* > and open both Task Explor
  
 
   * Task Repository Connectors *
+
      * [GSLocalRepository Local Repository]
+
      * [GSJiraRepository Jira Repository Connector]     
 
   * Task Context *
