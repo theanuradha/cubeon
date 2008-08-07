@@ -8,7 +8,7 @@ Cube°n makes tasks a first class part of NetBeans by integrating with an issue 
     
     * Get latest Cube°n bits from https://cubeon.googlecode.com/
 
-After successful install go to *Windows* > *Cube°n* > and open both Task Explorer and Task Repository view   
+After successful install go to *Windows* > *Cube°n* > and open both *Task Explorer* and *Task Repository* view   
   
   [http://lh6.ggpht.com/theanuradha/SJqYKasW5wI/AAAAAAAAAJI/k-_Iu5lq8ps/WindowMenu.PNG]
  
