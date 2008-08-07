@@ -1,7 +1,8 @@
 #labels Featured
-= Getting Started with Cube°n =
-  
+=Cube°n Task-Focused Interface for Netbeans=
 
+Cube°n makes tasks a first class part of NetBeans? by integrating with an issue tracking system. It then monitors your work activity to identify what's relevant and improves productivity by reducing searching, scrolling, navigation and sharing expertise.
+== Getting Started with Cube°n ==
   [http://lh6.ggpht.com/theanuradha/SJqYKasW5wI/AAAAAAAAAJI/k-_Iu5lq8ps/WindowMenu.PNG]
 
   * Task Repository Connectors*
