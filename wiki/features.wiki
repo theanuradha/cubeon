@@ -3,7 +3,7 @@
 
  * Task Repository Connectors 
     * [GSLocalRepository Local Repository]
-      * Supports Create/Modify Task with Task Types(Task,Defect,Enhancement andFeature) with  Priorities and Statuses(New,Started and Completed).  
+      * Supports Create/Modify Task with Task Types(Task,Defect,Enhancement and Feature) with  Priorities and Statuses(New,Started and Completed).  
       * Supports Query local task with Attributes (like All My Completed Tasks ).
       * Rich Task Editor.      
     * [GSJiraRepository Jira Repository Connector] 
@@ -14,3 +14,4 @@
       * Customized Jira Repositories including custom workflows.
       * Tracking of Locally Modified tasks and revert modifications.
       * Repository base permissions to create,modify tasks.
+ *  Task Explorer view 
