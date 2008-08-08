@@ -2,13 +2,4 @@
 
  * [GS_Create_Task_Folder Create Task Folder]
 
-
- === Create Task ===
-
-   * Right Click on Task Folder and select "New" > "Task"
-   
-   * Select Repository type and Next. 
-
-   * Add Summery And Description 
-
-         [http://lh6.ggpht.com/theanuradha/SJyVwwbCDbI/AAAAAAAAAKI/46i2FZi0GKg/createTask.PNG?imgmax=400]
+ * [GS_Create_Task Create Task]
