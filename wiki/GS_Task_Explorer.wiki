@@ -1,13 +1,16 @@
 == Getting Started with Task Explorer ==
 
-[http://lh5.ggpht.com/theanuradha/SJyTEcp32PI/AAAAAAAAAJ4/krjBTx5iIoM/gs_TaskExplorer.PNG]
-
-
-# Create Task Folder 
+ # Create Task Folder 
    * Right Click on task menu or Using Task Explorer drop menu, Select "New" > "Folder". 
 
          [http://lh5.ggpht.com/theanuradha/SJyUeZbjWHI/AAAAAAAAAKA/HWuqUQZz6i0/createTaskFolder.PNG?imgmax=400]
 
    * Add Folder Name and Description ( Optional ) and Hit Finish.
 
-  
+ # Create Task
+   * Right Click on Task Folder and select "New" > "Task"
+   
+   * Select Repository type and Next. 
+
+   * Add Summery And Description 
+         [http://lh6.ggpht.com/theanuradha/SJyVwwbCDbI/AAAAAAAAAKI/46i2FZi0GKg/createTask.PNG?imgmax=400]
