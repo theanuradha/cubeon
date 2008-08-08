@@ -5,7 +5,7 @@
     * API/SPI for adding Connectors. 
     * [GSLocalRepository Local Repository]
       * Supports Create/Modify Task with Task Types(Task,Defect,Enhancement and Feature) with  Priorities and Statuses(New,Started and Completed).  
-      * Supports Querying local task with Attributes (like All My Completed Tasks ).
+      * [GS_Local_Query Supports Querying] local task with Attributes (like All My Completed Tasks ).
       * Rich Task Editor.      
     * [GSJiraRepository Jira Repository Connector] 
       * Supports to connect Jira repository base on project wise or repository wise.Ex:  http://jira.atlassian.com/browse/TST or http://jira.atlassian.com/ (this is really useful when working with large repository like http://jira.codehaus.org/ to prevent cache only relevant information locally ).
