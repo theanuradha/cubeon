@@ -4,4 +4,8 @@ Cube°n Jira Repository is for Connect to [http://www.atlassian.com/software/jir
 
 [CreateJiraRepository Create Jira Repository]
 
+#  [GS_Task_Explorer Create Task] and It will open Jira Task Editor 
+
+           [http://lh5.ggpht.com/theanuradha/SJyx-tLaWlI/AAAAAAAAAKY/cl4vAZT8VNI/jiraTaskEditor.PNG]
+
 http://www.atlassian.com/software/jira/images/badges/v1/lg_jira.png
