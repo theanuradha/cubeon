@@ -2,4 +2,9 @@
 
 Cube°n Jira Repository is for Connect to [http://www.atlassian.com/software/jira/ Jira Bug and Issue Tracker]
 
+# Right Click on Repository View And invoke "New Task Repository..." and it will open wizard to select Repository Connector Type (Local,[GSJiraRepository Jira] etc...). 
+Select Jira Repository and go Next > . 
+
+       [http://lh5.ggpht.com/theanuradha/SJxw77zxXXI/AAAAAAAAAJw/WoH1tEEtC1M/selectRepoTypeJira.PNG?imgmax=400]
+
 http://www.atlassian.com/software/jira/images/badges/v1/lg_jira.png
