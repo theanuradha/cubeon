@@ -16,6 +16,9 @@
       * Tracking of Locally Modified tasks and revert modifications.
       * Repository base permissions to create,modify tasks.
  *  Task Explorer View 
-      * API/SPI for adding and customizing Views 
-      * Categorizable Task View (folder base)
-      * Task Filtering and Sorting 
+      * API/SPI for adding and customizing Views. 
+      * Categorizable Task View ( Folder base ).
+      * Tasks Filtering and Sorting (Ex: Priority,Status etc.. base filtering and sorting ).
+      * API/SPI for adding  Filtering and Comparators for Tasks.
+      * Synchronizing with  Repository Queries.
+      * Task Icon Badging ( Ex: Priority ).  
