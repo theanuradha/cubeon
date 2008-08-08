@@ -14,4 +14,4 @@
       * Customized Jira Repositories including custom workflows.
       * Tracking of Locally Modified tasks and revert modifications.
       * Repository base permissions to create,modify tasks.
- *  Task Explorer view 
+ *  Task Explorer View 
