@@ -2,6 +2,7 @@
 == Cube°n Features ==
 
  * Task Repository Connectors 
+    * API/SPI for adding Connectors 
     * [GSLocalRepository Local Repository]
       * Supports Create/Modify Task with Task Types(Task,Defect,Enhancement and Feature) with  Priorities and Statuses(New,Started and Completed).  
       * Supports Query local task with Attributes (like All My Completed Tasks ).
@@ -15,3 +16,6 @@
       * Tracking of Locally Modified tasks and revert modifications.
       * Repository base permissions to create,modify tasks.
  *  Task Explorer View 
+      * API/SPI for adding and customizing Views 
+      * Categorizable Task View (folder base)
+      * Task Filtering and Sorting 
