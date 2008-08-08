@@ -14,7 +14,7 @@
       * Create Query form remote repository filters. 
       * Customized Jira Repositories including custom workflows.
       * Tracking of Locally Modified tasks and revert modifications.
-      * Repository base permissions to create,modify tasks.
+      * Repository permission based  to create,modify tasks.
  * Task Explorer View 
       * API/SPI for adding and customizing Views. 
       * Categorizable Task View ( Folder base ).
