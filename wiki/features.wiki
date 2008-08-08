@@ -15,10 +15,16 @@
       * Customized Jira Repositories including custom workflows.
       * Tracking of Locally Modified tasks and revert modifications.
       * Repository base permissions to create,modify tasks.
- *  Task Explorer View 
+ * Task Explorer View 
       * API/SPI for adding and customizing Views. 
       * Categorizable Task View ( Folder base ).
       * Tasks Filtering and Sorting (Ex: Priority,Status etc.. base filtering and sorting ).
       * API/SPI for adding  Filtering and Comparators for Tasks.
       * Synchronizing with  Repository Queries.
-      * Task Icon Badging ( Ex: Priority ).  
+      * Task Icon Badging ( Ex: Priority ). 
+  * Focusable Task Context
+      * API/SPI for adding Task Contexts.
+      * Task Linking (Grouping related tasks under Task ).
+      * Source Linking (Grouping related Sources under Task ).
+      * Scan and view task related Stacktraces and supports direct navigation to source code.  
+      * Active Task Context View On Task Explorer.  
