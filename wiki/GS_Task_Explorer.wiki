@@ -1,3 +1,7 @@
 == Getting Started with Task Explorer ==
 
 [http://lh5.ggpht.com/theanuradha/SJyTEcp32PI/AAAAAAAAAJ4/krjBTx5iIoM/gs_TaskExplorer.PNG]
+
+
+# Create Task Folder 
+   Right Click on task menu or Using Task Explorer drop menu, Select "New" > "Folder" 
