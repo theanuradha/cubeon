@@ -406,7 +406,7 @@ public class TaskEditorUI extends javax.swing.JPanel implements EditorAttributeH
         cmbPriority.removeAllItems();
         LocalTaskRepository taskRepository = localTask.getTaskRepository().getLookup().lookup(LocalTaskRepository.class);
         LocalTaskPriorityProvider ltpp = taskRepository.getLocalTaskPriorityProvider();
-        for (TaskPriority priority : ltpp.getTaskPrioritys()) {
+        for (TaskPriority priority : ltpp.getTaskPriorities()) {
             cmbPriority.addItem(priority);
         }
         cmbPriority.setSelectedItem(localTask.getPriority());

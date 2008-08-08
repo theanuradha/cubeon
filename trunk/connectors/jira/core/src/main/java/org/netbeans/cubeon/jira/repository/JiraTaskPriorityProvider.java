@@ -34,12 +34,12 @@ public class JiraTaskPriorityProvider implements TaskPriorityProvider {
     public JiraTaskPriorityProvider() {
     }
 
-    public List<TaskPriority> getTaskPrioritys() {
+    public List<TaskPriority> getTaskPriorities() {
         return new ArrayList<TaskPriority>(prioritys);
     }
 
     public TaskPriority getTaskPriorityById(String priority) {
-        for (TaskPriority tp : getTaskPrioritys()) {
+        for (TaskPriority tp : getTaskPriorities()) {
             if (tp.getId().equals(priority)) {
                 return tp;
             }

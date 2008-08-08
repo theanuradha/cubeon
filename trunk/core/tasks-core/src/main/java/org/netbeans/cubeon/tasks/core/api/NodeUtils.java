@@ -63,7 +63,7 @@ public class NodeUtils {
     public static Image getTaskPriorityImage(TaskPriority priority) {
         Image badge;
         TaskPriorityProvider provider = priority.getRepository().getLookup().lookup(TaskPriorityProvider.class);
-        int indexOf = provider.getTaskPrioritys().indexOf(priority);
+        int indexOf = provider.getTaskPriorities().indexOf(priority);
         switch (indexOf) {
             case 0:
                 badge = Utilities.loadImage("org/netbeans/cubeon/tasks/core/priority/p1.png");

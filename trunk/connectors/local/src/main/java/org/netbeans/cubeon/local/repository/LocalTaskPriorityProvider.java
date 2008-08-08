@@ -46,7 +46,7 @@ public class LocalTaskPriorityProvider implements TaskPriorityProvider {
         P5 = new TaskPriority(repository, "P5", "P5");//NOI18N
     }
 
-    public List<TaskPriority> getTaskPrioritys() {
+    public List<TaskPriority> getTaskPriorities() {
         List<TaskPriority> prioritys = new ArrayList<TaskPriority>();
         prioritys.add(P1);
         prioritys.add(P2);
@@ -59,7 +59,7 @@ public class LocalTaskPriorityProvider implements TaskPriorityProvider {
     }
 
     public TaskPriority getTaskPriorityById(String priority) {
-        for (TaskPriority tp : getTaskPrioritys()) {
+        for (TaskPriority tp : getTaskPriorities()) {
             if (tp.getId().equals(priority)) {
                 return tp;
             }
