@@ -1,12 +1,7 @@
 == Getting Started with Task Explorer ==
 
- === Create Task Folder ===
+ * [GS_Create_Task_Folder Create Task Folder]
 
-   * Right Click on task menu or Using Task Explorer drop menu, Select "New" > "Folder". 
-
-         [http://lh5.ggpht.com/theanuradha/SJyUeZbjWHI/AAAAAAAAAKA/HWuqUQZz6i0/createTaskFolder.PNG?imgmax=400]
-
-   * Add Folder Name and Description ( Optional ) and Hit Finish.
 
  === Create Task ===
 
