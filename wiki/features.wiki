@@ -22,7 +22,7 @@
       * API/SPI for adding  Filtering and Comparators for Tasks.
       * Synchronizing with  Repository Queries.
       * Task Icon Badging ( Ex: Priority ). 
-  * Focusable Task Context
+ * Focusable Task Context
       * API/SPI for adding Task Contexts.
       * Task Linking (Grouping related tasks under Task ).
       * Source Linking (Grouping related Sources under Task ).
