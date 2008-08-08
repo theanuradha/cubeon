@@ -1,0 +1,11 @@
+ === Create Task ===
+
+   * Right Click on Task Folder and select "New" > "Task"
+   
+   * Select Repository type and Next. 
+
+   * Add Summery And Description 
+
+         [http://lh6.ggpht.com/theanuradha/SJyVwwbCDbI/AAAAAAAAAKI/46i2FZi0GKg/createTask.PNG?imgmax=400]
+
+   * Hit Finish it will Open Task on editor and add Task Explorer View 
