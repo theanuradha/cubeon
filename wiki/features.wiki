@@ -26,5 +26,5 @@
       * API/SPI for adding Task Contexts.
       * Task Linking (Grouping related tasks under Task ).
       * Source Linking (Grouping related Sources under Task ).
-      * Scan and view task related Stacktraces and supports direct navigation to source code.  
+      * Stacktraces Navigation (Scan and view task related Stacktraces and supports direct navigation to source code).  
       * Active Task Context View On Task Explorer.  
