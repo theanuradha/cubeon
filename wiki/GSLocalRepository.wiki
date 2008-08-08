@@ -12,3 +12,5 @@ Note: Normally no need to create Local Repository ( Default Local Repository aut
 #  [GS_Task_Explorer Create Task] and It will open Local Task Editor 
 
            [http://lh5.ggpht.com/theanuradha/SJyuvjAmUPI/AAAAAAAAAKQ/SAMBd5L0Z8c/localeditor.PNG]
+
+#  [S_Local_Query Create New Query]
