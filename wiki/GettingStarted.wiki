@@ -19,6 +19,7 @@ After successful install go to *Windows* > *Cube°n* > and open both *Task Explo
      * [GSJiraRepository Jira Repository Connector]     
 
   * [GS_Task_Explorer Task Explorer]
+
   * Task Context 
      TODO (Plan for grant project)
 
