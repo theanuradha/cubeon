@@ -8,4 +8,4 @@
 
 #  Edit Attributes and Finish.It will Open up Query results view showing matching Tasks.
   
-          [http://lh6.ggpht.com/theanuradha/SJzADryXGuI/AAAAAAAAAKw/Z6G1crbBTgI/s144/queryresultView.PNG]
+          [http://lh6.ggpht.com/theanuradha/SJzADryXGuI/AAAAAAAAAKw/Z6G1crbBTgI/queryresultView.PNG]
