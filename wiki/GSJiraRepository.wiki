@@ -8,8 +8,8 @@ Select Jira Repository and go Next > .
        [http://lh5.ggpht.com/theanuradha/SJxw77zxXXI/AAAAAAAAAJw/WoH1tEEtC1M/selectRepoTypeJira.PNG?imgmax=400]
 
 # Add a Repository Configuration  and click Finish.
-  you can connect to jira base on project wise or repository wise.Ex: http://jira.atlassian.com/browse/TST or http://jira.atlassian.com/ (this is really useful when working with large repository like http://jira.codehaus.org/ to prevent cache only relevant information locally ).
-  *To test drive Jira Connector You can connect to public repository at jira.atlassian.com
+Note :you can connect to jira base on project wise or repository wise.Ex: http://jira.atlassian.com/browse/TST or http://jira.atlassian.com/ (this is really useful when working with large repository like http://jira.codehaus.org/ to prevent cache only relevant information locally ).
+  * To test drive Jira Connector You can connect to public repository at jira.atlassian.com
   {{{
          Alias : TestOne ,Atlassian or any name
       Host Uri : http://jira.atlassian.com/browse/TST 
