@@ -1,0 +1,5 @@
+#labels local
+=== Getting Started with Local Repository Query ===
+
+#  Right Click On any Local Repository and select "New Query..."
+   Note: Optionally you can create queries by Right Click on Task Explorer or Task repository View.      
