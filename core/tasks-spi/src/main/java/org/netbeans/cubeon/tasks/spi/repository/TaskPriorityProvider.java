@@ -20,20 +20,42 @@ import org.netbeans.cubeon.tasks.spi.task.*;
 import java.util.List;
 
 /**
- *
+ *Implementaion of this interface will let the repository to provide proiorties
+ * E.g. X repository has the following priority types.
+ * And register it via Repository Lookup by using interface
+ * 1. P1
+ * 2. P2
+ * 3. P3
+ * 4. P4
+ * 5. P5
  * @author Anuradha G
  */
 public interface TaskPriorityProvider {
 
     /**
-     * 
-     * @return list of TaskPriority that support by 
-     * providing repository implementation
+     * Returns a list of task priorities for the current repository
+     * @return list of task priorities
      */
-    List<TaskPriority> getTaskPrioritys();
-  TaskPriority getTaskPriorityById(String priority);
+    List<TaskPriority> getTaskPriorities();
 
+    /**
+     * Retruns the TaskPriority associated wit the given priority ID.
+     * @param Priority ID
+     * @return TaskPriority instance associated wit the id.
+     */
+    TaskPriority getTaskPriorityById(String priority);
+
+    /**
+     * Returns the current priority of a TaskElement
+     * @param element TaskElement instance
+     * @return TaksPriority of the TaskElement
+     */
     TaskPriority getTaskPriority(TaskElement element);
 
-    void setTaskPriority(TaskElement element,TaskPriority priority);
+    /**
+     * Modifies the TaskPriority fr a given TaskElement
+     * @param element TaskElement which needs to be set the priority
+     * @param priority The new TaskPriority for the task.
+     */
+    void setTaskPriority(TaskElement element, TaskPriority priority);
 }

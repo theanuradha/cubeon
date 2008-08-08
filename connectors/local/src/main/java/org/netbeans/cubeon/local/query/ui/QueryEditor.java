@@ -114,7 +114,7 @@ public class QueryEditor extends javax.swing.JPanel implements TaskQuerySupportP
         DefaultListModel priorityModel = new DefaultListModel();
         priorityModel.addElement(TAG_ALL);
         LocalTaskPriorityProvider ltpp = repository.getLocalTaskPriorityProvider();
-        for (TaskPriority priority : ltpp.getTaskPrioritys()) {
+        for (TaskPriority priority : ltpp.getTaskPriorities()) {
             priorityModel.addElement(priority);
         }
         lstPriority.setModel(priorityModel);

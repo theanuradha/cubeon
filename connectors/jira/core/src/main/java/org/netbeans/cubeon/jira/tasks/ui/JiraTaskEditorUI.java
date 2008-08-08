@@ -190,7 +190,7 @@ public class JiraTaskEditorUI extends javax.swing.JPanel {
         cmbPriority.removeAllItems();
 
         JiraTaskPriorityProvider jtpp = taskRepository.getJiraTaskPriorityProvider();
-        for (TaskPriority priority : jtpp.getTaskPrioritys()) {
+        for (TaskPriority priority : jtpp.getTaskPriorities()) {
             cmbPriority.addItem(priority);
         }
         cmbPriority.setSelectedItem(jiraTask.getPriority());

@@ -91,7 +91,7 @@ public class FilterByPriorityAction extends AbstractAction implements Menu, Popu
                         new ImageIcon(repository.getImage()));
                 menu.add(repoMenu);
 
-                List<TaskPriority> prioritys = priorityProvider.getTaskPrioritys();
+                List<TaskPriority> prioritys = priorityProvider.getTaskPriorities();
                 for (TaskPriority taskPriority : prioritys) {
                     JCheckBoxMenuItem p1 = new JCheckBoxMenuItem(new Filter(taskPriority));
                     p1.setSelected(filter.contains(taskPriority));
