@@ -39,7 +39,6 @@ import org.xml.sax.SAXException;
 class JiraRepositoryPersistence {
 
     private static final String REPOSITORYS_FILE_NAME = "repositorys.xml"; //NOI18N
-    private static final String NAMESPACE = null;//FIXME add propper namespase
     private static final String TAG_ROOT = "jira-task-repository-configuration";//NOI18N
     private static final String TAG_REPOSITORIES = "repositories";//NOI18N
     private static final String TAG_REPOSITORY = "repository";//NOI18N
@@ -61,14 +60,14 @@ class JiraRepositoryPersistence {
     void addRepository(JiraTaskRepository repository) {
         Element repositoryElement = null;
 
-        Element repositorysElement = getConfigurationFragment(TAG_REPOSITORIES, NAMESPACE);
+        Element repositorysElement = getConfigurationFragment(TAG_REPOSITORIES);
         if (repositorysElement == null) {
-            Document doc = XMLUtil.createDocument(TAG_ROOT, NAMESPACE, null, null);
-            repositorysElement = doc.createElementNS(NAMESPACE, TAG_REPOSITORIES);
+            Document doc = XMLUtil.createDocument(TAG_ROOT, null, null, null);
+            repositorysElement = doc.createElement(TAG_REPOSITORIES);
         }
 
         NodeList repositoryNodes =
-                repositorysElement.getElementsByTagNameNS(NAMESPACE, TAG_REPOSITORY);
+                repositorysElement.getElementsByTagName(TAG_REPOSITORY);
 
         for (int i = 0; i < repositoryNodes.getLength(); i++) {
             Node node = repositoryNodes.item(i);
@@ -84,21 +83,21 @@ class JiraRepositoryPersistence {
 
         if (repositoryElement == null) {
             Document document = repositorysElement.getOwnerDocument();
-            repositoryElement = document.createElementNS(NAMESPACE, TAG_REPOSITORY);
+            repositoryElement = document.createElement(TAG_REPOSITORY);
             repositorysElement.appendChild(repositoryElement);
         }
 
-        repositoryElement.setAttributeNS(NAMESPACE, TAG_ID, repository.getId());
-        repositoryElement.setAttributeNS(NAMESPACE, TAG_NAME, repository.getName());
-        repositoryElement.setAttributeNS(NAMESPACE, TAG_DESCRIPTION, repository.getDescription());
-        repositoryElement.setAttributeNS(NAMESPACE, TAG_USERID, repository.getUserName());
-        repositoryElement.setAttributeNS(NAMESPACE, TAG_URL, repository.getURL());
+        repositoryElement.setAttribute(TAG_ID, repository.getId());
+        repositoryElement.setAttribute(TAG_NAME, repository.getName());
+        repositoryElement.setAttribute(TAG_DESCRIPTION, repository.getDescription());
+        repositoryElement.setAttribute(TAG_USERID, repository.getUserName());
+        repositoryElement.setAttribute(TAG_URL, repository.getURL());
         if (repository.getProjectKey() != null && repository.getProjectKey().trim().length() > 0) {
-            repositoryElement.setAttributeNS(NAMESPACE, TAG_PROJECT, repository.getProjectKey());
+            repositoryElement.setAttribute(TAG_PROJECT, repository.getProjectKey());
         } else {
-            repositoryElement.removeAttributeNS(NAMESPACE, TAG_PROJECT);
+            repositoryElement.removeAttribute(TAG_PROJECT);
         }
-        repositoryElement.setAttributeNS(NAMESPACE, TAG_PASSWORD_HASH, repository.getPassword());//FIXME add hash
+        repositoryElement.setAttribute(TAG_PASSWORD_HASH, repository.getPassword());//FIXME add hash
 
         putConfigurationFragment(repositorysElement);
     }
@@ -106,19 +105,19 @@ class JiraRepositoryPersistence {
     void removeRepository(JiraTaskRepository repository) {
         Element repositoryElement = null;
 
-        Element repositorysElement = getConfigurationFragment(TAG_REPOSITORIES, NAMESPACE);
+        Element repositorysElement = getConfigurationFragment(TAG_REPOSITORIES);
         if (repositorysElement == null) {
             return;
         }
 
         NodeList repositoryNodes =
-                repositorysElement.getElementsByTagNameNS(NAMESPACE, TAG_REPOSITORY);
+                repositorysElement.getElementsByTagName(TAG_REPOSITORY);
 
         for (int i = 0; i < repositoryNodes.getLength(); i++) {
             Node node = repositoryNodes.item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element) node;
-                String id = element.getAttributeNS(NAMESPACE, TAG_ID);
+                String id = element.getAttribute(TAG_ID);
                 if (repository.getId().equals(id)) {
                     repositoryElement = element;
                     break;
@@ -137,12 +136,12 @@ class JiraRepositoryPersistence {
 
     List<JiraTaskRepository> getJiraTaskRepositorys() {
         List<JiraTaskRepository> repositorys = new ArrayList<JiraTaskRepository>();
-        Element repositorysElement = getConfigurationFragment(TAG_REPOSITORIES, NAMESPACE);
+        Element repositorysElement = getConfigurationFragment(TAG_REPOSITORIES);
 
         if (repositorysElement != null) {
 
             NodeList repositoryNodes =
-                    repositorysElement.getElementsByTagNameNS(NAMESPACE, TAG_REPOSITORY);
+                    repositorysElement.getElementsByTagName(TAG_REPOSITORY);
 
             for (int i = 0; i < repositoryNodes.getLength(); i++) {
                 Node node = repositoryNodes.item(i);
@@ -179,7 +178,7 @@ class JiraRepositoryPersistence {
     }
 
     //xml related
-    private Element getConfigurationFragment(final String elementName, final String namespace) {
+    private Element getConfigurationFragment(final String elementName) {
 
         final FileObject config = baseDir.getFileObject(REPOSITORYS_FILE_NAME);
         if (config != null) {
@@ -190,7 +189,7 @@ class JiraRepositoryPersistence {
             try {
                 in = config.getInputStream();
                 doc = XMLUtil.parse(new InputSource(in), false, true, null, null);
-                return findElement(doc.getDocumentElement(), elementName, namespace);
+                return findElement(doc.getDocumentElement(), elementName);
             } catch (SAXException ex) {
                 Exceptions.printStackTrace(ex);
             } catch (IOException ex) {
@@ -232,7 +231,7 @@ class JiraRepositoryPersistence {
         }
 
         if (doc != null) {
-            Element el = findElement(doc.getDocumentElement(), fragment.getNodeName(), fragment.getNamespaceURI());
+            Element el = findElement(doc.getDocumentElement(), fragment.getNodeName());
             if (el != null) {
                 doc.getDocumentElement().removeChild(el);
             }
@@ -268,15 +267,14 @@ class JiraRepositoryPersistence {
 
     }
 
-    private static Element findElement(Element parent, String name, String namespace) {
+    private static Element findElement(Element parent, String name) {
 
         NodeList l = parent.getChildNodes();
         int len = l.getLength();
         for (int i = 0; i < len; i++) {
             if (l.item(i).getNodeType() == Node.ELEMENT_NODE) {
                 Element el = (Element) l.item(i);
-                if (name.equals(el.getLocalName()) &&
-                        ((namespace == el.getNamespaceURI()) /*check both namespaces are null*/ || (namespace != null && namespace.equals(el.getNamespaceURI())))) {
+                if (name.equals(el.getNodeName())) {
                     return el;
                 }
             }

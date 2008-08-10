@@ -40,7 +40,6 @@ import org.xml.sax.SAXException;
 class LocalRepositoryPersistence {
 
     private static final String REPOSITORYS_FILE_NAME = "repositorys.xml"; //NOI18N
-    private static final String NAMESPACE = null;//FIXME add propper namespase
     private static final String TAG_ROOT = "local-task-repository-configuration";//NOI18N
     private static final String TAG_REPOSITORYS = "repositorys";//NOI18N
     private static final String TAG_REPOSITORY = "repository";//NOI18N
@@ -58,14 +57,14 @@ class LocalRepositoryPersistence {
     void addRepository(LocalTaskRepository repository) {
         Element repositoryElement = null;
 
-        Element repositorysElement = getConfigurationFragment(TAG_REPOSITORYS, NAMESPACE);
+        Element repositorysElement = getConfigurationFragment(TAG_REPOSITORYS);
         if (repositorysElement == null) {
-            Document doc = XMLUtil.createDocument(TAG_ROOT, NAMESPACE, null, null);
-            repositorysElement = doc.createElementNS(NAMESPACE, TAG_REPOSITORYS);
+            Document doc = XMLUtil.createDocument(TAG_ROOT, null, null, null);
+            repositorysElement = doc.createElement(TAG_REPOSITORYS);
         }
 
         NodeList repositoryNodes =
-                repositorysElement.getElementsByTagNameNS(NAMESPACE, TAG_REPOSITORY);
+                repositorysElement.getElementsByTagName(TAG_REPOSITORY);
 
         for (int i = 0; i < repositoryNodes.getLength(); i++) {
             Node node = repositoryNodes.item(i);
@@ -81,13 +80,13 @@ class LocalRepositoryPersistence {
 
         if (repositoryElement == null) {
             Document document = repositorysElement.getOwnerDocument();
-            repositoryElement = document.createElementNS(NAMESPACE, TAG_REPOSITORY);
+            repositoryElement = document.createElement(TAG_REPOSITORY);
             repositorysElement.appendChild(repositoryElement);
         }
 
-        repositoryElement.setAttributeNS(NAMESPACE, TAG_ID, repository.getId());
-        repositoryElement.setAttributeNS(NAMESPACE, TAG_NAME, repository.getName());
-        repositoryElement.setAttributeNS(NAMESPACE, TAG_DESCRIPTION, repository.getDescription());
+        repositoryElement.setAttribute(TAG_ID, repository.getId());
+        repositoryElement.setAttribute(TAG_NAME, repository.getName());
+        repositoryElement.setAttribute(TAG_DESCRIPTION, repository.getDescription());
 
         putConfigurationFragment(repositorysElement);
     }
@@ -95,19 +94,19 @@ class LocalRepositoryPersistence {
     void removeRepository(LocalTaskRepository repository) {
         Element repositoryElement = null;
 
-        Element repositorysElement = getConfigurationFragment(TAG_REPOSITORYS, NAMESPACE);
+        Element repositorysElement = getConfigurationFragment(TAG_REPOSITORYS);
         if (repositorysElement == null) {
             return;
         }
 
         NodeList repositoryNodes =
-                repositorysElement.getElementsByTagNameNS(NAMESPACE, TAG_REPOSITORY);
+                repositorysElement.getElementsByTagName(TAG_REPOSITORY);
 
         for (int i = 0; i < repositoryNodes.getLength(); i++) {
             Node node = repositoryNodes.item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element) node;
-                String id = element.getAttributeNS(NAMESPACE, TAG_ID);
+                String id = element.getAttribute(TAG_ID);
                 if (repository.getId().equals(id)) {
                     repositoryElement = element;
                     break;
@@ -126,12 +125,12 @@ class LocalRepositoryPersistence {
 
     List<LocalTaskRepository> getLocalTaskRepositorys() {
         List<LocalTaskRepository> repositorys = new ArrayList<LocalTaskRepository>();
-        Element repositorysElement = getConfigurationFragment(TAG_REPOSITORYS, NAMESPACE);
+        Element repositorysElement = getConfigurationFragment(TAG_REPOSITORYS);
         if (repositorysElement != null) {
 
 
             NodeList repositoryNodes =
-                    repositorysElement.getElementsByTagNameNS(NAMESPACE, TAG_REPOSITORY);
+                    repositorysElement.getElementsByTagName(TAG_REPOSITORY);
 
             for (int i = 0; i < repositoryNodes.getLength(); i++) {
                 Node node = repositoryNodes.item(i);
@@ -157,7 +156,8 @@ class LocalRepositoryPersistence {
 
     }
     //xml related
-    private Element getConfigurationFragment(final String elementName, final String namespace) {
+
+    private Element getConfigurationFragment(final String elementName) {
 
         final FileObject config = baseDir.getFileObject(REPOSITORYS_FILE_NAME);
         if (config != null) {
@@ -168,7 +168,7 @@ class LocalRepositoryPersistence {
             try {
                 in = config.getInputStream();
                 doc = XMLUtil.parse(new InputSource(in), false, true, null, null);
-                return findElement(doc.getDocumentElement(), elementName, namespace);
+                return findElement(doc.getDocumentElement(), elementName);
             } catch (SAXException ex) {
                 Exceptions.printStackTrace(ex);
             } catch (IOException ex) {
@@ -210,7 +210,7 @@ class LocalRepositoryPersistence {
         }
 
         if (doc != null) {
-            Element el = findElement(doc.getDocumentElement(), fragment.getNodeName(), fragment.getNamespaceURI());
+            Element el = findElement(doc.getDocumentElement(), fragment.getNodeName());
             if (el != null) {
                 doc.getDocumentElement().removeChild(el);
             }
@@ -246,15 +246,14 @@ class LocalRepositoryPersistence {
 
     }
 
-    private static Element findElement(Element parent, String name, String namespace) {
-       
+    private static Element findElement(Element parent, String name) {
+
         NodeList l = parent.getChildNodes();
         int len = l.getLength();
         for (int i = 0; i < len; i++) {
             if (l.item(i).getNodeType() == Node.ELEMENT_NODE) {
                 Element el = (Element) l.item(i);
-                if (name.equals(el.getLocalName()) &&
-                        ((namespace == el.getNamespaceURI()) /*check both namespaces are null*/ || (namespace != null && namespace.equals(el.getNamespaceURI())))) {
+                if (name.equals(el.getNodeName())) {
                     return el;
                 }
             }

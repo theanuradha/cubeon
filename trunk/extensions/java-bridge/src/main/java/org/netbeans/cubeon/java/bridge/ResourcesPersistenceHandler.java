@@ -49,7 +49,7 @@ class ResourcesPersistenceHandler {
                 Element root = contextHandler.getRootElement(document);
 
 
-                Element tasksElement = findElement(root, TAG_JAVA_PATHS, null);
+                Element tasksElement = findElement(root, TAG_JAVA_PATHS);
                 //check foldersElement null and create element
                 if (tasksElement == null) {
                     tasksElement = document.createElement(TAG_JAVA_PATHS);
@@ -65,7 +65,7 @@ class ResourcesPersistenceHandler {
                     if (node.getNodeType() == Node.ELEMENT_NODE) {
                         Element element = (Element) node;
                         String id = element.getAttribute(TAG_ID);
-                       
+
                         if (resource.getPath().equals(id)) {
                             trelement = element;
                             break;
@@ -89,7 +89,7 @@ class ResourcesPersistenceHandler {
                 Element root = contextHandler.getRootElement(document);
 
 
-                Element tasksElement = findElement(root, TAG_JAVA_PATHS, null);
+                Element tasksElement = findElement(root, TAG_JAVA_PATHS);
                 //check foldersElement null and create element
                 if (tasksElement == null) {
                     tasksElement = document.createElement(TAG_JAVA_PATHS);
@@ -98,7 +98,7 @@ class ResourcesPersistenceHandler {
                 Element taskElement = document.createElement(TAG_PATH);
                 tasksElement.appendChild(taskElement);
                 taskElement.setAttribute(TAG_ID, resource.getPath());
-            
+
                 contextHandler.saveContextDocument(document);
             }
         });
@@ -106,7 +106,7 @@ class ResourcesPersistenceHandler {
 
     List<JavaResource> refresh() {
         final List<JavaResource> resources = new ArrayList<JavaResource>();
-        
+
         contextHandler.getMutex().readAccess(new Runnable() {
 
             public void run() {
@@ -114,7 +114,7 @@ class ResourcesPersistenceHandler {
                 Element root = contextHandler.getRootElement(document);
 
 
-                Element tasksElement = findElement(root, TAG_JAVA_PATHS, null);
+                Element tasksElement = findElement(root, TAG_JAVA_PATHS);
                 //check foldersElement null and create element
                 if (tasksElement == null) {
                     tasksElement = document.createElement(TAG_JAVA_PATHS);
@@ -129,9 +129,9 @@ class ResourcesPersistenceHandler {
                     if (node.getNodeType() == Node.ELEMENT_NODE) {
                         Element element = (Element) node;
                         String id = element.getAttribute(TAG_ID);
-                       
-                          resources.add(new JavaResource(id));
-                        
+
+                        resources.add(new JavaResource(id));
+
 
                     }
                 }
@@ -142,15 +142,14 @@ class ResourcesPersistenceHandler {
         return resources;
     }
 
-    private static Element findElement(Element parent, String name, String namespace) {
+    private static Element findElement(Element parent, String name) {
 
         NodeList l = parent.getChildNodes();
         int len = l.getLength();
         for (int i = 0; i < len; i++) {
             if (l.item(i).getNodeType() == Node.ELEMENT_NODE) {
                 Element el = (Element) l.item(i);
-                if (name.equals(el.getLocalName()) &&
-                        ((namespace == el.getNamespaceURI()) /*check both namespaces are null*/ || (namespace != null && namespace.equals(el.getNamespaceURI())))) {
+                if (name.equals(el.getNodeName())) {
                     return el;
                 }
             }

@@ -83,22 +83,22 @@ class PersistenceHandler {
 
             Document document = getDocument();
             Element root = getRootElement(document);
-            Element tasksElement = findElement(root, TAG_QUERYS, NAMESPACE);
+            Element tasksElement = findElement(root, TAG_QUERYS);
             //check tasksElement null and create element
             if (tasksElement == null) {
-                tasksElement = document.createElementNS(NAMESPACE, TAG_QUERYS);
+                tasksElement = document.createElement(TAG_QUERYS);
                 root.appendChild(tasksElement);
             }
             Element taskQuery = null;
 
             NodeList nodeList =
-                    tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_QUERY);
+                    tasksElement.getElementsByTagName(TAG_QUERY);
 
             for (int i = 0; i < nodeList.getLength(); i++) {
                 Node node = nodeList.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element element = (Element) node;
-                    String id = element.getAttributeNS(NAMESPACE, TAG_ID);
+                    String id = element.getAttribute(TAG_ID);
                     if (localQuery.getId().equals(id)) {
                         taskQuery = element;
                         break;
@@ -107,12 +107,12 @@ class PersistenceHandler {
             }
             //todo check available
             if (taskQuery == null) {
-                taskQuery = document.createElementNS(NAMESPACE, TAG_QUERY);
+                taskQuery = document.createElement(TAG_QUERY);
                 tasksElement.appendChild(taskQuery);
 
             }
-            taskQuery.setAttributeNS(NAMESPACE, TAG_ID, localQuery.getId());
-            taskQuery.setAttributeNS(NAMESPACE, TAG_NAME, localQuery.getName());
+            taskQuery.setAttribute(TAG_ID, localQuery.getId());
+            taskQuery.setAttribute(TAG_NAME, localQuery.getName());
             List<TaskPriority> priorities = localQuery.getPriorities();
 
             Element taskpriorities = getEmptyElement(document, taskQuery, TAG_PRIORITIES);
@@ -136,20 +136,20 @@ class PersistenceHandler {
                 element.appendChild(document.createTextNode(ts.getId()));
             }
 
-            taskQuery.setAttributeNS(NAMESPACE, TAG_CONTAIN, localQuery.getContain());
-            taskQuery.setAttributeNS(NAMESPACE, TAG_MATCH_TYPE, localQuery.getMatchType().name());
-            taskQuery.setAttributeNS(NAMESPACE, TAG_SUMMARY, String.valueOf(localQuery.isSummary()));
-            taskQuery.setAttributeNS(NAMESPACE, TAG_DESCRIPTION, String.valueOf(localQuery.isDescription()));
+            taskQuery.setAttribute(TAG_CONTAIN, localQuery.getContain());
+            taskQuery.setAttribute(TAG_MATCH_TYPE, localQuery.getMatchType().name());
+            taskQuery.setAttribute(TAG_SUMMARY, String.valueOf(localQuery.isSummary()));
+            taskQuery.setAttribute(TAG_DESCRIPTION, String.valueOf(localQuery.isDescription()));
             save(document);
         }
     }
 
     private Element getEmptyElement(Document document, Element root, String tag) {
-        Element taskpriorities = findElement(root, tag, NAMESPACE);
+        Element taskpriorities = findElement(root, tag);
         if (taskpriorities != null) {
             root.removeChild(taskpriorities);
         }
-        taskpriorities = document.createElementNS(NAMESPACE, tag);
+        taskpriorities = document.createElement(tag);
         root.appendChild(taskpriorities);
         return taskpriorities;
 
@@ -159,17 +159,17 @@ class PersistenceHandler {
         synchronized (LOCK) {
             Document document = getDocument();
             Element root = getRootElement(document);
-            Element tasksElement = findElement(root, TAG_QUERYS, NAMESPACE);
+            Element tasksElement = findElement(root, TAG_QUERYS);
             Element taskElement = null;
 
             NodeList taskNodes =
-                    tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_QUERY);
+                    tasksElement.getElementsByTagName(TAG_QUERY);
 
             for (int i = 0; i < taskNodes.getLength(); i++) {
                 Node node = taskNodes.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element element = (Element) node;
-                    String id = element.getAttributeNS(NAMESPACE, TAG_ID);
+                    String id = element.getAttribute(TAG_ID);
                     if (query.getId().equals(id)) {
                         taskElement = element;
                         break;
@@ -189,10 +189,10 @@ class PersistenceHandler {
         synchronized (LOCK) {
             Document document = getDocument();
             Element root = getRootElement(document);
-            Element nextElement = findElement(root, TAG_NEXT_ID, NAMESPACE);
+            Element nextElement = findElement(root, TAG_NEXT_ID);
             int nextID = 0;
             if (nextElement == null) {
-                nextElement = document.createElementNS(NAMESPACE, TAG_NEXT_ID);
+                nextElement = document.createElement(TAG_NEXT_ID);
                 nextElement.setAttribute(TAG_ID, String.valueOf(++nextID));
                 root.appendChild(nextElement);
             } else {
@@ -211,11 +211,11 @@ class PersistenceHandler {
             List<LocalQuery> localQuerys = new ArrayList<LocalQuery>();
             Document document = getDocument();
             Element root = getRootElement(document);
-            Element tasksElement = findElement(root, TAG_QUERYS, NAMESPACE);
+            Element tasksElement = findElement(root, TAG_QUERYS);
 
             if (tasksElement != null) {
                 NodeList taskNodes =
-                        tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_QUERY);
+                        tasksElement.getElementsByTagName(TAG_QUERY);
                 LocalTaskRepository localTaskRepository = localQuerySupport.getLocalTaskRepository();
 
                 LocalTaskPriorityProvider priorityProvider = localTaskRepository.getLocalTaskPriorityProvider();
@@ -227,13 +227,13 @@ class PersistenceHandler {
                     if (node.getNodeType() == Node.ELEMENT_NODE) {
                         Element element = (Element) node;
 
-                        String id = element.getAttributeNS(NAMESPACE, TAG_ID);
+                        String id = element.getAttribute(TAG_ID);
 
-                        String name = element.getAttributeNS(NAMESPACE, TAG_NAME);
+                        String name = element.getAttribute(TAG_NAME);
                         LocalQuery localQuery = new LocalQuery(id, name, localTaskRepository);
 
 
-                        Element elementPriority = findElement(element, TAG_PRIORITIES, NAMESPACE);
+                        Element elementPriority = findElement(element, TAG_PRIORITIES);
                         List<String> tagsTexts = getTagsTexts(elementPriority, TAG_PRIORITY);
                         List<TaskPriority> priorities = new ArrayList<TaskPriority>();
                         for (String pid : tagsTexts) {
@@ -241,7 +241,7 @@ class PersistenceHandler {
                         }
                         localQuery.setPriorities(priorities);
                         //----------------------------------------------------------------------
-                        Element elementtypes = findElement(element, TAG_TYPES, NAMESPACE);
+                        Element elementtypes = findElement(element, TAG_TYPES);
                         tagsTexts = getTagsTexts(elementtypes, TAG_TYPE);
                         List<TaskType> types = new ArrayList<TaskType>();
                         for (String tid : tagsTexts) {
@@ -249,7 +249,7 @@ class PersistenceHandler {
                         }
                         localQuery.setTypes(types);
                         //----------------------------------------------------------------------
-                        Element elementStates = findElement(element, TAG_STATES, NAMESPACE);
+                        Element elementStates = findElement(element, TAG_STATES);
                         tagsTexts = getTagsTexts(elementStates, TAG_STATUS);
                         List<TaskStatus> states = new ArrayList<TaskStatus>();
                         for (String sid : tagsTexts) {
@@ -257,17 +257,17 @@ class PersistenceHandler {
                         }
                         localQuery.setStates(states);
                         //----------------------------------------------------------------------
-                        String content = element.getAttributeNS(NAMESPACE, TAG_CONTAIN);
-                        String match_Type = element.getAttributeNS(NAMESPACE, TAG_MATCH_TYPE);
+                        String content = element.getAttribute(TAG_CONTAIN);
+                        String match_Type = element.getAttribute(TAG_MATCH_TYPE);
                         if (match_Type != null && match_Type.trim().length() > 0) {
                             MatchType matchType = MatchType.valueOf(match_Type);
                             localQuery.setMatchType(matchType);
                         }
                         localQuery.setContain(content);
 
-                        String summary = element.getAttributeNS(NAMESPACE, TAG_SUMMARY);
+                        String summary = element.getAttribute(TAG_SUMMARY);
                         localQuery.setSummary(Boolean.parseBoolean(summary));
-                        String description = element.getAttributeNS(NAMESPACE, TAG_DESCRIPTION);
+                        String description = element.getAttribute(TAG_DESCRIPTION);
                         localQuery.setDescription(Boolean.parseBoolean(description));
                         //----------------------------------------------------------------------
                         localQuerys.add(localQuery);
@@ -281,7 +281,7 @@ class PersistenceHandler {
     private List<String> getTagsTexts(Element element, String tag) {
         List<String> texts = new ArrayList<String>();
         NodeList nodes =
-                element.getElementsByTagNameNS(NAMESPACE, tag);
+                element.getElementsByTagName(tag);
         for (int i = 0; i < nodes.getLength(); i++) {
             Node node = nodes.item(i);
             texts.add(node.getTextContent());
@@ -325,7 +325,7 @@ class PersistenceHandler {
     private Element getRootElement(Document doc) {
         Element rootElement = doc.getDocumentElement();
         if (rootElement == null) {
-            rootElement = doc.createElementNS(NAMESPACE, TAG_ROOT);
+            rootElement = doc.createElement(TAG_ROOT);
         }
         return rootElement;
     }
@@ -360,15 +360,14 @@ class PersistenceHandler {
 
     }
 
-    private static Element findElement(Element parent, String name, String namespace) {
-       
+    private static Element findElement(Element parent, String name) {
+
         NodeList l = parent.getChildNodes();
         int len = l.getLength();
         for (int i = 0; i < len; i++) {
             if (l.item(i).getNodeType() == Node.ELEMENT_NODE) {
                 Element el = (Element) l.item(i);
-                if (name.equals(el.getLocalName()) &&
-                        ((namespace == el.getNamespaceURI()) /*check both namespaces are null*/ || (namespace != null && namespace.equals(el.getNamespaceURI())))) {
+                if (name.equals(el.getNodeName())) {
                     return el;
                 }
             }

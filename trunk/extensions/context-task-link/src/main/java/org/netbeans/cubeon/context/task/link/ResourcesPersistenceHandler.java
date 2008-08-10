@@ -54,7 +54,7 @@ class ResourcesPersistenceHandler {
                 Element root = contextHandler.getRootElement(document);
 
 
-                Element tasksElement = findElement(root, TAG_TASKS, null);
+                Element tasksElement = findElement(root, TAG_TASKS);
                 //check foldersElement null and create element
                 if (tasksElement == null) {
                     tasksElement = document.createElement(TAG_TASKS);
@@ -94,7 +94,7 @@ class ResourcesPersistenceHandler {
                 Element root = contextHandler.getRootElement(document);
 
 
-                Element tasksElement = findElement(root, TAG_TASKS, null);
+                Element tasksElement = findElement(root, TAG_TASKS);
                 //check foldersElement null and create element
                 if (tasksElement == null) {
                     tasksElement = document.createElement(TAG_TASKS);
@@ -122,7 +122,7 @@ class ResourcesPersistenceHandler {
                 Element root = contextHandler.getRootElement(document);
 
 
-                Element tasksElement = findElement(root, TAG_TASKS, null);
+                Element tasksElement = findElement(root, TAG_TASKS);
                 //check foldersElement null and create element
                 if (tasksElement == null) {
                     tasksElement = document.createElement(TAG_TASKS);
@@ -155,15 +155,14 @@ class ResourcesPersistenceHandler {
         return resources;
     }
 
-    private static Element findElement(Element parent, String name, String namespace) {
+    private static Element findElement(Element parent, String name) {
 
         NodeList l = parent.getChildNodes();
         int len = l.getLength();
         for (int i = 0; i < len; i++) {
             if (l.item(i).getNodeType() == Node.ELEMENT_NODE) {
                 Element el = (Element) l.item(i);
-                if (name.equals(el.getLocalName()) &&
-                        ((namespace == el.getNamespaceURI()) /*check both namespaces are null*/ || (namespace != null && namespace.equals(el.getNamespaceURI())))) {
+                if (name.equals(el.getNodeName())) {
                     return el;
                 }
             }

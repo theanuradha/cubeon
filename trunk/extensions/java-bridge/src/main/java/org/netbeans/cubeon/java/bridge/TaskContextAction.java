@@ -100,7 +100,7 @@ public class TaskContextAction extends AbstractAction implements ContextAwareAct
                 ClassPathProvider pathProvider = owner.getLookup().lookup(ClassPathProvider.class);
                 if (pathProvider != null) {
                     ClassPath cp = pathProvider.findClassPath(primaryFile, ClassPath.SOURCE);
-                    if (cp.contains(primaryFile)) {
+                    if (cp !=null && cp.contains(primaryFile)) {
                         FileObject findOwnerRoot = cp.findOwnerRoot(primaryFile);
                         String path = primaryFile.getPath().replace(findOwnerRoot.getPath(), "");//NOI18N
                         return new JavaResource(path,dataObject);
