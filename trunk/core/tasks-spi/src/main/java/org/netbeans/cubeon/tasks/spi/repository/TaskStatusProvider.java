@@ -20,18 +20,23 @@ import org.netbeans.cubeon.tasks.spi.task.*;
 import java.util.List;
 
 /**
- *
+ *Allows a Repository Type implementation to communicate the Task Status informaation with the system
  * @author Anuradha G
  */
 public interface TaskStatusProvider {
 
     /**
-     * 
-     * @return list of TaskStatus that support by 
-     * providing repository implementation
+     * Returns a list of all the status types which are supported by the
+     * implementing task repository.
+     * @return List of TaskStatus's supported.
      */
     List<TaskStatus> getStatusList();
 
+    /**
+     * Returns the TaskStatus of a purticular TaskElement
+     * @param element the element whcih the status needs to be returned.
+     * @return Current status of the task
+     */
     TaskStatus getTaskStatus(TaskElement element);
 
 
