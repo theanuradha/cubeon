@@ -43,7 +43,6 @@ import org.xml.sax.SAXException;
 class PersistenceHandler {
 
     private static final String FILESYSTEM_FILE_TAG = "queries.xml"; //NOI18N
-    private static final String NAMESPACE = null;//FIXME add propper namespase
     private static final String TAG_ROOT = "querys";//NOI18N
     private static final String TAG_QUERYS = "querys";//NOI18N
     private static final String TAG_QUERY = "query";//NOI18N
@@ -72,22 +71,22 @@ class PersistenceHandler {
 
             Document document = getDocument();
             Element root = getRootElement(document);
-            Element tasksElement = findElement(root, TAG_QUERYS, NAMESPACE);
+            Element tasksElement = findElement(root, TAG_QUERYS);
             //check tasksElement null and create element
             if (tasksElement == null) {
-                tasksElement = document.createElementNS(NAMESPACE, TAG_QUERYS);
+                tasksElement = document.createElement(TAG_QUERYS);
                 root.appendChild(tasksElement);
             }
             Element taskQuery = null;
 
             NodeList nodeList =
-                    tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_QUERY);
+                    tasksElement.getElementsByTagName(TAG_QUERY);
 
             for (int i = 0; i < nodeList.getLength(); i++) {
                 Node node = nodeList.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element element = (Element) node;
-                    String id = element.getAttributeNS(NAMESPACE, TAG_ID);
+                    String id = element.getAttribute(TAG_ID);
                     if (abstractJiraQuery.getId().equals(id)) {
                         taskQuery = element;
                         break;
@@ -96,18 +95,18 @@ class PersistenceHandler {
             }
             //todo check available
             if (taskQuery == null) {
-                taskQuery = document.createElementNS(NAMESPACE, TAG_QUERY);
+                taskQuery = document.createElement(TAG_QUERY);
                 tasksElement.appendChild(taskQuery);
 
             }
-            taskQuery.setAttributeNS(NAMESPACE, TAG_ID, abstractJiraQuery.getId());
-            taskQuery.setAttributeNS(NAMESPACE, TAG_TYPE, abstractJiraQuery.getType().name());
+            taskQuery.setAttribute(TAG_ID, abstractJiraQuery.getId());
+            taskQuery.setAttribute(TAG_TYPE, abstractJiraQuery.getType().name());
             switch (abstractJiraQuery.getType()) {
                 case FILTER:
                      {
                         JiraFilterQuery filterQuery = abstractJiraQuery.getLookup().lookup(JiraFilterQuery.class);
                         if (filterQuery.getFilter() != null) {
-                            taskQuery.setAttributeNS(NAMESPACE, TAG_FILTER_ID, filterQuery.getFilter().getId());
+                            taskQuery.setAttribute(TAG_FILTER_ID, filterQuery.getFilter().getId());
                         }
                         Element idsElement = getEmptyElement(document, taskQuery, TAG_IDS);
                         for (String id : filterQuery.getIds()) {
@@ -123,11 +122,11 @@ class PersistenceHandler {
     }
 
     private Element getEmptyElement(Document document, Element root, String tag) {
-        Element taskpriorities = findElement(root, tag, NAMESPACE);
+        Element taskpriorities = findElement(root, tag);
         if (taskpriorities != null) {
             root.removeChild(taskpriorities);
         }
-        taskpriorities = document.createElementNS(NAMESPACE, tag);
+        taskpriorities = document.createElement(tag);
         root.appendChild(taskpriorities);
         return taskpriorities;
 
@@ -137,17 +136,17 @@ class PersistenceHandler {
         synchronized (LOCK) {
             Document document = getDocument();
             Element root = getRootElement(document);
-            Element tasksElement = findElement(root, TAG_QUERYS, NAMESPACE);
+            Element tasksElement = findElement(root, TAG_QUERYS);
             Element taskElement = null;
 
             NodeList taskNodes =
-                    tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_QUERY);
+                    tasksElement.getElementsByTagName(TAG_QUERY);
 
             for (int i = 0; i < taskNodes.getLength(); i++) {
                 Node node = taskNodes.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element element = (Element) node;
-                    String id = element.getAttributeNS(NAMESPACE, TAG_ID);
+                    String id = element.getAttribute(TAG_ID);
                     if (query.getId().equals(id)) {
                         taskElement = element;
                         break;
@@ -167,10 +166,10 @@ class PersistenceHandler {
         synchronized (LOCK) {
             Document document = getDocument();
             Element root = getRootElement(document);
-            Element nextElement = findElement(root, TAG_NEXT_ID, NAMESPACE);
+            Element nextElement = findElement(root, TAG_NEXT_ID);
             int nextID = 0;
             if (nextElement == null) {
-                nextElement = document.createElementNS(NAMESPACE, TAG_NEXT_ID);
+                nextElement = document.createElement(TAG_NEXT_ID);
                 nextElement.setAttribute(TAG_ID, String.valueOf(++nextID));
                 root.appendChild(nextElement);
             } else {
@@ -189,40 +188,40 @@ class PersistenceHandler {
             List<AbstractJiraQuery> localQuerys = new ArrayList<AbstractJiraQuery>();
             Document document = getDocument();
             Element root = getRootElement(document);
-            Element tasksElement = findElement(root, TAG_QUERYS, NAMESPACE);
+            Element tasksElement = findElement(root, TAG_QUERYS);
 
             if (tasksElement != null) {
                 NodeList taskNodes =
-                        tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_QUERY);
+                        tasksElement.getElementsByTagName(TAG_QUERY);
 
                 for (int i = 0; i < taskNodes.getLength(); i++) {
                     Node node = taskNodes.item(i);
                     if (node.getNodeType() == Node.ELEMENT_NODE) {
                         Element element = (Element) node;
 
-                        String id = element.getAttributeNS(NAMESPACE, TAG_ID);
+                        String id = element.getAttribute(TAG_ID);
 
-                        String typeString = element.getAttributeNS(NAMESPACE, TAG_TYPE);
+                        String typeString = element.getAttribute(TAG_TYPE);
                         Type type = AbstractJiraQuery.Type.valueOf(typeString);
                         AbstractJiraQuery jiraQuery = null;
                         switch (type) {
                             case FILTER:
                                  {
                                     JiraFilterQuery filterQuery = new JiraFilterQuery(jiraQuerySupport.getJiraTaskRepository(), id);
-                                    String filter = element.getAttributeNS(NAMESPACE, TAG_FILTER_ID);
+                                    String filter = element.getAttribute(TAG_FILTER_ID);
                                     JiraTaskRepository repository = jiraQuerySupport.getJiraTaskRepository();
                                     JiraFilter jf = repository.getRepositoryAttributes().geFilterById(filter);
-                                    Element idsElement = findElement(element, TAG_IDS, NAMESPACE);
+                                    Element idsElement = findElement(element, TAG_IDS);
                                     List<String> ids = new ArrayList<String>();
                                     if (idsElement != null) {
                                         NodeList idsNodeList =
-                                                idsElement.getElementsByTagNameNS(NAMESPACE, TAG_TASK);
+                                                idsElement.getElementsByTagName(TAG_TASK);
 
                                         for (int j = 0; j < idsNodeList.getLength(); j++) {
                                             Node idNode = idsNodeList.item(j);
                                             if (idNode.getNodeType() == Node.ELEMENT_NODE) {
                                                 Element idElement = (Element) idNode;
-                                                String idTag = idElement.getAttributeNS(NAMESPACE, TAG_ID);
+                                                String idTag = idElement.getAttribute(TAG_ID);
                                                 ids.add(idTag);
                                             }
                                         }
@@ -249,7 +248,7 @@ class PersistenceHandler {
     private List<String> getTagsTexts(Element element, String tag) {
         List<String> texts = new ArrayList<String>();
         NodeList nodes =
-                element.getElementsByTagNameNS(NAMESPACE, tag);
+                element.getElementsByTagName(tag);
         for (int i = 0; i < nodes.getLength(); i++) {
             Node node = nodes.item(i);
             texts.add(node.getTextContent());
@@ -284,7 +283,7 @@ class PersistenceHandler {
 
 
         } else {
-            doc = XMLUtil.createDocument(TAG_ROOT, NAMESPACE, null, null);
+            doc = XMLUtil.createDocument(TAG_ROOT, null, null, null);
 
         }
         return doc;
@@ -293,7 +292,7 @@ class PersistenceHandler {
     private Element getRootElement(Document doc) {
         Element rootElement = doc.getDocumentElement();
         if (rootElement == null) {
-            rootElement = doc.createElementNS(NAMESPACE, TAG_ROOT);
+            rootElement = doc.createElement(TAG_ROOT);
         }
         return rootElement;
     }
@@ -328,16 +327,15 @@ class PersistenceHandler {
 
     }
 
-    private static Element findElement(Element parent, String name, String namespace) {
-     
+    private static Element findElement(Element parent, String name) {
+
         NodeList l = parent.getChildNodes();
         int len = l.getLength();
         for (int i = 0; i < len; i++) {
             if (l.item(i).getNodeType() == Node.ELEMENT_NODE) {
                 Element el = (Element) l.item(i);
-                if (name.equals(el.getLocalName()) &&
-                        ((namespace == el.getNamespaceURI()) /*check both namespaces are null*/ || (namespace != null && namespace.equals(el.getNamespaceURI())))) {
-                   return el;
+                if (name.equals(el.getNodeName())) {
+                    return el;
                 }
             }
         }

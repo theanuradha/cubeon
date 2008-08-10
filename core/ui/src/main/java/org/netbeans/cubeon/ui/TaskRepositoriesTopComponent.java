@@ -122,8 +122,39 @@ final class TaskRepositoriesTopComponent extends TopComponent implements Explore
 
         //if no repositories found show empty       
         if (repositorys.isEmpty()) {
-            array.add(new Node[]{EMPTY_REPOSITORIES});
+            array.add(new Node[]{createEmptyNode()});
         }
+    }
+
+    /**
+     * "< Empty >"
+     * this Node will show if no TaskRepositories found
+     */
+    private Node createEmptyNode() {
+        return new AbstractNode(Children.LEAF) {
+
+            @Override
+            public Image getIcon(int arg0) {
+                return Utilities.loadImage("org/netbeans/cubeon/ui/repository.png", true);
+            }
+
+            @Override
+            public String getDisplayName() {
+                return NbBundle.getMessage(TaskRepositoriesTopComponent.class, "LBL_Empty_Repositories");
+            }
+
+            @Override
+            public String getShortDescription() {
+                return super.getShortDescription();
+            //TODO add better description
+            }
+
+            /**Override to remove actions */
+            @Override
+            public Action[] getActions(boolean arg0) {
+                return new Action[]{};
+            }
+        };
     }
 
     /** This method is called from within the constructor to
@@ -202,32 +233,4 @@ final class TaskRepositoriesTopComponent extends TopComponent implements Explore
     public ExplorerManager getExplorerManager() {
         return explorerManager;
     }
-    /**
-     * "< Empty >"
-     * this Node will show if no TaskRepositories found
-     */
-    private static final Node EMPTY_REPOSITORIES = new AbstractNode(Children.LEAF) {
-
-        @Override
-        public Image getIcon(int arg0) {
-            return Utilities.loadImage("org/netbeans/cubeon/ui/repository.png", true);
-        }
-
-        @Override
-        public String getDisplayName() {
-            return NbBundle.getMessage(TaskRepositoriesTopComponent.class, "LBL_Empty_Repositories");
-        }
-
-        @Override
-        public String getShortDescription() {
-            return super.getShortDescription();
-        //TODO add better description 
-        }
-
-        /**Override to remove actions */
-        @Override
-        public Action[] getActions(boolean arg0) {
-            return new Action[]{};
-        }
-    };
 }

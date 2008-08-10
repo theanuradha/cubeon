@@ -46,7 +46,6 @@ import org.xml.sax.SAXException;
 class PersistenceHandler {
 
     private static final String FILESYSTEM_FILE_NAME = "tasks.xml"; //NOI18N
-    private static final String NAMESPACE = null;//FIXME add propper namespase
     private static final String TAG_ROOT = "tasks"; //NOI18N
     private static final String TAG_REPOSITORY = "repository"; //NOI18N
     private static final String TAG_ID = "id"; //NOI18N
@@ -85,21 +84,21 @@ class PersistenceHandler {
     }
 
     Element findFolderElement(Document document, Element root, TaskFolderImpl folderImpl) {
-        Element foldersElement = findElement(root, TAG_FOLDERS, NAMESPACE);
+        Element foldersElement = findElement(root, TAG_FOLDERS);
         //check foldersElement null and create element
         if (foldersElement == null) {
-            foldersElement = document.createElementNS(NAMESPACE, TAG_FOLDERS);
+            foldersElement = document.createElement(TAG_FOLDERS);
             root.appendChild(foldersElement);
         }
         Element folderElement = null;
 
         NodeList folderNodes =
-                foldersElement.getElementsByTagNameNS(NAMESPACE, TAG_FOLDER);
+                foldersElement.getElementsByTagName(TAG_FOLDER);
         for (int i = 0; i < folderNodes.getLength(); i++) {
             Node node = folderNodes.item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element) node;
-                String name = element.getAttributeNS(NAMESPACE, TAG_NAME);
+                String name = element.getAttribute(TAG_NAME);
                 if (name.equals(folderImpl.getName())) {
                     folderElement = element;
                     break;
@@ -119,7 +118,7 @@ class PersistenceHandler {
     void removeFolder(TaskFolderImpl folderImpl) {
         Document document = getDocument();
         Element root = getRootElement(document);
-        Element foldersElement = findElement(root, TAG_FOLDERS, NAMESPACE);
+        Element foldersElement = findElement(root, TAG_FOLDERS);
         //check foldersElement not null and remove element
         if (foldersElement != null) {
             Element folderElement = findFolderElement(document, root, folderImpl);
@@ -134,7 +133,7 @@ class PersistenceHandler {
     void persistFolder(TaskFolderImpl folderImpl, String newName) {
         Document document = getDocument();
         Element root = getRootElement(document);
-        Element foldersElement = findElement(root, TAG_FOLDERS, NAMESPACE);
+        Element foldersElement = findElement(root, TAG_FOLDERS);
         //check foldersElement not null and remove element
         if (foldersElement != null) {
             Element folderElement = findFolderElement(document, root, folderImpl);
@@ -149,57 +148,57 @@ class PersistenceHandler {
         Element root = getRootElement(document);
         Element folderElement = findFolderElement(document, root, folderImpl);
 
-        Element tasksElement = findElement(folderElement, TAG_TASKS, NAMESPACE);
+        Element tasksElement = findElement(folderElement, TAG_TASKS);
         //check tasksElement null and create element
         if (tasksElement == null) {
-            tasksElement = document.createElementNS(NAMESPACE, TAG_TASKS);
+            tasksElement = document.createElement(TAG_TASKS);
             folderElement.appendChild(tasksElement);
         }
 
-        Element taskElement = document.createElementNS(NAMESPACE, TAG_TASK);
+        Element taskElement = document.createElement(TAG_TASK);
         tasksElement.appendChild(taskElement);
 
-        taskElement.setAttributeNS(NAMESPACE, TAG_ID, te.getId());
-        taskElement.setAttributeNS(NAMESPACE, TAG_REPOSITORY, te.getTaskRepository().getId());
+        taskElement.setAttribute(TAG_ID, te.getId());
+        taskElement.setAttribute(TAG_REPOSITORY, te.getTaskRepository().getId());
 
         save(document);
     }
 
-    void changeTaskElementId(String repoId,String oldId, String newId) {
+    void changeTaskElementId(String repoId, String oldId, String newId) {
         Document document = getDocument();
         Element root = getRootElement(document);
 
 
-        Element foldersElement = findElement(root, TAG_FOLDERS, NAMESPACE);
+        Element foldersElement = findElement(root, TAG_FOLDERS);
         //check foldersElement not null and remove element
         if (foldersElement != null) {
             NodeList folderNodes =
-                    foldersElement.getElementsByTagNameNS(NAMESPACE, TAG_FOLDER);
+                    foldersElement.getElementsByTagName(TAG_FOLDER);
             for (int i = 0; i < folderNodes.getLength(); i++) {
                 Node node = folderNodes.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element element = (Element) node;
-                    Element tasksElement = findElement(element, TAG_TASKS, NAMESPACE);
+                    Element tasksElement = findElement(element, TAG_TASKS);
                     if (tasksElement != null) {
                         NodeList taskNodes =
-                                tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_TASK);
+                                tasksElement.getElementsByTagName(TAG_TASK);
 
                         for (int j = 0; j < taskNodes.getLength(); j++) {
                             Node taskNode = taskNodes.item(j);
                             if (taskNode.getNodeType() == Node.ELEMENT_NODE) {
                                 Element taskElement = (Element) taskNode;
-                                String id = taskElement.getAttributeNS(NAMESPACE, TAG_ID);
-                                String repo = taskElement.getAttributeNS(NAMESPACE, TAG_REPOSITORY);
-                                if (oldId.equals(id)&& repoId.equals(repo)) {
+                                String id = taskElement.getAttribute(TAG_ID);
+                                String repo = taskElement.getAttribute(TAG_REPOSITORY);
+                                if (oldId.equals(id) && repoId.equals(repo)) {
 
-                                    taskElement.setAttributeNS(NAMESPACE, TAG_ID, newId);
+                                    taskElement.setAttribute(TAG_ID, newId);
                                     save(document);
                                     return;
                                 }
                             }
                         }
                     }
-                    
+
 
                 }
             }
@@ -211,19 +210,19 @@ class PersistenceHandler {
         Document document = getDocument();
         Element root = getRootElement(document);
         Element folderElement = findFolderElement(document, root, folderImpl);
-        Element tasksElement = findElement(folderElement, TAG_TASKS, NAMESPACE);
+        Element tasksElement = findElement(folderElement, TAG_TASKS);
         Element taskElement = null;
 
         NodeList taskNodes =
-                tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_TASK);
+                tasksElement.getElementsByTagName(TAG_TASK);
 
         for (int i = 0; i < taskNodes.getLength(); i++) {
             Node node = taskNodes.item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element) node;
-                String id = element.getAttributeNS(NAMESPACE, TAG_ID);
-                String repo = element.getAttributeNS(NAMESPACE, TAG_REPOSITORY);
-                if (te.getId().equals(id)&& repo.equals(te.getTaskRepository().getId())) {
+                String id = element.getAttribute(TAG_ID);
+                String repo = element.getAttribute(TAG_REPOSITORY);
+                if (te.getId().equals(id) && repo.equals(te.getTaskRepository().getId())) {
                     taskElement = element;
                     break;
                 }
@@ -240,10 +239,10 @@ class PersistenceHandler {
         Document document = getDocument();
         Element root = getRootElement(document);
         Element folderElement = findFolderElement(document, root, folderImpl);
-        Element taskQuery = findElement(folderElement, TAG_QUERY, NAMESPACE);
+        Element taskQuery = findElement(folderElement, TAG_QUERY);
         //check tasksElement null and create element
         if (taskQuery == null) {
-            taskQuery = document.createElementNS(NAMESPACE, TAG_QUERY);
+            taskQuery = document.createElement(TAG_QUERY);
             folderElement.appendChild(taskQuery);
         }
         if (query != null) {
@@ -259,7 +258,7 @@ class PersistenceHandler {
         Document document = getDocument();
         Element root = getRootElement(document);
         Element folderElement = findFolderElement(document, root, folderImpl);
-        Element taskQuery = findElement(folderElement, TAG_QUERY, NAMESPACE);
+        Element taskQuery = findElement(folderElement, TAG_QUERY);
 
         if (taskQuery != null) {
 
@@ -270,7 +269,7 @@ class PersistenceHandler {
 
     TaskQuery getTaskQuery(Document document, Element root) {
 
-        Element taskQuery = findElement(root, TAG_QUERY, NAMESPACE);
+        Element taskQuery = findElement(root, TAG_QUERY);
 
         if (taskQuery != null) {
             CubeonContext context = Lookup.getDefault().lookup(CubeonContext.class);
@@ -294,22 +293,22 @@ class PersistenceHandler {
         Element root = getRootElement(document);
         rootfTaskFolder = new RootFolder("Tasks", "Tasks");
 
-        Element foldersElement = findElement(root, TAG_FOLDERS, NAMESPACE);
+        Element foldersElement = findElement(root, TAG_FOLDERS);
         //check foldersElement null and create element
         if (foldersElement == null) {
-            foldersElement = document.createElementNS(NAMESPACE, TAG_FOLDERS);
+            foldersElement = document.createElement(TAG_FOLDERS);
             root.appendChild(foldersElement);
         }
 
-        
+
         NodeList folderNodes =
-                foldersElement.getElementsByTagNameNS(NAMESPACE, TAG_FOLDER);
+                foldersElement.getElementsByTagName(TAG_FOLDER);
         for (int i = 0; i < folderNodes.getLength(); i++) {
             Node node = folderNodes.item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element) node;
-                String name = element.getAttributeNS(NAMESPACE, TAG_NAME);
-                String description = element.getAttributeNS(NAMESPACE, TAG_DESCRIPTION);
+                String name = element.getAttribute(TAG_NAME);
+                String description = element.getAttribute(TAG_DESCRIPTION);
                 TaskFolderImpl folderImpl = new TaskFolderImpl(rootfTaskFolder, name, description);
                 if (defaultFolder == null && name.equals("Uncategorized")) {
                     defaultFolder = folderImpl;
@@ -317,17 +316,17 @@ class PersistenceHandler {
                 rootfTaskFolder.addNewFolder(folderImpl);
                 List<TaskElement> taskElements = new ArrayList<TaskElement>();
                 folderImpl.setTaskQuery(getTaskQuery(document, element));
-                Element tasksElement = findElement(element, TAG_TASKS, NAMESPACE);
+                Element tasksElement = findElement(element, TAG_TASKS);
 
                 if (tasksElement != null) {
                     NodeList taskNodes =
-                            tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_TASK);
+                            tasksElement.getElementsByTagName(TAG_TASK);
                     for (int j = 0; j < taskNodes.getLength(); j++) {
                         Node taskNode = taskNodes.item(j);
                         if (taskNode.getNodeType() == Node.ELEMENT_NODE) {
                             Element taskElement = (Element) taskNode;
-                            String id = taskElement.getAttributeNS(NAMESPACE, TAG_ID);
-                            String repository = taskElement.getAttributeNS(NAMESPACE, TAG_REPOSITORY);
+                            String id = taskElement.getAttribute(TAG_ID);
+                            String repository = taskElement.getAttribute(TAG_REPOSITORY);
 
                             TaskRepository taskRepository =
                                     repositoryHandler.getTaskRepositoryById(repository);
@@ -337,7 +336,7 @@ class PersistenceHandler {
 
                                 if (te != null) {
                                     taskElements.add(te);
-                                } 
+                                }
                             }
                         }
                     }
@@ -374,11 +373,11 @@ class PersistenceHandler {
 
 
         } else {
-            doc = XMLUtil.createDocument(TAG_ROOT, NAMESPACE, null, null);
+            doc = XMLUtil.createDocument(TAG_ROOT, null, null, null);
             Element root = getRootElement(doc);
-            Element foldersElement = doc.createElementNS(NAMESPACE, TAG_FOLDERS);
+            Element foldersElement = doc.createElement(TAG_FOLDERS);
             root.appendChild(foldersElement);
-            Element folderElement = doc.createElementNS(NAMESPACE, TAG_FOLDER);
+            Element folderElement = doc.createElement(TAG_FOLDER);
             foldersElement.appendChild(folderElement);
 
             folderElement.setAttribute(TAG_NAME, "Uncategorized");
@@ -392,7 +391,7 @@ class PersistenceHandler {
     private Element getRootElement(Document doc) {
         Element rootElement = doc.getDocumentElement();
         if (rootElement == null) {
-            rootElement = doc.createElementNS(NAMESPACE, TAG_ROOT);
+            rootElement = doc.createElement(TAG_ROOT);
         }
         return rootElement;
     }
@@ -427,15 +426,14 @@ class PersistenceHandler {
 
     }
 
-    private static Element findElement(Element parent, String name, String namespace) {
+    private static Element findElement(Element parent, String name) {
 
         NodeList l = parent.getChildNodes();
         int len = l.getLength();
         for (int i = 0; i < len; i++) {
             if (l.item(i).getNodeType() == Node.ELEMENT_NODE) {
                 Element el = (Element) l.item(i);
-                if (name.equals(el.getLocalName()) &&
-                        ((namespace == el.getNamespaceURI()) /*check both namespaces are null*/ || (namespace != null && namespace.equals(el.getNamespaceURI())))) {
+                if (name.equals(el.getNodeName())) {
                     return el;
                 }
             }

@@ -57,7 +57,6 @@ import org.xml.sax.SAXException;
 class TaskPersistenceHandler {
 
     private static final String FILESYSTEM_FILE_TAG = "repository.xml"; //NOI18N
-    private static final String NAMESPACE = null;//FIXME add propper namespase
     private static final String TAG_ROOT = "tasks";//NOI18N
     private static final String TAG_REPOSITORY = "repository";//NOI18N
     private static final String TAG_ID = "id";//NOI18N
@@ -119,21 +118,21 @@ class TaskPersistenceHandler {
         synchronized (LOCK) {
             Document document = getDocument();
             Element root = getRootElement(document);
-            Element tasksElement = findElement(root, TAG_TASKS, NAMESPACE);
+            Element tasksElement = findElement(root, TAG_TASKS);
             //check tasksElement null and create element
             if (tasksElement == null) {
-                tasksElement = document.createElementNS(NAMESPACE, TAG_TASKS);
+                tasksElement = document.createElement(TAG_TASKS);
                 root.appendChild(tasksElement);
             }
 
             NodeList taskNodes =
-                    tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_TASK);
+                    tasksElement.getElementsByTagName(TAG_TASK);
 
             for (int i = 0; i < taskNodes.getLength(); i++) {
                 Node node = taskNodes.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element element = (Element) node;
-                    String id = element.getAttributeNS(NAMESPACE, TAG_ID);
+                    String id = element.getAttribute(TAG_ID);
                     ids.add(id);
                 }
             }
@@ -151,28 +150,28 @@ class TaskPersistenceHandler {
         Calendar calendar = Calendar.getInstance(Locale.getDefault());
 
 
-        String name = element.getAttributeNS(NAMESPACE, TAG_NAME);
-        String description = element.getAttributeNS(NAMESPACE, TAG_DESCRIPTION);
-        String environment = element.getAttributeNS(NAMESPACE, TAG_ENVIRONMENT);
+        String name = element.getAttribute(TAG_NAME);
+        String description = element.getAttribute(TAG_DESCRIPTION);
+        String environment = element.getAttribute(TAG_ENVIRONMENT);
         //read priority
-        String priority = element.getAttributeNS(NAMESPACE, TAG_PRIORITY);
+        String priority = element.getAttribute(TAG_PRIORITY);
         TaskPriority taskPriority = priorityProvider.getTaskPriorityById((priority));
         //read status
-        String status = element.getAttributeNS(NAMESPACE, TAG_STATUS);
+        String status = element.getAttribute(TAG_STATUS);
         TaskStatus taskStatus = statusProvider.getTaskStatusById(status);
         //read type
-        String type = element.getAttributeNS(NAMESPACE, TAG_TYPE);
+        String type = element.getAttribute(TAG_TYPE);
         TaskType taskType = taskTypeProvider.getTaskTypeById(type);
 
 
         //read resolution
-        String resolution = element.getAttributeNS(NAMESPACE, TAG_RESOLUTION);
+        String resolution = element.getAttribute(TAG_RESOLUTION);
         TaskResolution taskResolution = null;
         if (resolution != null) {
             taskResolution = resolutionProvider.getTaskResolutionById(resolution);
         }
         //read resolution
-        String projectId = element.getAttributeNS(NAMESPACE, TAG_PROJECT);
+        String projectId = element.getAttribute(TAG_PROJECT);
         JiraRepositoryAttributes attributes = jiraTaskRepository.getRepositoryAttributes();
         JiraProject project = attributes.getProjectById(projectId);
 
@@ -180,14 +179,14 @@ class TaskPersistenceHandler {
 
         Date createdDate = null;
         Date updatedDate = null;
-        String created = element.getAttributeNS(NAMESPACE, TAG_CREATED_DATE);
+        String created = element.getAttribute(TAG_CREATED_DATE);
         if (created != null && created.trim().length() != 0) {
 
             calendar.setTimeInMillis(Long.parseLong(created));
             createdDate = calendar.getTime();
 
         }
-        String updated = element.getAttributeNS(NAMESPACE, TAG_UPDATE_DATE);
+        String updated = element.getAttribute(TAG_UPDATE_DATE);
         if (updated != null && updated.trim().length() != 0) {
 
             calendar.setTimeInMillis(Long.parseLong(updated));
@@ -196,8 +195,8 @@ class TaskPersistenceHandler {
         }
         //load versions
 
-        Element versionsElement = findElement(element, TAG_FIX_VERSIONS, NAMESPACE);
-        NodeList versionsNodeList = versionsElement.getElementsByTagNameNS(NAMESPACE, TAG_VERSION);
+        Element versionsElement = findElement(element, TAG_FIX_VERSIONS);
+        NodeList versionsNodeList = versionsElement.getElementsByTagName(TAG_VERSION);
         List<JiraProject.Version> fixVersions = new ArrayList<Version>();
 
         for (int i = 0; i < versionsNodeList.getLength(); i++) {
@@ -214,8 +213,8 @@ class TaskPersistenceHandler {
 
 
 
-        versionsElement = findElement(element, TAG_AFFECT_VERSIONS, NAMESPACE);
-        versionsNodeList = versionsElement.getElementsByTagNameNS(NAMESPACE, TAG_VERSION);
+        versionsElement = findElement(element, TAG_AFFECT_VERSIONS);
+        versionsNodeList = versionsElement.getElementsByTagName(TAG_VERSION);
         List<JiraProject.Version> affectversions = new ArrayList<Version>();
 
         for (int i = 0; i < versionsNodeList.getLength(); i++) {
@@ -231,9 +230,9 @@ class TaskPersistenceHandler {
 
 
         //load components
-        Element componentsElement = findElement(element, TAG_COMPONENTS, NAMESPACE);
+        Element componentsElement = findElement(element, TAG_COMPONENTS);
 
-        NodeList componentsNodeList = componentsElement.getElementsByTagNameNS(NAMESPACE, TAG_COMPONENT);
+        NodeList componentsNodeList = componentsElement.getElementsByTagName(TAG_COMPONENT);
         List<JiraProject.Component> components = new ArrayList<Component>();
 
         for (int i = 0; i < componentsNodeList.getLength(); i++) {
@@ -248,16 +247,16 @@ class TaskPersistenceHandler {
         }
 
 
-        String reporter = element.getAttributeNS(NAMESPACE, TAG_REPORTER);
-        String assignee = element.getAttributeNS(NAMESPACE, TAG_ASSIGNEE);
+        String reporter = element.getAttribute(TAG_REPORTER);
+        String assignee = element.getAttribute(TAG_ASSIGNEE);
 
 
 
         List<JiraComment> jiraComments = new ArrayList<JiraComment>();
 
-        Element commentsElement = findElement(element, TAG_COMMENTS, NAMESPACE);
+        Element commentsElement = findElement(element, TAG_COMMENTS);
         if (commentsElement != null) {
-            NodeList commentsNodeList = commentsElement.getElementsByTagNameNS(NAMESPACE, TAG_COMMENT);
+            NodeList commentsNodeList = commentsElement.getElementsByTagName(TAG_COMMENT);
 
             for (int i = 0; i < commentsNodeList.getLength(); i++) {
                 Node node = commentsNodeList.item(i);
@@ -272,14 +271,14 @@ class TaskPersistenceHandler {
                     comment.setUpdateAuthor(uauthor);
                     Date ccreatedDate = null;
                     Date cupdatedDate = null;
-                    String ccreated = element.getAttributeNS(NAMESPACE, TAG_CREATED_DATE);
+                    String ccreated = element.getAttribute(TAG_CREATED_DATE);
                     if (ccreated != null && ccreated.trim().length() != 0) {
 
                         calendar.setTimeInMillis(Long.parseLong(ccreated));
                         ccreatedDate = calendar.getTime();
 
                     }
-                    String cupdated = element.getAttributeNS(NAMESPACE, TAG_UPDATE_DATE);
+                    String cupdated = element.getAttribute(TAG_UPDATE_DATE);
                     if (cupdated != null && cupdated.trim().length() != 0) {
 
                         calendar.setTimeInMillis(Long.parseLong(cupdated));
@@ -325,31 +324,31 @@ class TaskPersistenceHandler {
     JiraTask getTaskElementById(String id) {
         Document taskDocument = getTaskDocument(id);
         Element rootElement = getRootElement(taskDocument);
-        Element element = findElement(rootElement, TAG_TASK, NAMESPACE);
+        Element element = findElement(rootElement, TAG_TASK);
         if (element != null) {
-            String name = element.getAttributeNS(NAMESPACE, TAG_NAME);
-            String description = element.getAttributeNS(NAMESPACE, TAG_DESCRIPTION);
+            String name = element.getAttribute(TAG_NAME);
+            String description = element.getAttribute(TAG_DESCRIPTION);
 
-            String localTag = element.getAttributeNS(NAMESPACE, TAG_LOCAL);
+            String localTag = element.getAttribute(TAG_LOCAL);
             boolean local = false;
             if (localTag != null) {
                 local = Boolean.parseBoolean(localTag);
             }
-            String modifiedTag = element.getAttributeNS(NAMESPACE, TAG_MODIFIED_FLAG);
+            String modifiedTag = element.getAttribute(TAG_MODIFIED_FLAG);
             boolean modified = false;
             if (modifiedTag != null) {
                 modified = Boolean.parseBoolean(modifiedTag);
             }
 
-            String url = element.getAttributeNS(NAMESPACE, TAG_URL);
+            String url = element.getAttribute(TAG_URL);
 
-            String newcomment = element.getAttributeNS(NAMESPACE, TAG_COMMENT);
+            String newcomment = element.getAttribute(TAG_COMMENT);
 
             //read actions
-            String action = element.getAttributeNS(NAMESPACE, TAG_ACTION);
+            String action = element.getAttribute(TAG_ACTION);
             JiraAction selectedAction = null;
-            Element actionsElement = findElement(element, TAG_ACTIONS, NAMESPACE);
-            NodeList actionssNodeList = actionsElement.getElementsByTagNameNS(NAMESPACE, TAG_ACTION);
+            Element actionsElement = findElement(element, TAG_ACTIONS);
+            NodeList actionssNodeList = actionsElement.getElementsByTagName(TAG_ACTION);
             List<JiraAction> actions = new ArrayList<JiraAction>();
             for (int i = 0; i < actionssNodeList.getLength(); i++) {
                 Node node = actionssNodeList.item(i);
@@ -361,8 +360,8 @@ class TaskPersistenceHandler {
                     if (selectedAction == null && aId.equals(action)) {
                         selectedAction = jiraAction;
                     }
-                    Element fieldsElement = findElement(e, TAG_FIELDS, NAMESPACE);
-                    NodeList fieldsNodeList = fieldsElement.getElementsByTagNameNS(NAMESPACE, TAG_FIELD);
+                    Element fieldsElement = findElement(e, TAG_FIELDS);
+                    NodeList fieldsNodeList = fieldsElement.getElementsByTagName(TAG_FIELD);
                     for (int j = 0; j < fieldsNodeList.getLength(); j++) {
                         Node fnode = fieldsNodeList.item(j);
                         if (fnode.getNodeType() == Node.ELEMENT_NODE) {
@@ -375,9 +374,9 @@ class TaskPersistenceHandler {
                 }
             }
             List<String> editFieldIds = new ArrayList<String>();
-            Element editFieldsElement = findElement(element, TAG_FIELDS, NAMESPACE);
+            Element editFieldsElement = findElement(element, TAG_FIELDS);
             if (editFieldsElement != null) {
-                NodeList editFieldsNodeList = editFieldsElement.getElementsByTagNameNS(NAMESPACE, TAG_FIELD);
+                NodeList editFieldsNodeList = editFieldsElement.getElementsByTagName(TAG_FIELD);
                 for (int j = 0; j < editFieldsNodeList.getLength(); j++) {
                     Node fnode = editFieldsNodeList.item(j);
                     if (fnode.getNodeType() == Node.ELEMENT_NODE) {
@@ -409,10 +408,10 @@ class TaskPersistenceHandler {
     JiraRemoteTask getJiraRemoteTaskById(String id) {
         Document taskDocument = getTaskDocument(id);
         Element rootElement = getRootElement(taskDocument);
-        Element element = findElement(rootElement, TAG_TASK, NAMESPACE);
+        Element element = findElement(rootElement, TAG_TASK);
         if (element != null) {
-            String name = element.getAttributeNS(NAMESPACE, TAG_NAME);
-            String description = element.getAttributeNS(NAMESPACE, TAG_DESCRIPTION);
+            String name = element.getAttribute(TAG_NAME);
+            String description = element.getAttribute(TAG_DESCRIPTION);
 
 
             JiraRemoteTask jiraTask = new JiraRemoteTask(jiraTaskRepository, id, name, description);
@@ -430,28 +429,28 @@ class TaskPersistenceHandler {
     }
 
     private void persist(JiraRemoteTask task, Document document, Element taskElement) {
-        taskElement.setAttributeNS(NAMESPACE, TAG_REPOSITORY, task.getTaskRepository().getId());
-        taskElement.setAttributeNS(NAMESPACE, TAG_ID, task.getId());
-        taskElement.setAttributeNS(NAMESPACE, TAG_NAME, task.getName());
-        taskElement.setAttributeNS(NAMESPACE, TAG_DESCRIPTION, task.getDescription());
-        taskElement.setAttributeNS(NAMESPACE, TAG_PRIORITY, task.getPriority().getId());
+        taskElement.setAttribute(TAG_REPOSITORY, task.getTaskRepository().getId());
+        taskElement.setAttribute(TAG_ID, task.getId());
+        taskElement.setAttribute(TAG_NAME, task.getName());
+        taskElement.setAttribute(TAG_DESCRIPTION, task.getDescription());
+        taskElement.setAttribute(TAG_PRIORITY, task.getPriority().getId());
         if (task.getStatus() != null) {
-            taskElement.setAttributeNS(NAMESPACE, TAG_STATUS, task.getStatus().getId());
+            taskElement.setAttribute(TAG_STATUS, task.getStatus().getId());
         } else {
             taskElement.removeAttribute(TAG_STATUS);
 
         }
-        taskElement.setAttributeNS(NAMESPACE, TAG_TYPE, task.getType().getId());
-        taskElement.setAttributeNS(NAMESPACE, TAG_PROJECT, task.getProject().getId());
+        taskElement.setAttribute(TAG_TYPE, task.getType().getId());
+        taskElement.setAttribute(TAG_PROJECT, task.getProject().getId());
 
         if (task.getReporter() != null) {
-            taskElement.setAttributeNS(NAMESPACE, TAG_REPORTER, task.getReporter());
+            taskElement.setAttribute(TAG_REPORTER, task.getReporter());
         } else {
             taskElement.removeAttribute(TAG_REPORTER);
 
         }
         if (task.getAssignee() != null) {
-            taskElement.setAttributeNS(NAMESPACE, TAG_ASSIGNEE, task.getAssignee());
+            taskElement.setAttribute(TAG_ASSIGNEE, task.getAssignee());
         } else {
             taskElement.removeAttribute(TAG_ASSIGNEE);
 
@@ -460,7 +459,7 @@ class TaskPersistenceHandler {
 
 
         if (task.getEnvironment() != null) {
-            taskElement.setAttributeNS(NAMESPACE, TAG_ENVIRONMENT, task.getEnvironment());
+            taskElement.setAttribute(TAG_ENVIRONMENT, task.getEnvironment());
         } else {
             taskElement.removeAttribute(TAG_ENVIRONMENT);
 
@@ -495,7 +494,7 @@ class TaskPersistenceHandler {
 
 
         if (task.getResolution() != null) {
-            taskElement.setAttributeNS(NAMESPACE, TAG_RESOLUTION, task.getResolution().getId());
+            taskElement.setAttribute(TAG_RESOLUTION, task.getResolution().getId());
         } else {
             taskElement.removeAttribute(TAG_RESOLUTION);
         }
@@ -503,11 +502,11 @@ class TaskPersistenceHandler {
 
 
         if (task.getCreated() != null) {
-            taskElement.setAttributeNS(NAMESPACE, TAG_CREATED_DATE, String.valueOf(task.getCreated().getTime()));
+            taskElement.setAttribute(TAG_CREATED_DATE, String.valueOf(task.getCreated().getTime()));
 
         }
         if (task.getUpdated() != null) {
-            taskElement.setAttributeNS(NAMESPACE, TAG_UPDATE_DATE, String.valueOf(task.getUpdated().getTime()));
+            taskElement.setAttribute(TAG_UPDATE_DATE, String.valueOf(task.getUpdated().getTime()));
         }
         List<JiraComment> comments = task.getComments();
         Element commentsElement = getEmptyElement(document, taskElement, TAG_COMMENTS);
@@ -522,11 +521,11 @@ class TaskPersistenceHandler {
                 element.setAttribute(TAG_UPDATE_AUTHOR, comment.getUpdateAuthor());
             }
             if (comment.getCreated() != null) {
-                element.setAttributeNS(NAMESPACE, TAG_CREATED_DATE, String.valueOf(comment.getCreated().getTime()));
+                element.setAttribute(TAG_CREATED_DATE, String.valueOf(comment.getCreated().getTime()));
 
             }
             if (comment.getUpdated() != null) {
-                element.setAttributeNS(NAMESPACE, TAG_UPDATE_DATE, String.valueOf(comment.getUpdated().getTime()));
+                element.setAttribute(TAG_UPDATE_DATE, String.valueOf(comment.getUpdated().getTime()));
             }
         }
 
@@ -538,23 +537,23 @@ class TaskPersistenceHandler {
         synchronized (LOCK) {
             Document document = getDocument();
             Element root = getRootElement(document);
-            Element tasksElement = findElement(root, TAG_TASKS, NAMESPACE);
+            Element tasksElement = findElement(root, TAG_TASKS);
             //check tasksElement null and create element
             if (tasksElement == null) {
-                tasksElement = document.createElementNS(NAMESPACE, TAG_TASKS);
+                tasksElement = document.createElement(TAG_TASKS);
                 root.appendChild(tasksElement);
             }
             Element taskElement = null;
 
 
             NodeList taskNodes =
-                    tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_TASK);
+                    tasksElement.getElementsByTagName(TAG_TASK);
 
             for (int i = 0; i < taskNodes.getLength(); i++) {
                 Node node = taskNodes.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element element = (Element) node;
-                    String id = element.getAttributeNS(NAMESPACE, TAG_ID);
+                    String id = element.getAttribute(TAG_ID);
                     if (task.getId().equals(id)) {
                         taskElement = element;
                         break;
@@ -562,9 +561,9 @@ class TaskPersistenceHandler {
                 }
             }
             if (taskElement == null) {
-                taskElement = document.createElementNS(NAMESPACE, TAG_TASK);
+                taskElement = document.createElement(TAG_TASK);
                 tasksElement.appendChild(taskElement);
-                taskElement.setAttributeNS(NAMESPACE, TAG_ID, task.getId());
+                taskElement.setAttribute(TAG_ID, task.getId());
             }
 
 
@@ -574,10 +573,10 @@ class TaskPersistenceHandler {
             //create task xml
             document = getTaskDocument(task.getId());
             root = getRootElement(document);
-            taskElement = findElement(root, TAG_TASK, NAMESPACE);
+            taskElement = findElement(root, TAG_TASK);
             //check tasksElement null and create element
             if (taskElement == null) {
-                taskElement = document.createElementNS(NAMESPACE, TAG_TASK);
+                taskElement = document.createElement(TAG_TASK);
                 root.appendChild(taskElement);
             }
 
@@ -586,18 +585,18 @@ class TaskPersistenceHandler {
             persist(task, document, taskElement);
 
             if (task.isLocal()) {
-                taskElement.setAttributeNS(NAMESPACE, TAG_LOCAL, String.valueOf(task.isLocal()));
+                taskElement.setAttribute(TAG_LOCAL, String.valueOf(task.isLocal()));
             } else {
                 taskElement.removeAttribute(TAG_LOCAL);
             }
             if (task.isModifiedFlag()) {
-                taskElement.setAttributeNS(NAMESPACE, TAG_MODIFIED_FLAG, String.valueOf(task.isModifiedFlag()));
+                taskElement.setAttribute(TAG_MODIFIED_FLAG, String.valueOf(task.isModifiedFlag()));
             } else {
                 taskElement.removeAttribute(TAG_MODIFIED_FLAG);
             }
 
             if (task.getUrlString() != null) {
-                taskElement.setAttributeNS(NAMESPACE, TAG_URL, task.getUrlString());
+                taskElement.setAttribute(TAG_URL, task.getUrlString());
             }
 
 
@@ -644,10 +643,10 @@ class TaskPersistenceHandler {
             //create task xml
             Document document = getTaskDocument(task.getId());
             Element root = getRootElement(document);
-            Element taskElement = findElement(root, TAG_TASK, NAMESPACE);
+            Element taskElement = findElement(root, TAG_TASK);
             //check tasksElement null and create element
             if (taskElement == null) {
-                taskElement = document.createElementNS(NAMESPACE, TAG_TASK);
+                taskElement = document.createElement(TAG_TASK);
                 root.appendChild(taskElement);
             }
 
@@ -659,11 +658,11 @@ class TaskPersistenceHandler {
     }
 
     private Element getEmptyElement(Document document, Element root, String tag) {
-        Element taskpriorities = findElement(root, tag, NAMESPACE);
+        Element taskpriorities = findElement(root, tag);
         if (taskpriorities != null) {
             root.removeChild(taskpriorities);
         }
-        taskpriorities = document.createElementNS(NAMESPACE, tag);
+        taskpriorities = document.createElement(tag);
         root.appendChild(taskpriorities);
         return taskpriorities;
 
@@ -674,17 +673,17 @@ class TaskPersistenceHandler {
 
             Document document = getDocument();
             Element root = getRootElement(document);
-            Element tasksElement = findElement(root, TAG_TASKS, NAMESPACE);
+            Element tasksElement = findElement(root, TAG_TASKS);
             Element taskElement = null;
 
             NodeList taskNodes =
-                    tasksElement.getElementsByTagNameNS(NAMESPACE, TAG_TASK);
+                    tasksElement.getElementsByTagName(TAG_TASK);
 
             for (int i = 0; i < taskNodes.getLength(); i++) {
                 Node node = taskNodes.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element element = (Element) node;
-                    String id = element.getAttributeNS(NAMESPACE, TAG_ID);
+                    String id = element.getAttribute(TAG_ID);
                     if (te.getId().equals(id)) {
                         taskElement = element;
                         break;
@@ -713,10 +712,10 @@ class TaskPersistenceHandler {
         synchronized (LOCK) {
             Document document = getDocument();
             Element root = getRootElement(document);
-            Element nextElement = findElement(root, TAG_NEXT_ID, NAMESPACE);
+            Element nextElement = findElement(root, TAG_NEXT_ID);
             int nextID = 0;
             if (nextElement == null) {
-                nextElement = document.createElementNS(NAMESPACE, TAG_NEXT_ID);
+                nextElement = document.createElement(TAG_NEXT_ID);
                 nextElement.setAttribute(TAG_ID, String.valueOf(++nextID));
                 root.appendChild(nextElement);
             } else {
@@ -756,7 +755,7 @@ class TaskPersistenceHandler {
 
 
         } else {
-            doc = XMLUtil.createDocument(TAG_ROOT, NAMESPACE, null, null);
+            doc = XMLUtil.createDocument(TAG_ROOT, null, null, null);
 
         }
         return doc;
@@ -788,7 +787,7 @@ class TaskPersistenceHandler {
 
 
         } else {
-            doc = XMLUtil.createDocument(TAG_ROOT, NAMESPACE, null, null);
+            doc = XMLUtil.createDocument(TAG_ROOT, null, null, null);
 
         }
         return doc;
@@ -797,7 +796,7 @@ class TaskPersistenceHandler {
     private Element getRootElement(Document doc) {
         Element rootElement = doc.getDocumentElement();
         if (rootElement == null) {
-            rootElement = doc.createElementNS(NAMESPACE, TAG_ROOT);
+            rootElement = doc.createElement(TAG_ROOT);
         }
         return rootElement;
     }
@@ -864,16 +863,15 @@ class TaskPersistenceHandler {
 
     }
 
-    private static Element findElement(Element parent, String name, String namespace) {
-        
+    private static Element findElement(Element parent, String name) {
+
         NodeList l = parent.getChildNodes();
         int len = l.getLength();
         for (int i = 0; i < len; i++) {
             if (l.item(i).getNodeType() == Node.ELEMENT_NODE) {
                 Element el = (Element) l.item(i);
-                if (name.equals(el.getLocalName()) &&
-                        ((namespace == el.getNamespaceURI()) /*check both namespaces are null*/ || (namespace != null && namespace.equals(el.getNamespaceURI())))) {
-                   return el;
+                if (name.equals(el.getNodeName())) {
+                    return el;
                 }
             }
         }

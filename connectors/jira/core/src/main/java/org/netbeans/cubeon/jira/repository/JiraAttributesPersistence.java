@@ -67,7 +67,6 @@ class JiraAttributesPersistence {
     private static final String TAG_USER_MANAGMENT = "user_managment";//NOI18N
     private static final String TAG_WATCHING = "watching";//NOI18N
     private static final String FILESYSTEM_FILE_TAG = "attributes.xml"; //NOI18N
-    private static final String NAMESPACE = null;//FIXME add propper namespase
     private static final String TAG_ATTACHMENTS = "attachments";//NOI18N
     private static final String TAG_ISSUE_LINKING = "Issue_linking";//NOI18N
     private static final String TAG_ROOT = "attributes";//NOI18N
@@ -120,7 +119,7 @@ class JiraAttributesPersistence {
             }
             Document document = getDocument(true);
             Element root = getRootElement(document);
-            Element attributesElement = findElement(root, TAG_ROOT, NAMESPACE);
+            Element attributesElement = findElement(root, TAG_ROOT);
 
             if (attributesElement == null) {
                 attributesElement = document.createElement(TAG_ROOT);
@@ -153,7 +152,7 @@ class JiraAttributesPersistence {
                 for (JiraProject jiraProject : projects) {
                     LOG.log(Level.INFO, "requsting project : " + jiraProject.getId());//NOI18N
                     progressHandle.progress(NbBundle.getMessage(JiraAttributesPersistence.class,
-                            "LBL_Requsting_Project_Information", jiraProject.getId() ));
+                            "LBL_Requsting_Project_Information", jiraProject.getId()));
                     RemoteProject rp = session.getProjectByKey(jiraProject.getId());
                     Element project = document.createElement(TAG_PROJECT);
                     projectsElement.appendChild(project);
@@ -163,7 +162,7 @@ class JiraAttributesPersistence {
                 if (!refreshedflag) {
                     LOG.log(Level.INFO, "requsting project : " + projectKey);//NOI18N
                     progressHandle.progress(NbBundle.getMessage(JiraAttributesPersistence.class,
-                            "LBL_Requsting_Project_Information", projectKey ) );
+                            "LBL_Requsting_Project_Information", projectKey));
                     RemoteProject rp = session.getProjectByKey(projectKey);
                     Element project = document.createElement(TAG_PROJECT);
                     projectsElement.appendChild(project);
@@ -254,7 +253,7 @@ class JiraAttributesPersistence {
             }
             Document document = getDocument(false);
             Element root = getRootElement(document);
-            Element attributesElement = findElement(root, TAG_ROOT, NAMESPACE);
+            Element attributesElement = findElement(root, TAG_ROOT);
 
             if (attributesElement == null) {
                 attributesElement = document.createElement(TAG_ROOT);
@@ -274,13 +273,13 @@ class JiraAttributesPersistence {
 
             Document document = getDocument(false);
             Element root = getRootElement(document);
-            Element attributesElement = findElement(root, TAG_ROOT, NAMESPACE);
+            Element attributesElement = findElement(root, TAG_ROOT);
 
 
             if (attributesElement != null) {
 
                 //-----------------------------------------
-                Element taskpriorities = findElement(attributesElement, TAG_PRIORITIES, NAMESPACE);
+                Element taskpriorities = findElement(attributesElement, TAG_PRIORITIES);
                 NodeList repositoryNodes = taskpriorities.getChildNodes();
                 List<TaskPriority> prioriiesList = new ArrayList<TaskPriority>();
                 for (int i = 0; i < repositoryNodes.getLength(); i++) {
@@ -298,7 +297,7 @@ class JiraAttributesPersistence {
                 attributes.getRepository().getJiraTaskPriorityProvider().setPrioritys(prioriiesList);
 
                 //-----------------------------------------
-                Element taskTypes = findElement(attributesElement, TAG_TYPES, NAMESPACE);
+                Element taskTypes = findElement(attributesElement, TAG_TYPES);
                 NodeList taskTypeNodes = taskTypes.getChildNodes();
                 List<JiraTaskType> types = new ArrayList<JiraTaskType>();
                 for (int i = 0; i < taskTypeNodes.getLength(); i++) {
@@ -318,7 +317,7 @@ class JiraAttributesPersistence {
                 attributes.getRepository().getJiraTaskTypeProvider().setTaskTypes(types);
                 //-----------------------------------------
 
-                Element taskStatuses = findElement(attributesElement, TAG_STATUSES, NAMESPACE);
+                Element taskStatuses = findElement(attributesElement, TAG_STATUSES);
                 NodeList taskStatusNodes = taskStatuses.getChildNodes();
                 List<TaskStatus> statuses = new ArrayList<TaskStatus>();
                 for (int i = 0; i < taskStatusNodes.getLength(); i++) {
@@ -336,7 +335,7 @@ class JiraAttributesPersistence {
                 attributes.getRepository().getJiraTaskStatusProvider().setStatuses(statuses);
 
                 //-----------------------------------------
-                Element taskProjects = findElement(attributesElement, TAG_PROJECTS, NAMESPACE);
+                Element taskProjects = findElement(attributesElement, TAG_PROJECTS);
                 NodeList taskProjectNodes = taskProjects.getChildNodes();
                 List<JiraProject> projects = new ArrayList<JiraProject>();
                 if (taskProjectNodes != null) {
@@ -355,7 +354,7 @@ class JiraAttributesPersistence {
                 //----------------------------------------
                 _loadFilters(attributesElement);
                 //-----------------------------------------
-                Element taskResolution = findElement(attributesElement, TAG_RESOLUTIONS, NAMESPACE);
+                Element taskResolution = findElement(attributesElement, TAG_RESOLUTIONS);
                 NodeList taskResolutionNodes = taskResolution.getChildNodes();
                 List<TaskResolution> resolutiones = new ArrayList<TaskResolution>();
                 for (int i = 0; i < taskResolutionNodes.getLength(); i++) {
@@ -378,7 +377,7 @@ class JiraAttributesPersistence {
     void loadFilters() {
         Document document = getDocument(false);
         Element root = getRootElement(document);
-        Element attributesElement = findElement(root, TAG_ROOT, NAMESPACE);
+        Element attributesElement = findElement(root, TAG_ROOT);
 
 
         if (attributesElement != null) {
@@ -389,7 +388,7 @@ class JiraAttributesPersistence {
 
     JiraProject resolveJiraProject(String key) throws JiraException {
         ProgressHandle progressHandle = ProgressHandleFactory.createHandle(
-                NbBundle.getMessage(JiraAttributesPersistence.class, "LBL_Updating_Project",key));
+                NbBundle.getMessage(JiraAttributesPersistence.class, "LBL_Updating_Project", key));
         return resolveJiraProject(key, progressHandle);
     }
 
@@ -404,7 +403,7 @@ class JiraAttributesPersistence {
             synchronized (LOCK) {
                 Document document = getDocument(false);
                 Element root = getRootElement(document);
-                Element attributesElement = findElement(root, TAG_ROOT, NAMESPACE);
+                Element attributesElement = findElement(root, TAG_ROOT);
 
                 if (attributesElement == null) {
                     attributesElement = document.createElement(TAG_ROOT);
@@ -413,21 +412,21 @@ class JiraAttributesPersistence {
                 LOG.log(Level.INFO, "requsting project : " + attributes.getRepository().getProjectKey());//NOI18N
                 progressHandle.progress(
                         NbBundle.getMessage(JiraAttributesPersistence.class,
-                        "LBL_Requsting_Project_Information",attributes.getRepository().getProjectKey()));
-                Element projectsElement = findElement(attributesElement, TAG_PROJECTS, NAMESPACE);
+                        "LBL_Requsting_Project_Information", attributes.getRepository().getProjectKey()));
+                Element projectsElement = findElement(attributesElement, TAG_PROJECTS);
                 if (projectsElement == null) {
                     attributesElement.appendChild((projectsElement = document.createElement(TAG_PROJECTS)));
                 }
                 Element projectElement = null;
 
                 NodeList taskNodes =
-                        projectsElement.getElementsByTagNameNS(NAMESPACE, TAG_PROJECT);
+                        projectsElement.getElementsByTagName(TAG_PROJECT);
 
                 for (int i = 0; i < taskNodes.getLength(); i++) {
                     Node node = taskNodes.item(i);
                     if (node.getNodeType() == Node.ELEMENT_NODE) {
                         Element element = (Element) node;
-                        String id = element.getAttributeNS(NAMESPACE, TAG_ID);
+                        String id = element.getAttribute(TAG_ID);
                         if (key.equals(id)) {
                             projectElement = element;
                             break;
@@ -544,7 +543,7 @@ class JiraAttributesPersistence {
 
     private void _loadFilters(Element attributesElement) {
         List<JiraFilter> filters = new ArrayList<JiraFilter>();
-        Element taskfilter = findElement(attributesElement, TAG_FILTERS, NAMESPACE);
+        Element taskfilter = findElement(attributesElement, TAG_FILTERS);
         if (taskfilter != null) {
             NodeList filterNodes = taskfilter.getChildNodes();
 
@@ -576,7 +575,7 @@ class JiraAttributesPersistence {
         String lead = element.getAttribute(TAG_LEAD);
         JiraProject jiraProject = new JiraProject(id, name, description, lead);
         //load components
-        Element components = findElement(element, TAG_COMPONENTS, NAMESPACE);
+        Element components = findElement(element, TAG_COMPONENTS);
         if (components != null) {
             List<JiraProject.Component> cs = new ArrayList<JiraProject.Component>();
             NodeList componentsNodes = components.getChildNodes();
@@ -593,7 +592,7 @@ class JiraAttributesPersistence {
             jiraProject.setComponents(cs);
         }
         //load versions
-        Element versions = findElement(element, TAG_VERSIONS, NAMESPACE);
+        Element versions = findElement(element, TAG_VERSIONS);
         if (versions != null) {
             List<JiraProject.Version> vs = new ArrayList<JiraProject.Version>();
             NodeList versionNodes = versions.getChildNodes();
@@ -626,7 +625,7 @@ class JiraAttributesPersistence {
 
         //load types
         List<String> ids = new ArrayList<String>();
-        Element types = findElement(element, TAG_TYPES, NAMESPACE);
+        Element types = findElement(element, TAG_TYPES);
         if (types != null) {
 
             NodeList typeIdNodeList = types.getChildNodes();
@@ -644,7 +643,7 @@ class JiraAttributesPersistence {
         jiraProject.setTypes(ids);
         //load users
 
-        Element users = findElement(element, TAG_USERS, NAMESPACE);
+        Element users = findElement(element, TAG_USERS);
         if (users != null) {
             List<JiraUser> us = new ArrayList<JiraUser>();
             NodeList usersNodeList = users.getChildNodes();
@@ -666,11 +665,11 @@ class JiraAttributesPersistence {
 
     /******************************************** XML Related ***********************************/
     private Element getEmptyElement(Document document, Element root, String tag) {
-        Element element = findElement(root, tag, NAMESPACE);
+        Element element = findElement(root, tag);
         if (element != null) {
             root.removeChild(element);
         }
-        element = document.createElementNS(NAMESPACE, tag);
+        element = document.createElement(tag);
         root.appendChild(element);
         return element;
 
@@ -703,7 +702,7 @@ class JiraAttributesPersistence {
 
 
         } else {
-            doc = XMLUtil.createDocument(TAG_ROOT, NAMESPACE, null, null);
+            doc = XMLUtil.createDocument(TAG_ROOT, null, null, null);
 
         }
         return doc;
@@ -712,7 +711,7 @@ class JiraAttributesPersistence {
     private Element getRootElement(Document doc) {
         Element rootElement = doc.getDocumentElement();
         if (rootElement == null) {
-            rootElement = doc.createElementNS(NAMESPACE, TAG_ROOT);
+            rootElement = doc.createElement(TAG_ROOT);
         }
         return rootElement;
     }
@@ -748,15 +747,14 @@ class JiraAttributesPersistence {
 
     }
 
-    private static Element findElement(Element parent, String name, String namespace) {
+    private static Element findElement(Element parent, String name) {
 
         NodeList l = parent.getChildNodes();
         int len = l.getLength();
         for (int i = 0; i < len; i++) {
             if (l.item(i).getNodeType() == Node.ELEMENT_NODE) {
                 Element el = (Element) l.item(i);
-                if (name.equals(el.getLocalName()) &&
-                        ((namespace == el.getNamespaceURI()) /*check both namespaces are null*/ || (namespace != null && namespace.equals(el.getNamespaceURI())))) {
+                if (name.equals(el.getNodeName())) {
                     return el;
                 }
             }
