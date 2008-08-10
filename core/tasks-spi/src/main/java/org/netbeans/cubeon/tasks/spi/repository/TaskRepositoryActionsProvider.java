@@ -20,16 +20,16 @@ package org.netbeans.cubeon.tasks.spi.repository;
 import javax.swing.Action;
 
 /**
- *
+ *This class allows registering custome Actions for a purticular repository type.
  * @author Anuradha
  */
 public interface TaskRepositoryActionsProvider {
 
     /**
-     *  Actions
+     *  Returns the list of custom actions that needs to be connected to the repository type.
      * 
-     * @param repository 
-     * @return Actions that show in top level
+     * @param repository TaskRepository instance to whivh these actions needs to be attached.
+     * @return List of actions.
      */
     Action[] getActions(TaskRepository repository);
 }
