@@ -20,14 +20,28 @@ import org.netbeans.cubeon.tasks.spi.task.*;
 import java.util.List;
 
 /**
- *
+ *Allows a RepositoryType implementation to communicate it's Resolution information with the system
  * @author Anuradha G
  */
 public interface TaskResolutionProvider {
 
+    /**
+     * Returns a list of all the resolution types supported.
+     * @return
+     */
     public List<TaskResolution> getTaskResolutiones();
 
+    /**
+     * Returns the resolution status for a specific task.
+     * @param element The TaskElement that the resolution type is returned.
+     * @return current TaskResolution of the TaskElement
+     */
     TaskResolution getTaskResolution(TaskElement element);
 
+    /**
+     * Set the new resolution status for a specific task.
+     * @param element The task element instance which the resolution needs to be altered
+     * @param resolution The new TaskResolution for the task.
+     */
     void setTaskResolution(TaskElement element, TaskResolution resolution);
 }
