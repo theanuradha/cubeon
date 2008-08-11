@@ -44,13 +44,13 @@ public class CubeonContextImpl implements CubeonContext {
 
     public CubeonContextImpl() {
         //read activated task from Preferences and activate it
-        String activeTag = getPreferences().get(ACTIVE, null);
+       final String activeTag = getPreferences().get(ACTIVE, null);
         if (activeTag != null && activeTag.contains("|")) {
-            StringTokenizer tokenizer = new StringTokenizer(activeTag, "|");
-            String repo = tokenizer.nextToken();
-            TaskRepositoryHandler repositoryHandler =
+            final StringTokenizer tokenizer = new StringTokenizer(activeTag, "|");
+            final String repo = tokenizer.nextToken();
+            final TaskRepositoryHandler repositoryHandler =
                     new TaskRepositoryHandlerImpl();
-            TaskRepository repository = repositoryHandler.getTaskRepositoryById(repo);
+            final TaskRepository repository = repositoryHandler.getTaskRepositoryById(repo);
             if (repository != null) {
                 setActive(repository.getTaskElementById(tokenizer.nextToken()));
             }
@@ -66,7 +66,7 @@ public class CubeonContextImpl implements CubeonContext {
 
     public void setActive(TaskElement task) {
         //read old actived task
-        TaskElement oldTask = this.active;
+       final TaskElement oldTask = this.active;
 
         this.active = task;
         //notify task deactivate

@@ -61,9 +61,9 @@ public class DefaultFileSystem implements TasksFileSystem {
         handler = new PersistenceHandler(fileObject);
 
 
-        CubeonContext context = Lookup.getDefault().lookup(CubeonContext.class);
+        final CubeonContext context = Lookup.getDefault().lookup(CubeonContext.class);
 
-        RepositoryEventAdapter adapter = new RepositoryEventAdapter() {
+        final RepositoryEventAdapter adapter = new RepositoryEventAdapter() {
 
             @Override
             public void taskElementIdChenged(String repoId,String oldId, String newId) {
@@ -83,9 +83,9 @@ public class DefaultFileSystem implements TasksFileSystem {
                 }
             }
         };
-        TaskRepositoryHandler repositoryHandler = context.getLookup().lookup(TaskRepositoryHandler.class);
+       final TaskRepositoryHandler repositoryHandler = context.getLookup().lookup(TaskRepositoryHandler.class);
         for (TaskRepository repository : repositoryHandler.getTaskRepositorys()) {
-            Extension extension = repository.getLookup().lookup(Extension.class);
+           final Extension extension = repository.getLookup().lookup(Extension.class);
             extension.add(adapter);
         }
     }
@@ -105,9 +105,9 @@ public class DefaultFileSystem implements TasksFileSystem {
     }
 
     public void addNewFolder(TaskFolder parent, TaskFolder folder) {
-        TaskFolderImpl perantImpl = parent.getLookup().lookup(TaskFolderImpl.class);
+        final TaskFolderImpl perantImpl = parent.getLookup().lookup(TaskFolderImpl.class);
         assert perantImpl != null;
-        TaskFolderImpl folderImpl = folder.getLookup().lookup(TaskFolderImpl.class);
+        final TaskFolderImpl folderImpl = folder.getLookup().lookup(TaskFolderImpl.class);
         assert folderImpl != null;
         handler.addFolder(folderImpl);
         perantImpl.addNewFolder(folder);
@@ -115,7 +115,7 @@ public class DefaultFileSystem implements TasksFileSystem {
     }
 
     public TaskElement addTaskElement(TaskFolder folder, TaskElement element) {
-        TaskFolderImpl perantImpl = folder.getLookup().lookup(TaskFolderImpl.class);
+        final TaskFolderImpl perantImpl = folder.getLookup().lookup(TaskFolderImpl.class);
         assert perantImpl != null;
         handler.addTaskElement(perantImpl, element);
         perantImpl.addTaskElement(element);
@@ -123,9 +123,9 @@ public class DefaultFileSystem implements TasksFileSystem {
     }
 
     public boolean removeFolder(TaskFolder parent, TaskFolder folder) {
-        TaskFolderImpl perantImpl = parent.getLookup().lookup(TaskFolderImpl.class);
+        final TaskFolderImpl perantImpl = parent.getLookup().lookup(TaskFolderImpl.class);
         assert perantImpl != null;
-        TaskFolderImpl folderImpl = folder.getLookup().lookup(TaskFolderImpl.class);
+        final TaskFolderImpl folderImpl = folder.getLookup().lookup(TaskFolderImpl.class);
         assert folderImpl != null;
 
         handler.removeFolder(folderImpl);
@@ -134,7 +134,7 @@ public class DefaultFileSystem implements TasksFileSystem {
     }
 
     public boolean removeTaskElement(TaskFolder folder, TaskElement element) {
-        TaskFolderImpl perantImpl = folder.getLookup().lookup(TaskFolderImpl.class);
+        final TaskFolderImpl perantImpl = folder.getLookup().lookup(TaskFolderImpl.class);
         assert perantImpl != null;
         handler.removeTaskElement(perantImpl, element);
         return perantImpl.removeTaskElement(element);
@@ -142,7 +142,7 @@ public class DefaultFileSystem implements TasksFileSystem {
     }
 
     public boolean rename(TaskFolder folder, String name, String description) {
-        TaskFolderImpl perantImpl = folder.getLookup().lookup(TaskFolderImpl.class);
+        final TaskFolderImpl perantImpl = folder.getLookup().lookup(TaskFolderImpl.class);
         assert perantImpl != null;
 
         perantImpl.setDescription(description);
@@ -152,7 +152,7 @@ public class DefaultFileSystem implements TasksFileSystem {
     }
 
     public void setTaskQuery(TaskFolder folder, TaskQuery query) {
-        TaskFolderImpl perantImpl = folder.getLookup().lookup(TaskFolderImpl.class);
+        final TaskFolderImpl perantImpl = folder.getLookup().lookup(TaskFolderImpl.class);
         assert perantImpl != null;
         handler.setTaskQuery(perantImpl, query);
         perantImpl.setTaskQuery(query);
