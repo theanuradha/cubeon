@@ -2,6 +2,6 @@
 
    * Right Click on task menu or Using Task Explorer drop menu, Select "New" > "Folder". 
 
-         [http://lh5.ggpht.com/theanuradha/SJyUeZbjWHI/AAAAAAAAAKA/HWuqUQZz6i0/createTaskFolder.PNG?imgmax=400]
+         [http://cubeon.googlecode.com/svn/images/createTaskFolder.PNG?imgmax=400]
 
    * Add Folder Name and Description ( Optional ) and Hit Finish.

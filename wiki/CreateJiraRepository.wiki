@@ -3,7 +3,7 @@
 # Right Click on Repository View And invoke "New Task Repository..." and it will open wizard to select Repository Connector Type (Local,[GSJiraRepository Jira] etc...). 
 Select Jira Repository and go Next > . 
 
-       [http://lh5.ggpht.com/theanuradha/SJxw77zxXXI/AAAAAAAAAJw/WoH1tEEtC1M/selectRepoTypeJira.PNG]
+       [http://cubeon.googlecode.com/svn/images/selectRepoTypeJira.PNG]
 
 # Add a Repository Configuration  and click Finish.
 
@@ -17,4 +17,4 @@ Note :you can connect to jira base on project wise or repository wise.Ex: http:/
   
   }}}
 
-        [http://lh4.ggpht.com/theanuradha/SJqYKbXgFrI/AAAAAAAAAJQ/ImZYBnu7DI0/createJiraRepo.PNG]
+        [http://cubeon.googlecode.com/svn/images/createJiraRepo.PNG]

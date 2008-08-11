@@ -4,8 +4,8 @@
 #  Right Click On any Local Repository and select "New Query..."
    Note: Optionally you can create queries by Right Click on Task Explorer or Task repository View.   
 
-          [http://lh6.ggpht.com/theanuradha/SJy-j22qIfI/AAAAAAAAAKo/QMqr9Nn-gg0/newLocalQuery.PNG]   
+          [http://cubeon.googlecode.com/svn/images/newLocalQuery.PNG]
 
 #  Edit Attributes and Finish.It will Open up Query results view showing matching Tasks.
   
-          [http://lh6.ggpht.com/theanuradha/SJzADryXGuI/AAAAAAAAAKw/Z6G1crbBTgI/queryresultView.PNG]
+          [http://cubeon.googlecode.com/svn/images/queryresultView.PNG]

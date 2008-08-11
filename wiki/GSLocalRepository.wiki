@@ -11,12 +11,12 @@
 
 Note: Normally no need to create Local Repository ( Default Local Repository automatically created ).
 
-           [http://lh6.ggpht.com/theanuradha/SJqXw4oowmI/AAAAAAAAAII/KxIwkyKZgJo/defaultRepoview.PNG]
+           [http://cubeon.googlecode.com/svn/images/defaultRepoview.PNG]
 
 #  [GS_Task_Explorer Create Task] and It will open Local Task Editor
 
-           [http://lh5.ggpht.com/theanuradha/SJyuvjAmUPI/AAAAAAAAAKQ/SAMBd5L0Z8c/localeditor.PNG]
+           [http://cubeon.googlecode.com/svn/images/localeditor.PNG]
 
 #  [GS_Local_Query Create New Query]
 
-           [http://lh3.ggpht.com/theanuradha/SJzAD_1vzcI/AAAAAAAAAK4/7wDk9RNv4vs/localQueryView.PNG]
+           [http://cubeon.googlecode.com/svn/images/localQueryView.PNG]
