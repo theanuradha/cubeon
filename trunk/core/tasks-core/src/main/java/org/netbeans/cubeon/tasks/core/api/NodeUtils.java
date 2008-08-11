@@ -39,7 +39,7 @@ public class NodeUtils {
      * @return Image
      */
     public static Image getTreeFolderIcon(boolean opened) {
-        Image base = null;
+        Image base ;
         Icon baseIcon = UIManager.getIcon(opened ? OPENED_ICON_KEY_UIMANAGER : ICON_KEY_UIMANAGER); // #70263
         if (baseIcon != null) {
             base = Utilities.icon2Image(baseIcon);

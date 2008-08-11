@@ -163,7 +163,7 @@ public class DefaultFileSystem implements TasksFileSystem {
     }
 
     public TaskNodeView getFilesystemView() {
-        TaskNodeView contextView = null;
+        TaskNodeView contextView ;
         Lookup.getDefault().lookupAll(TaskNodeView.class);//FIXME may be lookup bug
         contextView = Lookup.getDefault().lookup(CategorizedTaskNodeView.class);
         assert contextView != null;
