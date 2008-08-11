@@ -90,7 +90,7 @@ public class TaskFolderNode extends AbstractNode {
                     if (!sepetatorAdded) {
                         //mark sepetatorAdd to true
                         sepetatorAdded = true;
-                        actions.add(action);
+                        actions.add(null);
 
                     }
                     continue;
@@ -99,7 +99,7 @@ public class TaskFolderNode extends AbstractNode {
                 sepetatorAdded = false;
             }
         }
-        return actions.toArray(new Action[0]);
+        return actions.toArray(new Action[actions.size()]);
     }
 
     private class NewActions extends AbstractAction implements Presenter.Popup {

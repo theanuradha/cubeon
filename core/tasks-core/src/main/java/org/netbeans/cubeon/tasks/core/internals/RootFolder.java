@@ -64,7 +64,7 @@ class RootFolder extends TaskFolderImpl {
                             if (!sepetatorAdded) {
                                 //mark sepetatorAdd to true
                                 sepetatorAdded = true;
-                                actions.add(action);
+                                actions.add(null);
 
                             }
                             continue;
@@ -73,7 +73,7 @@ class RootFolder extends TaskFolderImpl {
                         sepetatorAdded = false;
                     }
                 }
-                return actions.toArray(new Action[0]);
+                return actions.toArray(new Action[actions.size()]);
             }
         };
     }
@@ -89,7 +89,7 @@ class RootFolder extends TaskFolderImpl {
 
 
     //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-    private class NewActions extends AbstractAction implements Presenter.Popup {
+    private static  class NewActions extends AbstractAction implements Presenter.Popup {
 
         public NewActions() {
             putValue(NAME, NbBundle.getMessage(RootFolder.class, "LBL_NEW"));
