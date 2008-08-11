@@ -20,8 +20,5 @@ After successful install go to *Windows* > *Cube°n* > and open both *Task Explo
 
   * [GS_Task_Explorer Task Explorer]
 
-  * Task Context 
-     TODO (Plan for grant project)
-
-  * Focused UI 
-     TODO (future)
+  * [GS_Task_Context Task Context]
+    

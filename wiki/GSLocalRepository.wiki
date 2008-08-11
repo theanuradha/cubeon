@@ -1,15 +1,19 @@
 = Local Repository =
 
- Cube°n Local Repository is for user that want to track there task like TODO Plan etc..
- Thay can create task with priority (P1,P2 etc..), status(Open,Started etc..) type (Task,) etc and manage there task.
+ Cube°n Local Repository is for user that want to track and manage locally there task.
+
+    * Features
+      * Supports Create/Modify Task with Task Types(Task,Defect,Enhancement and Feature) with  Priorities and Statuses(New,Started and Completed).
+      * [GS_Local_Query Supports Querying] local task with Attributes (like All My Completed Tasks ).
+      * Rich Task Editor.
 
 # [CreateLocalRepository Create Local repository]
 
-Note: Normally no need to create Local Repository ( Default Local Repository automatically created ). 
+Note: Normally no need to create Local Repository ( Default Local Repository automatically created ).
 
            [http://lh6.ggpht.com/theanuradha/SJqXw4oowmI/AAAAAAAAAII/KxIwkyKZgJo/defaultRepoview.PNG]
 
-#  [GS_Task_Explorer Create Task] and It will open Local Task Editor 
+#  [GS_Task_Explorer Create Task] and It will open Local Task Editor
 
            [http://lh5.ggpht.com/theanuradha/SJyuvjAmUPI/AAAAAAAAAKQ/SAMBd5L0Z8c/localeditor.PNG]
 

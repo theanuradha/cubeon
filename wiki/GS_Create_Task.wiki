@@ -6,6 +6,6 @@
 
    * Add Summery And Description 
 
-         [http://lh6.ggpht.com/theanuradha/SJyVwwbCDbI/AAAAAAAAAKI/46i2FZi0GKg/createTask.PNG?imgmax=400]
+         [http://lh6.ggpht.com/theanuradha/SJyVwwbCDbI/AAAAAAAAAKI/46i2FZi0GKg/createTask.PNG]
 
    * Hit Finish it will Open Task on editor and add Task Explorer View 

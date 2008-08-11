@@ -14,7 +14,7 @@
       * Create Query form remote repository filters. 
       * Customized Jira Repositories including custom workflows.
       * Tracking of Locally Modified tasks and revert modifications.
-      * Repository permissions based  to create,modify tasks.
+      * Repository permissions based  to create, modify tasks.
  * [GS_Task_Explorer Task Explorer View] 
       * API/SPI for adding and customizing Views. 
       * Categorizable Task View ( Folder base ).
@@ -22,7 +22,7 @@
       * API/SPI for adding  Filtering and Comparators for Tasks.
       * Synchronizing with  Repository Queries.
       * Task Icon Badging ( Ex: Priority ). 
- * Focusable Task Context
+ * [GS_Task_Context Focusable Task Context]
       * API/SPI for adding Task Contexts.
       * Task Linking (Grouping related tasks under Task ).
       * Source Linking (Grouping related Sources under Task ).
