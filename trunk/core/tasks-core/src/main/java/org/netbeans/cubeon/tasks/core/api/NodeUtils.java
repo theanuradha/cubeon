@@ -91,6 +91,6 @@ public class NodeUtils {
     private static final String OPENED_ICON_KEY_UIMANAGER = "Tree.openIcon"; // NOI18N
     private static final String ICON_KEY_UIMANAGER_NB = "Nb.Explorer.Folder.icon"; // NOI18N
     private static final String OPENED_ICON_KEY_UIMANAGER_NB = "Nb.Explorer.Folder.openedIcon"; // NOI18N
-    private static final String ICON_PATH = "org/netbeans/cubeon/context/defaultFolder.gif"; // NOI18N
-    private static final String OPENED_ICON_PATH = "org/netbeans/cubeon/context/defaultFolderOpen.gif"; // NOI18N
+    private static final String ICON_PATH = "org/netbeans/cubeon/tasks/core/defaultFolder.gif"; // NOI18N
+    private static final String OPENED_ICON_PATH = "org/netbeans/cubeon/tasks/core/defaultFolderOpen.gif"; // NOI18N
 }
