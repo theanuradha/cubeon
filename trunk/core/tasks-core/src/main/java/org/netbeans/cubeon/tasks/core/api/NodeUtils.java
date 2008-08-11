@@ -40,7 +40,7 @@ public class NodeUtils {
      */
     public static Image getTreeFolderIcon(boolean opened) {
         Image base ;
-        Icon baseIcon = UIManager.getIcon(opened ? OPENED_ICON_KEY_UIMANAGER : ICON_KEY_UIMANAGER); // #70263
+       final  Icon baseIcon = UIManager.getIcon(opened ? OPENED_ICON_KEY_UIMANAGER : ICON_KEY_UIMANAGER); // #70263
         if (baseIcon != null) {
             base = Utilities.icon2Image(baseIcon);
         } else {
@@ -62,8 +62,8 @@ public class NodeUtils {
 
     public static Image getTaskPriorityImage(TaskPriority priority) {
         Image badge;
-        TaskPriorityProvider provider = priority.getRepository().getLookup().lookup(TaskPriorityProvider.class);
-        int indexOf = provider.getTaskPriorities().indexOf(priority);
+        final TaskPriorityProvider provider = priority.getRepository().getLookup().lookup(TaskPriorityProvider.class);
+        final int indexOf = provider.getTaskPriorities().indexOf(priority);
         switch (indexOf) {
             case 0:
                 badge = Utilities.loadImage("org/netbeans/cubeon/tasks/core/priority/p1.png");
