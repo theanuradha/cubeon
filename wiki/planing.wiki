@@ -3,4 +3,8 @@
  * Task Repository Connectors (Using Cube°n Repository API/SPI).
     * [http://www.netbeans.org/kb/articles/issuezilla.html Issuezilla] Repository Connector.  ( Priority : 1,Status : Started )
     * Bugzilla Repository Connector.    (Priority : 3,Status : - )
-    * [http://xplanner.org/ XPlanner] Repository  Connector.(Priority : 3,Status : - ) 
+    * [http://xplanner.org/ XPlanner] Repository  Connector.(Priority : 3,Status : - )
+    *
+ * Planning and Scheduling API/SPI
+    * Add support provide Planning and scheduling for task repository connecter.
+    * Task Explorer View for show current plannings and schedulings and notifactions.(Ex: Notify User About due Tasks etc..) 
