@@ -2,7 +2,5 @@
 == Cube°n Future Plans ==
  * Task Repository Connectors (Using Cube°n Repository API/SPI).
     * [http://www.netbeans.org/kb/articles/issuezilla.html Issuezilla] Repository Connector.  ( Priority : 1,Status : Started )
-
     * Bugzilla Repository Connector.    (Priority : 3,Status : - )
-
     * [http://xplanner.org/ XPlanner] Repository  Connector.(Priority : 3,Status : - ) 
