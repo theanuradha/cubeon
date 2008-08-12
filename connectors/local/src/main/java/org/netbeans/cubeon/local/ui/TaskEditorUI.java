@@ -234,7 +234,7 @@ public class TaskEditorUI extends javax.swing.JPanel implements EditorAttributeH
         lblUpdated = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
-        setName("\"Attributes\""); // NOI18N
+        setName("Attributes"); // NOI18N
 
         lblPriority.setText(NbBundle.getMessage(TaskEditorUI.class, "TaskEditorUI.lblPriority.text")); // NOI18N
 
