@@ -11,7 +11,8 @@
 
  * Task Explorer
    * Task Groups (like Project Groups aka Working Sets).
-   * Import, Export and Cloning Tasks   
+   * Import, Export and Cloning Tasks 
+   * Support Drag'n'Drop  
 
  * [http://code.google.com/p/cubeon/issues/detail?id=5 Project based auto configuration ]
    
