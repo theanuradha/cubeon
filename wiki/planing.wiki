@@ -6,5 +6,5 @@
     * [http://xplanner.org/ XPlanner] Repository  Connector.(Priority : 3,Status : - )
     *
  * Planning and Scheduling API/SPI
-    * Add support provide Planning and scheduling for task repository connecter.
+    * api/spi for provide Planning and scheduling for Task Repository connecters.
     * Task Explorer View for show current plannings and schedulings and notifactions.(Ex: Notify User About due Tasks etc..) 
