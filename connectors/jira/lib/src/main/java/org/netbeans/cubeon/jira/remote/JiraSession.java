@@ -36,6 +36,11 @@ import com.dolby.jira.net.soap.jira.RemoteResolution;
 import com.dolby.jira.net.soap.jira.RemoteStatus;
 import com.dolby.jira.net.soap.jira.RemoteVersion;
 import java.rmi.RemoteException;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import javax.xml.rpc.ServiceException;
 
 /**
@@ -48,6 +53,37 @@ public class JiraSession {
     private JiraSoapService service;
 
     public JiraSession(String url, String user, String pass) throws JiraException {
+        SSLSocketFactory old = null;
+        //Workoaround for SSL  validate certificate will working on better fix 
+        if (url.startsWith("https")) {
+            // Create a trust manager that does not validate certificate chains
+            TrustManager[] trustAllCerts = new TrustManager[]{
+                new X509TrustManager() {
+
+                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                        return null;
+                    }
+
+                    public void checkClientTrusted(
+                            java.security.cert.X509Certificate[] certs, String authType) {
+                    }
+
+                    public void checkServerTrusted(
+                            java.security.cert.X509Certificate[] certs, String authType) {
+                    }
+                }
+            };
+
+            // Install the all-trusting trust manager
+            try {
+                SSLContext sc = SSLContext.getInstance("SSL");
+                sc.init(null, trustAllCerts, new java.security.SecureRandom());
+                old = HttpsURLConnection.getDefaultSSLSocketFactory();
+                HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+            } catch (Exception e) {
+            }
+
+        }
         try {
             JiraSoapServiceServiceLocator fJiraSoapServiceGetter = new JiraSoapServiceServiceLocator();
 
@@ -69,6 +105,12 @@ public class JiraSession {
 
         } catch (ServiceException ex) {
             throw new JiraException(ex);
+        } finally {
+            //set Default SSLSocketFactory again
+            if (old != null) {
+                HttpsURLConnection.setDefaultSSLSocketFactory(old);
+            }
+
         }
 
     }
@@ -276,9 +318,9 @@ public class JiraSession {
             throw new JiraException(ex);
         }
     }
-    
-    public RemoteProjectRoleActors getProjectRoleActors(RemoteProjectRole rpr,RemoteProject project) throws JiraException{
-    try {
+
+    public RemoteProjectRoleActors getProjectRoleActors(RemoteProjectRole rpr, RemoteProject project) throws JiraException {
+        try {
             return service.getProjectRoleActors(token, rpr, project);
         } catch (Exception ex) {
             throw new JiraException(ex);
