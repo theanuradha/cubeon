@@ -34,7 +34,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.Action;
 import javax.swing.DefaultListModel;
 import javax.swing.DefaultListSelectionModel;
@@ -329,7 +328,7 @@ public class JiraTaskEditorUI extends javax.swing.JPanel {
         if (!txtAssignee.getText().trim().equals(jiraTask.getAssignee())) {
             jiraTask.setAssignee(txtAssignee.getText().trim());
         }
-        if (jiraTask.getDescription()!=null || !jiraTask.getDescription().equals(txtDescription.getText().trim())) {
+        if (jiraTask.getDescription()==null || !jiraTask.getDescription().equals(txtDescription.getText().trim())) {
             jiraTask.setDescription(txtDescription.getText().trim());
         }
         jiraTask.setEnvironment(txtEnvironment.getText().trim());
