@@ -329,7 +329,7 @@ public class JiraTaskEditorUI extends javax.swing.JPanel {
         if (!txtAssignee.getText().trim().equals(jiraTask.getAssignee())) {
             jiraTask.setAssignee(txtAssignee.getText().trim());
         }
-        if (!jiraTask.getDescription().equals(txtDescription.getText().trim())) {
+        if (jiraTask.getDescription()!=null && !jiraTask.getDescription().equals(txtDescription.getText().trim())) {
             jiraTask.setDescription(txtDescription.getText().trim());
         }
         jiraTask.setEnvironment(txtEnvironment.getText().trim());
