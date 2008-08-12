@@ -245,17 +245,6 @@ class PersistenceHandler {
         }
     }
 
-    private List<String> getTagsTexts(Element element, String tag) {
-        List<String> texts = new ArrayList<String>();
-        NodeList nodes =
-                element.getElementsByTagName(tag);
-        for (int i = 0; i < nodes.getLength(); i++) {
-            Node node = nodes.item(i);
-            texts.add(node.getTextContent());
-        }
-
-        return texts;
-    }
 
     private Document getDocument() {
         final FileObject config = baseDir.getFileObject(FILESYSTEM_FILE_TAG);

@@ -67,7 +67,6 @@ public class JiraQuerySupport implements TaskQuerySupportProvider {
         return arrayList;
     }
 
-
     public ConfigurationHandler createConfigurationHandler(TaskQuery query) {
         ConfigurationHandler configurationHandler = null;
         if (query != null) {
@@ -146,10 +145,10 @@ public class JiraQuerySupport implements TaskQuerySupportProvider {
         switch (localQuery.getType()) {
             case FILTER:
                 return true;
-            case UTIL:
+            default:
                 return false;
         }
-        return false;
+
     }
 
     public boolean canRemove(TaskQuery query) {
@@ -157,15 +156,13 @@ public class JiraQuerySupport implements TaskQuerySupportProvider {
         switch (localQuery.getType()) {
             case FILTER:
                 return true;
-            case UTIL:
+            default:
                 return false;
         }
-        return false;
+
     }
 
     public JiraOGChangesQuery getOutgoingQuery() {
         return outgoingQuery;
     }
-
-    
 }
