@@ -5,6 +5,6 @@
     * Bugzilla Repository Connector.    (Priority : 3,Status : - )
     * [http://xplanner.org/ XPlanner] Repository  Connector.(Priority : 3,Status : - )
     *
- * Planning and Scheduling API/SPI
-    * api/spi for provide Planning and scheduling for Task Repository connecters.
+ * Planning and Scheduling 
+    * API/SPI for provide Planning and Scheduling for Task Repository Connecters.
     * Task Explorer View for show current plannings and schedulings and notifactions.(Ex: Notify User About due Tasks etc..) 
