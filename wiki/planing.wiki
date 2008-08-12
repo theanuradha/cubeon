@@ -1,9 +1,9 @@
 #labels Featured
 == Cube°n Future Plans ==
  * Task Repository Connectors (Using Cube°n Repository API/SPI).
-    * [http://www.netbeans.org/kb/articles/issuezilla.html Issuezilla] Repository Connector.  ( Priority : 1,Status : Started )
-    * Bugzilla Repository Connector.    (Priority : 3,Status : - )
-    * [http://xplanner.org/ XPlanner] Repository  Connector.(Priority : 3,Status : - )
+    * [http://www.netbeans.org/kb/articles/issuezilla.html Issuezilla] Repository Connector.  ( Status : Started )
+    * Bugzilla Repository Connector.   
+    * [http://xplanner.org/ XPlanner] Repository  Connector.
 
  * Planning and Scheduling 
     * API/SPI for provide Planning and Scheduling for Task Repository Connecters.
@@ -12,3 +12,6 @@
  * Task Explorer
    * Task Groups (like Project Groups aka Working Sets).
    * Import, Export and Cloning Tasks   
+
+ * [Project based auto configuration http://code.google.com/p/cubeon/issues/detail?id=5]
+   
