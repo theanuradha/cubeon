@@ -391,6 +391,7 @@ public class JiraTaskEditorUI extends javax.swing.JPanel {
             it.next().stateChanged(ev);
         }
         modifiedFlag.set(true);
+        submitTaskAction.setEnabled(true);
     }
 
     private void loadDates(JiraTask jiraTask) {
