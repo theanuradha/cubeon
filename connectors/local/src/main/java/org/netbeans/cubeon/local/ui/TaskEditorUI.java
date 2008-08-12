@@ -113,7 +113,7 @@ public class TaskEditorUI extends javax.swing.JPanel implements EditorAttributeH
 
     @Override
     public String getName() {
-        return localTask.getName();
+        return localTask != null ? localTask.getName() : "Local Task";//NOI18N
     }
 
     public String getDisplayName() {
@@ -136,8 +136,8 @@ public class TaskEditorUI extends javax.swing.JPanel implements EditorAttributeH
         }
     }
 
-    public JComponent [] getComponent() {
-       return new JComponent[]{this};
+    public JComponent[] getComponent() {
+        return new JComponent[]{this};
     }
 
     public TaskElement save() {
@@ -234,7 +234,6 @@ public class TaskEditorUI extends javax.swing.JPanel implements EditorAttributeH
         lblUpdated = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
-        setName("Attributes"); // NOI18N
 
         lblPriority.setText(NbBundle.getMessage(TaskEditorUI.class, "TaskEditorUI.lblPriority.text")); // NOI18N
 
