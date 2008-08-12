@@ -1,8 +1,8 @@
 #labels Featured
 == Cube°n Future Plans ==
 
-*[http://www.netbeans.org/kb/articles/issuezilla.html Issuezilla] Repository Connecter  ( Priority : 1,Status : Started )
-  Connecter to collab.net Bugzilla version using Cube°n Task Repository API/SPI.
+ * [http://www.netbeans.org/kb/articles/issuezilla.html Issuezilla] Repository Connector  ( Priority : 1,Status : Started )
+  Connector to collab.net Bugzilla version using Cube°n Task Repository API/SPI.
 
-*Bugzilla Repository Connecter    (Priority : 3,Status : - )
-  Connecter to Bug Bugzilla tracking system using Cube°n Task Repository API/SPI.
+ * Bugzilla Repository Connector    (Priority : 3,Status : - )
+  Connector to Bug Bugzilla tracking system using Cube°n Task Repository API/SPI.
