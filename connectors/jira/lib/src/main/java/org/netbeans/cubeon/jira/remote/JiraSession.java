@@ -36,12 +36,9 @@ import com.dolby.jira.net.soap.jira.RemoteResolution;
 import com.dolby.jira.net.soap.jira.RemoteStatus;
 import com.dolby.jira.net.soap.jira.RemoteVersion;
 import java.rmi.RemoteException;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
+import java.util.logging.Logger;
 import javax.xml.rpc.ServiceException;
+import org.apache.axis.AxisProperties;
 
 /**
  *
@@ -53,37 +50,14 @@ public class JiraSession {
     private JiraSoapService service;
 
     public JiraSession(String url, String user, String pass) throws JiraException {
-        SSLSocketFactory old = null;
-        //Workoaround for SSL  validate certificate will working on better fix 
+        String defaultSocketSecureFactory = null;
         if (url.startsWith("https")) {
-            // Create a trust manager that does not validate certificate chains
-            TrustManager[] trustAllCerts = new TrustManager[]{
-                new X509TrustManager() {
+            defaultSocketSecureFactory = AxisProperties.getProperty("axis.socketSecureFactory");
 
-                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                        return null;
-                    }
-
-                    public void checkClientTrusted(
-                            java.security.cert.X509Certificate[] certs, String authType) {
-                    }
-
-                    public void checkServerTrusted(
-                            java.security.cert.X509Certificate[] certs, String authType) {
-                    }
-                }
-            };
-
-            // Install the all-trusting trust manager
-            try {
-                SSLContext sc = SSLContext.getInstance("SSL");
-                sc.init(null, trustAllCerts, new java.security.SecureRandom());
-                old = HttpsURLConnection.getDefaultSSLSocketFactory();
-                HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-            } catch (Exception e) {
-            }
-
+            AxisProperties.setProperty("axis.socketSecureFactory", "org.apache.axis.components.net.SunFakeTrustSocketFactory");
+            Logger.getLogger(getClass().getName()).warning("WARNING: SSL CERTIFICATE CONFIGURATION IS TURNED OFF!");
         }
+
         try {
             JiraSoapServiceServiceLocator fJiraSoapServiceGetter = new JiraSoapServiceServiceLocator();
 
@@ -106,11 +80,9 @@ public class JiraSession {
         } catch (ServiceException ex) {
             throw new JiraException(ex);
         } finally {
-            //set Default SSLSocketFactory again
-            if (old != null) {
-                HttpsURLConnection.setDefaultSSLSocketFactory(old);
+            if (defaultSocketSecureFactory != null) {
+                AxisProperties.setProperty("axis.socketSecureFactory", defaultSocketSecureFactory);
             }
-
         }
 
     }
