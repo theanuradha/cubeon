@@ -15,7 +15,7 @@ import org.netbeans.cubeon.ui.repository.NewRepositoryWizardAction.WizardObject;
 import org.openide.WizardDescriptor;
 import org.openide.util.HelpCtx;
 
-class RepositorySettingsWizard implements WizardDescriptor.Panel<WizardObject> {
+class RepositorySettingsWizard implements WizardDescriptor.Panel<WizardObject> ,ChangeListener{
 
     /**
      * The visual component that displays this panel. If you need to access the
@@ -74,12 +74,19 @@ class RepositorySettingsWizard implements WizardDescriptor.Panel<WizardObject> {
     // by the user.
     public void readSettings(WizardObject settings) {
         component.setWizardObject(settings);
+        component.getHandler().addChangeListener(this);
+        
     }
 
     public void storeSettings(WizardObject settings) {
         ConfigurationHandler handler = component.getHandler();
         assert handler != null;
+        component.getHandler().removeChangeListener(this);
         settings.setRepository(handler.getTaskRepository());
+    }
+
+    public void stateChanged(ChangeEvent e) {
+        fireChangeEvent();
     }
 }
 
