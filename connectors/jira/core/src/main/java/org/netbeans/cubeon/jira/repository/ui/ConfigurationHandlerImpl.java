@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.JComponent;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -29,6 +30,7 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
 
     private JiraTaskRepositoryProvider repositoryProvider;
     private JiraTaskRepository repository;
+    private boolean valid = false;
 
     /** Creates new form ConfigurationHandlerImpl */
     private ConfigurationHandlerImpl() {
@@ -97,9 +99,12 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
     }
 
     public boolean isValidConfiguration() {
+        if ((!valid) && lblNotify.getText().trim().length() == 0) {
+            lblNotify.setText(NbBundle.getMessage(ConfigurationHandlerImpl.class, "LBL_Please_Validate_Configuration"));
+            lblNotify.setForeground(Color.blue);
+        }
 
-        //to-do
-        return true;
+        return valid;
     }
 
     final void fireChangeEvent() {
@@ -233,7 +238,9 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
 
         jProgressBar1.setVisible(true);
         btnValidate.setEnabled(false);
-
+        valid = false;
+        lblNotify.setText(NbBundle.getMessage(ConfigurationHandlerImpl.class, "LBL_Configuration_Validting"));
+                    lblNotify.setForeground(Color.blue);
         RequestProcessor.getDefault().post(new Runnable() {
 
             public void run() {
@@ -251,14 +258,17 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
                     if (key != null) {
                         session.getProjectByKey(key);
                     }
-                    lblNotify.setText("Configuration valid.");
+                    lblNotify.setText(NbBundle.getMessage(ConfigurationHandlerImpl.class, "LBL_Configuration_Valid"));
                     lblNotify.setForeground(Color.blue);
+                    valid = true;
                 } catch (JiraException ex) {
                     lblNotify.setText("<html>" + ex.getMessage() + "</html>");
                     lblNotify.setForeground(Color.RED);
+                    valid = false;
                 } finally {
                     jProgressBar1.setVisible(false);
                     btnValidate.setEnabled(true);
+                    fireChangeEvent();
                 }
             }
         });
