@@ -24,4 +24,4 @@
       * Sub/Related Task are support add any task by right click on task.
 
 NOTE:
-  Automatic sub task detect will not supported due to Jira Soap Api limitations.see 
+  Automatic sub task detect will not supported due to Jira Soap API limitations.[http://code.google.com/p/cubeon/issues/detail?id=12  Issue 12] 
