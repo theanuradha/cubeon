@@ -16,3 +16,12 @@
 
 
 #  Task Context has api/spi there is possibility add any resource can be associated with task.
+
+    Current implementation of context api/spi support as follows .
+
+      * Add any source to Task if it on open projects class path by right click on source and "add to active task context".
+      * stack traces automatically detect if  task description or comments have any.
+      * Sub/Related Task are support add any task by right click on task.
+
+NOTE:
+  Automatic sub task detect will not supported due to Jira Soap Api limitations.see 
