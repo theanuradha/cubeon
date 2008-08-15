@@ -4,6 +4,6 @@
 
           [http://cubeon.googlecode.com/svn/images/activateTaskEditor.PNG]
 
-                                *OR*
+                                * OR *
 
           [http://cubeon.googlecode.com/svn/images/activateTaskExplorer.PNG]
