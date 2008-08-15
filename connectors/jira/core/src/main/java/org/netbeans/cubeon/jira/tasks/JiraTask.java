@@ -27,6 +27,7 @@ import org.netbeans.cubeon.jira.repository.JiraTaskRepository;
 import org.netbeans.cubeon.jira.repository.attributes.JiraAction;
 import org.netbeans.cubeon.jira.repository.attributes.JiraComment;
 import org.netbeans.cubeon.jira.repository.ui.JiraActionsProvider;
+import org.netbeans.cubeon.jira.utils.JiraExceptionHandler;
 import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
 import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
@@ -34,7 +35,6 @@ import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.task.TaskResolution;
 import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
 import org.netbeans.cubeon.tasks.spi.task.TaskType;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
@@ -243,7 +243,7 @@ public class JiraTask extends JiraRemoteTask implements TaskElement {
         try {
             taskRepository.update(this);
         } catch (JiraException ex) {
-            Exceptions.printStackTrace(ex);
+            JiraExceptionHandler.notify(ex);
         }
     }
 }

@@ -24,8 +24,8 @@ import org.netbeans.api.progress.ProgressHandleFactory;
 import org.netbeans.cubeon.jira.remote.JiraException;
 import org.netbeans.cubeon.jira.repository.JiraTaskRepository;
 import org.netbeans.cubeon.jira.tasks.JiraTask;
+import org.netbeans.cubeon.jira.utils.JiraExceptionHandler;
 import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
@@ -64,7 +64,7 @@ public class SubmitTaskAction extends AbstractAction {
                 try {
                     repository.submit(task);
                 } catch (JiraException ex) {
-                    Exceptions.printStackTrace(ex);
+                    JiraExceptionHandler.notify(ex);
                 }
                 factory.refresh(task);
 

@@ -26,8 +26,8 @@ import org.netbeans.cubeon.jira.remote.JiraSession;
 import org.netbeans.cubeon.jira.repository.JiraTaskRepository;
 import org.netbeans.cubeon.jira.repository.attributes.JiraFilter;
 import org.netbeans.cubeon.jira.tasks.JiraTask;
+import org.netbeans.cubeon.jira.utils.JiraExceptionHandler;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
@@ -105,7 +105,7 @@ public class JiraFilterQuery extends AbstractJiraQuery {
                                 }
 
                             } catch (JiraException ex) {
-                                Exceptions.printStackTrace(ex);
+                                JiraExceptionHandler.notify(ex);
                             }
 
                         } finally {
