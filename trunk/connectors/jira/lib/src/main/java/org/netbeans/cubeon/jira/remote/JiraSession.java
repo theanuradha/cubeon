@@ -58,6 +58,15 @@ public class JiraSession {
             Logger.getLogger(getClass().getName()).warning("WARNING: SSL CERTIFICATE CONFIGURATION IS TURNED OFF!");
         }
 
+        //set proxy settings
+        ProxySettings proxySettings = new ProxySettings();
+        if (!proxySettings.isDirect()) {
+            AxisProperties.setProperty("http.proxyHost", proxySettings.getHttpHost());
+            AxisProperties.setProperty("http.proxyPort", String.valueOf(proxySettings.getHttpPort()));
+            AxisProperties.setProperty("http.proxyUser", proxySettings.getUsername());
+            AxisProperties.setProperty("http.proxyPassword", proxySettings.getPassword());
+        }
+
         try {
             JiraSoapServiceServiceLocator fJiraSoapServiceGetter = new JiraSoapServiceServiceLocator();
 
