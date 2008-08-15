@@ -4,11 +4,11 @@
 
           [http://cubeon.googlecode.com/svn/images/activateTaskEditor.PNG]
 
-                                * OR *
+                                * OR*
 
           [http://cubeon.googlecode.com/svn/images/activateTaskExplorer.PNG]
 
 
 #  Note: If you activate Task from Task Editor it will automatically switch to Task Context View on Task Explorer but If you click on task explorer and select "Activate" it will not switch to Task Context View, you have to change to Task Context View by Click on Task Explorer blue icon or View Drop Menu. 
 
- 
+          [https://cubeon.googlecode.com/svn/images/contextViewSelect.PNG]
