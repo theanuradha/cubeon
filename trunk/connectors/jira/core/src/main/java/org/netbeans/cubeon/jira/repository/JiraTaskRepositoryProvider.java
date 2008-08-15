@@ -24,11 +24,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.netbeans.cubeon.jira.remote.JiraException;
 import org.netbeans.cubeon.jira.repository.ui.ConfigurationHandlerImpl;
 import org.netbeans.cubeon.jira.tasks.JiraTask;
+import org.netbeans.cubeon.jira.utils.JiraExceptionHandler;
 import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepositoryType;
-import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.filesystems.Repository;
@@ -99,7 +99,7 @@ public class JiraTaskRepositoryProvider implements TaskRepositoryType {
                         jiraTaskRepository.updateAttributes();
                         jiraTaskRepository.synchronize();
                     } catch (JiraException ex) {
-                        Exceptions.printStackTrace(ex);
+                        JiraExceptionHandler.notify(ex);
                     }
 
                 }

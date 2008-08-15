@@ -20,7 +20,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import org.netbeans.cubeon.jira.remote.JiraException;
 import org.netbeans.cubeon.jira.repository.JiraTaskRepository;
-import org.openide.util.Exceptions;
+import org.netbeans.cubeon.jira.utils.JiraExceptionHandler;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 
@@ -45,7 +45,7 @@ public class ReconnectAction extends AbstractAction {
                 try {
                     repository.reconnect();
                 } catch (JiraException ex) {
-                    Exceptions.printStackTrace(ex);
+                    JiraExceptionHandler.notify(ex);
                 }
             }
         });
