@@ -20,7 +20,9 @@
     Current implementation of context api/spi support as follows .
 
       * Add any source to Task if it on open projects class path,Add sources by right click on source and "add to active task context".
-      * stack traces automatically detect if  task description or comments have any.
+
+      * Stacktraces automatically detect if  task description or comments have any.
+
       * Sub/Related Task are support add any task by right click on task.
           
          [http://cubeon.googlecode.com/svn/images/taskcontext.PNG]  
