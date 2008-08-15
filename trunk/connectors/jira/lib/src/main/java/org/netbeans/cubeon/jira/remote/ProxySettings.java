@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.netbeans.cubeon.tasks.core.api;
+package org.netbeans.cubeon.jira.remote;
 
 import java.util.prefs.Preferences;
 
