@@ -1,3 +1,5 @@
 === Working With Task Context ===
 
-#  In order to use Task Context you need to a Activate Task 
+#  In order to use Task Context you need to a Activate Task.Activate task is simple you can simply ckick 
+on Task Editor blue icon or right click on task explorer and select "Activate"  
+
