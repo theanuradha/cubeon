@@ -30,6 +30,7 @@ import org.netbeans.cubeon.trac.api.TicketMilestone;
 import org.netbeans.cubeon.trac.api.TicketPriority;
 import org.netbeans.cubeon.trac.api.TicketResolution;
 import org.netbeans.cubeon.trac.api.TicketSeverity;
+import org.netbeans.cubeon.trac.api.TicketStatus;
 import org.netbeans.cubeon.trac.api.TicketType;
 import org.netbeans.cubeon.trac.api.TicketVersion;
 import org.netbeans.cubeon.trac.api.TracException;
@@ -258,5 +259,29 @@ public class XmlRpcTracSession implements TracSession {
             throw new TracException(ex);
         }
         return ticketResolutions;
+    }
+
+    /**
+     * Get All TicketStatuses on remote server
+     * @return Trac TicketStatus
+     * @throws org.netbeans.cubeon.trac.api.TracException
+     */
+    public List<TicketStatus> getTicketStatuses() throws TracException {
+        List<TicketStatus> ticketStatuses = new ArrayList<TicketStatus>();
+        try {
+            //get a list of all ticket status names.
+            Object[] statuses = (Object[]) client.execute("ticket.status.getAll",//NOI18N
+                    new Object[0]);
+            for (Object name : statuses) {
+                //get a ticket status.
+                String id = (String) client.execute("ticket.status.get",//NOI18N
+                        new Object[]{name});
+                //create and TicketStatus
+                ticketStatuses.add(new TicketStatus(id, (String) name));
+            }
+        } catch (XmlRpcException ex) {
+            throw new TracException(ex);
+        }
+        return ticketStatuses;
     }
 }
