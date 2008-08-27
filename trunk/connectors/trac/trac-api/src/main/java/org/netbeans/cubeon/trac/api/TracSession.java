@@ -58,4 +58,11 @@ public interface TracSession {
      * @throws org.netbeans.cubeon.trac.api.TracException
      */
     List<TicketSeverity> getTicketSeverities() throws TracException;
+
+    /**
+     * Get All TicketMilestones on remote server
+     * @return Trac TicketMilestone
+     * @throws org.netbeans.cubeon.trac.api.TracException
+     */
+    List<TicketMilestone> getTicketMilestones() throws TracException;
 }
