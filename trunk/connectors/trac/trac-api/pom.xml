@@ -9,13 +9,18 @@
     <artifactId>cubeon-trac-api</artifactId>
     <packaging>nbm</packaging>
     <name>Cube°n Trac API</name>
-    <description>Trac Api for the Cube°n </description>
+    <description>Trac Api for the Cube°n</description>
     <version>${cubeon.release}</version>
     <dependencies>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util</artifactId>
             <version>${netbeans.release}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xmlrpc</groupId>
+            <artifactId>xmlrpc-client</artifactId>
+            <version>3.1</version>
         </dependency>
     </dependencies>
     <build>
