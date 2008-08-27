@@ -18,11 +18,18 @@ package org.netbeans.cubeon.trac.internals;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
+import org.netbeans.cubeon.trac.api.TicketComponent;
+import org.netbeans.cubeon.trac.api.TicketPriority;
+import org.netbeans.cubeon.trac.api.TicketSeverity;
+import org.netbeans.cubeon.trac.api.TicketType;
+import org.netbeans.cubeon.trac.api.TicketVersion;
 import org.netbeans.cubeon.trac.api.TracException;
 import org.netbeans.cubeon.trac.api.TracSession;
 
@@ -60,8 +67,8 @@ public class XmlRpcTracSession implements TracSession {
              * Changes to the major version indicate API breaking changes,
              * while minor version changes are simple additions, bug fixes, etc.
              */
-            Object[] versionInfo = (Object[]) client.execute("system.getAPIVersion()",
-                    new Object[0]);//NOI18N
+            Object[] versionInfo = (Object[]) client.execute("system.getAPIVersion()",//NOI18N
+                    new Object[0]);
         //TODO validate trac version using versionInfo
         } catch (XmlRpcException ex) {
             throw new TracException(ex);
@@ -71,7 +78,7 @@ public class XmlRpcTracSession implements TracSession {
     }
 
     /**
-     * Create Multi call Element
+     * Create Multi call Element.
      * @param methodName
      * @param parameters
      * @return 
@@ -81,5 +88,125 @@ public class XmlRpcTracSession implements TracSession {
         table.put("methodName", methodName);//NOI18N
         table.put("params", parameters);//NOI18N
         return table;
+    }
+
+    /**
+     * Get All TicketTypes on remote server
+     * @return Trac TicketTypes
+     * @throws org.netbeans.cubeon.trac.api.TracException
+     */
+    public List<TicketType> getTicketTypes() throws TracException {
+        List<TicketType> ticketTypes = new ArrayList<TicketType>();
+        try {
+            //get a list of all ticket type names.
+            Object[] types = (Object[]) client.execute("ticket.type.getAll",//NOI18N 
+                    new Object[0]);
+            for (Object typeName : types) {
+                //get a ticket type.
+                String typeId = (String) client.execute("ticket.type.get",//NOI18N
+                        new Object[]{typeName});
+                //create and TicketType 
+                ticketTypes.add(new TicketType(typeId, (String) typeName));
+            }
+        } catch (XmlRpcException ex) {
+            throw new TracException(ex);
+        }
+        return ticketTypes;
+    }
+
+    /**
+     * Get All TicketPriorities on remote server
+     * @return Trac TicketPriority
+     * @throws org.netbeans.cubeon.trac.api.TracException
+     */
+    public List<TicketPriority> getTicketPriorities() throws TracException {
+        List<TicketPriority> ticketPriorities = new ArrayList<TicketPriority>();
+        try {
+            //get a list of all ticket priority names.
+            Object[] priorities = (Object[]) client.execute("ticket.priority.getAll",//NOI18N
+                    new Object[0]);
+            for (Object name : priorities) {
+                //get a ticket priority.
+                String prioritiesId = (String) client.execute("ticket.priority.get",//NOI18N
+                        new Object[]{name});
+                //create and TicketPriority 
+                ticketPriorities.add(new TicketPriority(prioritiesId, (String) name));
+            }
+        } catch (XmlRpcException ex) {
+            throw new TracException(ex);
+        }
+        return ticketPriorities;
+    }
+
+    /**
+     * Get All TicketComponents on remote server
+     * @return Trac TicketComponent
+     * @throws org.netbeans.cubeon.trac.api.TracException
+     */
+    public List<TicketComponent> getTicketComponents() throws TracException {
+        List<TicketComponent> ticketComponents = new ArrayList<TicketComponent>();
+        try {
+            //get a list of all ticket component names.
+            Object[] components = (Object[]) client.execute("ticket.component.getAll",//NOI18N
+                    new Object[0]);
+            for (Object name : components) {
+                //get a ticket component.
+                String componentId = (String) client.execute("ticket.component.get",//NOI18N
+                        new Object[]{name});
+                //create and TicketComponent 
+                ticketComponents.add(new TicketComponent(componentId, (String) name));
+            }
+        } catch (XmlRpcException ex) {
+            throw new TracException(ex);
+        }
+        return ticketComponents;
+    }
+
+    /**
+     * Get All TicketVersions on remote server
+     * @return Trac TicketVersion
+     * @throws org.netbeans.cubeon.trac.api.TracException
+     */
+    public List<TicketVersion> getTicketVersions() throws TracException {
+        List<TicketVersion> ticketVersions = new ArrayList<TicketVersion>();
+        try {
+            //get a list of all ticket component names.
+            Object[] versions = (Object[]) client.execute("ticket.version.getAll",//NOI18N
+                    new Object[0]);
+            for (Object name : versions) {
+                //get a ticket component.
+                String id = (String) client.execute("ticket.version.get",//NOI18N
+                        new Object[]{name});
+                //create and TicketComponent 
+                ticketVersions.add(new TicketVersion(id, (String) name));
+            }
+        } catch (XmlRpcException ex) {
+            throw new TracException(ex);
+        }
+        return ticketVersions;
+    }
+
+    /**
+     * Get All TicketSeverities on remote server
+     * @return Trac TicketSeverity
+     * @throws org.netbeans.cubeon.trac.api.TracException
+     */
+    public List<TicketSeverity> getTicketSeverities() throws TracException {
+        List<TicketSeverity> ticketSeverities = new ArrayList<TicketSeverity>();
+        try {
+            //get a list of all ticket component names.
+            Object[] Severities = (Object[]) client.execute("ticket.severity.getAll",//NOI18N
+                    new Object[0]);
+            for (Object name : Severities) {
+                //get a ticket component.
+                String id = (String) client.execute("ticket.severity.get",//NOI18N
+                        new Object[]{name});
+                //create and TicketSeverity 
+                ticketSeverities.add(new TicketSeverity(id, (String) name));
+            }
+        } catch (XmlRpcException ex) {
+            throw new TracException(ex);
+        }
+        return ticketSeverities;
     }
 }
