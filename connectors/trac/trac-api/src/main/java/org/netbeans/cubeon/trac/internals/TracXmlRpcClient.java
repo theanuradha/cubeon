@@ -14,21 +14,27 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.trac.api;
+package org.netbeans.cubeon.trac.internals;
+
+import org.netbeans.cubeon.trac.api.TracClient;
+import org.netbeans.cubeon.trac.api.TracException;
+import org.netbeans.cubeon.trac.api.TracSession;
 
 /**
  *
- * @author Anuradha G
+ * @author Anuradha
  */
-public interface TracClient {
+public class TracXmlRpcClient implements TracClient {
 
     /**
-     * Factory for Trac Sessions
+     *  Create xmlrpc base trac session
      * @param url
      * @param user
      * @param password
      * @return
      * @throws org.netbeans.cubeon.trac.api.TracException
      */
-    TracSession createTracSession(String url, String user, String password) throws TracException;
+    public TracSession createTracSession(String url, String user, String password) throws TracException {
+        return new XmlRpcTracSession(url, user, password);
+    }
 }
