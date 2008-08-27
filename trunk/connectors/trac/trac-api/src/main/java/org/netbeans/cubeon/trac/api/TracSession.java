@@ -14,13 +14,48 @@
  *  limitations under the License.
  *  under the License.
  */
-
 package org.netbeans.cubeon.trac.api;
+
+import java.util.List;
 
 /**
  *
  * @author Anuradha
  */
 public interface TracSession {
-  
+
+    /**
+     * Get All TicketTypess on remote server
+     * @return Trac TicketTypes
+     * @throws org.netbeans.cubeon.trac.api.TracException
+     */
+    List<TicketType> getTicketTypes() throws TracException;
+
+    /**
+     * Get All TicketPriorities on remote server
+     * @return Trac TicketPriority
+     * @throws org.netbeans.cubeon.trac.api.TracException
+     */
+    List<TicketPriority> getTicketPriorities() throws TracException;
+
+    /**
+     * Get All TicketComponents on remote server
+     * @return Trac TicketComponent
+     * @throws org.netbeans.cubeon.trac.api.TracException
+     */
+    List<TicketComponent> getTicketComponents() throws TracException;
+
+    /**
+     * Get All TicketVersions on remote server
+     * @return Trac TicketVersion
+     * @throws org.netbeans.cubeon.trac.api.TracException
+     */
+    public List<TicketVersion> getTicketVersions() throws TracException;
+
+    /**
+     * Get All TicketSeverities on remote server
+     * @return Trac TicketSeverity
+     * @throws org.netbeans.cubeon.trac.api.TracException
+     */
+    List<TicketSeverity> getTicketSeverities() throws TracException;
 }
