@@ -71,7 +71,7 @@ public class XmlRpcTracSession implements TracSession {
              * Changes to the major version indicate API breaking changes,
              * while minor version changes are simple additions, bug fixes, etc.
              */
-            Object[] versionInfo = (Object[]) client.execute("system.getAPIVersion()",//NOI18N
+            Object[] versionInfo = (Object[]) client.execute("system.getAPIVersion",//NOI18N
                     new Object[0]);
         //TODO validate trac version using versionInfo
         } catch (XmlRpcException ex) {
