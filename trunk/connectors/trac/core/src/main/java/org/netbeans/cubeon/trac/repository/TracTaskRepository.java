@@ -14,38 +14,79 @@
  *  limitations under the License.
  *  under the License.
  */
-
 package org.netbeans.cubeon.trac.repository;
 
 import java.awt.Image;
+import java.io.IOException;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
+import org.openide.filesystems.FileObject;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
+import org.openide.util.Utilities;
+import org.openide.util.lookup.Lookups;
 
 /**
  *
  * @author Anuradha
  */
-public class TracTaskRepository implements TaskRepository{
+public class TracTaskRepository implements TaskRepository {
+
+    private final TracTaskRepositoryProvider provider;
+    private final String id;
+    private String name;
+    private String description;
+    /**
+     * Url of the Repository 
+     * 
+     */
+    private String url;
+
+    //----------------------------
+    private String userName;
+    private String password;
+    private FileObject baseDir;
+
+    public TracTaskRepository(TracTaskRepositoryProvider provider,
+            String id, String name, String description) {
+        this.provider = provider;
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        //extension = new JiraRepositoryExtension(this);
+        baseDir = provider.getBaseDir().getFileObject(id);
+        if (baseDir == null) {
+            try {
+                baseDir = provider.getBaseDir().createFolder(id);
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+
+    //repositoryAttributes = new JiraRepositoryAttributes(this);
+    ///handler = new TaskPersistenceHandler(this, baseDir, "tasks");//NOI18N
+    //cache = new TaskPersistenceHandler(this, baseDir, "cache");//NOI18N
+    // querySupport = new JiraQuerySupport(this, extension);
+    }
 
     public String getId() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return id;
     }
 
     public String getName() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return name;
     }
 
     public String getDescription() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return name;
     }
 
     public Lookup getLookup() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return Lookups.fixed(this);
     }
 
     public Image getImage() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return Utilities.loadImage("org/netbeans/cubeon/trac/trac-repository.png");
     }
 
     public TaskElement createTaskElement(String summery, String description) {
@@ -68,4 +109,39 @@ public class TracTaskRepository implements TaskRepository{
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getURL() {
+        return url;
+    }
+
+    public void setURL(String url) {
+        this.url = url;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    void loadAttributes() {
+        //TODO load Trac Attributes
+    }
 }
