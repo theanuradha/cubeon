@@ -315,7 +315,7 @@ public class XmlRpcTracSession implements TracSession {
                 String label = (String) map.get("label");//NOI18N
                 String value = (String) map.get("value");//NOI18N
                 String type = (String) map.get("type");//NOI18N
-                String optional = (String) map.get("optional");//NOI18N
+                Boolean optional = (Boolean) map.get("optional");//NOI18N
                 List<String> options = new ArrayList<String>();
                 Object[] oOptions = (Object[]) map.get("options");//NOI18N
                 if (oOptions != null) {
@@ -324,7 +324,7 @@ public class XmlRpcTracSession implements TracSession {
                     }
                 }
                 //converte to boolean 
-                final boolean b = options == null ? false : Boolean.parseBoolean(optional);
+                final boolean b = optional == null ? false : optional;
                 //create and TicketFiled
                 ticketFileds.add(new TicketFiled(name, label, value, type, b, options));
             }
