@@ -17,10 +17,16 @@
 package org.netbeans.cubeon.trac.repository;
 
 import java.awt.Image;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepositoryType;
+import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
+import org.openide.filesystems.Repository;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
@@ -34,16 +40,30 @@ public class TracTaskRepositoryProvider implements TaskRepositoryType {
 
     static final String BASE_PATH = "cubeon/trac_repositories/";//NOI18N
     private List<TracTaskRepository> taskRepositorys = new ArrayList<TracTaskRepository>();
+    private FileObject baseDir = null;
+    private final TracRepositoryPersistence persistence;
+
+    public TracTaskRepositoryProvider() {
+        try {
+            baseDir = FileUtil.createFolder(Repository.getDefault().
+                    getDefaultFileSystem().getRoot(), BASE_PATH);
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        assert baseDir != null;
+        persistence = new TracRepositoryPersistence(this, baseDir);
+    }
+
     public String getName() {
-       return NbBundle.getMessage(TracTaskRepositoryProvider.class, "LBL_Trac_Repository");
+        return NbBundle.getMessage(TracTaskRepositoryProvider.class, "LBL_Trac_Repository");
     }
 
     public String getDescription() {
-         return NbBundle.getMessage(TracTaskRepositoryProvider.class, "LBL_Trac_Repository_Description");
+        return NbBundle.getMessage(TracTaskRepositoryProvider.class, "LBL_Trac_Repository_Description");
     }
 
     public Image getImage() {
-         return Utilities.loadImage("org/netbeans/cubeon/trac/trac.gif");
+        return Utilities.loadImage("org/netbeans/cubeon/trac/trac.png");
     }
 
     public Lookup getLookup() {
@@ -59,14 +79,24 @@ public class TracTaskRepositoryProvider implements TaskRepositoryType {
     }
 
     public List<TaskRepository> getRepositorys() {
-       return  new ArrayList<TaskRepository>(taskRepositorys);
+        return new ArrayList<TaskRepository>(taskRepositorys);
     }
 
-    public TaskRepository getRepositoryById(String Id) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public TaskRepository getRepositoryById(String id) {
+        for (TaskRepository taskRepository : taskRepositorys) {
+            if (taskRepository.getId().equals(id)) {
+                return taskRepository;
+            }
+        }
+
+        return null;
     }
 
     public ConfigurationHandler createConfigurationHandler() {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public FileObject getBaseDir() {
+        return baseDir;
     }
 }
