@@ -26,6 +26,7 @@ import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 import org.netbeans.cubeon.trac.api.TicketComponent;
+import org.netbeans.cubeon.trac.api.TicketFiled;
 import org.netbeans.cubeon.trac.api.TicketMilestone;
 import org.netbeans.cubeon.trac.api.TicketPriority;
 import org.netbeans.cubeon.trac.api.TicketResolution;
@@ -291,5 +292,45 @@ public class XmlRpcTracSession implements TracSession {
             throw new TracException(ex);
         }
         return ticketStatuses;
+    }
+
+    /**
+     * Get All TicketFiled on remote server
+     * @return Trac TicketFiled
+     * @throws org.netbeans.cubeon.trac.api.TracException
+     */
+    public List<TicketFiled> getTicketFileds() throws TracException {
+        List<TicketFiled> ticketFileds = new ArrayList<TicketFiled>();
+        try {
+            //Return a list of all ticket fields fields.
+            Object[] milestones = (Object[]) client.execute("ticket.getTicketFields",//NOI18N
+                    new Object[0]);
+            for (Object o : milestones) {
+                //get a ticket field info.
+                HashMap map = (HashMap) o;
+
+                //{optional, name, value, label, type, options}
+
+                String name = (String) map.get("name");//NOI18N
+                String label = (String) map.get("label");//NOI18N
+                String value = (String) map.get("value");//NOI18N
+                String type = (String) map.get("type");//NOI18N
+                String optional = (String) map.get("optional");//NOI18N
+                List<String> options = new ArrayList<String>();
+                Object[] oOptions = (Object[]) map.get("options");//NOI18N
+                if (oOptions != null) {
+                    for (Object object : oOptions) {
+                        options.add((String) object);
+                    }
+                }
+                //converte to boolean 
+                final boolean b = options == null ? false : Boolean.parseBoolean(optional);
+                //create and TicketFiled
+                ticketFileds.add(new TicketFiled(name, label, value, type, b, options));
+            }
+        } catch (XmlRpcException ex) {
+            throw new TracException(ex);
+        }
+        return ticketFileds;
     }
 }
