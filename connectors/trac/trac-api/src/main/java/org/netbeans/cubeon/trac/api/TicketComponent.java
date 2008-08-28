@@ -21,20 +21,27 @@ package org.netbeans.cubeon.trac.api;
  * @author Anuradha G
  */
 public class TicketComponent {
+    //{description, name, owner}
 
-    private final String id;
     private final String name;
+    private final String description;
+    private final String owner;
 
-    public TicketComponent(String id, String name) {
-        this.id = id;
+    public TicketComponent(String name, String description, String owner) {
         this.name = name;
+        this.description = description;
+        this.owner = owner;
     }
 
-    public String getId() {
-        return id;
+    public String getDescription() {
+        return description;
     }
 
     public String getName() {
         return name;
+    }
+
+    public String getOwner() {
+        return owner;
     }
 }

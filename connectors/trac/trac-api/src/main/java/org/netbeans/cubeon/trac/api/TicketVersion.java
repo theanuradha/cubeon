@@ -22,19 +22,19 @@ package org.netbeans.cubeon.trac.api;
  */
 public class TicketVersion {
 
-    private final String id;
     private final String name;
+    private final String description;
 
-    public TicketVersion(String id, String name) {
-        this.id = id;
+    public TicketVersion(String name, String description) {
         this.name = name;
-    }
-
-    public String getId() {
-        return id;
+        this.description = description;
     }
 
     public String getName() {
         return name;
+    }
+
+    public String getDescription() {
+        return description;
     }
 }
