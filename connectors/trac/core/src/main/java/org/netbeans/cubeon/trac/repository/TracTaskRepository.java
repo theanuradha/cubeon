@@ -46,6 +46,7 @@ public class TracTaskRepository implements TaskRepository {
     private String userName;
     private String password;
     private FileObject baseDir;
+    private final TracRepositoryExtension extension;
 
     public TracTaskRepository(TracTaskRepositoryProvider provider,
             String id, String name, String description) {
@@ -53,7 +54,7 @@ public class TracTaskRepository implements TaskRepository {
         this.id = id;
         this.name = name;
         this.description = description;
-        //extension = new JiraRepositoryExtension(this);
+        extension = new TracRepositoryExtension(this);
         baseDir = provider.getBaseDir().getFileObject(id);
         if (baseDir == null) {
             try {
@@ -141,7 +142,17 @@ public class TracTaskRepository implements TaskRepository {
         this.name = name;
     }
 
+    FileObject getBaseDir() {
+        return baseDir;
+    }
+
     void loadAttributes() {
         //TODO load Trac Attributes
     }
+
+    public TracRepositoryExtension getExtension() {
+        return extension;
+    }
+
+    
 }

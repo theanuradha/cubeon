@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepositoryType;
 import org.openide.filesystems.FileObject;
@@ -29,6 +30,7 @@ import org.openide.filesystems.Repository;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 
@@ -41,6 +43,7 @@ public class TracTaskRepositoryProvider implements TaskRepositoryType {
     static final String BASE_PATH = "cubeon/trac_repositories/";//NOI18N
     private List<TracTaskRepository> taskRepositorys = new ArrayList<TracTaskRepository>();
     private FileObject baseDir = null;
+    private AtomicBoolean initiailzed = new AtomicBoolean(false);
     private final TracRepositoryPersistence persistence;
 
     public TracTaskRepositoryProvider() {
@@ -70,15 +73,71 @@ public class TracTaskRepositoryProvider implements TaskRepositoryType {
         return Lookups.fixed(this);
     }
 
-    public TaskRepository persistRepository(TaskRepository taskRepository) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public TaskRepository persistRepository(TaskRepository repository) {
+
+        final TracTaskRepository tracTaskRepository =
+                repository.getLookup().lookup(TracTaskRepository.class);
+        if (tracTaskRepository != null) {
+            persistence.addRepository(tracTaskRepository);
+            if (!taskRepositorys.contains(tracTaskRepository)) {
+                taskRepositorys.add(tracTaskRepository);
+            }
+            TracRepositoryExtension extension = tracTaskRepository.getExtension();
+            extension.fireNameChenged();
+            extension.fireDescriptionChenged();
+            RequestProcessor.getDefault().post(new Runnable() {
+
+                public void run() {
+                    //TODO add read attibute
+                }
+            });
+
+            return repository;
+        }
+
+        return null;
     }
 
-    public boolean removeRepository(TaskRepository taskRepository) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public boolean removeRepository(TaskRepository repository) {
+
+        TracTaskRepository tracTaskRepository =
+                repository.getLookup().lookup(TracTaskRepository.class);
+        if (tracTaskRepository != null) {
+            persistence.removeRepository(tracTaskRepository);
+            taskRepositorys.remove(repository);
+//            List<String> taskIds = jiraTaskRepository.getTaskIds();
+//            TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
+//            for (String id : taskIds) {
+//                JiraTask task = jiraTaskRepository.getTaskElementById(id);
+//                if (task != null) {
+//                    jiraTaskRepository.getExtension().fireTaskRemoved(task);
+//                    factory.closeTask(task);
+//                }
+//
+//            }
+//            List<TaskQuery> querys = jiraTaskRepository.getQuerySupport().getTaskQuerys();
+//            for (TaskQuery query : querys) {
+//                jiraTaskRepository.getQuerySupport().removeTaskQuery(query);
+//            }
+
+            try {
+                FileObject baseDir1 = tracTaskRepository.getBaseDir();
+
+                baseDir1.delete();
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+            return true;
+        }
+
+        return false;
     }
 
     public List<TaskRepository> getRepositorys() {
+        if (!initiailzed.getAndSet(true)) {
+            taskRepositorys.addAll(persistence.getTracTaskRepositorys());
+
+        }
         return new ArrayList<TaskRepository>(taskRepositorys);
     }
 
