@@ -154,10 +154,14 @@ public class XmlRpcTracSession implements TracSession {
                     new Object[0]);
             for (Object name : components) {
                 //get a ticket component.
-                String componentId = (String) client.execute("ticket.component.get",//NOI18N
+                HashMap map = (HashMap) client.execute("ticket.component.get",//NOI18N
                         new Object[]{name});
                 //create and TicketComponent 
-                ticketComponents.add(new TicketComponent(componentId, (String) name));
+                //{description, name, owner}
+
+                ticketComponents.add(new TicketComponent((String) map.get("name"),//NOI18N
+                        (String) map.get("description"),//NOI18N
+                        (String) map.get("owner")));//NOI18N
             }
         } catch (XmlRpcException ex) {
             throw new TracException(ex);
@@ -178,10 +182,12 @@ public class XmlRpcTracSession implements TracSession {
                     new Object[0]);
             for (Object name : versions) {
                 //get a ticket version.
-                String id = (String) client.execute("ticket.version.get",//NOI18N
+                HashMap map = (HashMap) client.execute("ticket.version.get",//NOI18N
                         new Object[]{name});
                 //create and TicketComponent 
-                ticketVersions.add(new TicketVersion(id, (String) name));
+                // {description=, name, due, completed}
+                ticketVersions.add(new TicketVersion((String) map.get("name"),//NOI18N
+                        (String) map.get("description")));//NOI18N
             }
         } catch (XmlRpcException ex) {
             throw new TracException(ex);
@@ -226,10 +232,12 @@ public class XmlRpcTracSession implements TracSession {
                     new Object[0]);
             for (Object name : milestones) {
                 //get a ticket milestone.
-                String id = (String) client.execute("ticket.milestone.get",//NOI18N
+                HashMap map = (HashMap) client.execute("ticket.milestone.get",//NOI18N
                         new Object[]{name});
                 //create and TicketMilestone 
-                ticketMilestones.add(new TicketMilestone(id, (String) name));
+                //{description, name, due, completed}
+
+                ticketMilestones.add(new TicketMilestone((String) map.get("name"), (String) map.get("description")));
             }
         } catch (XmlRpcException ex) {
             throw new TracException(ex);

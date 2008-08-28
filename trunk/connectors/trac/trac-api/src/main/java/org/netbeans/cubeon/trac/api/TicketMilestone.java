@@ -22,19 +22,19 @@ package org.netbeans.cubeon.trac.api;
  */
 public class TicketMilestone {
 
-    private final String id;
     private final String name;
+    private final String description;
 
-    public TicketMilestone(String id, String name) {
-        this.id = id;
+    public TicketMilestone(String name, String description) {
         this.name = name;
-    }
-
-    public String getId() {
-        return id;
+        this.description = description;
     }
 
     public String getName() {
         return name;
+    }
+
+    public String getDescription() {
+        return description;
     }
 }
