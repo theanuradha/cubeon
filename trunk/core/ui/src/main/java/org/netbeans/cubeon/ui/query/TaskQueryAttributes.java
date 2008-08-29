@@ -7,7 +7,6 @@ package org.netbeans.cubeon.ui.query;
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
 
-import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuerySupportProvider;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuerySupportProvider.ConfigurationHandler;
