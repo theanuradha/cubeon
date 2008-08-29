@@ -18,17 +18,23 @@ package org.netbeans.cubeon.trac.repository;
 
 import java.awt.Image;
 import java.io.IOException;
+import org.netbeans.api.progress.ProgressHandle;
+import org.netbeans.api.progress.ProgressHandleFactory;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
+import org.netbeans.cubeon.trac.api.TracClient;
+import org.netbeans.cubeon.trac.api.TracException;
+import org.netbeans.cubeon.trac.api.TracSession;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 
 /**
  *
- * @author Anuradha
+ * @author Anuradha G
  */
 public class TracTaskRepository implements TaskRepository {
 
@@ -48,6 +54,8 @@ public class TracTaskRepository implements TaskRepository {
     private FileObject baseDir;
     private final TracRepositoryExtension extension;
     private State state = State.INACTIVE;
+    private final TracRepositoryAttributes repositoryAttributes;
+    private volatile TracSession session;
 
     public TracTaskRepository(TracTaskRepositoryProvider provider,
             String id, String name, String description) {
@@ -65,7 +73,7 @@ public class TracTaskRepository implements TaskRepository {
             }
         }
 
-    //repositoryAttributes = new JiraRepositoryAttributes(this);
+        repositoryAttributes = new TracRepositoryAttributes(this);
     ///handler = new TaskPersistenceHandler(this, baseDir, "tasks");//NOI18N
     //cache = new TaskPersistenceHandler(this, baseDir, "cache");//NOI18N
     // querySupport = new JiraQuerySupport(this, extension);
@@ -84,7 +92,7 @@ public class TracTaskRepository implements TaskRepository {
     }
 
     public Lookup getLookup() {
-        return Lookups.fixed(this,extension,provider);
+        return Lookups.fixed(this, extension, provider);
     }
 
     public Image getImage() {
@@ -153,12 +161,34 @@ public class TracTaskRepository implements TaskRepository {
     }
 
     void loadAttributes() {
-        //TODO load Trac Attributes
+        repositoryAttributes.loadAttributes();
 
         setState(State.ACTIVE);
     }
 
     public TracRepositoryExtension getExtension() {
         return extension;
+    }
+
+    public synchronized TracSession getSession() throws TracException {
+        if (session == null) {
+            reconnect();
+        }
+        return session;
+    }
+
+    public synchronized void reconnect() throws TracException {
+        ProgressHandle handle = ProgressHandleFactory.createHandle(
+                NbBundle.getMessage(TracTaskRepository.class, "LBL_Connecting", getName()));
+        handle.start();
+        handle.switchToIndeterminate();
+        try {
+            session = null;
+            //try to reconnect
+            session = Lookup.getDefault().lookup(TracClient.class).
+                    createTracSession(getURL(), getUserName(), getPassword());
+        } finally {
+            handle.finish();
+        }
     }
 }
