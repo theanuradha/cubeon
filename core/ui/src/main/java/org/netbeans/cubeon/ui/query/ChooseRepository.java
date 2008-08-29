@@ -7,9 +7,11 @@ package org.netbeans.cubeon.ui.query;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.Action;
 import org.netbeans.cubeon.tasks.core.api.TaskNodeFactory;
+import org.netbeans.cubeon.tasks.spi.query.TaskQuerySupportProvider;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.BeanTreeView;
@@ -29,7 +31,7 @@ final class ChooseRepository extends javax.swing.JPanel implements ExplorerManag
     private final transient ExplorerManager explorerManager = new ExplorerManager();
 
     /** Creates new form ChooseRepository */
-    ChooseRepository(final ChooseRepositoryWizard wizard, List<TaskRepository> repositorys) {
+    ChooseRepository(final ChooseRepositoryWizard wizard, List<TaskRepository> repositories) {
         initComponents();
         taskTreeView.setRootVisible(false);
         taskTreeView.setPopupAllowed(false);
@@ -41,7 +43,16 @@ final class ChooseRepository extends javax.swing.JPanel implements ExplorerManag
                 }
             }
         });
-        loadRepositorys(repositorys);
+        List<TaskRepository> supportedRepositories = new ArrayList<TaskRepository>();
+        //validate is repository supports Query
+        for (TaskRepository taskRepository : repositories) {
+            TaskQuerySupportProvider provider =
+                    taskRepository.getLookup().lookup(TaskQuerySupportProvider.class);
+            if (provider != null) {
+                supportedRepositories.add(taskRepository);
+            }
+        }
+        loadRepositorys(supportedRepositories);
     }
 
     @Override
