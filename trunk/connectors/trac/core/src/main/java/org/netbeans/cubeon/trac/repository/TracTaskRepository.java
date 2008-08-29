@@ -47,6 +47,7 @@ public class TracTaskRepository implements TaskRepository {
     private String password;
     private FileObject baseDir;
     private final TracRepositoryExtension extension;
+    private State state = State.INACTIVE;
 
     public TracTaskRepository(TracTaskRepositoryProvider provider,
             String id, String name, String description) {
@@ -83,7 +84,7 @@ public class TracTaskRepository implements TaskRepository {
     }
 
     public Lookup getLookup() {
-        return Lookups.fixed(this);
+        return Lookups.fixed(this,extension,provider);
     }
 
     public Image getImage() {
@@ -107,7 +108,12 @@ public class TracTaskRepository implements TaskRepository {
     }
 
     public State getState() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return state;//default
+    }
+
+    public void setState(State state) {
+        this.state = state;
+        extension.fireStateChanged(state);
     }
 
     public String getPassword() {
@@ -148,11 +154,11 @@ public class TracTaskRepository implements TaskRepository {
 
     void loadAttributes() {
         //TODO load Trac Attributes
+
+        setState(State.ACTIVE);
     }
 
     public TracRepositoryExtension getExtension() {
         return extension;
     }
-
-    
 }

@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepositoryType;
+import org.netbeans.cubeon.trac.repository.ui.ConfigurationHandlerImpl;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.filesystems.Repository;
@@ -152,7 +153,7 @@ public class TracTaskRepositoryProvider implements TaskRepositoryType {
     }
 
     public ConfigurationHandler createConfigurationHandler() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new ConfigurationHandlerImpl(this);
     }
 
     public FileObject getBaseDir() {
