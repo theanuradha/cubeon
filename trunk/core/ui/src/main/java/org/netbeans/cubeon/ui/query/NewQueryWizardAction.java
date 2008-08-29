@@ -39,6 +39,10 @@ public final class NewQueryWizardAction extends AbstractAction {
 
     public void preferredRepository(TaskRepository repository) {
         this.taskRepository = repository;
+        //validate is repository supports Query
+        TaskQuerySupportProvider supportProvider =
+                taskRepository.getLookup().lookup(TaskQuerySupportProvider.class);
+        setEnabled(supportProvider != null);
     }
 
     /**
