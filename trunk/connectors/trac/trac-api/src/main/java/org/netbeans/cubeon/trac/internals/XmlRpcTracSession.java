@@ -19,6 +19,7 @@ package org.netbeans.cubeon.trac.internals;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -187,8 +188,14 @@ public class XmlRpcTracSession implements TracSession {
                         new Object[]{name});
                 //create and TicketComponent 
                 // {description=, name, due, completed}
+                Object releaseObj = map.get("time");//NOI18N
+                Date release = null;
+                if (release instanceof Date) {
+                    release = (Date) releaseObj;
+                }
                 ticketVersions.add(new TicketVersion((String) map.get("name"),//NOI18N
-                        (String) map.get("description")));//NOI18N
+                        (String) map.get("description"),//NOI18N
+                        release));
             }
         } catch (XmlRpcException ex) {
             throw new TracException(ex);
@@ -237,8 +244,17 @@ public class XmlRpcTracSession implements TracSession {
                         new Object[]{name});
                 //create and TicketMilestone 
                 //{description, name, due, completed}
-
-                ticketMilestones.add(new TicketMilestone((String) map.get("name"), (String) map.get("description")));
+                Object dueObj = map.get("due");//NOI18N
+                Date due = null;
+                if (due instanceof Date) {
+                    due = (Date) dueObj;
+                }
+                Object completedObj = map.get("completed");//NOI18N
+                boolean completed=completedObj instanceof Boolean ?
+                    (Boolean)completedObj:false;
+                ticketMilestones.add(new TicketMilestone((String) map.get("name"),//NOI18N
+                        (String) map.get("description"), completed,
+                        due));
             }
         } catch (XmlRpcException ex) {
             throw new TracException(ex);

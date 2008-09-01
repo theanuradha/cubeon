@@ -14,35 +14,24 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.trac.api;
+package org.netbeans.cubeon.trac.utils;
 
-import java.util.Date;
+import org.netbeans.cubeon.trac.api.TracException;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 
 /**
  *
  * @author Anuradha
  */
-public class TicketVersion {
+public class TracExceptionHandler {
 
-    private final String name;
-    private final String description;
-    private final Date release;
-
-    public TicketVersion(String name, String description, Date release) {
-        this.name = name;
-        this.description = description;
-        this.release = release;
+    private TracExceptionHandler() {
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public Date getRelease() {
-        return release != null ? new Date(release.getTime()) : null;
+    public static void notify(TracException je) {
+        NotifyDescriptor descriptor = new NotifyDescriptor.Message(je.getMessage(),
+                NotifyDescriptor.WARNING_MESSAGE);
+        DialogDisplayer.getDefault().notify(descriptor);
     }
 }

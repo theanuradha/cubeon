@@ -16,6 +16,8 @@
  */
 package org.netbeans.cubeon.trac.api;
 
+import java.util.Date;
+
 /**
  *
  * @author Anuradha
@@ -24,10 +26,14 @@ public class TicketMilestone {
 
     private final String name;
     private final String description;
+    private final boolean completed;
+    private final Date due;
 
-    public TicketMilestone(String name, String description) {
+    public TicketMilestone(String name, String description, boolean completed, Date due) {
         this.name = name;
         this.description = description;
+        this.completed = completed;
+        this.due = due;
     }
 
     public String getName() {
@@ -36,5 +42,13 @@ public class TicketMilestone {
 
     public String getDescription() {
         return description;
+    }
+
+    public Date getDue() {
+        return due != null ? new Date(due.getTime()) : null;
+    }
+
+    public boolean isCompleted() {
+        return completed;
     }
 }

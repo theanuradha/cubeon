@@ -18,6 +18,8 @@ package org.netbeans.cubeon.trac.repository;
 
 import java.awt.Image;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
@@ -112,7 +114,7 @@ public class TracTaskRepository implements TaskRepository {
     }
 
     public void synchronize() {
-        throw new UnsupportedOperationException("Not supported yet.");
+       
     }
 
     public State getState() {
@@ -189,6 +191,22 @@ public class TracTaskRepository implements TaskRepository {
                     createTracSession(getURL(), getUserName(), getPassword());
         } finally {
             handle.finish();
+        }
+    }
+
+    public void updateAttributes() {
+        try {
+            setState(State.SYNCHRONIZING);
+            ProgressHandle handle = ProgressHandleFactory.createHandle(
+                    NbBundle.getMessage(TracTaskRepository.class,
+                    "LBL_Updating_Attributes", getName()));
+            repositoryAttributes.refresh(handle);
+            loadAttributes();
+            handle.finish();
+        } catch (TracException ex) {
+            Logger.getLogger(TracAttributesPersistence.class.getName()).
+                    log(Level.WARNING, ex.getMessage());
+            setState(State.ACTIVE);
         }
     }
 }
