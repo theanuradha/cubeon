@@ -18,7 +18,9 @@ package org.netbeans.cubeon.trac.repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.cubeon.trac.api.TicketFiled;
+import org.netbeans.cubeon.trac.api.TracException;
 
 /**
  *
@@ -28,12 +30,12 @@ public class TracRepositoryAttributes {
 
     private final TracTaskRepository repository;
     private List<TicketFiled> ticketFileds = new ArrayList<TicketFiled>(0);
+    private final TracAttributesPersistence persistence;
+    private final Object LOCK = new Object();
 
     public TracRepositoryAttributes(TracTaskRepository repository) {
         this.repository = repository;
-    }
-
-    void loadAttributes() {
+        persistence = new TracAttributesPersistence(this, repository.getBaseDir());
     }
 
     public TicketFiled getTicketFiledByName(String name) {
@@ -53,5 +55,21 @@ public class TracRepositoryAttributes {
 
     void setTicketFileds(List<TicketFiled> ticketFileds) {
         this.ticketFileds = new ArrayList<TicketFiled>(ticketFileds);
+    }
+
+    public TracTaskRepository getRepository() {
+        return repository;
+    }
+
+    void refresh(ProgressHandle progressHandle) throws TracException {
+        synchronized (LOCK) {
+
+            persistence.refresh(progressHandle);
+
+        }
+    }
+
+    public void loadAttributes() {
+        persistence.loadAttributes();
     }
 }
