@@ -18,6 +18,7 @@ package org.netbeans.cubeon.trac.internals;
 
 import java.util.List;
 import junit.framework.TestCase;
+import org.netbeans.cubeon.trac.api.Ticket;
 import org.netbeans.cubeon.trac.api.TicketComponent;
 import org.netbeans.cubeon.trac.api.TicketFiled;
 import org.netbeans.cubeon.trac.api.TicketMilestone;
@@ -179,5 +180,37 @@ public class XmlRpcTracSessionTest extends TestCase {
         }
         List<TicketFiled> result = instance.getTicketFileds();
         assertNotNull(result);
+    }
+
+    /**
+     * Test of getTicket method, of class XmlRpcTracSession.
+     */
+    public void testGetTicket() throws Exception {
+        System.out.println("getTicket");
+        int id = 1;
+        XmlRpcTracSession instance = tracSession;
+        if (tracSession == null) {
+            return;
+        }
+
+        Ticket result = instance.getTicket(id);
+        assertNotNull(result);
+
+    }
+
+    /**
+     * Test of getTickets method, of class XmlRpcTracSession.
+     */
+    public void testGetTickets() throws TracException {
+        System.out.println("getTickets");
+        System.out.println("getTicket");
+
+        XmlRpcTracSession instance = tracSession;
+        if (tracSession == null) {
+            return;
+        }
+
+        List<Ticket> result = instance.getTickets(1, 2);
+        assertTrue(result.size() > 0);
     }
 }

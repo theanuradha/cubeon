@@ -23,9 +23,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
+import org.netbeans.cubeon.trac.api.Ticket;
 import org.netbeans.cubeon.trac.api.TicketComponent;
 import org.netbeans.cubeon.trac.api.TicketFiled;
 import org.netbeans.cubeon.trac.api.TicketMilestone;
@@ -36,6 +39,7 @@ import org.netbeans.cubeon.trac.api.TicketStatus;
 import org.netbeans.cubeon.trac.api.TicketType;
 import org.netbeans.cubeon.trac.api.TicketVersion;
 import org.netbeans.cubeon.trac.api.TracException;
+import org.netbeans.cubeon.trac.api.TracKeys;
 import org.netbeans.cubeon.trac.api.TracSession;
 
 /**
@@ -250,8 +254,7 @@ public class XmlRpcTracSession implements TracSession {
                     due = (Date) dueObj;
                 }
                 Object completedObj = map.get("completed");//NOI18N
-                boolean completed=completedObj instanceof Boolean ?
-                    (Boolean)completedObj:false;
+                boolean completed = completedObj instanceof Boolean ? (Boolean) completedObj : false;
                 ticketMilestones.add(new TicketMilestone((String) map.get("name"),//NOI18N
                         (String) map.get("description"), completed,
                         due));
@@ -348,5 +351,75 @@ public class XmlRpcTracSession implements TracSession {
             throw new TracException(ex);
         }
         return ticketFileds;
+    }
+
+    public Ticket getTicket(int id) throws TracException {
+        try {
+            Object[] result = (Object[]) client.execute("ticket.get",
+                    new Object[]{id});
+
+            if (result != null && result.length == 4) {
+
+                return _extractTicket(result);
+            }
+            return null;
+        } catch (XmlRpcException ex) {
+            throw new TracException(ex);
+        }
+    }
+
+    private Ticket _extractTicket(Object[] result) {
+        Ticket ticket = null;
+
+        if (result != null && result.length == 4) {
+            int id = (Integer) result[0];
+            ticket = new Ticket(id);
+            Date cdate = (Date) result[1];
+            Date udate = (Date) result[2];
+            HashMap<String, Object> vaules = (HashMap<String, Object>) result[3];
+            Set<Entry<String, Object>> entrySet = vaules.entrySet();
+            for (Entry<String, Object> entry : entrySet) {
+                Object value = entry.getValue();
+                if (value != null) {
+                    ticket.put(entry.getKey(), String.valueOf(value));
+                }
+            }
+            if (cdate != null) {
+                ticket.put(TracKeys.CREATED_DATE, String.valueOf(cdate.getTime()));
+            }
+            if (udate != null) {
+                ticket.put(TracKeys.UPDATED_DATE, String.valueOf(udate.getTime()));
+            }
+        }
+        return ticket;
+    }
+
+    public List<Ticket> getTickets(int... ids) throws TracException {
+        List<Ticket> tickets = new ArrayList<Ticket>(ids.length);
+        try {
+            Object[] ticketCalls = new Object[ids.length];
+            int index = 0;
+            for (int id : ids) {
+                ticketCalls[index] = _createMultiCallElement("ticket.get", new Object[]{id});
+                index++;
+            }
+            Object[] objects = (Object[]) client.execute("system.multicall",
+                    new Object[]{ticketCalls});
+            for (Object object : objects) {
+                Object[] result = (Object[]) object;
+                for (Object o : result) {
+                    if (o instanceof Object[]) {
+                        Ticket ticket = _extractTicket((Object[]) o);
+                        if (ticket != null) {
+                            tickets.add(ticket);
+                        }
+                    }
+                }
+
+            }
+        } catch (XmlRpcException ex) {
+            throw new TracException(ex);
+        }
+        return tickets;
     }
 }
