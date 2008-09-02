@@ -219,7 +219,7 @@ public class XmlRpcTracSessionTest extends TestCase {
      * Test of createTicket method, of class XmlRpcTracSession.
      */
     public void testCreateTicket() throws TracException {
-        System.out.println("createTicket && deleteTicket");
+        System.out.println("createTicket ,updateTicket && deleteTicket");
         XmlRpcTracSession instance = tracSession;
         if (tracSession == null) {
             return;
