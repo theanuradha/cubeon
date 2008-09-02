@@ -66,6 +66,7 @@ public class XmlRpcTracSession implements TracSession {
             config.setBasicUserName(user);
             config.setBasicPassword(password);
             client = new XmlRpcClient();
+            client.setConfig(config);
             // validate connitivity and api version
             /**
              * Returns a list with three elements.
@@ -74,7 +75,7 @@ public class XmlRpcTracSession implements TracSession {
              * Changes to the major version indicate API breaking changes,
              * while minor version changes are simple additions, bug fixes, etc.
              */
-            Object[] versionInfo = (Object[]) client.execute(config,"system.getAPIVersion",//NOI18N
+            Object[] versionInfo = (Object[]) client.execute("system.getAPIVersion",//NOI18N
                     new Object[0]);
         //TODO validate trac version using versionInfo
         } catch (XmlRpcException ex) {
@@ -106,11 +107,11 @@ public class XmlRpcTracSession implements TracSession {
         List<TicketType> ticketTypes = new ArrayList<TicketType>();
         try {
             //get a list of all ticket type names.
-            Object[] types = (Object[]) client.execute(config,"ticket.type.getAll",//NOI18N
+            Object[] types = (Object[]) client.execute("ticket.type.getAll",//NOI18N
                     new Object[0]);
             for (Object typeName : types) {
                 //get a ticket type.
-                String typeId = (String) client.execute(config,"ticket.type.get",//NOI18N
+                String typeId = (String) client.execute("ticket.type.get",//NOI18N
                         new Object[]{typeName});
                 //create and TicketType 
                 ticketTypes.add(new TicketType(typeId, (String) typeName));
@@ -130,11 +131,11 @@ public class XmlRpcTracSession implements TracSession {
         List<TicketPriority> ticketPriorities = new ArrayList<TicketPriority>();
         try {
             //get a list of all ticket priority names.
-            Object[] priorities = (Object[]) client.execute(config,"ticket.priority.getAll",//NOI18N
+            Object[] priorities = (Object[]) client.execute("ticket.priority.getAll",//NOI18N
                     new Object[0]);
             for (Object name : priorities) {
                 //get a ticket priority.
-                String prioritiesId = (String) client.execute(config,"ticket.priority.get",//NOI18N
+                String prioritiesId = (String) client.execute("ticket.priority.get",//NOI18N
                         new Object[]{name});
                 //create and TicketPriority 
                 ticketPriorities.add(new TicketPriority(prioritiesId, (String) name));
@@ -154,11 +155,11 @@ public class XmlRpcTracSession implements TracSession {
         List<TicketComponent> ticketComponents = new ArrayList<TicketComponent>();
         try {
             //get a list of all ticket component names.
-            Object[] components = (Object[]) client.execute(config,"ticket.component.getAll",//NOI18N
+            Object[] components = (Object[]) client.execute("ticket.component.getAll",//NOI18N
                     new Object[0]);
             for (Object name : components) {
                 //get a ticket component.
-                HashMap map = (HashMap) client.execute(config,"ticket.component.get",//NOI18N
+                HashMap map = (HashMap) client.execute("ticket.component.get",//NOI18N
                         new Object[]{name});
                 //create and TicketComponent 
                 //{description, name, owner}
@@ -182,11 +183,11 @@ public class XmlRpcTracSession implements TracSession {
         List<TicketVersion> ticketVersions = new ArrayList<TicketVersion>();
         try {
             //get a list of all ticket version names.
-            Object[] versions = (Object[]) client.execute(config,"ticket.version.getAll",//NOI18N
+            Object[] versions = (Object[]) client.execute("ticket.version.getAll",//NOI18N
                     new Object[0]);
             for (Object name : versions) {
                 //get a ticket version.
-                HashMap map = (HashMap) client.execute(config,"ticket.version.get",//NOI18N
+                HashMap map = (HashMap) client.execute("ticket.version.get",//NOI18N
                         new Object[]{name});
                 //create and TicketComponent 
                 // {description=, name, due, completed}
@@ -214,11 +215,11 @@ public class XmlRpcTracSession implements TracSession {
         List<TicketSeverity> ticketSeverities = new ArrayList<TicketSeverity>();
         try {
             //get a list of all ticket severity names.
-            Object[] severities = (Object[]) client.execute(config,"ticket.severity.getAll",//NOI18N
+            Object[] severities = (Object[]) client.execute("ticket.severity.getAll",//NOI18N
                     new Object[0]);
             for (Object name : severities) {
                 //get a ticket severity.
-                String id = (String) client.execute(config,"ticket.severity.get",//NOI18N
+                String id = (String) client.execute("ticket.severity.get",//NOI18N
                         new Object[]{name});
                 //create and TicketSeverity 
                 ticketSeverities.add(new TicketSeverity(id, (String) name));
@@ -238,11 +239,11 @@ public class XmlRpcTracSession implements TracSession {
         List<TicketMilestone> ticketMilestones = new ArrayList<TicketMilestone>();
         try {
             //get a list of all ticket milestone names.
-            Object[] milestones = (Object[]) client.execute(config,"ticket.milestone.getAll",//NOI18N
+            Object[] milestones = (Object[]) client.execute("ticket.milestone.getAll",//NOI18N
                     new Object[0]);
             for (Object name : milestones) {
                 //get a ticket milestone.
-                HashMap map = (HashMap) client.execute(config,"ticket.milestone.get",//NOI18N
+                HashMap map = (HashMap) client.execute("ticket.milestone.get",//NOI18N
                         new Object[]{name});
                 //create and TicketMilestone 
                 //{description, name, due, completed}
@@ -272,11 +273,11 @@ public class XmlRpcTracSession implements TracSession {
         List<TicketResolution> ticketResolutions = new ArrayList<TicketResolution>();
         try {
             //get a list of all ticket resolution names.
-            Object[] resolutions = (Object[]) client.execute(config,"ticket.resolution.getAll",//NOI18N
+            Object[] resolutions = (Object[]) client.execute("ticket.resolution.getAll",//NOI18N
                     new Object[0]);
             for (Object name : resolutions) {
                 //get a ticket resolution.
-                String id = (String) client.execute(config,"ticket.resolution.get",//NOI18N
+                String id = (String) client.execute("ticket.resolution.get",//NOI18N
                         new Object[]{name});
                 //create and TicketResolution
                 ticketResolutions.add(new TicketResolution(id, (String) name));
@@ -296,11 +297,11 @@ public class XmlRpcTracSession implements TracSession {
         List<TicketStatus> ticketStatuses = new ArrayList<TicketStatus>();
         try {
             //get a list of all ticket status names.
-            Object[] statuses = (Object[]) client.execute(config,"ticket.status.getAll",//NOI18N
+            Object[] statuses = (Object[]) client.execute("ticket.status.getAll",//NOI18N
                     new Object[0]);
             for (Object name : statuses) {
                 //get a ticket status.
-                String id = (String) client.execute(config,"ticket.status.get",//NOI18N
+                String id = (String) client.execute("ticket.status.get",//NOI18N
                         new Object[]{name});
                 //create and TicketStatus
                 ticketStatuses.add(new TicketStatus(id, (String) name));
@@ -320,7 +321,7 @@ public class XmlRpcTracSession implements TracSession {
         List<TicketFiled> ticketFileds = new ArrayList<TicketFiled>();
         try {
             //Return a list of all ticket fields fields.
-            Object[] milestones = (Object[]) client.execute(config,"ticket.getTicketFields",//NOI18N
+            Object[] milestones = (Object[]) client.execute("ticket.getTicketFields",//NOI18N
                     new Object[0]);
             for (Object o : milestones) {
                 //get a ticket field info.
@@ -353,7 +354,7 @@ public class XmlRpcTracSession implements TracSession {
 
     public Ticket getTicket(int id) throws TracException {
         try {
-            Object[] result = (Object[]) client.execute(config,"ticket.get",//NOI18N
+            Object[] result = (Object[]) client.execute("ticket.get",//NOI18N
                     new Object[]{id});
 
             if (result != null && result.length == 4) {
@@ -402,7 +403,7 @@ public class XmlRpcTracSession implements TracSession {
                         new Object[]{id});
                 index++;
             }
-            Object[] objects = (Object[]) client.execute(config,"system.multicall",//NOI18N
+            Object[] objects = (Object[]) client.execute("system.multicall",//NOI18N
                     new Object[]{ticketCalls});
             for (Object object : objects) {
                 Object[] result = (Object[]) object;
@@ -425,7 +426,7 @@ public class XmlRpcTracSession implements TracSession {
     public Ticket createTicket(String summary, String description, Map<String, Object> attributes, boolean notify) throws TracException {
         Ticket ticket = null;
         try {
-            Object execute = client.execute(config,"ticket.create",//NOI18N
+            Object execute = client.execute("ticket.create",//NOI18N
                     new Object[]{summary, description, attributes, notify});
             if (execute instanceof Integer) {
                 ticket = getTicket((Integer) execute);
@@ -439,7 +440,7 @@ public class XmlRpcTracSession implements TracSession {
     public Ticket updateTicket(String comment, Ticket ticket, boolean notify) throws TracException {
 
         try {
-            Object execute = client.execute(config,"ticket.update",//NOI18N
+            Object execute = client.execute("ticket.update",//NOI18N
                     new Object[]{ticket.getId(), comment, ticket.getAttributes(), notify});
             if (execute instanceof Integer) {
                 ticket = getTicket((Integer) execute);
@@ -452,7 +453,7 @@ public class XmlRpcTracSession implements TracSession {
 
     public void deleteTicket(Ticket ticket) throws TracException {
         try {
-            Object execute = client.execute(config,"ticket.delete",//NOI18N
+            Object execute = client.execute("ticket.delete",//NOI18N
                     new Object[]{ticket.getId()});
 
 
