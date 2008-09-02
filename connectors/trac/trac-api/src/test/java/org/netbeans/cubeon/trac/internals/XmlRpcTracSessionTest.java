@@ -231,7 +231,7 @@ public class XmlRpcTracSessionTest extends TestCase {
         attributes.put(TracKeys.PRIORITY, "major");
         attributes.put(TracKeys.COMPONENT, "Test");
         attributes.put(TracKeys.TYPE, "task");
-        attributes.put(TracKeys.REPORTER, "anuradha");
+        attributes.put(TracKeys.REPORTER, tracSession);
         attributes.put(TracKeys.KEYWORDS, "test");
         boolean notify = false;
         Ticket ticket = tracSession.createTicket(summary, description,
