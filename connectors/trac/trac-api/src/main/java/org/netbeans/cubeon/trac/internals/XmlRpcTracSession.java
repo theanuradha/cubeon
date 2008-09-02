@@ -66,7 +66,6 @@ public class XmlRpcTracSession implements TracSession {
             config.setBasicUserName(user);
             config.setBasicPassword(password);
             client = new XmlRpcClient();
-            client.setConfig(config);
             // validate connitivity and api version
             /**
              * Returns a list with three elements.
