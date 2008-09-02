@@ -49,6 +49,7 @@ public class XmlRpcTracSession implements TracSession {
 
     private final XmlRpcClient client;
     private XmlRpcClientConfigImpl config;
+
     /**
      * Create XmlRpcTracSession for trac 
      * @param url
@@ -460,5 +461,21 @@ public class XmlRpcTracSession implements TracSession {
         } catch (XmlRpcException ex) {
             throw new TracException(ex);
         }
+    }
+
+    public List<String> getTicketActions(int id) throws TracException {
+        List<String> actions = new ArrayList<String>();
+        try {
+            Object[] result = (Object[]) client.execute("ticket.getAvailableActions",//NOI18N
+                    new Object[]{id});
+
+            for (Object object : result) {
+                actions.add((String) object);
+            }
+
+        } catch (XmlRpcException ex) {
+            throw new TracException(ex);
+        }
+        return actions;
     }
 }
