@@ -17,6 +17,7 @@
 package org.netbeans.cubeon.trac.api;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -102,4 +103,31 @@ public interface TracSession {
      * @throws org.netbeans.cubeon.trac.api.TracException
      */
     List<Ticket> getTickets(int... ids) throws TracException;
+
+    /**
+     *
+     * @param summary
+     * @param description
+     * @param attributes
+     * @param notify
+     * @return
+     * @throws org.netbeans.cubeon.trac.api.TracException
+     */
+    Ticket createTicket(String summary, String description,
+            Map<String, Object> attributes, boolean notify) throws TracException;
+
+    /**
+     * 
+     * @param ticket
+     * @return Updated Ticket
+     * @throws org.netbeans.cubeon.trac.api.TracException
+     */
+    Ticket updateTicket(String comment,Ticket ticket, boolean notify) throws TracException;
+
+    /**
+     *
+     * @param ticket
+     * @throws org.netbeans.cubeon.trac.api.TracException
+     */
+    void deleteTicket(Ticket ticket) throws TracException;
 }

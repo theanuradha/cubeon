@@ -30,6 +30,9 @@ public class Ticket {
 
     private int id;
     private final Map<String, String> map = new HashMap<String, String>();
+    private long createdDate = 0;
+    private long updatedDate = 0;
+
     public Ticket(int id, String summary, String description) {
         this.id = id;
         put(SUMMARY, summary);
@@ -132,6 +135,26 @@ public class Ticket {
      */
     public void clear() {
         map.clear();
+    }
+
+    public Map<String, String> getAttributes() {
+        return new HashMap<String, String>(map);
+    }
+
+    public long getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(long createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public long getUpdatedDate() {
+        return updatedDate;
+    }
+
+    public void setUpdatedDate(long updatedDate) {
+        this.updatedDate = updatedDate;
     }
 
     @Override

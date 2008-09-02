@@ -16,7 +16,9 @@
  */
 package org.netbeans.cubeon.trac.internals;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import junit.framework.TestCase;
 import org.netbeans.cubeon.trac.api.Ticket;
 import org.netbeans.cubeon.trac.api.TicketComponent;
@@ -29,6 +31,7 @@ import org.netbeans.cubeon.trac.api.TicketStatus;
 import org.netbeans.cubeon.trac.api.TicketType;
 import org.netbeans.cubeon.trac.api.TicketVersion;
 import org.netbeans.cubeon.trac.api.TracException;
+import org.netbeans.cubeon.trac.api.TracKeys;
 
 /**
  *
@@ -203,8 +206,6 @@ public class XmlRpcTracSessionTest extends TestCase {
      */
     public void testGetTickets() throws TracException {
         System.out.println("getTickets");
-        System.out.println("getTicket");
-
         XmlRpcTracSession instance = tracSession;
         if (tracSession == null) {
             return;
@@ -212,5 +213,37 @@ public class XmlRpcTracSessionTest extends TestCase {
 
         List<Ticket> result = instance.getTickets(1, 2);
         assertTrue(result.size() > 0);
+    }
+
+    /**
+     * Test of createTicket method, of class XmlRpcTracSession.
+     */
+    public void testCreateTicket() throws TracException {
+        System.out.println("createTicket && deleteTicket");
+        XmlRpcTracSession instance = tracSession;
+        if (tracSession == null) {
+            return;
+        }
+
+        String summary = "Test Trac AP1 Summary";
+        String description = "Test Description";
+        Map<String, Object> attributes = new HashMap<String, Object>();
+        attributes.put(TracKeys.PRIORITY, "major");
+        attributes.put(TracKeys.COMPONENT, "Test");
+        attributes.put(TracKeys.TYPE, "task");
+        attributes.put(TracKeys.REPORTER, "anuradha");
+        attributes.put(TracKeys.KEYWORDS, "test");
+        boolean notify = false;
+        Ticket ticket = tracSession.createTicket(summary, description,
+                attributes, notify);
+        assertNotNull(ticket);
+        System.out.println(ticket.toString() + ticket.getAttributes().toString());
+        //update some values
+        ticket = tracSession.updateTicket("Update Test", ticket, false);
+        ticket.setSummary(summary + " UPDATED");
+        System.out.println(ticket.toString() + ticket.getAttributes().toString());
+        tracSession.deleteTicket(ticket);
+
+
     }
 }
