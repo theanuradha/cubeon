@@ -86,4 +86,20 @@ public interface TracSession {
      * @throws org.netbeans.cubeon.trac.api.TracException
      */
     List<TicketFiled> getTicketFileds() throws TracException;
+
+    /**
+     * Get Ticket BY ticket Id
+     * @param id ticket id
+     * @return Ticket may be nul
+     * @throws org.netbeans.cubeon.trac.api.TracExceptionl
+     */
+    Ticket getTicket(int id) throws TracException;
+
+    /**
+     *  Get list of tickets by Id's
+     * @param ids tikect Ids
+     * @return List Of tickets
+     * @throws org.netbeans.cubeon.trac.api.TracException
+     */
+    List<Ticket> getTickets(int... ids) throws TracException;
 }
