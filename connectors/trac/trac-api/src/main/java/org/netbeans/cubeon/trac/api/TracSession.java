@@ -122,7 +122,7 @@ public interface TracSession {
      * @return Updated Ticket
      * @throws org.netbeans.cubeon.trac.api.TracException
      */
-    Ticket updateTicket(String comment,Ticket ticket, boolean notify) throws TracException;
+    Ticket updateTicket(String comment, Ticket ticket, boolean notify) throws TracException;
 
     /**
      *
@@ -130,4 +130,12 @@ public interface TracSession {
      * @throws org.netbeans.cubeon.trac.api.TracException
      */
     void deleteTicket(Ticket ticket) throws TracException;
+
+    /**
+     * Returns the actions that can be performed on the ticket.
+     * @param id
+     * @return
+     * @throws org.netbeans.cubeon.trac.api.TracException
+     */
+    List<String> getTicketActions(int id) throws TracException;
 }
