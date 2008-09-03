@@ -186,41 +186,10 @@ public class XmlRpcTracSessionTest extends TestCase {
     }
 
     /**
-     * Test of getTicket method, of class XmlRpcTracSession.
+     * Test of Test Ticket Interface methods, of class XmlRpcTracSession.
      */
-    public void testGetTicket() throws Exception {
-        System.out.println("getTicket");
-        int id = 1;
-        XmlRpcTracSession instance = tracSession;
-        if (tracSession == null) {
-            return;
-        }
-
-        Ticket result = instance.getTicket(id);
-        assertNotNull(result);
-
-    }
-
-    /**
-     * Test of getTickets method, of class XmlRpcTracSession.
-     */
-    public void testGetTickets() throws TracException {
-        System.out.println("getTickets");
-        XmlRpcTracSession instance = tracSession;
-        if (tracSession == null) {
-            return;
-        }
-
-        List<Ticket> result = instance.getTickets(1, 2);
-        assertTrue(result.size() > 0);
-    }
-
-    /**
-     * Test of createTicket method, of class XmlRpcTracSession.
-     */
-    public void testCreateTicket() throws TracException {
-        System.out.println("createTicket ,updateTicket && deleteTicket");
-        XmlRpcTracSession instance = tracSession;
+    public void testTicketInterface() throws TracException {
+        System.out.println("Test Ticket Interface");
         if (tracSession == null) {
             return;
         }
@@ -234,16 +203,42 @@ public class XmlRpcTracSessionTest extends TestCase {
         //attributes.put(TracKeys.REPORTER, "");
         attributes.put(TracKeys.KEYWORDS, "test");
         boolean notify = false;
+        //test createTicket
+        System.out.println("createTicket");
         Ticket ticket = tracSession.createTicket(summary, description,
                 attributes, notify);
         assertNotNull(ticket);
-        System.out.println(ticket.toString() + ticket.getAttributes().toString());
+        //test getTicket
+        System.out.println("getTicket");
+        Ticket result = tracSession.getTicket(ticket.getTicketId());
+        assertNotNull(result);
+        //test getTickets
+        System.out.println("getTickets");
+        List<Ticket> tickets = tracSession.getTickets(ticket.getTicketId());
+        assertEquals(1, tickets.size());
         //update some values
+        summary += " UPDATED";
+        ticket.setSummary(summary);
+        ticket.put(TracKeys.TYPE, "enhancement");
+        //test getTicketActions
+        List<String> actions = tracSession.getTicketActions(ticket.getTicketId());
+        System.out.println(actions);
+        //test updateTicket
+        System.out.println("updateTicket");
         ticket = tracSession.updateTicket("Update Test", ticket, false);
-        ticket.setSummary(summary + " UPDATED");
-        System.out.println(ticket.toString() + ticket.getAttributes().toString());
+        assertEquals(summary, ticket.getSummary());
+        assertEquals("enhancement", ticket.get(TracKeys.TYPE));
+        //test deleteTicket
+        System.out.println("deleteTicket");
         tracSession.deleteTicket(ticket);
-
-
+        //try to get ticket and validate
+        try {
+            tracSession.getTicket(ticket.getTicketId());
+            fail(" Delete fail- Ticket:" + ticket.getTicketId() + " Not Deleted as expected");
+        } catch (TracException tracException) {
+            //expected result will throw ticket not found exception
+            System.out.println(tracException.getMessage());
+        }
     }
+
 }
