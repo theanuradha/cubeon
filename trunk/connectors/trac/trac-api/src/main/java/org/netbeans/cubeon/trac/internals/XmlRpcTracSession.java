@@ -442,7 +442,7 @@ public class XmlRpcTracSession implements TracSession {
 
         try {
             Object execute = client.execute("ticket.update",//NOI18N
-                    new Object[]{ticket.getId(), comment, ticket.getAttributes(), notify});
+                    new Object[]{ticket.getTicketId(), comment, ticket.getAttributes(), notify});
             if (execute instanceof Integer) {
                 ticket = getTicket((Integer) execute);
             }
@@ -454,8 +454,8 @@ public class XmlRpcTracSession implements TracSession {
 
     public void deleteTicket(Ticket ticket) throws TracException {
         try {
-            Object execute = client.execute("ticket.delete",//NOI18N
-                    new Object[]{ticket.getId()});
+            client.execute("ticket.delete",//NOI18N
+                    new Object[]{ticket.getTicketId()});
 
 
         } catch (XmlRpcException ex) {

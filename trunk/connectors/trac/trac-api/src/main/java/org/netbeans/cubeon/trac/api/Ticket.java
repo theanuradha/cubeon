@@ -43,11 +43,11 @@ public class Ticket {
         this.id = id;
     }
 
-    public int getId() {
+    public int getTicketId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setTicketId(int id) {
         this.id = id;
     }
 
