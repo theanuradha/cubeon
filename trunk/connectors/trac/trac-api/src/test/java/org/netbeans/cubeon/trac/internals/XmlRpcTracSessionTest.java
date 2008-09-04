@@ -39,7 +39,8 @@ import org.netbeans.cubeon.trac.api.TracKeys;
  */
 public class XmlRpcTracSessionTest extends TestCase {
 
-    XmlRpcTracSession tracSession;
+    private XmlRpcTracSession tracSession;
+    private String user;
 
     public XmlRpcTracSessionTest(String testName) {
         super(testName);
@@ -49,8 +50,9 @@ public class XmlRpcTracSessionTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         try {
+            user = "anuradha";
             tracSession = new XmlRpcTracSession("http://192.168.1.100:8000/argos-dev",
-                    "anuradha", "a123");
+                    user, "a123");
         } catch (TracException tracException) {
             System.out.println(tracException.getMessage());
             System.out.println("XmlRpcTracSession : Connection Not found. " +
@@ -205,17 +207,23 @@ public class XmlRpcTracSessionTest extends TestCase {
         boolean notify = false;
         //test createTicket
         System.out.println("createTicket");
-        Ticket ticket = tracSession.createTicket(summary, description,
+        Ticket ticket;
+        ticket = tracSession.createTicket(summary, description,
                 attributes, notify);
         assertNotNull(ticket);
         //test getTicket
         System.out.println("getTicket");
-        Ticket result = tracSession.getTicket(ticket.getTicketId());
-        assertNotNull(result);
+        ticket = tracSession.getTicket(ticket.getTicketId());
+        assertNotNull(ticket);
         //test getTickets
         System.out.println("getTickets");
         List<Ticket> tickets = tracSession.getTickets(ticket.getTicketId());
         assertEquals(1, tickets.size());
+        //test queryTickets
+        List<Integer> queryTickets = tracSession.queryTickets(
+                "owner="+ user+"&status!=closed&component=Test");
+        assertEquals(1, queryTickets.size());
+
         //update some values
         summary += " UPDATED";
         ticket.setSummary(summary);
@@ -240,5 +248,4 @@ public class XmlRpcTracSessionTest extends TestCase {
             System.out.println(tracException.getMessage());
         }
     }
-
 }
