@@ -479,14 +479,14 @@ public class XmlRpcTracSession implements TracSession {
         return actions;
     }
 
-    public List<String> queryTickets(String query) throws TracException {
-        List<String> ids = new ArrayList<String>();
+    public List<Integer> queryTickets(String query) throws TracException {
+        List<Integer> ids = new ArrayList<Integer>();
         try {
             Object[] result = (Object[]) client.execute("ticket.query",//NOI18N
                     new Object[]{query});
 
             for (Object object : result) {
-                ids.add((String) object);
+                ids.add((Integer) object);
             }
 
         } catch (XmlRpcException ex) {

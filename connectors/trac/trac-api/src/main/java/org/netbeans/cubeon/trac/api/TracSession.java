@@ -143,18 +143,21 @@ public interface TracSession {
      * Perform a ticket query, returning a list of ticket ID's.
      * @param query “query language” for specifying query filters. Basically, the filters are separated by ampersands (&). Each filter then consists of the ticket field name, an operator, and one or more values. More than one value are separated by a pipe (|), meaning that the filter matches any of the values.
      *
-     * The available operators are:
-     *  =	 the field content exactly matches the one of the values
-     *  ~=	 the field content contains one or more of the values
-     *  ^=	 the field content starts with one of the values
-     *  $=	 the field content ends with one of the values
-     * All of these operators can also be negated:
-     *  !=	 the field content matches none of the values
-     *  !~=	 the field content does not contain any of the values
-     *  !^=	 the field content does not start with any of the values
-     *  !$=	 the field content does not end with any of the values
+     * <br><b>The available operators are:</b></br>
+     *  <br>=	 the field content exactly matches the one of the values
+     *  <br>~=	 the field content contains one or more of the values
+     *  <br>^=	 the field content starts with one of the values
+     *  <br>$=	 the field content ends with one of the values
+     *  <br>
+     * <br><b>All of these operators can also be negated</b></br>
+     *  <br>!=	 the field content matches none of the values
+     *  <br>!~=	 the field content does not contain any of the values
+     *  <br>!^=	 the field content does not start with any of the values
+     *  <br>!$=	 the field content does not end with any of the values
+     *  <br>
+     *  <br<b> Ex: status!=closed&component=Test</b>
      * @return    a list of ticket ID's.
      * @throws org.netbeans.cubeon.trac.api.TracException
      */
-    List<String> queryTickets(String query) throws TracException;
+    List<Integer> queryTickets(String query) throws TracException;
 }
