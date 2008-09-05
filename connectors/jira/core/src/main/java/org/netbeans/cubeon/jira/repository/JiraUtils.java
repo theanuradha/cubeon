@@ -177,7 +177,7 @@ public class JiraUtils {
         issue = js.createTask(issue);
 
         repository.remove(jiraTask);
-        jiraTask.setUrlString(repository.getURL() + "/browse/" + issue.getKey());//NOI18N
+
         jiraTask.setId(issue.getKey());
         jiraTask.setLocal(false);
         JiraRemoteTask remoteTask = issueToTask(repository, issue);

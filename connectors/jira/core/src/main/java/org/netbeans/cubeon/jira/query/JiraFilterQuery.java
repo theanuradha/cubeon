@@ -96,7 +96,6 @@ public class JiraFilterQuery extends AbstractJiraQuery {
                                         repository.update(remoteIssue, element.getLookup().lookup(JiraTask.class));
                                     } else {
                                         JiraTask jiraTask = new JiraTask(remoteIssue.getKey(), remoteIssue.getSummary(), remoteIssue.getDescription(), repository);
-                                        jiraTask.setUrlString(repository.getURL() + "/browse/" + remoteIssue.getKey());//NOI18N
                                         repository.update(remoteIssue, jiraTask);
                                         element = jiraTask;
                                     }
