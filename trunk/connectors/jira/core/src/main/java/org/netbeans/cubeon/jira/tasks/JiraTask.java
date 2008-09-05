@@ -154,22 +154,20 @@ public class JiraTask extends JiraRemoteTask implements TaskElement {
     }
 
     public String getUrlString() {
-        return urlString;
+        return taskRepository.getURL() + "/browse/" + getId();
     }
 
-    public void setUrlString(String urlString) {
-        this.urlString = urlString;
-    }
+  
 
     public URL getUrl() {
-        if (urlString != null) {
+        
             try {
-                return new URL(urlString);
+                return new URL(getUrlString());
             } catch (MalformedURLException ex) {
                 //ignore
             }
 
-        }
+        
         return null;
     }
 

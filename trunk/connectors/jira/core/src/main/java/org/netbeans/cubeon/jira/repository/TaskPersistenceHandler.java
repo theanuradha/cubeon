@@ -340,7 +340,7 @@ class TaskPersistenceHandler {
                 modified = Boolean.parseBoolean(modifiedTag);
             }
 
-            String url = element.getAttribute(TAG_URL);
+
 
             String newcomment = element.getAttribute(TAG_COMMENT);
 
@@ -391,7 +391,7 @@ class TaskPersistenceHandler {
             jiraTask.setLocal(local);
             jiraTask.setModifiedFlag(modified);
 
-            jiraTask.setUrlString(url);
+
 
             jiraTask.getActionsProvider().setActions(actions);
             jiraTask.setAction(selectedAction);
@@ -595,9 +595,7 @@ class TaskPersistenceHandler {
                 taskElement.removeAttribute(TAG_MODIFIED_FLAG);
             }
 
-            if (task.getUrlString() != null) {
-                taskElement.setAttribute(TAG_URL, task.getUrlString());
-            }
+          
 
 
 
