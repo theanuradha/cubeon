@@ -30,7 +30,7 @@ import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 import org.netbeans.cubeon.trac.api.Ticket;
 import org.netbeans.cubeon.trac.api.TicketComponent;
-import org.netbeans.cubeon.trac.api.TicketFiled;
+import org.netbeans.cubeon.trac.api.TicketField;
 import org.netbeans.cubeon.trac.api.TicketMilestone;
 import org.netbeans.cubeon.trac.api.TicketPriority;
 import org.netbeans.cubeon.trac.api.TicketResolution;
@@ -314,12 +314,12 @@ public class XmlRpcTracSession implements TracSession {
     }
 
     /**
-     * Get All TicketFiled on remote server
-     * @return Trac TicketFiled
+     * Get All TicketField on remote server
+     * @return Trac TicketField
      * @throws org.netbeans.cubeon.trac.api.TracException
      */
-    public List<TicketFiled> getTicketFileds() throws TracException {
-        List<TicketFiled> ticketFileds = new ArrayList<TicketFiled>();
+    public List<TicketField> getTicketFields() throws TracException {
+        List<TicketField> ticketFields = new ArrayList<TicketField>();
         try {
             //Return a list of all ticket fields fields.
             Object[] milestones = (Object[]) client.execute("ticket.getTicketFields",//NOI18N
@@ -344,13 +344,13 @@ public class XmlRpcTracSession implements TracSession {
                 }
                 //converte to boolean 
                 final boolean b = optional == null ? false : optional;
-                //create and TicketFiled
-                ticketFileds.add(new TicketFiled(name, label, value, type, b, options));
+                //create and TicketField
+                ticketFields.add(new TicketField(name, label, value, type, b, options));
             }
         } catch (XmlRpcException ex) {
             throw new TracException(ex);
         }
-        return ticketFileds;
+        return ticketFields;
     }
 
     public Ticket getTicket(int id) throws TracException {

@@ -22,7 +22,7 @@ import java.util.Map;
 import junit.framework.TestCase;
 import org.netbeans.cubeon.trac.api.Ticket;
 import org.netbeans.cubeon.trac.api.TicketComponent;
-import org.netbeans.cubeon.trac.api.TicketFiled;
+import org.netbeans.cubeon.trac.api.TicketField;
 import org.netbeans.cubeon.trac.api.TicketMilestone;
 import org.netbeans.cubeon.trac.api.TicketPriority;
 import org.netbeans.cubeon.trac.api.TicketResolution;
@@ -183,7 +183,7 @@ public class XmlRpcTracSessionTest extends TestCase {
         if (tracSession == null) {
             return;
         }
-        List<TicketFiled> result = instance.getTicketFileds();
+        List<TicketField> result = instance.getTicketFields();
         assertNotNull(result);
     }
 

@@ -44,4 +44,9 @@ public class TicketComponent {
     public String getOwner() {
         return owner;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

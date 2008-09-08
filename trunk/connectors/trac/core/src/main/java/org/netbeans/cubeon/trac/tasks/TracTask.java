@@ -20,10 +20,18 @@ import java.awt.Image;
 import java.net.MalformedURLException;
 import java.net.URL;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
+import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
+import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
+import org.netbeans.cubeon.tasks.spi.task.TaskResolution;
+import org.netbeans.cubeon.tasks.spi.task.TaskSeverity;
+import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
+import org.netbeans.cubeon.tasks.spi.task.TaskType;
 import org.netbeans.cubeon.trac.api.Ticket;
+import org.netbeans.cubeon.trac.api.TracKeys;
 import org.netbeans.cubeon.trac.repository.TracTaskRepository;
 import org.openide.util.Lookup;
+import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 
 /**
@@ -33,15 +41,15 @@ import org.openide.util.lookup.Lookups;
 public class TracTask extends Ticket implements TaskElement {
 
     private TracTaskRepository taskRepository;
+    private final TracTaskElementExtension extension;
+    private final TaskEditorProvider editorProvider;
 
     public TracTask(TracTaskRepository taskRepository,
             int ticketId, String summary, String description) {
         super(ticketId, summary, description);
         this.taskRepository = taskRepository;
-    }
-
-    public TracTask(int id) {
-        super(id);
+        extension = new TracTaskElementExtension(this);
+        editorProvider=new TaskEditorProviderImpl(this);
     }
 
     public String getId() {
@@ -56,20 +64,83 @@ public class TracTask extends Ticket implements TaskElement {
         return getId() + " : " + getName();
     }
 
+    public TaskPriority getPriority() {
+        String priority = get(TracKeys.PRIORITY);
+        //resolve priority using PriorityProvider
+        return priority != null ? taskRepository.getPriorityProvider().
+                getTaskPriorityById(priority) : null;
+    }
+
+    public TaskSeverity getSeverity() {
+        String severity = get(TracKeys.SEVERITY);
+        //resolve Severity using SeverityProvider
+        return severity != null ? taskRepository.getSeverityProvider().
+                getTaskSeverityById(severity) : null;
+    }
+
+    public TaskStatus getStatus() {
+        String status = get(TracKeys.STATUS);
+        //resolve status using StatusProvider
+        return status != null ? taskRepository.getStatusProvider().
+                getTaskStatusById(status) : null;
+    }
+
     public TaskRepository getTaskRepository() {
         return taskRepository;
     }
 
+    @Override
+    public void setDescription(String description) {
+        super.setDescription(description);
+        extension.fireDescriptionChenged();
+    }
+
+    @Override
+    public void setSummary(String summary) {
+        super.setSummary(summary);
+        extension.fireNameChenged();
+    }
+
     public Lookup getLookup() {
-        return Lookups.fixed(this);
+        return Lookups.fixed(this, extension,editorProvider, taskRepository);
+    }
+
+    public TaskType getType() {
+        String type = get(TracKeys.TYPE);
+        //resolve type using TypeProvider
+        return type != null ? taskRepository.getTypeProvider().
+                getTaskTypeById(type) : null;
     }
 
     public boolean isCompleted() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //check ticket has resolution 
+        return get(TracKeys.RESOLUTION) != null;
     }
 
     public Image getImage() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Image image = Utilities.loadImage("org/netbeans/cubeon/trac/task.png");
+        //FIXME
+        /*
+        int indexOf = taskTypes.indexOf(getType().getId());
+
+        switch (indexOf) {
+        case 0:
+        image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_defact.png"), 0, 0);
+        break;
+        case 1:
+        image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_enhancement.png"), 0, 0);
+        break;
+        case 2:
+        image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_feature.png"), 0, 0);
+        break;
+        case 3:
+        image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_task.png"), 0, 0);
+        break;
+
+        }
+         */
+
+        return image;
     }
 
     public String getUrlString() {
@@ -86,7 +157,47 @@ public class TracTask extends Ticket implements TaskElement {
         return null;
     }
 
+    public void setPriority(TaskPriority priority) {
+        //put ticket priority
+        put(TracKeys.PRIORITY, priority.getId());
+        extension.firePriorityChenged();
+    }
+
+    public void setType(TaskType taskType) {
+        //put ticket type
+        put(TracKeys.TYPE, taskType.getId());
+        extension.fireTypeChenged();
+    }
+
     public void synchronize() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public TaskResolution getResolution() {
+        String resolution = get(TracKeys.RESOLUTION);
+        //resolve resolution using ResolutionProvider
+        return resolution != null ? taskRepository.getResolutionProvider().
+                getTaskResolutionById(resolution) : null;
+    }
+
+    public void setResolution(TaskResolution resolution) {
+        //put ticket resolution
+        put(TracKeys.RESOLUTION, resolution.getId());
+        extension.fireResolutionChenged();
+    }
+
+    public void setStatus(TaskStatus status) {
+        //put ticket status
+        put(TracKeys.STATUS, status.getId());
+        extension.fireStatusChenged();
+    }
+
+    public void setSeverity(TaskSeverity severity) {
+        //put ticket severity
+        put(TracKeys.SEVERITY, severity.getId());
+        extension.fireDescriptionChenged();
+    }
+
+    public TracTaskElementExtension getExtension() {
+        return extension;
     }
 }
