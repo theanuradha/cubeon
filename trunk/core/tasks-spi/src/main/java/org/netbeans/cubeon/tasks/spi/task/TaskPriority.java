@@ -45,6 +45,9 @@ public final class TaskPriority {
         return id;
     }
 
+    public String getText(){
+      return name;
+    }
 
 
     @Override
