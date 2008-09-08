@@ -20,22 +20,24 @@ import org.netbeans.cubeon.tasks.spi.task.*;
 import java.util.List;
 
 /**
- * Allows a Repository Type implementation to communicate the Task Status information with the system
+ * Allows a Repository Type implementation to communicate the Task Severity information with the system
  * @author Anuradha G
  */
-public interface TaskStatusProvider {
+public interface TaskSeverityProvider {
 
     /**
-     * Returns a list of all the status types which are supported by the
+     * Returns a list of all the Severity types which are supported by the
      * implementing task repository.
-     * @return List of TaskStatus's supported.
+     * @return List of TaskSeverities supported.
      */
-    List<TaskStatus> getStatusList();
+    List<TaskSeverity> getTaskSeverities();
 
     /**
-     * Returns the TaskStatus of a purticular TaskElement
-     * @param element the element whcih the status needs to be returned.
-     * @return Current status of the task
+     * Returns the TaskSeverity of a purticular TaskElement
+     * @param element the element whcih the severity needs to be returned.
+     * @return Current Severity of the task
      */
-    TaskStatus getTaskStatus(TaskElement element);
+    TaskSeverity getTaskSeverity(TaskElement element);
+
+
 }

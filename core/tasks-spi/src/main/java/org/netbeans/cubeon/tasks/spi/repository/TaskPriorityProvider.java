@@ -38,12 +38,6 @@ public interface TaskPriorityProvider {
      */
     List<TaskPriority> getTaskPriorities();
 
-    /**
-     * Retruns the TaskPriority associated wit the given priority ID.
-     * @param Priority ID
-     * @return TaskPriority instance associated wit the id.
-     */
-    TaskPriority getTaskPriorityById(String priority);
 
     /**
      * Returns the current priority of a TaskElement
@@ -52,10 +46,5 @@ public interface TaskPriorityProvider {
      */
     TaskPriority getTaskPriority(TaskElement element);
 
-    /**
-     * Modifies the TaskPriority fr a given TaskElement
-     * @param element TaskElement which needs to be set the priority
-     * @param priority The new TaskPriority for the task.
-     */
-    void setTaskPriority(TaskElement element, TaskPriority priority);
+
 }

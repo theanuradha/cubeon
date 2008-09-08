@@ -53,7 +53,13 @@ public class PriorityFilter implements TaskElementFilter {
             if (repository != null) {
                 TaskPriorityProvider priorityProvider = repository.getLookup().lookup(TaskPriorityProvider.class);
                 if (priorityProvider != null) {
-                    TaskPriority tp = priorityProvider.getTaskPriorityById(priority);
+                    TaskPriority tp = null;
+                    for (TaskPriority taskPriority : priorityProvider.getTaskPriorities()) {
+                        if (taskPriority.getId().equals(priority)) {
+                            tp = taskPriority;
+                            break;
+                        }
+                    }
                     if (tp != null) {
                         filters.add(tp);
                     }

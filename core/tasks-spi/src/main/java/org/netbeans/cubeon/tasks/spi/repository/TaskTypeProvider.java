@@ -34,5 +34,5 @@ public interface TaskTypeProvider {
 
     TaskType getTaskType(TaskElement element);
 
-    void setTaskType(TaskElement element, TaskType taskType);
+
 }
