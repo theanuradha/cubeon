@@ -22,7 +22,7 @@ import java.util.List;
  *{optional, name, value, label, type, options}
  * @author Anuradha
  */
-public class TicketFiled {
+public class TicketField {
 
     private final String name;
     private final String label;
@@ -31,7 +31,7 @@ public class TicketFiled {
     private final boolean optional;
     private final List<String> options;
 
-    public TicketFiled(String name, String label, String value, String type,
+    public TicketField(String name, String label, String value, String type,
             boolean optional, List<String> options) {
         this.name = name;
         this.label = label;

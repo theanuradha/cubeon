@@ -19,11 +19,18 @@ package org.netbeans.cubeon.trac.repository;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.logging.Logger;
 import org.netbeans.api.progress.ProgressHandle;
+import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
+import org.netbeans.cubeon.tasks.spi.task.TaskResolution;
+import org.netbeans.cubeon.tasks.spi.task.TaskSeverity;
+import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
+import org.netbeans.cubeon.tasks.spi.task.TaskType;
 import org.netbeans.cubeon.trac.api.TicketComponent;
-import org.netbeans.cubeon.trac.api.TicketFiled;
+import org.netbeans.cubeon.trac.api.TicketField;
 import org.netbeans.cubeon.trac.api.TicketMilestone;
 import org.netbeans.cubeon.trac.api.TicketPriority;
 import org.netbeans.cubeon.trac.api.TicketResolution;
@@ -109,13 +116,164 @@ public class TracAttributesPersistence {
     }
 
     void loadAttributes() {
+        synchronized (LOCK) {
+
+            Document document = getDocument(false);
+            Element root = getRootElement(document);
+            Element attributesElement = findElement(root, TAG_ROOT);
+            if (attributesElement != null) {
+
+                Element fieldsElement = findElement(attributesElement, TAG_FIELDS);
+                NodeList fieldsNodeList = fieldsElement.getChildNodes();
+                List<TicketField> ticketFields = new ArrayList<TicketField>();
+                for (int i = 0; i < fieldsNodeList.getLength(); i++) {
+
+                    Node node = fieldsNodeList.item(i);
+                    if (node.getNodeType() == Node.ELEMENT_NODE) {
+                        Element element = (Element) node;
+                        String id = element.getAttribute(TAG_ID);
+                        String name = element.getAttribute(TAG_NAME);
+                        //read field type
+                        String type = element.getAttribute(TAG_TYPE);
+                        //read field optional 
+                        String optional = element.getAttribute(TAG_OPTIONAL);
+                        String value = element.getAttribute(TAG_VALUE);
+                        //if valuve empty assign to null
+                        value = (value == null || value.trim().length() == 0)
+                                ? null : value;
+                        String optionsTag = element.getAttribute(TAG_OPTIONS);
+                        //extract options from options tag
+                        List<String> options = getStringsByTag(optionsTag);
+                        TicketField ticketField =
+                                new TicketField(id, name, value, type,
+                                Boolean.parseBoolean(optional), options);
+
+                        ticketFields.add(ticketField);
+                    }
+                }
+                //load ticket fields to attributes
+                attributes.setTicketFields(ticketFields);
+
+                //read components
+                Element componentsElement = findElement(attributesElement,
+                        TAG_COMPONENTS);
+                NodeList componentsNodeList = componentsElement.getChildNodes();
+                List<TicketComponent> ticketComponents = new ArrayList<TicketComponent>();
+                for (int i = 0; i < componentsNodeList.getLength(); i++) {
+
+                    Node node = componentsNodeList.item(i);
+                    if (node.getNodeType() == Node.ELEMENT_NODE) {
+                        Element element = (Element) node;
+                        String name = element.getAttribute(TAG_NAME);
+                        String description = element.getAttribute(TAG_DESCRIPTION);
+                        String owner = element.getAttribute(TAG_OWNER);
+                        ticketComponents.add(new TicketComponent(name,
+                                description, owner));
+                    }
+                }
+                //load ticket comonents to attributes
+                attributes.setTicketComponents(ticketComponents);
+
+                //read types
+                Element typesElement = findElement(attributesElement,
+                        TAG_TYPES);
+                NodeList typesNodeList = typesElement.getChildNodes();
+                List<TaskType> taskTypes = new ArrayList<TaskType>();
+                for (int i = 0; i < typesNodeList.getLength(); i++) {
+
+                    Node node = typesNodeList.item(i);
+                    if (node.getNodeType() == Node.ELEMENT_NODE) {
+                        Element element = (Element) node;
+                        String id = element.getAttribute(TAG_ID);
+                        String name = element.getAttribute(TAG_NAME);
+                        taskTypes.add(new TaskType(
+                                attributes.getRepository(), id, name));
+                    }
+                }
+                // load ticket types to attributes
+                attributes.getRepository().getTypeProvider().
+                        setTaskTypes(taskTypes);
+
+                Element proritiesElement = findElement(attributesElement,
+                        TAG_PRIORITIES);
+                NodeList prioritiesNodeList = proritiesElement.getChildNodes();
+                List<TaskPriority> taskPriorities = new ArrayList<TaskPriority>();
+                for (int i = 0; i < prioritiesNodeList.getLength(); i++) {
+
+                    Node node = prioritiesNodeList.item(i);
+                    if (node.getNodeType() == Node.ELEMENT_NODE) {
+                        Element element = (Element) node;
+                        String id = element.getAttribute(TAG_ID);
+                        String name = element.getAttribute(TAG_NAME);
+                        taskPriorities.add(new TaskPriority(
+                                attributes.getRepository(), id, name));
+                    }
+                }
+                //load ticket priorities to attributes
+                attributes.getRepository().getPriorityProvider().
+                        setPriorities(taskPriorities);
+
+                Element statusesElement = findElement(attributesElement,
+                        TAG_STATUSES);
+                NodeList statusesNodeList = statusesElement.getChildNodes();
+                List<TaskStatus> taskStatuses = new ArrayList<TaskStatus>();
+                for (int i = 0; i < statusesNodeList.getLength(); i++) {
+
+                    Node node = statusesNodeList.item(i);
+                    if (node.getNodeType() == Node.ELEMENT_NODE) {
+                        Element element = (Element) node;
+                        String id = element.getAttribute(TAG_ID);
+                        String name = element.getAttribute(TAG_NAME);
+                        taskStatuses.add(new TaskStatus(
+                                attributes.getRepository(), id, name));
+                    }
+                }
+                attributes.getRepository().getStatusProvider().
+                        setStatuses(taskStatuses);
+
+                Element resolutionsElement = findElement(attributesElement,
+                        TAG_RESOLUTIONS);
+                NodeList reslutionsNodeList = resolutionsElement.getChildNodes();
+                List<TaskResolution> resolutions = new ArrayList<TaskResolution>();
+                for (int i = 0; i < reslutionsNodeList.getLength(); i++) {
+
+                    Node node = reslutionsNodeList.item(i);
+                    if (node.getNodeType() == Node.ELEMENT_NODE) {
+                        Element element = (Element) node;
+                        String id = element.getAttribute(TAG_ID);
+                        String name = element.getAttribute(TAG_NAME);
+                        resolutions.add(new TaskResolution(
+                                attributes.getRepository(), id, name));
+                    }
+                }
+                attributes.getRepository().getResolutionProvider().
+                        setTaskResolutions(resolutions);
+
+                Element severitiesElement = findElement(attributesElement,
+                        TAG_SEVERITIES);
+                NodeList severitiesNodeList = severitiesElement.getChildNodes();
+                List<TaskSeverity> severities = new ArrayList<TaskSeverity>();
+                for (int i = 0; i < severitiesNodeList.getLength(); i++) {
+
+                    Node node = severitiesNodeList.item(i);
+                    if (node.getNodeType() == Node.ELEMENT_NODE) {
+                        Element element = (Element) node;
+                        String id = element.getAttribute(TAG_ID);
+                        String name = element.getAttribute(TAG_NAME);
+                        severities.add(new TaskSeverity(
+                                attributes.getRepository(), id, name));
+                    }
+                }
+                attributes.getRepository().getSeverityProvider().
+                        setTaskSeverities(severities);
+            }
+        }
     }
 
     void refresh(ProgressHandle progressHandle) throws TracException {
 
         synchronized (LOCK) {
             final TracTaskRepository repository = attributes.getRepository();
-
             //get connection to Trac Session 
             TracSession session = repository.getSession();
             if (session == null) {
@@ -134,12 +292,12 @@ public class TracAttributesPersistence {
 
             LOG.info("read ticket fields from remote server");//NOI18N
             //read ticket fields from remote server
-            List<TicketFiled> fileds = session.getTicketFileds();
+            List<TicketField> fileds = session.getTicketFields();
             //create empty fields element to add child filed elements
             Element fieldsElement = getEmptyElement(document,
                     attributesElement, TAG_FIELDS);
             //write Field information to xml doc
-            for (TicketFiled ticketFiled : fileds) {
+            for (TicketField ticketFiled : fileds) {
                 Element fieldElement = document.createElement(TAG_FIELD);
                 fieldsElement.appendChild(fieldElement);
                 //*** put field name as ID
@@ -160,7 +318,7 @@ public class TracAttributesPersistence {
                 //ticket field supported options 
                 List<String> options = ticketFiled.getOptions();
                 //encode options to ':' seperated String
-                String tagedOptions = _getTagedOptions(options);
+                String tagedOptions = getTagedString(options);
                 fieldElement.setAttribute(TAG_OPTIONS, tagedOptions);
             }
             //read ticket components from remoe server
@@ -242,7 +400,7 @@ public class TracAttributesPersistence {
                 //put ticket version attributess
                 versionElement.setAttribute(TAG_NAME, version.getName());
                 versionElement.setAttribute(TAG_DESCRIPTION, version.getDescription());
-                
+
             }
             //read ticket Milestones from remote server 
             List<TicketMilestone> ticketMilestones = session.getTicketMilestones();
@@ -262,12 +420,28 @@ public class TracAttributesPersistence {
         }
     }
 
-    private String _getTagedOptions(List<String> options) {
+    static String getTagedString(List<String> strings) {
         StringBuffer buffer = new StringBuffer();
-        for (String key : options) {
-            buffer.append(key).append(":");//NOI18N
+
+        //build string string by '|'
+        for (String key : strings) {
+            buffer.append(key).append("|");//NOI18N
         }
         return buffer.toString();
+    }
+
+    static List<String> getStringsByTag(String tag) {
+        List<String> strings = new ArrayList<String>();
+        // Tokeniz Strings tag by '|'
+        StringTokenizer tokenizer = new StringTokenizer(tag, "|");
+        while (tokenizer.hasMoreTokens()) {
+            String token = tokenizer.nextToken();
+            //add only valid tag and omit empty tokens
+            if (token.trim().length() > 0) {
+                strings.add(token);
+            }
+        }
+        return strings;
     }
 
     /******************************************** XML Related ***********************************/

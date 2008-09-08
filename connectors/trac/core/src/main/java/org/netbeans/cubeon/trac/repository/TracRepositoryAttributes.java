@@ -19,7 +19,8 @@ package org.netbeans.cubeon.trac.repository;
 import java.util.ArrayList;
 import java.util.List;
 import org.netbeans.api.progress.ProgressHandle;
-import org.netbeans.cubeon.trac.api.TicketFiled;
+import org.netbeans.cubeon.trac.api.TicketComponent;
+import org.netbeans.cubeon.trac.api.TicketField;
 import org.netbeans.cubeon.trac.api.TracException;
 
 /**
@@ -29,7 +30,8 @@ import org.netbeans.cubeon.trac.api.TracException;
 public class TracRepositoryAttributes {
 
     private final TracTaskRepository repository;
-    private List<TicketFiled> ticketFileds = new ArrayList<TicketFiled>(0);
+    private List<TicketField> ticketFields = new ArrayList<TicketField>(0);
+    private List<TicketComponent> ticketComponents = new ArrayList<TicketComponent>(0);
     private final TracAttributesPersistence persistence;
     private final Object LOCK = new Object();
 
@@ -38,23 +40,42 @@ public class TracRepositoryAttributes {
         persistence = new TracAttributesPersistence(this, repository.getBaseDir());
     }
 
-    public TicketFiled getTicketFiledByName(String name) {
+    public TicketField getTicketFiledByName(String name) {
         //iterate and find matching TicketFiled from list
-        for (TicketFiled ticketFiled : ticketFileds) {
-            if (name.equals(ticketFiled.getName())) {
-                return ticketFiled;
+        for (TicketField ticketField : ticketFields) {
+            if (name.equals(ticketField.getName())) {
+                return ticketField;
             }
         }
         //if TicketFiled not found return null
         return null;
     }
 
-    public List<TicketFiled> getTicketFileds() {
-        return new ArrayList<TicketFiled>(ticketFileds);
+    public List<TicketField> getTicketFields() {
+        return new ArrayList<TicketField>(ticketFields);
     }
 
-    void setTicketFileds(List<TicketFiled> ticketFileds) {
-        this.ticketFileds = new ArrayList<TicketFiled>(ticketFileds);
+    void setTicketFields(List<TicketField> ticketFields) {
+        this.ticketFields = new ArrayList<TicketField>(ticketFields);
+    }
+
+    public TicketComponent getTicketComponentByName(String name) {
+        //iterate and find matching TicketComponent from list
+        for (TicketComponent component : ticketComponents) {
+            if (name.equals(component.getName())) {
+                return component;
+            }
+        }
+        //if TicketComponent not found return null
+        return null;
+    }
+
+    public List<TicketComponent> getTicketComponents() {
+        return new ArrayList<TicketComponent>(ticketComponents);
+    }
+
+    void setTicketComponents(List<TicketComponent> components) {
+        this.ticketComponents = new ArrayList<TicketComponent>(components);
     }
 
     public TracTaskRepository getRepository() {

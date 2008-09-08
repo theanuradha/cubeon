@@ -44,10 +44,7 @@ public class TracTaskRepository implements TaskRepository {
     private final String id;
     private String name;
     private String description;
-    /**
-     * Url of the Repository 
-     * 
-     */
+    //Url of the Repository
     private String url;
 
     //----------------------------
@@ -58,6 +55,11 @@ public class TracTaskRepository implements TaskRepository {
     private State state = State.INACTIVE;
     private final TracRepositoryAttributes repositoryAttributes;
     private volatile TracSession session;
+    private final TracTaskPriorityProvider priorityProvider;
+    private final TracTaskTypeProvider typeProvider;
+    private final TracTaskStatusProvider statusProvider;
+    private final TracTaskSeverityProvider severityProvider;
+    private final TracTaskResolutionProvider resolutionProvider;
 
     public TracTaskRepository(TracTaskRepositoryProvider provider,
             String id, String name, String description) {
@@ -74,7 +76,11 @@ public class TracTaskRepository implements TaskRepository {
                 Exceptions.printStackTrace(ex);
             }
         }
-
+        priorityProvider = new TracTaskPriorityProvider();
+        typeProvider = new TracTaskTypeProvider();
+        statusProvider = new TracTaskStatusProvider();
+        severityProvider = new TracTaskSeverityProvider();
+        resolutionProvider = new TracTaskResolutionProvider();
         repositoryAttributes = new TracRepositoryAttributes(this);
     ///handler = new TaskPersistenceHandler(this, baseDir, "tasks");//NOI18N
     //cache = new TaskPersistenceHandler(this, baseDir, "cache");//NOI18N
@@ -94,7 +100,8 @@ public class TracTaskRepository implements TaskRepository {
     }
 
     public Lookup getLookup() {
-        return Lookups.fixed(this, extension, provider);
+        return Lookups.fixed(this, extension, provider, priorityProvider,
+                statusProvider, resolutionProvider, typeProvider,severityProvider);
     }
 
     public Image getImage() {
@@ -114,7 +121,6 @@ public class TracTaskRepository implements TaskRepository {
     }
 
     public void synchronize() {
-       
     }
 
     public State getState() {
@@ -209,4 +215,26 @@ public class TracTaskRepository implements TaskRepository {
             setState(State.ACTIVE);
         }
     }
+
+    public TracTaskPriorityProvider getPriorityProvider() {
+        return priorityProvider;
+    }
+
+    public TracTaskResolutionProvider getResolutionProvider() {
+        return resolutionProvider;
+    }
+
+    public TracTaskStatusProvider getStatusProvider() {
+        return statusProvider;
+    }
+
+    public TracTaskTypeProvider getTypeProvider() {
+        return typeProvider;
+    }
+
+    public TracTaskSeverityProvider getSeverityProvider() {
+        return severityProvider;
+    }
+
+    
 }
