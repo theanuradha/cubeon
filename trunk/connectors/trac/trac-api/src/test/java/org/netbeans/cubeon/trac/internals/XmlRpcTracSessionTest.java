@@ -211,6 +211,7 @@ public class XmlRpcTracSessionTest extends TestCase {
         ticket = tracSession.createTicket(summary, description,
                 attributes, notify);
         assertNotNull(ticket);
+        System.out.println(ticket + ticket.getAttributes().toString());
         //test getTicket
         System.out.println("getTicket");
         ticket = tracSession.getTicket(ticket.getTicketId());
