@@ -14,7 +14,6 @@
  *  limitations under the License.
  *  under the License.
  */
-
 package org.netbeans.cubeon.trac.tasks;
 
 import java.util.List;
@@ -23,52 +22,59 @@ import javax.swing.JComponent;
 import javax.swing.event.ChangeListener;
 import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider.EditorAttributeHandler;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
+import org.netbeans.cubeon.trac.tasks.ui.TracTaskEditorUI;
 
 /**
  *
  * @author Anuradha
  */
-public class TracAttributeHandler implements EditorAttributeHandler{
-    private final TracTask task;
+public class TracAttributeHandler implements EditorAttributeHandler {
+
+    private TracTask task;
+    private final TracTaskEditorUI editorUI;
 
     public TracAttributeHandler(TracTask task) {
         this.task = task;
+        editorUI = new TracTaskEditorUI(task);
     }
 
     public String getName() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return task.getDisplayName();
     }
 
     public String getDisplayName() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return task.getId();
     }
 
     public String getShortDescription() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return task.getName();
     }
 
-    public void addChangeListener(ChangeListener arg0) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void addChangeListener(ChangeListener changeListener) {
+        editorUI.addChangeListener(changeListener);
     }
 
-    public void removeChangeListener(ChangeListener arg0) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void removeChangeListener(ChangeListener changeListener) {
+        editorUI.removeChangeListener(changeListener);
     }
 
     public List<Action> getActions() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return editorUI.getActions();
     }
 
     public JComponent[] getComponent() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new JComponent[]{editorUI};
     }
 
     public void refresh() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        editorUI.refresh();
     }
 
     public TaskElement save() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 
+        task = editorUI.save();
+
+        task.getExtension().fireStateChenged();
+        return task;
+    }
 }
