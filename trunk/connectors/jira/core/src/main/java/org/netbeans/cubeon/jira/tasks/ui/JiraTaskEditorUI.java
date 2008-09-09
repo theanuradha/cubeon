@@ -73,7 +73,7 @@ import org.openide.util.NbBundle;
 public class JiraTaskEditorUI extends javax.swing.JPanel {
 
     private final Set<ChangeListener> listeners = new HashSet<ChangeListener>(1);
-    private JiraTask jiraTask;
+    private JiraTask task;
     private JiraAction defaultStatus;
     private final JiraCommentsEditor commentsEditor;
     private AtomicBoolean modifiedFlag = new AtomicBoolean(false);
@@ -158,7 +158,7 @@ public class JiraTaskEditorUI extends javax.swing.JPanel {
 
     /** Creates new form TaskEditorUI */
     public JiraTaskEditorUI(JiraTask jiraTask) {
-        this.jiraTask = jiraTask;
+        this.task = jiraTask;
         initComponents();
         commentsEditor = new JiraCommentsEditor(this);
 
@@ -177,12 +177,12 @@ public class JiraTaskEditorUI extends javax.swing.JPanel {
         for (JiraProject project : projects) {
             cmbProject.addItem(project);
         }
-        if (jiraTask.getProject() != null) {
-            cmbProject.setSelectedItem(jiraTask.getProject());
-            loadProject(jiraTask.getProject());
-            selectItems(lstFixVersion, jiraTask.getFixVersions());
-            selectItems(lstAffectVersion, jiraTask.getAffectedVersions());
-            selectItems(lstComponents, jiraTask.getComponents());
+        if (task.getProject() != null) {
+            cmbProject.setSelectedItem(task.getProject());
+            loadProject(task.getProject());
+            selectItems(lstFixVersion, task.getFixVersions());
+            selectItems(lstAffectVersion, task.getAffectedVersions());
+            selectItems(lstComponents, task.getComponents());
         } else {
             cmbProject.setSelectedIndex(-1);
         }
@@ -192,27 +192,27 @@ public class JiraTaskEditorUI extends javax.swing.JPanel {
         for (TaskPriority priority : jtpp.getTaskPriorities()) {
             cmbPriority.addItem(priority);
         }
-        cmbPriority.setSelectedItem(jiraTask.getPriority());
+        cmbPriority.setSelectedItem(task.getPriority());
 
         String message = NbBundle.getMessage(JiraTaskEditorUI.class,
                 "JiraTaskEditorUI.lblStatus.text",
-                jiraTask.getStatus() == null ? "Local" : jiraTask.getStatus());
+                task.getStatus() == null ? "Local" : task.getStatus());
         lblStatus.setText(message);
 
         cmbType.removeAllItems();
 
         JiraTaskTypeProvider jttp = taskRepository.getJiraTaskTypeProvider();
         for (JiraTaskType type : jttp.getJiraTaskTypes()) {
-            if (!type.isSubTask() && jiraTask.getProject().isTypesSupported(type)) {
+            if (!type.isSubTask() && task.getProject().isTypesSupported(type)) {
                 cmbType.addItem(type);
             }
         }
-        if (jiraTask.getType() != null && jttp.getTaskTypeById(jiraTask.getType().getId()).isSubTask()) {
+        if (task.getType() != null && jttp.getTaskTypeById(task.getType().getId()).isSubTask()) {
             cmbType.removeAllItems();
-            cmbType.addItem(jiraTask.getType());
+            cmbType.addItem(task.getType());
             cmbType.setEnabled(false);
         }
-        cmbType.setSelectedItem(jiraTask.getType());
+        cmbType.setSelectedItem(task.getType());
 
         JiraTaskResolutionProvider jtrp = taskRepository.getJiraTaskResolutionProvider();
         cmbResolution.removeAllItems();
@@ -220,20 +220,20 @@ public class JiraTaskEditorUI extends javax.swing.JPanel {
 
             cmbResolution.addItem(resolution);
         }
-        if (jiraTask.getResolution() == null) {
+        if (task.getResolution() == null) {
             cmbResolution.setSelectedIndex(-1);
         } else {
-            cmbResolution.setSelectedItem(jiraTask.getResolution());
+            cmbResolution.setSelectedItem(task.getResolution());
         }
         cmbActions.removeAllItems();
-        List<JiraAction> actions = jiraTask.getActions();
-        defaultStatus = new JiraAction("##", "Leave as " + (jiraTask.getStatus() != null ? jiraTask.getStatus().getText() : "Local Task"));
+        List<JiraAction> actions = task.getActions();
+        defaultStatus = new JiraAction("##", "Leave as " + (task.getStatus() != null ? task.getStatus().getText() : "Local Task"));
         cmbActions.addItem(defaultStatus);
         for (JiraAction action : actions) {
             cmbActions.addItem(action);
         }
-        if (jiraTask.getAction() != null) {
-            cmbActions.setSelectedItem(jiraTask.getAction());
+        if (task.getAction() != null) {
+            cmbActions.setSelectedItem(task.getAction());
         } else {
             cmbActions.setSelectedItem(defaultStatus);
         }
@@ -262,10 +262,10 @@ public class JiraTaskEditorUI extends javax.swing.JPanel {
     private void loadAction(JiraAction action) {
         if (action == null || action.equals(defaultStatus)) {
             cmbResolution.setEnabled(false);
-            if (jiraTask.getResolution() == null) {
+            if (task.getResolution() == null) {
                 cmbResolution.setSelectedIndex(-1);
             } else {
-                cmbResolution.setSelectedItem(jiraTask.getResolution());
+                cmbResolution.setSelectedItem(task.getResolution());
                 //if task completed disable assignee
                 txtAssignee.setEditable(false);
             }
@@ -319,32 +319,32 @@ public class JiraTaskEditorUI extends javax.swing.JPanel {
     }
 
     public JiraTask save() {
-        if (!txtOutline.getText().trim().equals(jiraTask.getName())) {
-            jiraTask.setName(txtOutline.getText().trim());
+        if (!txtOutline.getText().trim().equals(task.getName())) {
+            task.setName(txtOutline.getText().trim());
         }
-        if (!jiraTask.getPriority().equals(cmbPriority.getSelectedItem())) {
-            jiraTask.setPriority((TaskPriority) cmbPriority.getSelectedItem());
+        if (!task.getPriority().equals(cmbPriority.getSelectedItem())) {
+            task.setPriority((TaskPriority) cmbPriority.getSelectedItem());
         }
-        if (!txtAssignee.getText().trim().equals(jiraTask.getAssignee())) {
-            jiraTask.setAssignee(txtAssignee.getText().trim());
+        if (!txtAssignee.getText().trim().equals(task.getAssignee())) {
+            task.setAssignee(txtAssignee.getText().trim());
         }
-        if (jiraTask.getDescription()==null || !jiraTask.getDescription().equals(txtDescription.getText().trim())) {
-            jiraTask.setDescription(txtDescription.getText().trim());
+        if (task.getDescription()==null || !task.getDescription().equals(txtDescription.getText().trim())) {
+            task.setDescription(txtDescription.getText().trim());
         }
-        jiraTask.setEnvironment(txtEnvironment.getText().trim());
-        if (!jiraTask.getType().equals(cmbType.getSelectedItem())) {
-            jiraTask.setType((TaskType) cmbType.getSelectedItem());
+        task.setEnvironment(txtEnvironment.getText().trim());
+        if (!task.getType().equals(cmbType.getSelectedItem())) {
+            task.setType((TaskType) cmbType.getSelectedItem());
         }
-        if (jiraTask.getResolution() == null || !jiraTask.getResolution().equals(cmbResolution.getSelectedItem())) {
-            jiraTask.setResolution((TaskResolution) cmbResolution.getSelectedItem());
+        if (task.getResolution() == null || !task.getResolution().equals(cmbResolution.getSelectedItem())) {
+            task.setResolution((TaskResolution) cmbResolution.getSelectedItem());
         }
-        if (jiraTask.getProject() == null || !jiraTask.getProject().equals(cmbProject.getSelectedItem())) {
-            jiraTask.setProject((JiraProject) cmbProject.getSelectedItem());
+        if (task.getProject() == null || !task.getProject().equals(cmbProject.getSelectedItem())) {
+            task.setProject((JiraProject) cmbProject.getSelectedItem());
         }
-        jiraTask.setNewComment(commentsEditor.getNewComment());
+        task.setNewComment(commentsEditor.getNewComment());
         Object action = cmbActions.getSelectedItem();
         if (action == null || !action.equals(defaultStatus)) {
-            jiraTask.setAction((JiraAction) action);
+            task.setAction((JiraAction) action);
         }
         List<JiraProject.Component> components = new ArrayList<JiraProject.Component>();
         Object[] selectedValues = lstComponents.getSelectedValues();
@@ -353,7 +353,7 @@ public class JiraTaskEditorUI extends javax.swing.JPanel {
                 components.add((Component) object);
             }
         }
-        jiraTask.setComponents(components);
+        task.setComponents(components);
         List<JiraProject.Version> affectedVersions = new ArrayList<JiraProject.Version>();
         selectedValues = lstAffectVersion.getSelectedValues();
         for (Object object : selectedValues) {
@@ -361,7 +361,7 @@ public class JiraTaskEditorUI extends javax.swing.JPanel {
                 affectedVersions.add((Version) object);
             }
         }
-        jiraTask.setAffectedVersions(affectedVersions);
+        task.setAffectedVersions(affectedVersions);
         List<JiraProject.Version> fixVersions = new ArrayList<JiraProject.Version>();
         selectedValues = lstFixVersion.getSelectedValues();
         for (Object object : selectedValues) {
@@ -369,15 +369,15 @@ public class JiraTaskEditorUI extends javax.swing.JPanel {
                 fixVersions.add((Version) object);
             }
         }
-        jiraTask.setFixVersions(fixVersions);
+        task.setFixVersions(fixVersions);
         //set as modified if already or actuvaly modified 
-        if (jiraTask.isModifiedFlag() || modifiedFlag.get()) {
-            jiraTask.setModifiedFlag(true);
+        if (task.isModifiedFlag() || modifiedFlag.get()) {
+            task.setModifiedFlag(true);
         }
-        jiraTask.getTaskRepository().persist(jiraTask);
-        submitTaskAction.setEnabled(jiraTask.isModifiedFlag());
-        loadDates(jiraTask);
-        return jiraTask;
+        task.getTaskRepository().persist(task);
+        submitTaskAction.setEnabled(task.isModifiedFlag());
+        loadDates(task);
+        return task;
     }
 
     final void fireChangeEvent() {
@@ -723,13 +723,13 @@ public class JiraTaskEditorUI extends javax.swing.JPanel {
         lstComponents.getSelectionModel().removeListSelectionListener(listSelectionListener);
 
 
-        txtOutline.setText(jiraTask.getName());
-        txtDescription.setText(jiraTask.getDescription());
-        txtEnvironment.setText(jiraTask.getEnvironment());
-        lblReportedBy.setText(jiraTask.getReporter());
-        txtAssignee.setText(jiraTask.getAssignee());
-        loadDates(jiraTask);
-        JiraTaskRepository taskRepository = jiraTask.getTaskRepository().getLookup().lookup(JiraTaskRepository.class);
+        txtOutline.setText(task.getName());
+        txtDescription.setText(task.getDescription());
+        txtEnvironment.setText(task.getEnvironment());
+        lblReportedBy.setText(task.getReporter());
+        txtAssignee.setText(task.getAssignee());
+        loadDates(task);
+        JiraTaskRepository taskRepository = task.getTaskRepository().getLookup().lookup(JiraTaskRepository.class);
         loadAttributes(taskRepository);
         commentsEditor.refresh();
         txtOutline.getDocument().addDocumentListener(documentListener);
@@ -753,7 +753,7 @@ public class JiraTaskEditorUI extends javax.swing.JPanel {
 
 
 
-        if (jiraTask.isLocal()) {
+        if (task.isLocal()) {
             cmbActions.setEnabled(false);
             cmbResolution.setEnabled(false);
             lstFixVersion.setEnabled(false);
@@ -762,20 +762,20 @@ public class JiraTaskEditorUI extends javax.swing.JPanel {
             cmbProject.setEnabled(false);
             cmbActions.setEnabled(true);
 
-            validateFiledsForEdit(jiraTask);
+            validateFiledsForEdit(task);
 
 
         }
 
-        loadAction(jiraTask.getAction());
-        openInBrowserTaskAction.setEnabled(!jiraTask.isLocal());
-        openTaskHistoryAction.setEnabled(!jiraTask.isLocal());
-        submitTaskAction.setEnabled(jiraTask.isModifiedFlag());
+        loadAction(task.getAction());
+        openInBrowserTaskAction.setEnabled(!task.isLocal());
+        openTaskHistoryAction.setEnabled(!task.isLocal());
+        submitTaskAction.setEnabled(task.isModifiedFlag());
         modifiedFlag.set(false);
     }
 
     JiraTask getJiraTask() {
-        return jiraTask;
+        return task;
     }
 
     private void validateFiledsForEdit(JiraTask jiraTask) {
