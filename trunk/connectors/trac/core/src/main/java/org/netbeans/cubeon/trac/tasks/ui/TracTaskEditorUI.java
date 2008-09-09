@@ -43,7 +43,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.netbeans.cubeon.trac.tasks.TracTask;
 import org.openide.util.NbBundle;
-
+import static org.netbeans.cubeon.trac.api.TracKeys.*;
 /**
  *
  * @author Anuradha
@@ -53,6 +53,7 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
     private final TracTask task;
     private final Set<ChangeListener> listeners = new HashSet<ChangeListener>(1);
     private AtomicBoolean modifiedFlag = new AtomicBoolean(false);
+    private static  final String EMPTY="";
     final DocumentListener documentListener = new DocumentListener() {
 
         public void insertUpdate(DocumentEvent arg0) {
@@ -129,6 +130,10 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
         txtDescription.getDocument().removeDocumentListener(documentListener);
         txtKeyWord.getDocument().removeDocumentListener(documentListener);
         txtCc.getDocument().removeDocumentListener(documentListener);
+
+        txtSummary.setText(task.getSummary());
+        txtDescription.setText(task.getDescription());
+
 
         cmbPriority.removeItemListener(itemListener);
         cmbActions.removeItemListener(itemListener);
