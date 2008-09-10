@@ -122,8 +122,6 @@ public class TracTaskRepository implements TaskRepository {
         TracTask tracTask = new TracTask(this, nextTaskId, -1/*for localy new tickets*/,
                 summery, description);
         tracTask.setLocal(true);
-        tracTask.put(TracKeys.COMPONENT,
-                repositoryAttributes.getTicketFiledByName(TracKeys.COMPONENT).getValue());
         tracTask.put(TracKeys.PRIORITY,
                 repositoryAttributes.getTicketFiledByName(TracKeys.PRIORITY).getValue());
         tracTask.put(TracKeys.TYPE,
