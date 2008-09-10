@@ -36,6 +36,7 @@ import org.netbeans.cubeon.tasks.spi.task.TaskResolution;
 import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
 import org.netbeans.cubeon.tasks.spi.task.TaskType;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 
@@ -78,6 +79,9 @@ public class JiraTask extends JiraRemoteTask implements TaskElement {
     }
 
     public String getDisplayName() {
+        if(isLocal()){
+         return NbBundle.getMessage(JiraTask.class, "Key_New")+ " : " + getName();
+        }
         return getId() + " : " + getName();
     }
 
