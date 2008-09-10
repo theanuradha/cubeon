@@ -18,7 +18,9 @@ package org.netbeans.cubeon.trac.repository;
 
 import java.awt.Image;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.netbeans.api.progress.ProgressHandle;
@@ -27,7 +29,9 @@ import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.trac.api.TracClient;
 import org.netbeans.cubeon.trac.api.TracException;
+import org.netbeans.cubeon.trac.api.TracKeys;
 import org.netbeans.cubeon.trac.api.TracSession;
+import org.netbeans.cubeon.trac.tasks.TracTask;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
@@ -63,6 +67,7 @@ public class TracTaskRepository implements TaskRepository {
     private final TracTaskResolutionProvider resolutionProvider;
     private final TaskPersistenceHandler handler;
     private final TaskPersistenceHandler cache;
+    private Map<String, TracTask> map = new HashMap<String, TracTask>();
 
     public TracTaskRepository(TracTaskRepositoryProvider provider,
             String id, String name, String description) {
@@ -112,15 +117,60 @@ public class TracTaskRepository implements TaskRepository {
     }
 
     public TaskElement createTaskElement(String summery, String description) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String nextTaskId = handler.nextTaskId();
+        nextTaskId = "New-" + nextTaskId;//NOI18N
+        TracTask tracTask = new TracTask(this, nextTaskId, -1/*for localy new tickets*/,
+                summery, description);
+        tracTask.setLocal(true);
+        tracTask.put(TracKeys.COMPONENT,
+                repositoryAttributes.getTicketFiledByName(TracKeys.COMPONENT).getValue());
+        tracTask.put(TracKeys.PRIORITY,
+                repositoryAttributes.getTicketFiledByName(TracKeys.PRIORITY).getValue());
+        tracTask.put(TracKeys.TYPE,
+                repositoryAttributes.getTicketFiledByName(TracKeys.TYPE).getValue());
+
+        return tracTask;
     }
 
-    public TaskElement getTaskElementById(String id) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public synchronized TaskElement getTaskElementById(String id) {
+        TracTask get = map.get(id);
+        if (get == null) {
+
+            get = handler.getTaskElementById(id);
+            if (get != null) {
+                map.put(id, get);
+            }
+        }
+        return get;
     }
 
     public void persist(TaskElement element) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        TracTask tracTask = element.getLookup().lookup(TracTask.class);
+        assert tracTask != null;
+        handler.persist(tracTask);
+    //notify to outgoing query about modified state FIXME
+    }
+
+    public void revert(TracTask task) {
+        synchronized (task) {
+            task.setAction(null);
+            task.setNewComment(null);
+            TracTask cachedTask = cache.getTaskElementById(task.getId());
+            task.putAll(cachedTask.getAttributes());
+            //JiraUtils.remoteToTask(this, getJiraRemoteTaskCache(task.getId()), task);
+            task.setModifiedFlag(false);
+            persist(task);
+            task.getExtension().fireStateChenged();
+        }
+    }
+
+    public void remove(TracTask tracTask) {
+        handler.removeTaskElement(tracTask);
+    }
+
+    public void cache(TracTask tracTask) {
+
+        cache.persist(tracTask);
     }
 
     public void synchronize() {

@@ -33,6 +33,7 @@ import org.netbeans.cubeon.trac.api.Ticket;
 import org.netbeans.cubeon.trac.api.TracKeys;
 import org.netbeans.cubeon.trac.repository.TracTaskRepository;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 
@@ -74,6 +75,9 @@ public class TracTask extends Ticket implements TaskElement {
     }
 
     public String getDisplayName() {
+        if(isLocal()){
+         return NbBundle.getMessage(TracTask.class, "Key_New")+ " : " + getName();
+        }
         return getId() + " : " + getName();
     }
 
