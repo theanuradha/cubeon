@@ -19,6 +19,8 @@ package org.netbeans.cubeon.trac.tasks;
 import java.awt.Image;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
@@ -43,13 +45,18 @@ public class TracTask extends Ticket implements TaskElement {
     private TracTaskRepository taskRepository;
     private final TracTaskElementExtension extension;
     private final TaskEditorProvider editorProvider;
+    private boolean local;
+    private boolean modifiedFlag;
+    private List<String> actions = new ArrayList<String>();
+    private String newComment;
+    private String action;
 
     public TracTask(TracTaskRepository taskRepository,
             int ticketId, String summary, String description) {
         super(ticketId, summary, description);
         this.taskRepository = taskRepository;
         extension = new TracTaskElementExtension(this);
-        editorProvider=new TaskEditorProviderImpl(this);
+        editorProvider = new TaskEditorProviderImpl(this);
     }
 
     public String getId() {
@@ -102,7 +109,7 @@ public class TracTask extends Ticket implements TaskElement {
     }
 
     public Lookup getLookup() {
-        return Lookups.fixed(this, extension,editorProvider, taskRepository);
+        return Lookups.fixed(this, extension, editorProvider, taskRepository);
     }
 
     public TaskType getType() {
@@ -200,4 +207,50 @@ public class TracTask extends Ticket implements TaskElement {
     public TracTaskElementExtension getExtension() {
         return extension;
     }
+
+    public List<String> getActions() {
+        return new ArrayList<String>(actions);
+    }
+
+    public void setActions(List<String> actions) {
+        this.actions = new ArrayList<String>(actions);
+    }
+
+    public boolean isLocal() {
+        return local;
+    }
+
+    public void setLocal(boolean local) {
+        this.local = local;
+    }
+
+    public TracTaskRepository getTracRepository() {
+        return taskRepository;
+    }
+
+    public String getNewComment() {
+        return newComment;
+    }
+
+    public void setNewComment(String newComment) {
+        this.newComment = newComment;
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
+    }
+
+    public boolean isModifiedFlag() {
+        return modifiedFlag;
+    }
+
+    public void setModifiedFlag(boolean modifiedFlag) {
+        this.modifiedFlag = modifiedFlag;
+    }
+
+    
 }

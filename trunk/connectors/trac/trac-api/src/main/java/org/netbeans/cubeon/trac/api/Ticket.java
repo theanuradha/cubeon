@@ -91,7 +91,12 @@ public class Ticket {
      * 
      */
     public void put(String key, String value) {
-        map.put(key, value);
+        if (value != null) {
+            map.put(key, value);
+        } else {
+            //remove if valuve null
+            map.remove(key);
+        }
     }
 
     /**
