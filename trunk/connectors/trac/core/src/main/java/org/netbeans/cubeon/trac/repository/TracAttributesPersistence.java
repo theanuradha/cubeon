@@ -342,7 +342,7 @@ public class TracAttributesPersistence {
                 Element typeElement = document.createElement(TAG_TYPE);
                 typesElement.appendChild(typeElement);
                 //put ticket type attributess
-                typeElement.setAttribute(TAG_ID, ticketType.getId());
+                typeElement.setAttribute(TAG_ID, ticketType.getName());
                 typeElement.setAttribute(TAG_NAME, ticketType.getName());
 
             }
@@ -354,7 +354,7 @@ public class TracAttributesPersistence {
                 Element priorityElement = document.createElement(TAG_PRIORITY);
                 prioritiesElement.appendChild(priorityElement);
                 //put ticket priority attributess
-                priorityElement.setAttribute(TAG_ID, priority.getId());
+                priorityElement.setAttribute(TAG_ID, priority.getName());
                 priorityElement.setAttribute(TAG_NAME, priority.getName());
             }
             //read ticket statuses from remote server
@@ -365,7 +365,7 @@ public class TracAttributesPersistence {
                 Element statusElement = document.createElement(TAG_STATUS);
                 statusesElement.appendChild(statusElement);
                 //put ticket status attributess
-                statusElement.setAttribute(TAG_ID, status.getId());
+                statusElement.setAttribute(TAG_ID, status.getName());
                 statusElement.setAttribute(TAG_NAME, status.getName());
             }
             //read ticket resolutions from remote server
@@ -376,7 +376,7 @@ public class TracAttributesPersistence {
                 Element resolutionElement = document.createElement(TAG_RESOLUTION);
                 resolutionsElement.appendChild(resolutionElement);
                 //put ticket resolution attributess
-                resolutionElement.setAttribute(TAG_ID, resolution.getId());
+                resolutionElement.setAttribute(TAG_ID, resolution.getName());
                 resolutionElement.setAttribute(TAG_NAME, resolution.getName());
             }
             //read ticket severities from remote server
@@ -387,7 +387,7 @@ public class TracAttributesPersistence {
                 Element severityElement = document.createElement(TAG_SEVERITY);
                 severitiesElement.appendChild(severityElement);
                 //put ticket severity attributess
-                severityElement.setAttribute(TAG_ID, severity.getId());
+                severityElement.setAttribute(TAG_ID, severity.getName());
                 severityElement.setAttribute(TAG_NAME, severity.getName());
             }
             //read ticket versions from remote server
