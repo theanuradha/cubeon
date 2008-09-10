@@ -18,6 +18,7 @@ package org.netbeans.cubeon.trac.repository;
 
 import java.awt.Image;
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.netbeans.api.progress.ProgressHandle;
@@ -60,6 +61,8 @@ public class TracTaskRepository implements TaskRepository {
     private final TracTaskStatusProvider statusProvider;
     private final TracTaskSeverityProvider severityProvider;
     private final TracTaskResolutionProvider resolutionProvider;
+    private final TaskPersistenceHandler handler;
+    private final TaskPersistenceHandler cache;
 
     public TracTaskRepository(TracTaskRepositoryProvider provider,
             String id, String name, String description) {
@@ -82,8 +85,8 @@ public class TracTaskRepository implements TaskRepository {
         severityProvider = new TracTaskSeverityProvider();
         resolutionProvider = new TracTaskResolutionProvider();
         repositoryAttributes = new TracRepositoryAttributes(this);
-    ///handler = new TaskPersistenceHandler(this, baseDir, "tasks");//NOI18N
-    //cache = new TaskPersistenceHandler(this, baseDir, "cache");//NOI18N
+        handler = new TaskPersistenceHandler(this, baseDir, "tasks");//NOI18N
+        cache = new TaskPersistenceHandler(this, baseDir, "cache");//NOI18N
     // querySupport = new JiraQuerySupport(this, extension);
     }
 
@@ -101,7 +104,7 @@ public class TracTaskRepository implements TaskRepository {
 
     public Lookup getLookup() {
         return Lookups.fixed(this, extension, provider, priorityProvider,
-                statusProvider, resolutionProvider, typeProvider,severityProvider);
+                statusProvider, resolutionProvider, typeProvider, severityProvider);
     }
 
     public Image getImage() {
@@ -125,6 +128,10 @@ public class TracTaskRepository implements TaskRepository {
 
     public State getState() {
         return state;//default
+    }
+
+    public List<String> getTaskIds() {
+        return handler.getTaskIds();
     }
 
     public void setState(State state) {
@@ -235,6 +242,4 @@ public class TracTaskRepository implements TaskRepository {
     public TracTaskSeverityProvider getSeverityProvider() {
         return severityProvider;
     }
-
-    
 }
