@@ -169,7 +169,7 @@ class TaskPersistenceHandler {
                 }
             }
 
-            TracTask tracTask = new TracTask(taskRepository,
+            TracTask tracTask = new TracTask(taskRepository,id,
                     Integer.parseInt(ticketId), name, description);
             readTracTask(element, tracTask);
             tracTask.setLocal(local);
@@ -199,7 +199,7 @@ class TaskPersistenceHandler {
             String description = element.getAttribute(DESCRIPTION);
 
 
-            TracTask tracTask = new TracTask(taskRepository,
+            TracTask tracTask = new TracTask(taskRepository,id,
                     Integer.parseInt(ticketId), name, description);
             readTracTask(element, tracTask);
 

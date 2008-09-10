@@ -42,7 +42,8 @@ import org.openide.util.lookup.Lookups;
  */
 public class TracTask extends Ticket implements TaskElement {
 
-    private TracTaskRepository taskRepository;
+    private final TracTaskRepository taskRepository;
+    private String id;
     private final TracTaskElementExtension extension;
     private final TaskEditorProvider editorProvider;
     private boolean local;
@@ -51,16 +52,21 @@ public class TracTask extends Ticket implements TaskElement {
     private String newComment;
     private String action;
 
-    public TracTask(TracTaskRepository taskRepository,
+    public TracTask(TracTaskRepository taskRepository,String id,
             int ticketId, String summary, String description) {
         super(ticketId, summary, description);
         this.taskRepository = taskRepository;
+        this.id = id;
         extension = new TracTaskElementExtension(this);
         editorProvider = new TaskEditorProviderImpl(this);
     }
 
     public String getId() {
-        return String.valueOf(getTicketId());
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
