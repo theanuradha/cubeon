@@ -228,7 +228,7 @@ public class JiraTaskRepository implements TaskRepository {
         }
     }
 
-    void remove(JiraTask jiraTask) {
+   public void remove(JiraTask jiraTask) {
         handler.removeTaskElement(jiraTask);
     }
 

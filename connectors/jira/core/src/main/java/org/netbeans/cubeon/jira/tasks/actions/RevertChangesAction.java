@@ -33,16 +33,28 @@ public class RevertChangesAction extends AbstractAction {
 
     public RevertChangesAction(JiraTask task) {
         this.task = task;
-        putValue(NAME, NbBundle.getMessage(RevertChangesAction.class, "LBL_Revert_Local_Changes"));
-        putValue(SHORT_DESCRIPTION, NbBundle.getMessage(RevertChangesAction.class, "LBL_Revert_Local_Changes"));
+        if (task.isLocal()) {
+            putValue(NAME, NbBundle.getMessage(RevertChangesAction.class, "LBL_Delete_Local_Task"));
+            putValue(SHORT_DESCRIPTION, NbBundle.getMessage(RevertChangesAction.class, "LBL_Delete_Local_Task"));
+        } else {
+            putValue(NAME, NbBundle.getMessage(RevertChangesAction.class, "LBL_Revert_Local_Changes"));
+            putValue(SHORT_DESCRIPTION, NbBundle.getMessage(RevertChangesAction.class, "LBL_Revert_Local_Changes"));
+        }
+
+
+
     //putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/jira/history.png")));
     }
 
     public void actionPerformed(ActionEvent e) {
-        TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
-        factory.save(task);
-        task.getTaskRepository().revert(task);
+        if (task.isLocal()) {
+             task.getTaskRepository().remove(task);
+        } else {
+            TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
+            factory.save(task);
+            task.getTaskRepository().revert(task);
 
-        factory.refresh(task);
+            factory.refresh(task);
+        }
     }
 }
