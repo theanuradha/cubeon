@@ -262,5 +262,31 @@ public class TracTask extends Ticket implements TaskElement {
         this.modifiedFlag = modifiedFlag;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final TracTask other = (TracTask) obj;
+        if (this.taskRepository != other.taskRepository && (this.taskRepository == null || !this.taskRepository.equals(other.taskRepository))) {
+            return false;
+        }
+        if ((this.id == null) ? (other.id != null) : !this.id.equals(other.id)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 29 * hash + (this.taskRepository != null ? this.taskRepository.hashCode() : 0);
+        hash = 29 * hash + (this.id != null ? this.id.hashCode() : 0);
+        return hash;
+    }
+
     
 }
