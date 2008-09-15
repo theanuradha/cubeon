@@ -290,4 +290,9 @@ public class TracTaskRepository implements TaskRepository {
     public TracTaskSeverityProvider getSeverityProvider() {
         return severityProvider;
     }
+
+    public TracRepositoryAttributes getRepositoryAttributes() {
+        return repositoryAttributes;
+    }
+    
 }
