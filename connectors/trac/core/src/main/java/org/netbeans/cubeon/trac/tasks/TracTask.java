@@ -30,6 +30,7 @@ import org.netbeans.cubeon.tasks.spi.task.TaskSeverity;
 import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
 import org.netbeans.cubeon.tasks.spi.task.TaskType;
 import org.netbeans.cubeon.trac.api.Ticket;
+import org.netbeans.cubeon.trac.api.TicketField;
 import org.netbeans.cubeon.trac.api.TracKeys;
 import org.netbeans.cubeon.trac.repository.TracTaskRepository;
 import org.openide.util.Lookup;
@@ -53,7 +54,7 @@ public class TracTask extends Ticket implements TaskElement {
     private String newComment;
     private String action;
 
-    public TracTask(TracTaskRepository taskRepository,String id,
+    public TracTask(TracTaskRepository taskRepository, String id,
             int ticketId, String summary, String description) {
         super(ticketId, summary, description);
         this.taskRepository = taskRepository;
@@ -75,8 +76,8 @@ public class TracTask extends Ticket implements TaskElement {
     }
 
     public String getDisplayName() {
-        if(isLocal()){
-         return NbBundle.getMessage(TracTask.class, "Key_New")+ " : " + getName();
+        if (isLocal()) {
+            return NbBundle.getMessage(TracTask.class, "Key_New") + " : " + getName();
         }
         return getId() + " : " + getName();
     }
@@ -137,25 +138,30 @@ public class TracTask extends Ticket implements TaskElement {
     public Image getImage() {
         Image image = Utilities.loadImage("org/netbeans/cubeon/trac/task.png");
         //FIXME
-        /*
-        int indexOf = taskTypes.indexOf(getType().getId());
+        TicketField type = taskRepository.getRepositoryAttributes().
+                getTicketFiledByName(TracKeys.TYPE);
+        int indexOf = type.getOptions().indexOf(getType().getId());
 
         switch (indexOf) {
-        case 0:
-        image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_defact.png"), 0, 0);
-        break;
-        case 1:
-        image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_enhancement.png"), 0, 0);
-        break;
-        case 2:
-        image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_feature.png"), 0, 0);
-        break;
-        case 3:
-        image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_task.png"), 0, 0);
-        break;
+            case 0:
+                image = Utilities.mergeImages(image,
+                        Utilities.loadImage("org/netbeans/cubeon/local/bullet_defact.png"), 0, 0);
+                break;
+            case 1:
+                image = Utilities.mergeImages(image,
+                        Utilities.loadImage("org/netbeans/cubeon/local/bullet_enhancement.png"), 0, 0);
+                break;
+            case 2:
+                image = Utilities.mergeImages(image,
+                        Utilities.loadImage("org/netbeans/cubeon/local/bullet_feature.png"), 0, 0);
+                break;
+            case 3:
+                image = Utilities.mergeImages(image,
+                        Utilities.loadImage("org/netbeans/cubeon/local/bullet_task.png"), 0, 0);
+                break;
 
         }
-         */
+
 
         return image;
     }
@@ -287,6 +293,4 @@ public class TracTask extends Ticket implements TaskElement {
         hash = 29 * hash + (this.id != null ? this.id.hashCode() : 0);
         return hash;
     }
-
-    
 }

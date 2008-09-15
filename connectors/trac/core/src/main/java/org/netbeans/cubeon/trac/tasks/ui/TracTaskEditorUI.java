@@ -41,9 +41,11 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import org.netbeans.cubeon.trac.api.TracKeys;
 import org.netbeans.cubeon.trac.tasks.TracTask;
 import org.openide.util.NbBundle;
 import static org.netbeans.cubeon.trac.api.TracKeys.*;
+
 /**
  *
  * @author Anuradha
@@ -53,7 +55,7 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
     private final TracTask task;
     private final Set<ChangeListener> listeners = new HashSet<ChangeListener>(1);
     private AtomicBoolean modifiedFlag = new AtomicBoolean(false);
-    private static  final String EMPTY="";
+    private static final String EMPTY = "";
     final DocumentListener documentListener = new DocumentListener() {
 
         public void insertUpdate(DocumentEvent arg0) {
@@ -121,7 +123,7 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
     public TracTaskEditorUI(TracTask task) {
         this.task = task;
         initComponents();
-
+        refresh();
     }
 
     public void refresh() {
@@ -130,11 +132,32 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
         txtDescription.getDocument().removeDocumentListener(documentListener);
         txtKeyWord.getDocument().removeDocumentListener(documentListener);
         txtCc.getDocument().removeDocumentListener(documentListener);
-
+        loadDates();
         txtSummary.setText(task.getSummary());
         txtDescription.setText(task.getDescription());
-
-
+        lblReportedBy.setText(task.get(TracKeys.REPORTER));
+        txtAssignee.setText(task.get(TracKeys.OWNER));
+        txtCc.setText(task.get(TracKeys.CC));
+        //load actions
+        if (task.isLocal()) {
+            cmbActions.setEnabled(false);
+            cmbResolution.setEnabled(false);
+        } else {
+            cmbActions.setEnabled(true);
+            cmbResolution.setEnabled(true);
+            cmbActions.removeAllItems();
+            cmbResolution.removeAllItems();
+            List<String> actions = task.getActions();
+            for (String action : actions) {
+                cmbActions.addItem(action);
+            }
+            String selectedAction = task.getAction();
+            if (selectedAction != null) {
+                cmbActions.setSelectedItem(selectedAction);
+            } else {
+                cmbActions.setSelectedIndex(0);
+            }
+        }
         cmbPriority.removeItemListener(itemListener);
         cmbActions.removeItemListener(itemListener);
         cmbType.removeItemListener(itemListener);
@@ -239,16 +262,10 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         lblComponent = new javax.swing.JLabel();
         cmbComponent = new javax.swing.JComboBox();
-        lblMilestone = new javax.swing.JLabel();
-        cmbMilestone = new javax.swing.JComboBox();
         lblType = new javax.swing.JLabel();
         cmbType = new javax.swing.JComboBox();
-        lblVersion = new javax.swing.JLabel();
-        cmbVersion = new javax.swing.JComboBox();
         lblPriority = new javax.swing.JLabel();
         cmbPriority = new javax.swing.JComboBox();
-        lblKeyword = new javax.swing.JLabel();
-        txtKeyWord = new javax.swing.JTextField();
         lblSeverity = new javax.swing.JLabel();
         cmbSeverity = new javax.swing.JComboBox();
         lblDesription1 = new javax.swing.JLabel();
@@ -263,6 +280,13 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
         lblReportedBy = new javax.swing.JLabel();
         lblCc = new javax.swing.JLabel();
         txtCc = new javax.swing.JTextField();
+        jPanel2 = new javax.swing.JPanel();
+        lblMilestone = new javax.swing.JLabel();
+        cmbMilestone = new javax.swing.JComboBox();
+        lblVersion = new javax.swing.JLabel();
+        cmbVersion = new javax.swing.JComboBox();
+        lblKeyword = new javax.swing.JLabel();
+        txtKeyWord = new javax.swing.JTextField();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
@@ -286,47 +310,33 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
         lblDesription.setForeground(new java.awt.Color(51, 51, 51));
         lblDesription.setText(NbBundle.getMessage(TracTaskEditorUI.class, "TracTaskEditorUI.lblDesription.text")); // NOI18N
 
-        lblAttributes.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        lblAttributes.setFont(new java.awt.Font("Tahoma", 1, 11));
         lblAttributes.setText(NbBundle.getMessage(TracTaskEditorUI.class, "TracTaskEditorUI.lblAttributes.text")); // NOI18N
 
         jPanel1.setOpaque(false);
-        jPanel1.setLayout(new java.awt.GridLayout(4, 4, 10, 5));
+        jPanel1.setLayout(new java.awt.GridLayout(4, 2, 5, 5));
 
         lblComponent.setText(NbBundle.getMessage(TracTaskEditorUI.class, "TracTaskEditorUI.lblComponent.text")); // NOI18N
         jPanel1.add(lblComponent);
 
         jPanel1.add(cmbComponent);
 
-        lblMilestone.setText(NbBundle.getMessage(TracTaskEditorUI.class, "TracTaskEditorUI.lblMilestone.text")); // NOI18N
-        jPanel1.add(lblMilestone);
-
-        jPanel1.add(cmbMilestone);
-
         lblType.setText(NbBundle.getMessage(TracTaskEditorUI.class, "TracTaskEditorUI.lblType.text")); // NOI18N
         jPanel1.add(lblType);
 
         jPanel1.add(cmbType);
-
-        lblVersion.setText(NbBundle.getMessage(TracTaskEditorUI.class, "TracTaskEditorUI.lblVersion.text")); // NOI18N
-        jPanel1.add(lblVersion);
-
-        jPanel1.add(cmbVersion);
 
         lblPriority.setText(NbBundle.getMessage(TracTaskEditorUI.class, "TracTaskEditorUI.lblPriority.text")); // NOI18N
         jPanel1.add(lblPriority);
 
         jPanel1.add(cmbPriority);
 
-        lblKeyword.setText(NbBundle.getMessage(TracTaskEditorUI.class, "TracTaskEditorUI.lblKeyword.text","-")); // NOI18N
-        jPanel1.add(lblKeyword);
-        jPanel1.add(txtKeyWord);
-
         lblSeverity.setText(NbBundle.getMessage(TracTaskEditorUI.class, "TracTaskEditorUI.lblSeverity.text")); // NOI18N
         jPanel1.add(lblSeverity);
 
         jPanel1.add(cmbSeverity);
 
-        lblDesription1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        lblDesription1.setFont(new java.awt.Font("Tahoma", 1, 11));
         lblDesription1.setForeground(new java.awt.Color(51, 51, 51));
         lblDesription1.setText(NbBundle.getMessage(TracTaskEditorUI.class, "TracTaskEditorUI.lblDesription1.text")); // NOI18N
 
@@ -346,6 +356,23 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
 
         lblCc.setText(NbBundle.getMessage(TracTaskEditorUI.class, "TracTaskEditorUI.lblCc.text","-")); // NOI18N
 
+        jPanel2.setOpaque(false);
+        jPanel2.setLayout(new java.awt.GridLayout(4, 2, 5, 5));
+
+        lblMilestone.setText(NbBundle.getMessage(TracTaskEditorUI.class, "TracTaskEditorUI.lblMilestone.text")); // NOI18N
+        jPanel2.add(lblMilestone);
+
+        jPanel2.add(cmbMilestone);
+
+        lblVersion.setText(NbBundle.getMessage(TracTaskEditorUI.class, "TracTaskEditorUI.lblVersion.text")); // NOI18N
+        jPanel2.add(lblVersion);
+
+        jPanel2.add(cmbVersion);
+
+        lblKeyword.setText(NbBundle.getMessage(TracTaskEditorUI.class, "TracTaskEditorUI.lblKeyword.text","-")); // NOI18N
+        jPanel2.add(lblKeyword);
+        jPanel2.add(txtKeyWord);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -353,7 +380,6 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 684, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(10, 10, 10)
                         .addComponent(lblCreated, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -367,31 +393,31 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
                     .addComponent(lblAttributes, javax.swing.GroupLayout.PREFERRED_SIZE, 684, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblDesription1, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(10, 10, 10)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lblResolution)
-                                    .addComponent(lblAction))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(cmbActions, 0, 192, Short.MAX_VALUE)
-                                    .addComponent(cmbResolution, 0, 192, Short.MAX_VALUE))
-                                .addGap(91, 91, 91)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addGap(10, 10, 10)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(lblAction, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(lblResolution, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(cmbResolution, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(cmbActions, 0, 250, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                            .addComponent(lblDesription1, javax.swing.GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE))
+                        .addGap(36, 36, 36)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel1)
                                     .addComponent(jLabel3)
                                     .addComponent(lblCc))
                                 .addGap(25, 25, 25)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(lblReportedBy, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(txtAssignee, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
-                                    .addComponent(txtCc, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)))
-                            .addComponent(lblDesription2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(lblReportedBy, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)
+                                    .addComponent(txtAssignee, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)
+                                    .addComponent(txtCc, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)))
+                            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 315, Short.MAX_VALUE)
+                            .addComponent(lblDesription2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 315, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -406,31 +432,40 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(lblDesription)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(spDescription, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)
+                .addComponent(spDescription, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(lblAttributes)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblDesription1)
                     .addComponent(lblDesription2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblAction)
-                    .addComponent(cmbActions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1)
-                    .addComponent(lblReportedBy))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblResolution)
-                    .addComponent(cmbResolution, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3)
-                    .addComponent(txtAssignee, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblCc)
-                    .addComponent(txtCc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(lblReportedBy))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(txtAssignee, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblCc)
+                            .addComponent(txtCc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblAction)
+                            .addComponent(cmbActions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblResolution)
+                            .addComponent(cmbResolution, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -446,6 +481,7 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JLabel lblAction;
     private javax.swing.JLabel lblAttributes;
     private javax.swing.JLabel lblCc;
