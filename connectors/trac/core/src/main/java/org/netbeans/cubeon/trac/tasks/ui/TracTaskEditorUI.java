@@ -35,13 +35,18 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.Action;
+import javax.swing.JComboBox;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import org.netbeans.cubeon.tasks.spi.task.TaskResolution;
+import org.netbeans.cubeon.trac.api.TicketField;
 import org.netbeans.cubeon.trac.api.TracKeys;
+import org.netbeans.cubeon.trac.repository.TracRepositoryAttributes;
+import org.netbeans.cubeon.trac.repository.TracTaskRepository;
 import org.netbeans.cubeon.trac.tasks.TracTask;
 import org.openide.util.NbBundle;
 import static org.netbeans.cubeon.trac.api.TracKeys.*;
@@ -135,29 +140,12 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
         loadDates();
         txtSummary.setText(task.getSummary());
         txtDescription.setText(task.getDescription());
-        lblReportedBy.setText(task.get(TracKeys.REPORTER));
-        txtAssignee.setText(task.get(TracKeys.OWNER));
+        lblReportedBy.setText(task.get(REPORTER));
+        txtAssignee.setText(task.get(OWNER));
         txtCc.setText(task.get(TracKeys.CC));
-        //load actions
-        if (task.isLocal()) {
-            cmbActions.setEnabled(false);
-            cmbResolution.setEnabled(false);
-        } else {
-            cmbActions.setEnabled(true);
-            cmbResolution.setEnabled(true);
-            cmbActions.removeAllItems();
-            cmbResolution.removeAllItems();
-            List<String> actions = task.getActions();
-            for (String action : actions) {
-                cmbActions.addItem(action);
-            }
-            String selectedAction = task.getAction();
-            if (selectedAction != null) {
-                cmbActions.setSelectedItem(selectedAction);
-            } else {
-                cmbActions.setSelectedIndex(0);
-            }
-        }
+        txtKeyWord.setText(task.get(TracKeys.KEYWORDS));
+
+        loadAttibutes();
         cmbPriority.removeItemListener(itemListener);
         cmbActions.removeItemListener(itemListener);
         cmbType.removeItemListener(itemListener);
@@ -214,6 +202,133 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
     public final void removeChangeListener(ChangeListener l) {
         synchronized (listeners) {
             listeners.remove(l);
+        }
+    }
+
+    private void loadAttibutes() {
+        TracTaskRepository tracRepository = task.getTracRepository();
+        TracRepositoryAttributes attributes = tracRepository.getRepositoryAttributes();
+        cmbActions.removeAllItems();
+        cmbResolution.removeAllItems();
+        //load actions
+        if (task.isLocal()) {
+            cmbActions.setEnabled(false);
+            cmbResolution.setEnabled(false);
+        } else {
+            cmbActions.setEnabled(true);
+            cmbResolution.setEnabled(true);
+
+            List<String> actions = task.getActions();
+            for (String action : actions) {
+                cmbActions.addItem(action);
+            }
+            String selectedAction = task.getAction();
+            if (selectedAction != null) {
+                cmbActions.setSelectedItem(selectedAction);
+            } else {
+                cmbActions.setSelectedIndex(0);
+            }
+            TicketField resolutionField = attributes.getTicketFiledByName(RESOLUTION);
+            assert resolutionField != null;
+            List<String> options = resolutionField.getOptions();
+            for (String option : options) {
+                cmbResolution.addItem(option);
+            }
+            TaskResolution resolution = task.getResolution();
+            if (resolution != null) {
+                cmbResolution.setSelectedItem(resolution.getId());
+            } else {
+                cmbActions.setSelectedIndex(-1);
+            }
+        }
+        //component field
+        TicketField componentField = attributes.getTicketFiledByName(COMPONENT);
+        if (componentField != null) {
+
+            String component = task.get(COMPONENT);
+            _loadCombos(cmbComponent, componentField.getOptions(),
+                    componentField.isOptional(), component);
+        } else {
+            cmbComponent.setEnabled(false);
+        }
+
+        //type field
+        TicketField typeField = attributes.getTicketFiledByName(TYPE);
+        if (typeField != null) {
+
+            String type = task.get(TYPE);
+            _loadCombos(cmbType, typeField.getOptions(),
+                    typeField.isOptional(), type);
+        } else {
+            cmbType.setEnabled(false);
+        }
+        //priority field
+        TicketField priorityField = attributes.getTicketFiledByName(PRIORITY);
+        if (priorityField != null) {
+
+            String priority = task.get(PRIORITY);
+            _loadCombos(cmbPriority, priorityField.getOptions(),
+                    priorityField.isOptional(), priority);
+        } else {
+            cmbPriority.setEnabled(false);
+        }
+
+        //severity field
+        TicketField severityField = attributes.getTicketFiledByName(SEVERITY);
+        if (severityField != null) {
+
+            String severity = task.get(SEVERITY);
+            _loadCombos(cmbSeverity, severityField.getOptions(),
+                    severityField.isOptional(), severity);
+        } else {
+            cmbSeverity.setEnabled(false);
+        }
+
+        //milestone field
+        TicketField milestoneField = attributes.getTicketFiledByName(MILESTONE);
+        if (milestoneField != null) {
+            String milestone = task.get(MILESTONE);
+            _loadCombos(cmbMilestone, milestoneField.getOptions(),
+                    milestoneField.isOptional(), milestone);
+        } else {
+            cmbMilestone.setEnabled(false);
+        }
+        //milestone field
+        TicketField versionField = attributes.getTicketFiledByName(VERSION);
+        if (versionField != null) {
+            String version = task.get(VERSION);
+            _loadCombos(cmbVersion, versionField.getOptions(),
+                    versionField.isOptional(), version);
+        } else {
+            cmbVersion.setEnabled(false);
+        }
+
+
+    }
+
+    private void _loadCombos(JComboBox comboBox, List<String> options,
+            boolean optinal, String selected) {
+        comboBox.removeAllItems();
+        if (options.isEmpty()) {
+            comboBox.setEnabled(false);
+        } else {
+            comboBox.setEnabled(true);
+            if (optinal) {
+                //if optional component add EMPTY tag to options
+                comboBox.addItem(EMPTY);
+                //if valuve optional and selected null set selected as EMPTY
+                if (selected == null) {
+                    selected = EMPTY;
+                }
+            }
+            for (String string : options) {
+                comboBox.addItem(string);
+            }
+            if (selected == null) {
+                comboBox.setSelectedIndex(-1);
+            } else {
+                comboBox.setSelectedItem(selected);
+            }
         }
     }
 
