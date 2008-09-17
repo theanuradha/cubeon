@@ -142,6 +142,7 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
         txtDescription.setText(task.getDescription());
         lblReportedBy.setText(task.get(REPORTER));
         txtAssignee.setText(task.get(OWNER));
+        lblStatus.setText(task.get(STATUS));
         txtCc.setText(task.get(TracKeys.CC));
         txtKeyWord.setText(task.get(TracKeys.KEYWORDS));
 
@@ -176,8 +177,38 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
 
     }
 
+    private String getSelectedValve(JComboBox comboBox) {
+        Object selected = comboBox.getSelectedItem();
+        //validate is selected vauve is Empty set selected as null
+        if (!EMPTY.equals(selected)) {
+            selected = null;
+        }
+        return selected != null ? selected.toString() : null;
+    }
+
     public TracTask save() {
-        throw new UnsupportedOperationException("Not yet implemented");
+        task.setSummary(txtSummary.getText().trim());
+        task.setDescription(txtDescription.getText().trim());
+        task.put(CC, txtCc.getText().trim());
+        task.put(KEYWORDS, txtKeyWord.getText().trim());
+        task.put(TYPE, getSelectedValve(cmbType));
+        task.put(PRIORITY, getSelectedValve(cmbPriority));
+        task.put(COMPONENT, getSelectedValve(cmbComponent));
+        task.put(SEVERITY, getSelectedValve(cmbSeverity));
+        task.put(VERSION, getSelectedValve(cmbVersion));
+        task.put(MILESTONE, getSelectedValve(cmbMilestone));
+        String assignee = txtAssignee.getText().trim();
+        if (task.isLocal()) {
+            task.put(OWNER, assignee.length() > 0 ? assignee : null);
+        } else {
+            //TODO hadel action and resulution
+        }
+        //set as modified if already or actuvaly modified
+        if (task.isModifiedFlag() || modifiedFlag.get()) {
+            task.setModifiedFlag(true);
+        }
+        task.getTaskRepository().persist(task);
+        return task;
     }
 
     final void fireChangeEvent() {
