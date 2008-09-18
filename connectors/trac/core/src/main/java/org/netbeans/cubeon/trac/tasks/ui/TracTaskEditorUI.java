@@ -179,8 +179,8 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
 
     private String getSelectedValve(JComboBox comboBox) {
         Object selected = comboBox.getSelectedItem();
-        //validate is selected vauve is Empty set selected as null
-        if (!EMPTY.equals(selected)) {
+        //validate is selected value is Empty set selected as null
+        if (EMPTY.equals(selected)) {
             selected = null;
         }
         return selected != null ? selected.toString() : null;
