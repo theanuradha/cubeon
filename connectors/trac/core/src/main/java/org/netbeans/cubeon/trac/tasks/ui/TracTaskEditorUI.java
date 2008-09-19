@@ -142,7 +142,11 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
         txtDescription.setText(task.getDescription());
         lblReportedBy.setText(task.get(REPORTER));
         txtAssignee.setText(task.get(OWNER));
-        lblStatus.setText(task.get(STATUS));
+        lblStatus.setText(NbBundle.getMessage(TracTaskEditorUI.class,
+                "TracTaskEditorUI.lblStatus.text",
+                task.isLocal()
+                ? NbBundle.getMessage(TracTaskEditorUI.class, "LBL_Local")
+                : task.get(STATUS))); // NOI18N
         txtCc.setText(task.get(TracKeys.CC));
         txtKeyWord.setText(task.get(TracKeys.KEYWORDS));
 
