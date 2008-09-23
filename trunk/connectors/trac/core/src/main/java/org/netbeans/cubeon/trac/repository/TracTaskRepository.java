@@ -38,6 +38,7 @@ import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 
@@ -70,6 +71,8 @@ public class TracTaskRepository implements TaskRepository {
     private final TaskPersistenceHandler handler;
     private final TaskPersistenceHandler cache;
     private Map<String, TracTask> map = new HashMap<String, TracTask>();
+    //locks
+    private final Object SYNCHRONIZE_LOCK = new Object();
 
     public TracTaskRepository(TracTaskRepositoryProvider provider,
             String id, String name, String description) {
@@ -132,7 +135,7 @@ public class TracTaskRepository implements TaskRepository {
         return tracTask;
     }
 
-    public synchronized TaskElement getTaskElementById(String id) {
+    public synchronized TracTask getTaskElementById(String id) {
         TracTask get = map.get(id);
         if (get == null) {
 
@@ -173,7 +176,7 @@ public class TracTaskRepository implements TaskRepository {
         cache.persist(tracTask);
     }
 
-      public void update(TracTask task) throws TracException {
+    public void update(TracTask task) throws TracException {
         synchronized (task) {
 
             TracSession js = getSession();
@@ -210,8 +213,40 @@ public class TracTaskRepository implements TaskRepository {
 
     }
 
-
     public void synchronize() {
+        RequestProcessor.getDefault().post(new Runnable() {
+
+            public void run() {
+                synchronized (SYNCHRONIZE_LOCK) {
+                    List<String> taskIds = handler.getTaskIds();
+                    if (taskIds.isEmpty()) {
+                        return;
+                    }
+                    ProgressHandle handle = ProgressHandleFactory.createHandle(
+                            NbBundle.getMessage(TracTaskRepository.class,
+                            "LBL_Synchronizing_Tasks", getName()));
+                    handle.start(taskIds.size());
+                    try {
+                        for (String id : taskIds) {
+                            TracTask tracTask = getTaskElementById(id);
+                            if (tracTask != null && !tracTask.isLocal()) {
+
+                                handle.progress(tracTask.getId() + " : " + tracTask.getName(), taskIds.indexOf(id));
+                                try {
+                                    update(tracTask);
+                                } catch (TracException ex) {
+                                    Logger.getLogger(TracTaskRepository.class.getName()).warning(ex.getMessage());
+                                }
+
+                            }
+
+                        }
+                    } finally {
+                        handle.finish();
+                    }
+                }
+            }
+        });
     }
 
     public State getState() {
@@ -334,5 +369,4 @@ public class TracTaskRepository implements TaskRepository {
     public TracRepositoryAttributes getRepositoryAttributes() {
         return repositoryAttributes;
     }
-    
 }
