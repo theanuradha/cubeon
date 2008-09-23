@@ -393,7 +393,7 @@ public class JiraTaskRepository implements TaskRepository {
                 } else {
 
 
-                    JiraUtils.maregeToTask(this, issue, getJiraRemoteTaskCache(task.getId()), task);
+                    JiraUtils.maregeToTask(this, issue, jiraRemoteTask, task);
                     persist(task);
 
                     //make cache up to date
