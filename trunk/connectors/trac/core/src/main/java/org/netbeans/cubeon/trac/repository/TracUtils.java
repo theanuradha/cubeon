@@ -16,7 +16,10 @@
  */
 package org.netbeans.cubeon.trac.repository;
 
+import java.util.Map.Entry;
+import java.util.Set;
 import org.netbeans.cubeon.trac.api.Ticket;
+import org.netbeans.cubeon.trac.api.TracKeys;
 import org.netbeans.cubeon.trac.tasks.TracTask;
 
 /**
@@ -48,9 +51,25 @@ class TracUtils {
             cachedTask = issueToTask(repository, ticket);
             remoteToTask(repository, cachedTask, task);
         }
+        //cheack for status change
+        if (!ticket.get(TracKeys.STATUS).equals(cachedTask.getStatus().getId())) {
+            task.setAction(null);
+        }
+        Set<Entry<String, String>> entrySet = ticket.getAttributes().entrySet();
+        for (Entry<String, String> entry : entrySet) {
+            String valve = cachedTask.get(entry.getKey());
+            if (valve == null || valve.equals(entry.getValue())) {
+                task.put(entry.getKey(), entry.getValue());
+            }
+        }
+        //put created and updated date
+        task.setCreatedDate(ticket.getCreatedDate());
+        task.setUpdatedDate(ticket.getUpdatedDate());
     }
 
     public static void remoteToTask(TracTaskRepository repository, TracTask remoteTask, TracTask tracTask) {
+        //clear all 
+        tracTask.clear();
         //put all atributes to task
         tracTask.putAll(remoteTask.getAttributes());
         //put created and updated date
