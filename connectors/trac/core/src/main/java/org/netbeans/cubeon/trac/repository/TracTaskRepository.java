@@ -25,8 +25,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
+import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
+import org.netbeans.cubeon.trac.api.Ticket;
 import org.netbeans.cubeon.trac.api.TracClient;
 import org.netbeans.cubeon.trac.api.TracException;
 import org.netbeans.cubeon.trac.api.TracKeys;
@@ -92,7 +94,7 @@ public class TracTaskRepository implements TaskRepository {
         repositoryAttributes = new TracRepositoryAttributes(this);
         handler = new TaskPersistenceHandler(this, baseDir, "tasks");//NOI18N
         cache = new TaskPersistenceHandler(this, baseDir, "cache");//NOI18N
-    // querySupport = new JiraQuerySupport(this, extension);
+    // querySupport = new TracQuerySupport(this, extension);
     }
 
     public String getId() {
@@ -155,7 +157,7 @@ public class TracTaskRepository implements TaskRepository {
             task.setNewComment(null);
             TracTask cachedTask = cache.getTaskElementById(task.getId());
             task.putAll(cachedTask.getAttributes());
-            //JiraUtils.remoteToTask(this, getJiraRemoteTaskCache(task.getId()), task);
+            //TracUtils.remoteToTask(this, getTracRemoteTaskCache(task.getId()), task);
             task.setModifiedFlag(false);
             persist(task);
             task.getExtension().fireStateChenged();
@@ -170,6 +172,44 @@ public class TracTaskRepository implements TaskRepository {
 
         cache.persist(tracTask);
     }
+
+      public void update(TracTask task) throws TracException {
+        synchronized (task) {
+
+            TracSession js = getSession();
+            Ticket issue = js.getTicket(task.getTicketId());
+            update(issue, task);
+
+        }
+
+    }
+
+    public void update(Ticket issue, TracTask task) throws TracException {
+        synchronized (task) {
+            if (!task.isLocal()) {
+                TracTask cachedTask = cache.getTaskElementById(task.getId());
+                if (cachedTask != null && cachedTask.getUpdatedDate() == issue.getUpdatedDate()) {
+                    Logger.getLogger(getClass().getName()).info("Up to date : " + issue.getTicketId());//NOI18N
+
+                } else {
+
+
+                    TracUtils.maregeToTask(this, issue, cachedTask, task);
+                    persist(task);
+
+                    //make cache up to date
+                    cache(TracUtils.issueToTask(this, issue));
+
+                    TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
+                    factory.refresh(task);
+
+                    task.getExtension().fireStateChenged();
+                }
+            }
+        }
+
+    }
+
 
     public void synchronize() {
     }
