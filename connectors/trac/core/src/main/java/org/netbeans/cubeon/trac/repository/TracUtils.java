@@ -55,6 +55,7 @@ class TracUtils {
         if (!ticket.get(TracKeys.STATUS).equals(cachedTask.getStatus().getId())) {
             task.setAction(null);
         }
+        //put changed atributes to task
         Set<Entry<String, String>> entrySet = ticket.getAttributes().entrySet();
         for (Entry<String, String> entry : entrySet) {
             String valve = cachedTask.get(entry.getKey());
