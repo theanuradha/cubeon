@@ -62,7 +62,7 @@ public class TracTaskRepository implements TaskRepository {
     private final TracRepositoryExtension extension;
     private State state = State.INACTIVE;
     private final TracRepositoryAttributes repositoryAttributes;
-    private volatile TracSession session;
+    private volatile TracSession _session;
     private final TracTaskPriorityProvider priorityProvider;
     private final TracTaskTypeProvider typeProvider;
     private final TracTaskStatusProvider statusProvider;
@@ -189,23 +189,25 @@ public class TracTaskRepository implements TaskRepository {
 
     public void update(Ticket issue, TracTask task) throws TracException {
         synchronized (task) {
+            //ignore if local task
             if (!task.isLocal()) {
                 TracTask cachedTask = cache.getTaskElementById(task.getId());
+                //if remote ticket not modified ignore and log 
                 if (cachedTask != null && cachedTask.getUpdatedDate() == issue.getUpdatedDate()) {
                     Logger.getLogger(getClass().getName()).info("Up to date : " + issue.getTicketId());//NOI18N
 
                 } else {
 
-
+                    //marege changes with remote ticket
                     TracUtils.maregeToTask(this, issue, cachedTask, task);
                     persist(task);
 
                     //make cache up to date
                     cache(TracUtils.issueToTask(this, issue));
-
+                    //refresh task if open in editor
                     TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
                     factory.refresh(task);
-
+                    //notify task has changed
                     task.getExtension().fireStateChenged();
                 }
             }
@@ -215,10 +217,26 @@ public class TracTaskRepository implements TaskRepository {
 
     public void submit(TracTask task) throws TracException {
         synchronized (task) {
+            //if task is local create ticket on server
             if (task.isLocal()) {
-                TracUtils.createTicket(this,task);
+                TracUtils.createTicket(this, task);
             } else {
-                //TODO
+                /*sbmit changes*/
+                TracSession session = getSession();
+                String comment = task.getNewComment();
+                //if comment null set default updated comment
+                if (comment == null) {
+                    comment = NbBundle.getMessage(TracTaskRepository.class,
+                            "LBL_New_Comment", getUserName());
+                }
+                Ticket updateTicket = session.updateTicket(comment, task, true);
+                TracTask remoteTask = TracUtils.issueToTask(this, updateTicket);
+                TracUtils.remoteToTask(this, remoteTask, task);
+                //make cache up to date
+                cache(remoteTask);
+                //persist task changs by server
+                task.setModifiedFlag(false);
+                persist(task);
             }
             task.getExtension().fireStateChenged();
 
@@ -321,10 +339,10 @@ public class TracTaskRepository implements TaskRepository {
     }
 
     public synchronized TracSession getSession() throws TracException {
-        if (session == null) {
+        if (_session == null) {
             reconnect();
         }
-        return session;
+        return _session;
     }
 
     public synchronized void reconnect() throws TracException {
@@ -333,9 +351,9 @@ public class TracTaskRepository implements TaskRepository {
         handle.start();
         handle.switchToIndeterminate();
         try {
-            session = null;
+            _session = null;
             //try to reconnect
-            session = Lookup.getDefault().lookup(TracClient.class).
+            _session = Lookup.getDefault().lookup(TracClient.class).
                     createTracSession(getURL(), getUserName(), getPassword());
         } finally {
             handle.finish();
