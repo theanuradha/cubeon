@@ -28,6 +28,7 @@ import org.openide.util.NbBundle;
  * @author Anuradha
  */
 public class RevertChangesAction extends AbstractAction {
+    private static final long serialVersionUID = -86583898638400321L;
 
     private JiraTask task;
 

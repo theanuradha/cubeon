@@ -36,6 +36,7 @@ import org.openide.util.Utilities;
  * @author Anuradha
  */
 public class SubmitTaskAction extends AbstractAction {
+    private static final long serialVersionUID = -792527693541936426L;
 
     private JiraTask task;
 
