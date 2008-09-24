@@ -37,6 +37,7 @@ import org.openide.util.Utilities;
  * @author Anuradha G
  */
 public class TaskContextAction extends AbstractAction implements ContextAwareAction {
+    private static final long serialVersionUID = 1L;
 
     private final Lookup context;
     private final JavaResourceSet resourceSet;
