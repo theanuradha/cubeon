@@ -291,7 +291,7 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
             if (resolution != null) {
                 cmbResolution.setSelectedItem(resolution.getId());
             } else {
-                cmbActions.setSelectedIndex(-1);
+                cmbResolution.setSelectedIndex(-1);
             }
         }
         //component field
