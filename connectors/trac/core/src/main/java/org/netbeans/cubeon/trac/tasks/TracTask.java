@@ -166,7 +166,7 @@ public class TracTask extends Ticket implements TaskElement {
     }
 
     public String getUrlString() {
-        return taskRepository.getURL() + "/browse/" + getId();
+        return taskRepository.getURL() + "/browse/ticket/" + getTicketId();
     }
 
     public URL getUrl() {
