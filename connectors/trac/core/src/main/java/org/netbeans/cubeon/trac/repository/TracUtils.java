@@ -17,9 +17,11 @@
 package org.netbeans.cubeon.trac.repository;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.netbeans.cubeon.trac.api.Ticket;
+import org.netbeans.cubeon.trac.api.TicketField;
 import org.netbeans.cubeon.trac.api.TracException;
 import org.netbeans.cubeon.trac.api.TracKeys;
 import org.netbeans.cubeon.trac.api.TracSession;
@@ -61,6 +63,17 @@ class TracUtils {
             //notify aout task id changed
             repository.getExtension().fireIdChanged(old, task.getId());
         }
+    }
+
+    static Ticket taskToTicket(TracTaskRepository repository, TracTask task) {
+        Ticket ticket = new Ticket(task.getTicketId());
+        List<TicketField> fields = repository.getRepositoryAttributes().getTicketFields();
+        for (TicketField ticketField : fields) {
+            ticket.put(ticketField.getName(), task.get(ticketField.getName()));
+        }
+
+
+        return ticket;
     }
 
     private TracUtils() {
