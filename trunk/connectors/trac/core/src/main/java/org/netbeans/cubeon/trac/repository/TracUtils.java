@@ -43,6 +43,7 @@ class TracUtils {
             repository.remove(task);
 
             task.setId(TICKET + ticket.getTicketId());
+            task.setTicketId(ticket.getTicketId());
             task.setLocal(false);
 
             //put all atributes to task
@@ -74,7 +75,7 @@ class TracUtils {
         //put created and updated date
         tracTask.setCreatedDate(ticket.getCreatedDate());
         tracTask.setUpdatedDate(ticket.getUpdatedDate());
-
+        tracTask.setTicketId(ticket.getTicketId());
         //TODO ADD Comments to task
         return tracTask;
     }
@@ -100,6 +101,7 @@ class TracUtils {
         //put created and updated date
         task.setCreatedDate(ticket.getCreatedDate());
         task.setUpdatedDate(ticket.getUpdatedDate());
+        task.setTicketId(ticket.getTicketId());
     }
 
     public static void remoteToTask(TracTaskRepository repository, TracTask remoteTask, TracTask tracTask) {

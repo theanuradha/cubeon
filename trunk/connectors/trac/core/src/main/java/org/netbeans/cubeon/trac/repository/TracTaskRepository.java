@@ -225,7 +225,7 @@ public class TracTaskRepository implements TaskRepository {
                 TracSession session = getSession();
                 String comment = task.getNewComment();
                 //if comment null set default updated comment
-                if (comment == null) {
+                if (comment == null|| comment.trim().length()==0) {
                     comment = NbBundle.getMessage(TracTaskRepository.class,
                             "LBL_New_Comment", getUserName());
                 }
@@ -238,6 +238,13 @@ public class TracTaskRepository implements TaskRepository {
                 task.setModifiedFlag(false);
                 persist(task);
             }
+            //you have to notify all
+            task.getExtension().fireNameChenged();
+            task.getExtension().fireDescriptionChenged();
+            task.getExtension().firePriorityChenged();
+            task.getExtension().fireResolutionChenged();
+            task.getExtension().fireStatusChenged();
+            task.getExtension().fireTypeChenged();
             task.getExtension().fireStateChenged();
 
         }
