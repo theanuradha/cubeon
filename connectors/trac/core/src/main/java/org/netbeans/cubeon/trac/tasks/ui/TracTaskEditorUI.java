@@ -200,10 +200,6 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
 
     private String getSelectedValve(JComboBox comboBox) {
         Object selected = comboBox.getSelectedItem();
-        //validate is selected value is Empty set selected as null
-        if (EMPTY.equals(selected)) {
-            selected = null;
-        }
         return selected != null ? selected.toString() : null;
     }
 
@@ -370,14 +366,14 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
                 //if optional component add EMPTY tag to options
                 comboBox.addItem(EMPTY);
                 //if valuve optional and selected null set selected as EMPTY
-                if (selected == null) {
+                if (selected == null|| selected.trim().length()==0) {
                     selected = EMPTY;
                 }
             }
             for (String string : options) {
                 comboBox.addItem(string);
             }
-            if (selected == null) {
+            if (selected == null| selected.trim().length()==0) {
                 comboBox.setSelectedIndex(-1);
             } else {
                 comboBox.setSelectedItem(selected);
