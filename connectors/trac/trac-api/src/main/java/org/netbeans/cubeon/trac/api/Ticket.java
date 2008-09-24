@@ -81,7 +81,11 @@ public class Ticket {
      * @param m mappings to be stored in this ticket
      */
     public void putAll(Map<String, String> m) {
-        map.putAll(m);
+        //validate and put to ignore empty string valuves donot use addAll
+        Set<Entry<String, String>> entrySet = m.entrySet();
+        for (Entry<String, String> entry : entrySet) {
+            put(entry.getKey(), entry.getValue());
+        }
     }
 
     /**
@@ -91,11 +95,11 @@ public class Ticket {
      * 
      */
     public void put(String key, String value) {
-        if (value != null) {
-            map.put(key, value);
-        } else {
+        if (value == null || value.trim().length()==0) {
             //remove if valuve null
             map.remove(key);
+        } else {
+            map.put(key, value);
         }
     }
 
