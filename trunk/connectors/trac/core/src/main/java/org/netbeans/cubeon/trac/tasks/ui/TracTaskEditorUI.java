@@ -137,18 +137,30 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
         submitTaskAction = new SubmitTaskAction(task);
         refresh();
     }
+
     public List<Action> getActions() {
         return Arrays.<Action>asList(
                 openInBrowserTaskAction,
-
                 submitTaskAction);
     }
+
     public void refresh() {
         txtSummary.getDocument().removeDocumentListener(documentListener);
         txtAssignee.getDocument().removeDocumentListener(documentListener);
         txtDescription.getDocument().removeDocumentListener(documentListener);
         txtKeyWord.getDocument().removeDocumentListener(documentListener);
         txtCc.getDocument().removeDocumentListener(documentListener);
+
+        cmbPriority.removeItemListener(itemListener);
+        cmbActions.removeItemListener(itemListener);
+        cmbType.removeItemListener(itemListener);
+        cmbComponent.removeItemListener(itemListener);
+        cmbMilestone.removeItemListener(itemListener);
+        cmbVersion.removeItemListener(itemListener);
+        cmbSeverity.removeItemListener(itemListener);
+        cmbActions.removeItemListener(actionitemListener);
+        cmbResolution.removeItemListener(itemListener);
+
         loadDates();
         txtSummary.setText(task.getSummary());
         txtDescription.setText(task.getDescription());
@@ -163,17 +175,6 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
         txtKeyWord.setText(task.get(TracKeys.KEYWORDS));
 
         loadAttibutes();
-        cmbPriority.removeItemListener(itemListener);
-        cmbActions.removeItemListener(itemListener);
-        cmbType.removeItemListener(itemListener);
-        cmbComponent.removeItemListener(itemListener);
-        cmbMilestone.removeItemListener(itemListener);
-        cmbVersion.removeItemListener(itemListener);
-        cmbSeverity.removeItemListener(itemListener);
-        cmbActions.removeItemListener(actionitemListener);
-        cmbResolution.removeItemListener(itemListener);
-
-
 
         txtSummary.getDocument().addDocumentListener(documentListener);
         txtAssignee.getDocument().addDocumentListener(documentListener);
@@ -191,7 +192,7 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
         cmbActions.addItemListener(actionitemListener);
         cmbResolution.addItemListener(itemListener);
 
-        
+
         openInBrowserTaskAction.setEnabled(!task.isLocal());
         submitTaskAction.setEnabled(task.isModifiedFlag());
         modifiedFlag.set(false);
@@ -242,7 +243,7 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
             it.next().stateChanged(ev);
         }
         modifiedFlag.set(true);
-       submitTaskAction.setEnabled(true);
+        submitTaskAction.setEnabled(true);
     }
 
     public final void addChangeListener(ChangeListener l) {
@@ -404,8 +405,6 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
     public TracTask getTask() {
         return task;
     }
-
-
 
     /** This method is called from within the constructor to
      * initialize the form.
