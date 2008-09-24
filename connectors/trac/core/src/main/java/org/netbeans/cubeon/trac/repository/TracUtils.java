@@ -55,6 +55,8 @@ class TracUtils {
             task.setUpdatedDate(ticket.getUpdatedDate());
             repository.cache(issueToTask(repository, ticket));
             task.setModifiedFlag(false);
+            List<String> ticketActions = session.getTicketActions(task.getTicketId());
+            task.setActions(ticketActions);
             repository.persist(task);
             //TODO FIX QUERYSUPPORT
 //        //remove old id from outgoing query

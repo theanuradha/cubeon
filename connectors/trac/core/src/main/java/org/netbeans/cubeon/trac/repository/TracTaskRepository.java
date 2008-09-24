@@ -179,8 +179,11 @@ public class TracTaskRepository implements TaskRepository {
     public void update(TracTask task) throws TracException {
         synchronized (task) {
 
-            TracSession js = getSession();
-            Ticket issue = js.getTicket(task.getTicketId());
+            TracSession session = getSession();
+            Ticket issue = session.getTicket(task.getTicketId());
+            //read actions
+            List<String> ticketActions = session.getTicketActions(task.getTicketId());
+            task.setActions(ticketActions);
             update(issue, task);
 
         }
@@ -225,7 +228,7 @@ public class TracTaskRepository implements TaskRepository {
                 TracSession session = getSession();
                 String comment = task.getNewComment();
                 //if comment null set default updated comment
-                if (comment == null|| comment.trim().length()==0) {
+                if (comment == null || comment.trim().length() == 0) {
                     comment = NbBundle.getMessage(TracTaskRepository.class,
                             "LBL_New_Comment", getUserName());
                 }
@@ -237,6 +240,8 @@ public class TracTaskRepository implements TaskRepository {
                 cache(remoteTask);
                 //persist task changs by server
                 task.setModifiedFlag(false);
+                List<String> ticketActions = session.getTicketActions(task.getTicketId());
+                task.setActions(ticketActions);
                 persist(task);
             }
             //you have to notify all
