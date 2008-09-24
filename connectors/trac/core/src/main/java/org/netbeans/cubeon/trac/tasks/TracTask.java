@@ -133,8 +133,9 @@ public class TracTask extends Ticket implements TaskElement {
     }
 
     public boolean isCompleted() {
-        //check ticket has resolution 
-        return get(TracKeys.RESOLUTION) != null;
+        //check ticket has resolution
+        String resolution = get(TracKeys.RESOLUTION);
+        return resolution!=null && resolution.trim().length()>0;
     }
 
     public Image getImage() {
