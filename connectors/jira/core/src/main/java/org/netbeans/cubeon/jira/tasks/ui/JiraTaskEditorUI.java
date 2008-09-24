@@ -71,6 +71,7 @@ import org.openide.util.NbBundle;
  * @author Anuradha G
  */
 public class JiraTaskEditorUI extends javax.swing.JPanel {
+    private static final long serialVersionUID = 1L;
 
     private final Set<ChangeListener> listeners = new HashSet<ChangeListener>(1);
     private JiraTask task;
