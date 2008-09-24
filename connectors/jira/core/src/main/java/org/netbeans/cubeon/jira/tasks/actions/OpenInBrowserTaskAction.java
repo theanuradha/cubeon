@@ -29,6 +29,7 @@ import org.openide.util.Utilities;
  * @author Anuradha
  */
 public class OpenInBrowserTaskAction extends AbstractAction {
+    private static final long serialVersionUID = -4258062164533591503L;
 
     private JiraTask task;
 

@@ -32,6 +32,7 @@ import org.openide.util.Utilities;
  * @author Anuradha
  */
 public class OpenTaskHistoryAction extends AbstractAction {
+    private static final long serialVersionUID = -3533110265103846290L;
 
     private JiraTask task;
 
