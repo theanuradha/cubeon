@@ -21,6 +21,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
 import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
@@ -30,8 +31,10 @@ import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
 import org.netbeans.cubeon.tasks.spi.task.TaskType;
 import org.netbeans.cubeon.trac.api.Ticket;
 import org.netbeans.cubeon.trac.api.TicketField;
+import org.netbeans.cubeon.trac.api.TracException;
 import org.netbeans.cubeon.trac.api.TracKeys;
 import org.netbeans.cubeon.trac.repository.TracTaskRepository;
+import org.netbeans.cubeon.trac.utils.TracExceptionHandler;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
@@ -192,6 +195,13 @@ public class TracTask extends Ticket implements TaskElement {
     }
 
     public void synchronize() {
+        TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
+        factory.save(this);
+        try {
+            taskRepository.update(this);
+        } catch (TracException ex) {
+            TracExceptionHandler.notify(ex);
+        }
     }
 
     public TaskResolution getResolution() {
