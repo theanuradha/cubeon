@@ -48,6 +48,8 @@ import org.netbeans.cubeon.trac.api.TracKeys;
 import org.netbeans.cubeon.trac.repository.TracRepositoryAttributes;
 import org.netbeans.cubeon.trac.repository.TracTaskRepository;
 import org.netbeans.cubeon.trac.tasks.TracTask;
+import org.netbeans.cubeon.trac.tasks.actions.OpenInBrowserTaskAction;
+import org.netbeans.cubeon.trac.tasks.actions.SubmitTaskAction;
 import org.openide.util.NbBundle;
 import static org.netbeans.cubeon.trac.api.TracKeys.*;
 
@@ -57,10 +59,13 @@ import static org.netbeans.cubeon.trac.api.TracKeys.*;
  */
 public class TracTaskEditorUI extends javax.swing.JPanel {
 
+    private static final long serialVersionUID = -7550167448688050066L;
     private final TracTask task;
     private final Set<ChangeListener> listeners = new HashSet<ChangeListener>(1);
     private AtomicBoolean modifiedFlag = new AtomicBoolean(false);
     private static final String EMPTY = "";
+    private final OpenInBrowserTaskAction openInBrowserTaskAction;
+    private final SubmitTaskAction submitTaskAction;
     final DocumentListener documentListener = new DocumentListener() {
 
         public void insertUpdate(DocumentEvent arg0) {
@@ -128,9 +133,16 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
     public TracTaskEditorUI(TracTask task) {
         this.task = task;
         initComponents();
+        openInBrowserTaskAction = new OpenInBrowserTaskAction(task);
+        submitTaskAction = new SubmitTaskAction(task);
         refresh();
     }
+    public List<Action> getActions() {
+        return Arrays.<Action>asList(
+                openInBrowserTaskAction,
 
+                submitTaskAction);
+    }
     public void refresh() {
         txtSummary.getDocument().removeDocumentListener(documentListener);
         txtAssignee.getDocument().removeDocumentListener(documentListener);
@@ -179,6 +191,10 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
         cmbActions.addItemListener(actionitemListener);
         cmbResolution.addItemListener(itemListener);
 
+        
+        openInBrowserTaskAction.setEnabled(!task.isLocal());
+        submitTaskAction.setEnabled(task.isModifiedFlag());
+        modifiedFlag.set(false);
     }
 
     private String getSelectedValve(JComboBox comboBox) {
@@ -211,6 +227,7 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
         if (task.isModifiedFlag() || modifiedFlag.get()) {
             task.setModifiedFlag(true);
         }
+        submitTaskAction.setEnabled(task.isModifiedFlag());
         task.getTaskRepository().persist(task);
         return task;
     }
@@ -225,7 +242,7 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
             it.next().stateChanged(ev);
         }
         modifiedFlag.set(true);
-    //FIXME submitTaskAction.setEnabled(true);
+       submitTaskAction.setEnabled(true);
     }
 
     public final void addChangeListener(ChangeListener l) {
@@ -388,9 +405,7 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
         return task;
     }
 
-    public List<Action> getActions() {
-        return Arrays.<Action>asList();
-    }
+
 
     /** This method is called from within the constructor to
      * initialize the form.

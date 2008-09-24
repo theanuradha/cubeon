@@ -21,7 +21,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
@@ -103,7 +102,7 @@ public class TracTask extends Ticket implements TaskElement {
                 getTaskStatusById(status) : null;
     }
 
-    public TaskRepository getTaskRepository() {
+    public TracTaskRepository getTaskRepository() {
         return taskRepository;
     }
 

@@ -16,10 +16,13 @@
  */
 package org.netbeans.cubeon.trac.repository;
 
+import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.netbeans.cubeon.trac.api.Ticket;
+import org.netbeans.cubeon.trac.api.TracException;
 import org.netbeans.cubeon.trac.api.TracKeys;
+import org.netbeans.cubeon.trac.api.TracSession;
 import org.netbeans.cubeon.trac.tasks.TracTask;
 
 /**
@@ -28,12 +31,43 @@ import org.netbeans.cubeon.trac.tasks.TracTask;
  */
 class TracUtils {
 
+    public static final String TICKET = "Ticket #";
+
+    static void createTicket(TracTaskRepository repository, TracTask task) throws TracException {
+        if (task.isLocal()) {
+            String old = task.getId();
+            TracSession session = repository.getSession();
+            Ticket ticket = session.createTicket(task.getSummary(),
+                    task.getDescription(),
+                    new HashMap<String, Object>(task.getAttributes()), true);
+            repository.remove(task);
+
+            task.setId(TICKET + ticket.getTicketId());
+            task.setLocal(false);
+
+            //put all atributes to task
+            task.putAll(ticket.getAttributes());
+            //put created and updated date
+            task.setCreatedDate(ticket.getCreatedDate());
+            task.setUpdatedDate(ticket.getUpdatedDate());
+            repository.cache(issueToTask(repository, ticket));
+            task.setModifiedFlag(false);
+            repository.persist(task);
+            //TODO FIX QUERYSUPPORT
+//        //remove old id from outgoing query
+//        repository.getQuerySupport().getOutgoingQuery().removeTaskId(old);
+
+            //notify aout task id changed
+            repository.getExtension().fireIdChanged(old, task.getId());
+        }
+    }
+
     private TracUtils() {
     }
 
     static TracTask issueToTask(TracTaskRepository repository, Ticket ticket) {
         //create new TracTask
-        TracTask tracTask = new TracTask(repository, "Ticket #" + ticket.getTicketId(), ticket.getTicketId(),
+        TracTask tracTask = new TracTask(repository, TICKET + ticket.getTicketId(), ticket.getTicketId(),
                 ticket.getSummary(), ticket.getSummary());
         //put all atributes to task
         tracTask.putAll(ticket.getAttributes());
@@ -76,6 +110,10 @@ class TracUtils {
         //put created and updated date
         tracTask.setCreatedDate(remoteTask.getCreatedDate());
         tracTask.setUpdatedDate(remoteTask.getUpdatedDate());
-    //TODO ADD Comments to task
+
+    }
+
+    public static void readComments(TracTaskRepository repository, TracTask task) {
+        //TODO ADD Comments to task
     }
 }

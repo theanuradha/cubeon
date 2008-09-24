@@ -213,6 +213,18 @@ public class TracTaskRepository implements TaskRepository {
 
     }
 
+    public void submit(TracTask task) throws TracException {
+        synchronized (task) {
+            if (task.isLocal()) {
+                TracUtils.createTicket(this,task);
+            } else {
+                //TODO
+            }
+            task.getExtension().fireStateChenged();
+
+        }
+    }
+
     public void synchronize() {
         RequestProcessor.getDefault().post(new Runnable() {
 
