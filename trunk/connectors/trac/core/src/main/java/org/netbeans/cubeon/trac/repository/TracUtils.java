@@ -109,7 +109,7 @@ class TracUtils {
         Set<Entry<String, String>> entrySet = ticket.getAttributes().entrySet();
         for (Entry<String, String> entry : entrySet) {
             String valve = cachedTask.get(entry.getKey());
-            if (valve == null || valve.equals(entry.getValue())) {
+            if (valve == null || !valve.equals(entry.getValue())) {
                 task.put(entry.getKey(), entry.getValue());
             }
         }
