@@ -137,7 +137,7 @@ public interface TracSession {
      * @return
      * @throws org.netbeans.cubeon.trac.api.TracException
      */
-    List<String> getTicketActions(int id) throws TracException;
+    List<TicketAction> getTicketActions(int id) throws TracException;
 
     /**
      * Perform a ticket query, returning a list of ticket ID's.

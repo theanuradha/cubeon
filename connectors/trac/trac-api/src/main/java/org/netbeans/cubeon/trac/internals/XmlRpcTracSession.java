@@ -19,6 +19,7 @@ package org.netbeans.cubeon.trac.internals;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +30,7 @@ import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 import org.netbeans.cubeon.trac.api.Ticket;
+import org.netbeans.cubeon.trac.api.TicketAction;
 import org.netbeans.cubeon.trac.api.TicketComponent;
 import org.netbeans.cubeon.trac.api.TicketField;
 import org.netbeans.cubeon.trac.api.TicketMilestone;
@@ -463,14 +465,21 @@ public class XmlRpcTracSession implements TracSession {
         }
     }
 
-    public List<String> getTicketActions(int id) throws TracException {
-        List<String> actions = new ArrayList<String>();
+    public List<TicketAction> getTicketActions(int id) throws TracException {
+        List<TicketAction> actions = new ArrayList<TicketAction>();
         try {
-            Object[] result = (Object[]) client.execute("ticket.getAvailableActions",//NOI18N
+            HashMap result = (HashMap) client.execute("ticket.getAvailableActions",//NOI18N
                     new Object[]{id});
-
-            for (Object object : result) {
-                actions.add((String) object);
+            Collection maps = result.values();
+            for (Object object : maps) {
+                HashMap hashMap = (HashMap) object;
+                String name = (String) hashMap.get("name");//NOI18N
+                TicketAction action = new TicketAction(name);
+                Object[] operations = (Object[]) hashMap.get("operations");//NOI18N
+                for (Object operation : operations) {
+                    action.addOperation(new TicketAction.Operation((String) operation));
+                }
+                actions.add(action);
             }
 
         } catch (XmlRpcException ex) {
