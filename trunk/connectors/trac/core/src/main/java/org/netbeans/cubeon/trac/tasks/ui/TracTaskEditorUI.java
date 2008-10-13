@@ -43,6 +43,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.netbeans.cubeon.tasks.spi.task.TaskResolution;
+import org.netbeans.cubeon.trac.api.TicketAction;
 import org.netbeans.cubeon.trac.api.TicketField;
 import org.netbeans.cubeon.trac.api.TracKeys;
 import org.netbeans.cubeon.trac.repository.TracRepositoryAttributes;
@@ -267,8 +268,8 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
             cmbActions.setEnabled(true);
             cmbResolution.setEnabled(true);
 
-            List<String> actions = task.getActions();
-            for (String action : actions) {
+            List<TicketAction> actions = task.getActions();
+            for (TicketAction action : actions) {
                 cmbActions.addItem(action);
             }
             String selectedAction = task.getAction();

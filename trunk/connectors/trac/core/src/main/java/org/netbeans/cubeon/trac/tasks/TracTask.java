@@ -30,6 +30,7 @@ import org.netbeans.cubeon.tasks.spi.task.TaskSeverity;
 import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
 import org.netbeans.cubeon.tasks.spi.task.TaskType;
 import org.netbeans.cubeon.trac.api.Ticket;
+import org.netbeans.cubeon.trac.api.TicketAction;
 import org.netbeans.cubeon.trac.api.TicketField;
 import org.netbeans.cubeon.trac.api.TracException;
 import org.netbeans.cubeon.trac.api.TracKeys;
@@ -52,7 +53,7 @@ public class TracTask extends Ticket implements TaskElement {
     private final TaskEditorProvider editorProvider;
     private boolean local;
     private boolean modifiedFlag;
-    private List<String> actions = new ArrayList<String>();
+    private List<TicketAction> actions = new ArrayList<TicketAction>();
     private String newComment;
     private String action;
 
@@ -234,12 +235,12 @@ public class TracTask extends Ticket implements TaskElement {
         return extension;
     }
 
-    public List<String> getActions() {
-        return new ArrayList<String>(actions);
+    public List<TicketAction> getActions() {
+        return new ArrayList<TicketAction>(actions);
     }
 
-    public void setActions(List<String> actions) {
-        this.actions = new ArrayList<String>(actions);
+    public void setActions(List<TicketAction> actions) {
+        this.actions = new ArrayList<TicketAction>(actions);
     }
 
     public boolean isLocal() {

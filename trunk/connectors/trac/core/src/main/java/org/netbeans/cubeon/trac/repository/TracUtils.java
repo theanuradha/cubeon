@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.netbeans.cubeon.trac.api.Ticket;
+import org.netbeans.cubeon.trac.api.TicketAction;
 import org.netbeans.cubeon.trac.api.TicketField;
 import org.netbeans.cubeon.trac.api.TracException;
 import org.netbeans.cubeon.trac.api.TracKeys;
@@ -55,7 +56,7 @@ class TracUtils {
             task.setUpdatedDate(ticket.getUpdatedDate());
             repository.cache(issueToTask(repository, ticket));
             task.setModifiedFlag(false);
-            List<String> ticketActions = session.getTicketActions(task.getTicketId());
+            List<TicketAction> ticketActions = session.getTicketActions(task.getTicketId());
             task.setActions(ticketActions);
             repository.persist(task);
             //TODO FIX QUERYSUPPORT

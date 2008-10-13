@@ -29,6 +29,7 @@ import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.trac.api.Ticket;
+import org.netbeans.cubeon.trac.api.TicketAction;
 import org.netbeans.cubeon.trac.api.TracClient;
 import org.netbeans.cubeon.trac.api.TracException;
 import org.netbeans.cubeon.trac.api.TracKeys;
@@ -182,7 +183,7 @@ public class TracTaskRepository implements TaskRepository {
             TracSession session = getSession();
             Ticket issue = session.getTicket(task.getTicketId());
             //read actions
-            List<String> ticketActions = session.getTicketActions(task.getTicketId());
+            List<TicketAction> ticketActions = session.getTicketActions(task.getTicketId());
             task.setActions(ticketActions);
             update(issue, task);
 
@@ -240,7 +241,7 @@ public class TracTaskRepository implements TaskRepository {
                 cache(remoteTask);
                 //persist task changs by server
                 task.setModifiedFlag(false);
-                List<String> ticketActions = session.getTicketActions(task.getTicketId());
+                List<TicketAction> ticketActions = session.getTicketActions(task.getTicketId());
                 task.setActions(ticketActions);
                 persist(task);
             }
