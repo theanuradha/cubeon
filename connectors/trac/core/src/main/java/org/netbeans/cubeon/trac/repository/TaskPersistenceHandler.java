@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.trac.api.TicketAction;
+import org.netbeans.cubeon.trac.api.TicketAction.Operation;
 import org.netbeans.cubeon.trac.tasks.TracTask;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
@@ -47,7 +48,10 @@ import static org.netbeans.cubeon.trac.api.TracKeys.*;
  */
 class TaskPersistenceHandler {
     // add 'tag_' to prevent overlap with trac custom fields
+
     private static final String FILESYSTEM_FILE_TAG = "repository.xml"; //NOI18N
+    private static final String TAG_OPERATIONS = "operations";
+    private static final String TAG_OPERATION = "operation";
     private static final String TAG_ROOT = "tasks";//NOI18N
     private static final String TAG_REPOSITORY = "repository";//NOI18N
     private static final String TAG_ID = "id";//NOI18N
@@ -160,17 +164,31 @@ class TaskPersistenceHandler {
             NodeList actionssNodeList = actionsElement.getElementsByTagName(TAG_ACTION);
             List<TicketAction> actions = new ArrayList<TicketAction>();
             for (int i = 0; i < actionssNodeList.getLength(); i++) {
-                Node node = actionssNodeList.item(i);
-                if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    Element e = (Element) node;
-                    String aId = e.getAttribute(TAG_ID);
-                    TicketAction action=new TicketAction(aId);
+                Node actionNode = actionssNodeList.item(i);
+                if (actionNode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element actionElement = (Element) actionNode;
+                    String aId = actionElement.getAttribute(TAG_ID);
+                    TicketAction action = new TicketAction(aId);
+
+                    Element operationsElement = findElement(actionsElement, TAG_OPERATIONS);
+                    NodeList operationsNodeList = operationsElement.getElementsByTagName(TAG_OPERATION);
+                    for (int j = 0; j < operationsNodeList.getLength(); j++) {
+                        Node operationNode = operationsNodeList.item(j);
+                        if (operationNode.getNodeType() == Node.ELEMENT_NODE) {
+                            Element operationElement = (Element) operationNode;
+                            String oId = operationElement.getAttribute(TAG_ID);
+                            action.addOperation(new Operation(oId));
+
+                        }
+                    }
+
+
 
                     actions.add(action);
                 }
             }
 
-            TracTask tracTask = new TracTask(taskRepository,id,
+            TracTask tracTask = new TracTask(taskRepository, id,
                     Integer.parseInt(ticketId), name, description);
             readTracTask(element, tracTask);
             tracTask.setLocal(local);
@@ -200,7 +218,7 @@ class TaskPersistenceHandler {
             String description = element.getAttribute(DESCRIPTION);
 
 
-            TracTask tracTask = new TracTask(taskRepository,id,
+            TracTask tracTask = new TracTask(taskRepository, id,
                     Integer.parseInt(ticketId), name, description);
             readTracTask(element, tracTask);
 
@@ -336,10 +354,17 @@ class TaskPersistenceHandler {
             List<TicketAction> actions = task.getActions();
             Element actionsElement = getEmptyElement(document, taskElement, TAG_ACTIONS);
             for (TicketAction action : actions) {
-                Element element = document.createElement(TAG_ACTION);
-                actionsElement.appendChild(element);
-                element.setAttribute(TAG_ID, action.getName());
-
+                Element actionElement = document.createElement(TAG_ACTION);
+                actionsElement.appendChild(actionElement);
+                actionElement.setAttribute(TAG_ID, action.getName());
+                List<Operation> operations = action.getOperations();
+                Element operationsElement = getEmptyElement(document, actionElement,
+                        TAG_OPERATIONS);
+                for (Operation operation : operations) {
+                    Element operationElement = document.createElement(TAG_OPERATION);
+                    operationsElement.appendChild(operationElement);
+                    operationElement.setAttribute(TAG_ID, operation.getName());
+                }
             }
 
             saveTask(document, task.getId());
@@ -347,13 +372,13 @@ class TaskPersistenceHandler {
     }
 
     private Element getEmptyElement(Document document, Element root, String tag) {
-        Element taskpriorities = findElement(root, tag);
-        if (taskpriorities != null) {
-            root.removeChild(taskpriorities);
+        Element element = findElement(root, tag);
+        if (element != null) {
+            root.removeChild(element);
         }
-        taskpriorities = document.createElement(tag);
-        root.appendChild(taskpriorities);
-        return taskpriorities;
+        element = document.createElement(tag);
+        root.appendChild(element);
+        return element;
 
     }
 
