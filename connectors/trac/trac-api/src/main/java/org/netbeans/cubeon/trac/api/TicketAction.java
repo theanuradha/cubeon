@@ -32,6 +32,10 @@ public class TicketAction {
         this.name = name;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public List<Operation> getOperations() {
         return new ArrayList<Operation>(operations);
     }

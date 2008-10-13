@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
+import org.netbeans.cubeon.trac.api.TicketAction;
 import org.netbeans.cubeon.trac.tasks.TracTask;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
@@ -157,15 +158,15 @@ class TaskPersistenceHandler {
 
             Element actionsElement = findElement(element, TAG_ACTIONS);
             NodeList actionssNodeList = actionsElement.getElementsByTagName(TAG_ACTION);
-            List<String> actions = new ArrayList<String>();
+            List<TicketAction> actions = new ArrayList<TicketAction>();
             for (int i = 0; i < actionssNodeList.getLength(); i++) {
                 Node node = actionssNodeList.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element e = (Element) node;
                     String aId = e.getAttribute(TAG_ID);
+                    TicketAction action=new TicketAction(aId);
 
-
-                    actions.add(aId);
+                    actions.add(action);
                 }
             }
 
@@ -332,12 +333,12 @@ class TaskPersistenceHandler {
             }
 
             //actions
-            List<String> actions = task.getActions();
+            List<TicketAction> actions = task.getActions();
             Element actionsElement = getEmptyElement(document, taskElement, TAG_ACTIONS);
-            for (String action : actions) {
+            for (TicketAction action : actions) {
                 Element element = document.createElement(TAG_ACTION);
                 actionsElement.appendChild(element);
-                element.setAttribute(TAG_ID, action);
+                element.setAttribute(TAG_ID, action.getName());
 
             }
 
