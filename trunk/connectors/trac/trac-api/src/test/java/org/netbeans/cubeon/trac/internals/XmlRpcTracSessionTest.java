@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import junit.framework.TestCase;
 import org.netbeans.cubeon.trac.api.Ticket;
+import org.netbeans.cubeon.trac.api.TicketAction;
 import org.netbeans.cubeon.trac.api.TicketComponent;
 import org.netbeans.cubeon.trac.api.TicketField;
 import org.netbeans.cubeon.trac.api.TicketMilestone;
@@ -223,14 +224,14 @@ public class XmlRpcTracSessionTest extends TestCase {
         //test queryTickets
         List<Integer> queryTickets = tracSession.queryTickets(
                 "owner="+ user+"&status!=closed&component=Test");
-        assertEquals(1, queryTickets.size());
+        assertTrue(queryTickets.size()>0);
 
         //update some values
         summary += " UPDATED";
         ticket.setSummary(summary);
         ticket.put(TracKeys.TYPE, "enhancement");
         //test getTicketActions
-        List<String> actions = tracSession.getTicketActions(ticket.getTicketId());
+        List<TicketAction> actions = tracSession.getTicketActions(ticket.getTicketId());
         System.out.println(actions);
         //test updateTicket
         System.out.println("updateTicket");
@@ -238,8 +239,10 @@ public class XmlRpcTracSessionTest extends TestCase {
         assertEquals(summary, ticket.getSummary());
         assertEquals("enhancement", ticket.get(TracKeys.TYPE));
         //test deleteTicket
-        System.out.println("deleteTicket");
-        tracSession.deleteTicket(ticket);
+        System.out.println("deleteTickets");
+        for (int id : queryTickets) {
+            tracSession.deleteTicket(tracSession.getTicket(id));
+        }
         //try to get ticket and validate
         try {
             tracSession.getTicket(ticket.getTicketId());
