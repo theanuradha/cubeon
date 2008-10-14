@@ -272,7 +272,7 @@ public class TracTask extends Ticket implements TaskElement {
     }
 
     public boolean isModifiedFlag() {
-        return modifiedFlag;
+        return modifiedFlag || local;
     }
 
     public void setModifiedFlag(boolean modifiedFlag) {
