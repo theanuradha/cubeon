@@ -61,8 +61,8 @@ class TaskPersistenceHandler {
     private static final String TAG_TASK = "task";//NOI18N
     private static final String TAG_COMMENT = "tag_comment";//NOI18N
     private static final String TAG_LOCAL = "tag_local";//NOI18N
-    private static final String TAG_ACTIONS = "tag_actions";//NOI18N
-    private static final String TAG_ACTION = "tag_action";//NOI18N
+    private static final String TAG_ACTIONS = "actions";//NOI18N
+    private static final String TAG_ACTION = "action";//NOI18N
     private static final String TAG_MODIFIED_FLAG = "tag_modified_flag";//NOI18N
     //----------------------------------------------------
     private TracTaskRepository taskRepository;
