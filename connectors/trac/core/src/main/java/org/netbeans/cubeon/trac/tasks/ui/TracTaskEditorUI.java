@@ -374,7 +374,7 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
             for (String string : options) {
                 comboBox.addItem(string);
             }
-            if (selected == null| selected.trim().length()==0) {
+            if (selected == null|| selected.equals(EMPTY)) {
                 comboBox.setSelectedIndex(-1);
             } else {
                 comboBox.setSelectedItem(selected);
