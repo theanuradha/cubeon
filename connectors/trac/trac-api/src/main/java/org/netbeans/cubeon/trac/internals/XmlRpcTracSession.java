@@ -42,6 +42,7 @@ import org.netbeans.cubeon.trac.api.TicketType;
 import org.netbeans.cubeon.trac.api.TicketVersion;
 import org.netbeans.cubeon.trac.api.TracException;
 import org.netbeans.cubeon.trac.api.TracSession;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -508,7 +509,14 @@ public class XmlRpcTracSession implements TracSession {
     public Ticket executeAction(int id, TicketAction action, String comment) throws TracException {
         try {
             Object execute = client.execute("ticket.executeAction", new Object[]{id, action.getName(), comment});
-            System.out.println(execute);
+
+            //HACK TO prevent http://trac-hacks.org/ticket/1863 TODO FIND BETTER WAY
+            try {
+                //WORKAROUND AS comment #2 in 1863
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+               //IGNORE
+            }
 
         } catch (XmlRpcException ex) {
             throw new TracException(ex);
