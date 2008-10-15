@@ -233,15 +233,19 @@ public class TracTaskRepository implements TaskRepository {
                     comment = NbBundle.getMessage(TracTaskRepository.class,
                             "LBL_New_Comment", getUserName());
                 }
-                
 
-                Ticket ticket = TracUtils.taskToTicket(this, task);
- 
-                Ticket updateTicket = session.updateTicket(comment, ticket, true);
+
+
                 TicketAction action = task.getAction();
                 if (action != null) {
-                     updateTicket = session.executeAction(task.getTicketId(), action, comment);
+                    Ticket ticket = session.executeAction(task.getTicketId(), action, comment);
+                    TracUtils.maregeToTask(this, ticket,
+                            cache.getTaskElementById(task.getId()), task);
                 }
+
+                Ticket ticket = TracUtils.taskToTicket(this, task);
+                Ticket updateTicket = session.updateTicket(comment, ticket, true);
+
                 TracTask remoteTask = TracUtils.issueToTask(this, updateTicket);
                 TracUtils.remoteToTask(this, remoteTask, task);
                 //make cache up to date
