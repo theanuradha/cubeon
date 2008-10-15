@@ -44,6 +44,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.netbeans.cubeon.tasks.spi.task.TaskResolution;
 import org.netbeans.cubeon.trac.api.TicketAction;
+import org.netbeans.cubeon.trac.api.TicketAction.Operation;
 import org.netbeans.cubeon.trac.api.TicketField;
 import org.netbeans.cubeon.trac.api.TracKeys;
 import org.netbeans.cubeon.trac.repository.TracRepositoryAttributes;
@@ -112,7 +113,7 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
                 EventQueue.invokeLater(new Runnable() {
 
                     public void run() {
-                        //loadAction((JiraAction) cmbActions.getSelectedItem());
+                        loadAction((TicketAction) cmbActions.getSelectedItem());
                     }
                 });
             }
@@ -421,6 +422,26 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
     public void defaultUI() {
         txtAssignee.setEditable(false);
         cmbResolution.setEnabled(false);
+    }
+
+    private void loadAction(TicketAction ticketAction) {
+        if (ticketAction != null) {
+            List<Operation> operations = ticketAction.getOperations();
+            for (Operation operation : operations) {
+                processOperation(operation);
+            }
+        }
+    }
+
+    private void processOperation(Operation operation) {
+        //TODO Extranlze process Operations to support any operation
+        if (operation.getName().equals("set_resolution")) {//NOI18N
+            cmbResolution.setEnabled(true);
+        } else if (operation.getName().equals("set_owner")) {//NOI18N
+            txtAssignee.setEditable(true);
+        } else if (operation.getName().equals("set_owner_to_self")) {//NOI18N
+            txtAssignee.setText(task.getTaskRepository().getUserName());
+        }
     }
 
     /** This method is called from within the constructor to
