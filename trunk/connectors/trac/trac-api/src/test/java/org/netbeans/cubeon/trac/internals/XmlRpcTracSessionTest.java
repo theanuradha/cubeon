@@ -223,7 +223,7 @@ public class XmlRpcTracSessionTest extends TestCase {
         assertEquals(1, tickets.size());
         //test queryTickets
         List<Integer> queryTickets = tracSession.queryTickets(
-                "owner=" + user + "&status!=closed&component=Test");
+                "owner=" + user + "&status=closed&component=Test");
         assertTrue(queryTickets.size() > 0);
         
         //test getTicketActions
