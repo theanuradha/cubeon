@@ -503,4 +503,15 @@ public class XmlRpcTracSession implements TracSession {
         }
         return ids;
     }
+
+    public Ticket executeAction(int id, TicketAction action, String comment) throws TracException {
+        try {
+            Object execute = client.execute("ticket.executeAction", new Object[]{id, action.getName(), comment});
+            System.out.println(execute);
+
+        } catch (XmlRpcException ex) {
+            throw new TracException(ex);
+        }
+        return getTicket(id);
+    }
 }

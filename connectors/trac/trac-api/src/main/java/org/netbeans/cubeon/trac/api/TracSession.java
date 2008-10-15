@@ -140,6 +140,16 @@ public interface TracSession {
     List<TicketAction> getTicketActions(int id) throws TracException;
 
     /**
+     * Executes the given action on the ticket.
+     * @param id
+     * @param action
+     * @param comment
+     * @return Updated Ticket
+     * @throws org.netbeans.cubeon.trac.api.TracException
+     */
+    Ticket executeAction(int id, TicketAction action, String comment) throws TracException;
+
+    /**
      * Perform a ticket query, returning a list of ticket ID's.
      * @param query “query language” for specifying query filters. Basically, the filters are separated by ampersands (&). Each filter then consists of the ticket field name, an operator, and one or more values. More than one value are separated by a pipe (|), meaning that the filter matches any of the values.
      *

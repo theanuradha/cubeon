@@ -170,18 +170,19 @@ class TaskPersistenceHandler {
                     String aId = actionElement.getAttribute(TAG_ID);
                     TicketAction action = new TicketAction(aId);
 
-                    Element operationsElement = findElement(actionsElement, TAG_OPERATIONS);
-                    NodeList operationsNodeList = operationsElement.getElementsByTagName(TAG_OPERATION);
-                    for (int j = 0; j < operationsNodeList.getLength(); j++) {
-                        Node operationNode = operationsNodeList.item(j);
-                        if (operationNode.getNodeType() == Node.ELEMENT_NODE) {
-                            Element operationElement = (Element) operationNode;
-                            String oId = operationElement.getAttribute(TAG_ID);
-                            action.addOperation(new Operation(oId));
+                    Element operationsElement = findElement(actionElement, TAG_OPERATIONS);
+                    if (operationsElement != null) {
+                        NodeList operationsNodeList = operationsElement.getElementsByTagName(TAG_OPERATION);
+                        for (int j = 0; j < operationsNodeList.getLength(); j++) {
+                            Node operationNode = operationsNodeList.item(j);
+                            if (operationNode.getNodeType() == Node.ELEMENT_NODE) {
+                                Element operationElement = (Element) operationNode;
+                                String oId = operationElement.getAttribute(TAG_ID);
+                                action.addOperation(new Operation(oId));
 
+                            }
                         }
                     }
-
 
 
                     actions.add(action);
@@ -196,9 +197,14 @@ class TaskPersistenceHandler {
 
 
 
-            tracTask.setAction(selectedAction);
-            tracTask.setActions(actions);
 
+            tracTask.setActions(actions);
+            for (TicketAction ticketAction : actions) {
+                if (ticketAction.getName().equals(selectedAction)) {
+                    tracTask.setAction(ticketAction);
+                    break;
+                }
+            }
 
             tracTask.setNewComment(newcomment);
 
