@@ -220,7 +220,8 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
         if (task.isLocal()) {
             task.put(OWNER, assignee.length() > 0 ? assignee : null);
         } else {
-            //TODO hadel action and resulution
+            task.setAction((TicketAction) cmbActions.getSelectedItem());
+            task.setResolution((TaskResolution) cmbResolution.getSelectedItem());
         }
         //set as modified if already or actuvaly modified
         if (task.isModifiedFlag() || modifiedFlag.get()) {

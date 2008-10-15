@@ -214,8 +214,13 @@ public class TracTask extends Ticket implements TaskElement {
     }
 
     public void setResolution(TaskResolution resolution) {
-        //put ticket resolution
-        put(TracKeys.RESOLUTION, resolution.getId());
+        //put ticket resolution if not null else remove 
+        if (resolution != null) {
+            put(TracKeys.RESOLUTION, resolution.getId());
+        }else{
+           remove(TracKeys.RESOLUTION);
+        }
+
         extension.fireResolutionChenged();
     }
 
