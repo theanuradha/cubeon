@@ -247,9 +247,11 @@ public class XmlRpcTracSessionTest extends TestCase {
         assertEquals("enhancement", ticket.get(TracKeys.TYPE));
         //test deleteTicket
         System.out.println("deleteTickets");
+        tracSession.deleteTicket(ticket);
         for (int id : queryTickets) {
             tracSession.deleteTicket(tracSession.getTicket(id));
         }
+        
         //try to get ticket and validate
         try {
             tracSession.getTicket(ticket.getTicketId());
