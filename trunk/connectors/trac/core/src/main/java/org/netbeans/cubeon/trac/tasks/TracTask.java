@@ -55,7 +55,7 @@ public class TracTask extends Ticket implements TaskElement {
     private boolean modifiedFlag;
     private List<TicketAction> actions = new ArrayList<TicketAction>();
     private String newComment;
-    private String action;
+    private TicketAction action;
 
     public TracTask(TracTaskRepository taskRepository, String id,
             int ticketId, String summary, String description) {
@@ -136,7 +136,7 @@ public class TracTask extends Ticket implements TaskElement {
     public boolean isCompleted() {
         //check ticket has resolution
         String resolution = get(TracKeys.RESOLUTION);
-        return resolution!=null && resolution.trim().length()>0;
+        return resolution != null && resolution.trim().length() > 0;
     }
 
     public Image getImage() {
@@ -263,11 +263,11 @@ public class TracTask extends Ticket implements TaskElement {
         this.newComment = newComment;
     }
 
-    public String getAction() {
+    public TicketAction getAction() {
         return action;
     }
 
-    public void setAction(String action) {
+    public void setAction(TicketAction action) {
         this.action = action;
     }
 

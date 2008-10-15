@@ -61,6 +61,7 @@ import static org.netbeans.cubeon.trac.api.TracKeys.*;
 public class TracTaskEditorUI extends javax.swing.JPanel {
 
     private static final long serialVersionUID = -7550167448688050066L;
+    private static final String LEAVE = "leave";//NOI18N
     private final TracTask task;
     private final Set<ChangeListener> listeners = new HashSet<ChangeListener>(1);
     private AtomicBoolean modifiedFlag = new AtomicBoolean(false);
@@ -256,27 +257,40 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
     }
 
     private void loadAttibutes() {
+        //set ui to deafulrt
+        defaultUI();
         TracTaskRepository tracRepository = task.getTracRepository();
         TracRepositoryAttributes attributes = tracRepository.getRepositoryAttributes();
         cmbActions.removeAllItems();
         cmbResolution.removeAllItems();
-        //load actions
+        //load actions if ticket is not local task
         if (task.isLocal()) {
             cmbActions.setEnabled(false);
-            cmbResolution.setEnabled(false);
+
         } else {
             cmbActions.setEnabled(true);
-            cmbResolution.setEnabled(true);
-
             List<TicketAction> actions = task.getActions();
             for (TicketAction action : actions) {
                 cmbActions.addItem(action);
             }
-            String selectedAction = task.getAction();
+            TicketAction selectedAction = task.getAction();
             if (selectedAction != null) {
                 cmbActions.setSelectedItem(selectedAction);
             } else {
-                cmbActions.setSelectedIndex(0);
+                TicketAction leaveAction = null;
+                for (TicketAction ticketAction : actions) {
+                    //try to find leave option
+                    if (ticketAction.getName().equals(LEAVE)) {
+                        leaveAction = ticketAction;
+                        break;
+                    }
+                }
+                if (leaveAction != null) {
+                    cmbActions.setSelectedItem(leaveAction);
+                } else {
+                    cmbActions.setSelectedIndex(-1);
+                }
+
             }
             TicketField resolutionField = attributes.getTicketFiledByName(RESOLUTION);
             assert resolutionField != null;
@@ -367,14 +381,14 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
                 //if optional component add EMPTY tag to options
                 comboBox.addItem(EMPTY);
                 //if valuve optional and selected null set selected as EMPTY
-                if (selected == null|| selected.trim().length()==0) {
+                if (selected == null || selected.trim().length() == 0) {
                     selected = EMPTY;
                 }
             }
             for (String string : options) {
                 comboBox.addItem(string);
             }
-            if (selected == null|| selected.equals(EMPTY)) {
+            if (selected == null || selected.equals(EMPTY)) {
                 comboBox.setSelectedIndex(-1);
             } else {
                 comboBox.setSelectedItem(selected);
@@ -401,6 +415,11 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
 
     public TracTask getTask() {
         return task;
+    }
+
+    public void defaultUI() {
+        txtAssignee.setEditable(false);
+        cmbResolution.setEnabled(false);
     }
 
     /** This method is called from within the constructor to

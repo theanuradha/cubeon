@@ -223,17 +223,24 @@ public class XmlRpcTracSessionTest extends TestCase {
         assertEquals(1, tickets.size());
         //test queryTickets
         List<Integer> queryTickets = tracSession.queryTickets(
-                "owner="+ user+"&status!=closed&component=Test");
-        assertTrue(queryTickets.size()>0);
+                "owner=" + user + "&status!=closed&component=Test");
+        assertTrue(queryTickets.size() > 0);
+        
+        //test getTicketActions
+        List<TicketAction> actions = tracSession.getTicketActions(ticket.getTicketId());
+        System.out.println(actions);
 
+        //create dumy TicketAction
+        TicketAction dumyAction = new TicketAction("accept");//NOI18N
+        // accept Ticket
+        ticket = tracSession.executeAction(ticket.getTicketId(), dumyAction, "accept Ticket");
+
+        assertEquals(ticket.get(TracKeys.STATUS), "accepted");
+        //test updateTicket
         //update some values
         summary += " UPDATED";
         ticket.setSummary(summary);
         ticket.put(TracKeys.TYPE, "enhancement");
-        //test getTicketActions
-        List<TicketAction> actions = tracSession.getTicketActions(ticket.getTicketId());
-        System.out.println(actions);
-        //test updateTicket
         System.out.println("updateTicket");
         ticket = tracSession.updateTicket("Update Test", ticket, false);
         assertEquals(summary, ticket.getSummary());
