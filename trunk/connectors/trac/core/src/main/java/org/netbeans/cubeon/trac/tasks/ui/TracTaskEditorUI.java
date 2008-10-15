@@ -303,7 +303,7 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
             for (String option : options) {
                 TaskResolution resolution = provider.getTaskResolutionById(option);
                 if (resolution != null) {
-                    cmbResolution.addItem(option);
+                    cmbResolution.addItem(resolution);
                 }
             }
             TaskResolution resolution = task.getResolution();
