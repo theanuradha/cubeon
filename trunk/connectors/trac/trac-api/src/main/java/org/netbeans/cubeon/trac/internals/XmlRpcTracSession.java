@@ -443,10 +443,11 @@ public class XmlRpcTracSession implements TracSession {
     public Ticket updateTicket(String comment, Ticket ticket, boolean notify) throws TracException {
 
         try {
-            Object execute = client.execute("ticket.update",//NOI18N
+            Object [] result = (Object[]) client.execute("ticket.update",//NOI18N
                     new Object[]{ticket.getTicketId(), comment, ticket.getAttributes(), notify});
-            if (execute instanceof Integer) {
-                ticket = getTicket((Integer) execute);
+            if (result != null && result.length == 4) {
+
+                return _extractTicket(result);
             }
             return ticket;
         } catch (XmlRpcException ex) {
