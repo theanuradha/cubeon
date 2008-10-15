@@ -49,6 +49,7 @@ import org.netbeans.cubeon.trac.api.TicketField;
 import org.netbeans.cubeon.trac.api.TracKeys;
 import org.netbeans.cubeon.trac.repository.TracRepositoryAttributes;
 import org.netbeans.cubeon.trac.repository.TracTaskRepository;
+import org.netbeans.cubeon.trac.repository.TracTaskResolutionProvider;
 import org.netbeans.cubeon.trac.tasks.TracTask;
 import org.netbeans.cubeon.trac.tasks.actions.OpenInBrowserTaskAction;
 import org.netbeans.cubeon.trac.tasks.actions.SubmitTaskAction;
@@ -278,6 +279,7 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
             TicketAction selectedAction = task.getAction();
             if (selectedAction != null) {
                 cmbActions.setSelectedItem(selectedAction);
+                loadAction(selectedAction);
             } else {
                 TicketAction leaveAction = null;
                 for (TicketAction ticketAction : actions) {
@@ -297,12 +299,16 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
             TicketField resolutionField = attributes.getTicketFiledByName(RESOLUTION);
             assert resolutionField != null;
             List<String> options = resolutionField.getOptions();
+            TracTaskResolutionProvider provider = tracRepository.getResolutionProvider();
             for (String option : options) {
-                cmbResolution.addItem(option);
+                TaskResolution resolution = provider.getTaskResolutionById(option);
+                if (resolution != null) {
+                    cmbResolution.addItem(option);
+                }
             }
             TaskResolution resolution = task.getResolution();
             if (resolution != null) {
-                cmbResolution.setSelectedItem(resolution.getId());
+                cmbResolution.setSelectedItem(resolution);
             } else {
                 cmbResolution.setSelectedIndex(-1);
             }
