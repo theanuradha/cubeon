@@ -447,6 +447,9 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
             txtAssignee.setEditable(true);
         } else if (operation.getName().equals("set_owner_to_self")) {//NOI18N
             txtAssignee.setText(task.getTaskRepository().getUserName());
+        
+        } else if (operation.getName().equals("del_resolution")) {//NOI18N
+            cmbResolution.setSelectedIndex(-1);
         }
     }
 
