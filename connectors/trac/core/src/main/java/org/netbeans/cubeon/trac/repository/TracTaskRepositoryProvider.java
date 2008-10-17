@@ -22,10 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepositoryType;
 import org.netbeans.cubeon.trac.api.TracException;
 import org.netbeans.cubeon.trac.repository.ui.ConfigurationHandlerImpl;
+import org.netbeans.cubeon.trac.tasks.TracTask;
 import org.netbeans.cubeon.trac.utils.TracExceptionHandler;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -115,16 +117,16 @@ public class TracTaskRepositoryProvider implements TaskRepositoryType {
         if (tracTaskRepository != null) {
             persistence.removeRepository(tracTaskRepository);
             taskRepositorys.remove(repository);
-//            List<String> taskIds = jiraTaskRepository.getTaskIds();
-//            TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
-//            for (String id : taskIds) {
-//                JiraTask task = jiraTaskRepository.getTaskElementById(id);
-//                if (task != null) {
-//                    jiraTaskRepository.getExtension().fireTaskRemoved(task);
-//                    factory.closeTask(task);
-//                }
-//
-//            }
+            List<String> taskIds = tracTaskRepository.getTaskIds();
+            TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
+            for (String id : taskIds) {
+                TracTask task = tracTaskRepository.getTaskElementById(id);
+                if (task != null) {
+                    tracTaskRepository.getExtension().fireTaskRemoved(task);
+                    factory.closeTask(task);
+                }
+
+            }
 //            List<TaskQuery> querys = jiraTaskRepository.getQuerySupport().getTaskQuerys();
 //            for (TaskQuery query : querys) {
 //                jiraTaskRepository.getQuerySupport().removeTaskQuery(query);
