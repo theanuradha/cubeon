@@ -60,6 +60,10 @@ public class LocalTaskRepositoryProvider implements TaskRepositoryType {
         persistence = new LocalRepositoryPersistence(this, baseDir);
     }
 
+    public String getId() {
+       return "local";//NOI18N
+    }
+
     public String getName() {
         return NbBundle.getMessage(LocalTaskRepository.class, "LBL_LOCAL_REPO");
     }

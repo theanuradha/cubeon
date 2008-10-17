@@ -62,6 +62,10 @@ public class TracTaskRepositoryProvider implements TaskRepositoryType {
         persistence = new TracRepositoryPersistence(this, baseDir);
     }
 
+    public String getId() {
+        return "trac";//NOI18N
+    }
+
     public String getName() {
         return NbBundle.getMessage(TracTaskRepositoryProvider.class, "LBL_Trac_Repository");
     }
