@@ -62,6 +62,10 @@ public class JiraTaskRepositoryProvider implements TaskRepositoryType {
         persistence = new JiraRepositoryPersistence(this, baseDir);
     }
 
+    public String getId() {
+        return "jira";//NOI18N
+    }
+
     public String getName() {
         return NbBundle.getMessage(JiraTaskRepositoryProvider.class, "LBL_Jira_Name");
     }

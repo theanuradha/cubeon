@@ -29,6 +29,11 @@ import org.openide.util.Lookup;
  * @version 1.0
  */
 public interface TaskRepositoryType {
+    /**
+     * Returns unique Id of implementing connector.
+     * @return
+     */
+    String getId();
 
     /**
      * Returns the name of the implementing connector.
