@@ -221,11 +221,9 @@ public class XmlRpcTracSessionTest extends TestCase {
         System.out.println("getTickets");
         List<Ticket> tickets = tracSession.getTickets(ticket.getTicketId());
         assertEquals(1, tickets.size());
-        //test queryTickets
-        List<Integer> queryTickets = tracSession.queryTickets(
-                "owner=" + user + "&status=closed&component=Test");
-        
-        
+
+
+
         //test getTicketActions
         List<TicketAction> actions = tracSession.getTicketActions(ticket.getTicketId());
         System.out.println(actions);
@@ -233,8 +231,7 @@ public class XmlRpcTracSessionTest extends TestCase {
         //create dumy TicketAction
         TicketAction dumyAction = new TicketAction("accept");//NOI18N
         // accept Ticket
-        ticket = tracSession.executeAction(dumyAction,
-                "accept Ticket",ticket,false);
+        ticket = tracSession.executeAction(dumyAction,"accept Ticket",ticket,false);
 
         assertEquals(ticket.get(TracKeys.STATUS), "accepted");
         //test updateTicket
@@ -249,9 +246,6 @@ public class XmlRpcTracSessionTest extends TestCase {
         //test deleteTicket
         System.out.println("deleteTickets");
         tracSession.deleteTicket(ticket);
-        for (int id : queryTickets) {
-            tracSession.deleteTicket(tracSession.getTicket(id));
-        }
         
         //try to get ticket and validate
         try {
@@ -261,5 +255,12 @@ public class XmlRpcTracSessionTest extends TestCase {
             //expected result will throw ticket not found exception
             System.out.println(tracException.getMessage());
         }
+        //test queryTickets
+        List<Integer> queryTickets = tracSession.queryTickets("component=Test");
+        for (int id : queryTickets) {
+            tracSession.deleteTicket(tracSession.getTicket(id));
+        }
+
+
     }
 }
