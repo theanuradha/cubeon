@@ -34,6 +34,7 @@ import org.netbeans.cubeon.trac.api.TracClient;
 import org.netbeans.cubeon.trac.api.TracException;
 import org.netbeans.cubeon.trac.api.TracKeys;
 import org.netbeans.cubeon.trac.api.TracSession;
+import org.netbeans.cubeon.trac.query.TracQuerySupport;
 import org.netbeans.cubeon.trac.tasks.TracTask;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
@@ -71,6 +72,7 @@ public class TracTaskRepository implements TaskRepository {
     private final TracTaskResolutionProvider resolutionProvider;
     private final TaskPersistenceHandler handler;
     private final TaskPersistenceHandler cache;
+    private final TracQuerySupport querySupport;
     private Map<String, TracTask> map = new HashMap<String, TracTask>();
     //locks
     private final Object SYNCHRONIZE_LOCK = new Object();
@@ -98,7 +100,7 @@ public class TracTaskRepository implements TaskRepository {
         repositoryAttributes = new TracRepositoryAttributes(this);
         handler = new TaskPersistenceHandler(this, baseDir, "tasks");//NOI18N
         cache = new TaskPersistenceHandler(this, baseDir, "cache");//NOI18N
-    // querySupport = new TracQuerySupport(this, extension);
+        querySupport = new TracQuerySupport(this, extension);
     }
 
     public String getId() {
@@ -115,7 +117,7 @@ public class TracTaskRepository implements TaskRepository {
 
     public Lookup getLookup() {
         return Lookups.fixed(this, extension, provider, priorityProvider,
-                statusProvider, resolutionProvider, typeProvider, severityProvider);
+                statusProvider, resolutionProvider, typeProvider, severityProvider, querySupport);
     }
 
     public Image getImage() {
@@ -152,7 +154,12 @@ public class TracTaskRepository implements TaskRepository {
         TracTask tracTask = element.getLookup().lookup(TracTask.class);
         assert tracTask != null;
         handler.persist(tracTask);
-    //notify to outgoing query about modified state FIXME
+        //notify to outgoing query about modified state
+        if (tracTask.isModifiedFlag()) {
+            querySupport.getOutgoingQuery().addTaskId(element.getId());
+        } else {
+            querySupport.getOutgoingQuery().removeTaskId(element.getId());
+        }
     }
 
     public void revert(TracTask task) {
@@ -235,16 +242,15 @@ public class TracTaskRepository implements TaskRepository {
                 }
 
 
-
+                Ticket ticket = TracUtils.taskToTicket(this, task);
+                Ticket updateTicket;
                 TicketAction action = task.getAction();
                 if (action != null) {
-                    Ticket ticket = session.executeAction(task.getTicketId(), action, comment);
-                    TracUtils.maregeToTask(this, ticket,
-                            cache.getTaskElementById(task.getId()), task);
-                }
+                    updateTicket = session.executeAction(action, comment, ticket, true);
 
-                Ticket ticket = TracUtils.taskToTicket(this, task);
-                Ticket updateTicket = session.updateTicket(comment, ticket, true);
+                } else {
+                    updateTicket = session.updateTicket(comment, ticket, true);
+                }
 
                 TracTask remoteTask = TracUtils.issueToTask(this, updateTicket);
                 TracUtils.remoteToTask(this, remoteTask, task);
@@ -349,13 +355,13 @@ public class TracTaskRepository implements TaskRepository {
         this.name = name;
     }
 
-    FileObject getBaseDir() {
+    public FileObject getBaseDir() {
         return baseDir;
     }
 
     void loadAttributes() {
         repositoryAttributes.loadAttributes();
-
+        querySupport.refresh();
         setState(State.ACTIVE);
     }
 
@@ -423,5 +429,9 @@ public class TracTaskRepository implements TaskRepository {
 
     public TracRepositoryAttributes getRepositoryAttributes() {
         return repositoryAttributes;
+    }
+
+    public TracQuerySupport getQuerySupport() {
+        return querySupport;
     }
 }

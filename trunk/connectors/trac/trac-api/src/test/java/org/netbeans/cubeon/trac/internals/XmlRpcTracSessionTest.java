@@ -233,7 +233,8 @@ public class XmlRpcTracSessionTest extends TestCase {
         //create dumy TicketAction
         TicketAction dumyAction = new TicketAction("accept");//NOI18N
         // accept Ticket
-        ticket = tracSession.executeAction(ticket.getTicketId(), dumyAction, "accept Ticket");
+        ticket = tracSession.executeAction(dumyAction,
+                "accept Ticket",ticket,false);
 
         assertEquals(ticket.get(TracKeys.STATUS), "accepted");
         //test updateTicket

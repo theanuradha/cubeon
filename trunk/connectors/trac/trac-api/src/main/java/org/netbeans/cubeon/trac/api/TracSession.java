@@ -141,13 +141,14 @@ public interface TracSession {
 
     /**
      * Executes the given action on the ticket.
-     * @param id
      * @param action
      * @param comment
-     * @return Updated Ticket
+     * @param ticket
+     * @param notify
+     * @return updated ticket
      * @throws org.netbeans.cubeon.trac.api.TracException
      */
-    Ticket executeAction(int id, TicketAction action, String comment) throws TracException;
+    Ticket executeAction(TicketAction action, String comment, Ticket ticket, boolean notify) throws TracException;
 
     /**
      * Perform a ticket query, returning a list of ticket ID's.

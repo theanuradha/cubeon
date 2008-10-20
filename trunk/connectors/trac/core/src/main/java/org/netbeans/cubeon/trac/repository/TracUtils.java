@@ -32,11 +32,12 @@ import org.netbeans.cubeon.trac.tasks.TracTask;
  *
  * @author Anuradha
  */
-class TracUtils {
+public class TracUtils {
 
-    public static final String TICKET = "Ticket #";
+    private  static final String TICKET = "Ticket #";
 
-    static void createTicket(TracTaskRepository repository, TracTask task) throws TracException {
+
+    public static void createTicket(TracTaskRepository repository, TracTask task) throws TracException {
         if (task.isLocal()) {
             String old = task.getId();
             TracSession session = repository.getSession();
@@ -45,7 +46,7 @@ class TracUtils {
                     new HashMap<String, Object>(task.getAttributes()), true);
             repository.remove(task);
 
-            task.setId(TICKET + ticket.getTicketId());
+            task.setId(ticketToTaskId(ticket));
             task.setTicketId(ticket.getTicketId());
             task.setLocal(false);
 
@@ -68,7 +69,7 @@ class TracUtils {
         }
     }
 
-    static Ticket taskToTicket(TracTaskRepository repository, TracTask task) {
+   public static Ticket taskToTicket(TracTaskRepository repository, TracTask task) {
         Ticket ticket = new Ticket(task.getTicketId());
         List<TicketField> fields = repository.getRepositoryAttributes().getTicketFields();
         for (TicketField ticketField : fields) {
@@ -82,9 +83,9 @@ class TracUtils {
     private TracUtils() {
     }
 
-    static TracTask issueToTask(TracTaskRepository repository, Ticket ticket) {
+    public static TracTask issueToTask(TracTaskRepository repository, Ticket ticket) {
         //create new TracTask
-        TracTask tracTask = new TracTask(repository, TICKET + ticket.getTicketId(), ticket.getTicketId(),
+        TracTask tracTask = new TracTask(repository, ticketToTaskId(ticket), ticket.getTicketId(),
                 ticket.getSummary(), ticket.getSummary());
         //put all atributes to task
         tracTask.putAll(ticket.getAttributes());
@@ -96,7 +97,7 @@ class TracUtils {
         return tracTask;
     }
 
-    static void maregeToTask(TracTaskRepository repository, Ticket ticket,
+    public static void maregeToTask(TracTaskRepository repository, Ticket ticket,
             TracTask cachedTask, TracTask task) {
         if (cachedTask == null) {
             cachedTask = issueToTask(repository, ticket);
@@ -133,5 +134,9 @@ class TracUtils {
 
     public static void readComments(TracTaskRepository repository, TracTask task) {
         //TODO ADD Comments to task
+    }
+
+    public static String ticketToTaskId(Ticket ticket){
+        return TICKET + ticket.getTicketId();
     }
 }
