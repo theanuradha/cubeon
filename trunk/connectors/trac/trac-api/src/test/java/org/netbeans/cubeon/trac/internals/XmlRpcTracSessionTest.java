@@ -217,6 +217,16 @@ public class XmlRpcTracSessionTest extends TestCase {
         System.out.println("getTicket");
         ticket = tracSession.getTicket(ticket.getTicketId());
         assertNotNull(ticket);
+        //test updateTicket
+        //update some values
+        summary += " UPDATED";
+        ticket.setSummary(summary);
+        ticket.put(TracKeys.TYPE, "enhancement");
+        System.out.println("updateTicket");
+        ticket = tracSession.updateTicket("Update Test", ticket, false);
+        assertEquals(summary, ticket.getSummary());
+        assertEquals("enhancement", ticket.get(TracKeys.TYPE));
+        
         //test getTickets
         System.out.println("getTickets");
         List<Ticket> tickets = tracSession.getTickets(ticket.getTicketId());
@@ -234,15 +244,7 @@ public class XmlRpcTracSessionTest extends TestCase {
         ticket = tracSession.executeAction(dumyAction,"accept Ticket",ticket,false);
 
         assertEquals(ticket.get(TracKeys.STATUS), "accepted");
-        //test updateTicket
-        //update some values
-        summary += " UPDATED";
-        ticket.setSummary(summary);
-        ticket.put(TracKeys.TYPE, "enhancement");
-        System.out.println("updateTicket");
-        ticket = tracSession.updateTicket("Update Test", ticket, false);
-        assertEquals(summary, ticket.getSummary());
-        assertEquals("enhancement", ticket.get(TracKeys.TYPE));
+        
         //test deleteTicket
         System.out.println("deleteTickets");
         tracSession.deleteTicket(ticket);
