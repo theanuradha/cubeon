@@ -16,6 +16,8 @@
  */
 package org.netbeans.cubeon.trac.utils;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.netbeans.cubeon.trac.api.TracException;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -25,11 +27,12 @@ import org.openide.NotifyDescriptor;
  * @author Anuradha
  */
 public class TracExceptionHandler {
-
+    private static final Logger LOGGER=Logger.getLogger(TracExceptionHandler.class.getName());
     private TracExceptionHandler() {
     }
 
     public static void notify(TracException je) {
+        LOGGER.log(Level.WARNING, je.getMessage());
         NotifyDescriptor descriptor = new NotifyDescriptor.Message(je.getMessage(),
                 NotifyDescriptor.WARNING_MESSAGE);
         DialogDisplayer.getDefault().notify(descriptor);
