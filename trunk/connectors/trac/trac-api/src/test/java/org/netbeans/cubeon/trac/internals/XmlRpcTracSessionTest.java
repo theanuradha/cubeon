@@ -191,7 +191,7 @@ public class XmlRpcTracSessionTest extends TestCase {
     /**
      * Test of Test Ticket Interface methods, of class XmlRpcTracSession.
      */
-    public void testTicketInterface() throws TracException {
+    public void testTicketInterface() throws TracException, InterruptedException {
         System.out.println("Test Ticket Interface");
         if (tracSession == null) {
             return;
@@ -226,7 +226,7 @@ public class XmlRpcTracSessionTest extends TestCase {
         ticket = tracSession.updateTicket("Update Test", ticket, false);
         assertEquals(summary, ticket.getSummary());
         assertEquals("enhancement", ticket.get(TracKeys.TYPE));
-        
+
         //test getTickets
         System.out.println("getTickets");
         List<Ticket> tickets = tracSession.getTickets(ticket.getTicketId());
@@ -238,17 +238,28 @@ public class XmlRpcTracSessionTest extends TestCase {
         List<TicketAction> actions = tracSession.getTicketActions(ticket.getTicketId());
         System.out.println(actions);
 
+
+        Thread.sleep(1000);//workaround to prevent http://trac-hacks.org/ticket/1863
         //create dumy TicketAction
         TicketAction dumyAction = new TicketAction("accept");//NOI18N
         // accept Ticket
-        ticket = tracSession.executeAction(dumyAction,"accept Ticket",ticket,false);
+        ticket = tracSession.executeAction(dumyAction, "accept Ticket", ticket, false);
 
         assertEquals(ticket.get(TracKeys.STATUS), "accepted");
-        
+
+        Thread.sleep(1000);//workaround to prevent http://trac-hacks.org/ticket/1863
+        //create dumy TicketAction
+        TicketAction dumyAction2 = new TicketAction("resolve");//NOI18N
+        ticket.put(TracKeys.RESOLUTION, "userfixed");
+        ticket = tracSession.executeAction(dumyAction2, "close Ticket", ticket, false);
+        assertEquals(ticket.get(TracKeys.STATUS), "closed");
+
+
+        Thread.sleep(1000);//workaround to prevent http://trac-hacks.org/ticket/1863
         //test deleteTicket
         System.out.println("deleteTickets");
         tracSession.deleteTicket(ticket);
-        
+
         //try to get ticket and validate
         try {
             tracSession.getTicket(ticket.getTicketId());
