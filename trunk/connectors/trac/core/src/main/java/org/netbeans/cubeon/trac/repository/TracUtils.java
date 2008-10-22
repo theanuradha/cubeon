@@ -104,7 +104,8 @@ public class TracUtils {
             remoteToTask(repository, cachedTask, task);
         }
         //cheack for status change
-        if (!ticket.get(TracKeys.STATUS).equals(cachedTask.getStatus().getId())) {
+        String status = ticket.get(TracKeys.STATUS);
+        if (status!=null && !status.equals(cachedTask.getStatus().getId())) {
             task.setAction(null);
         }
         //put changed atributes to task
