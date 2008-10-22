@@ -23,6 +23,7 @@ import java.util.List;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
+import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepositoryType;
 import org.netbeans.cubeon.trac.api.TracException;
@@ -131,10 +132,10 @@ public class TracTaskRepositoryProvider implements TaskRepositoryType {
                 }
 
             }
-//            List<TaskQuery> querys = jiraTaskRepository.getQuerySupport().getTaskQuerys();
-//            for (TaskQuery query : querys) {
-//                jiraTaskRepository.getQuerySupport().removeTaskQuery(query);
-//            }
+            List<TaskQuery> querys = tracTaskRepository.getQuerySupport().getTaskQuerys();
+            for (TaskQuery query : querys) {
+                tracTaskRepository.getQuerySupport().removeTaskQuery(query);
+            }
 
             try {
                 FileObject baseDir1 = tracTaskRepository.getBaseDir();
