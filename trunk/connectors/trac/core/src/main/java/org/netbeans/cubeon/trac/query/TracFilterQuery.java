@@ -61,6 +61,10 @@ public class TracFilterQuery extends AbstractTracQuery {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Lookup getLookup() {
         return Lookups.fixed(this, extension);
     }

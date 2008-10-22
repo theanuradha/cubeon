@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuerySupportProvider;
+import org.netbeans.cubeon.trac.query.ui.TracFilterQueryEditor;
 import org.netbeans.cubeon.trac.repository.TracRepositoryExtension;
 import org.netbeans.cubeon.trac.repository.TracTaskRepository;
 
@@ -72,15 +73,15 @@ public class TracQuerySupport implements TaskQuerySupportProvider {
             switch (abstractJiraQuery.getType()) {
                 case FILTER:
                      {
-                        //TracFilterQueryEditor editor = new JiraFilterQueryEditor(this);
-                        //editor.setQuery(query.getLookup().lookup(JiraFilterQuery.class));
-                        //configurationHandler = editor;
+                        TracFilterQueryEditor editor = new TracFilterQueryEditor(this);
+                        editor.setQuery(query.getLookup().lookup(TracFilterQuery.class));
+                        configurationHandler = editor;
                     }
                     break;
             }
 
         } else {
-            //configurationHandler = new JiraFilterQueryEditor(this);
+            configurationHandler = new TracFilterQueryEditor(this);
         }
         return configurationHandler;
     }
@@ -88,8 +89,6 @@ public class TracQuerySupport implements TaskQuerySupportProvider {
     public TracTaskRepository getTaskRepository() {
         return repository;
     }
-
-    
 
     void setTaskQuery(List<AbstractTracQuery> localQuerys) {
         taskQuerys = new ArrayList<TaskQuery>(localQuerys);
