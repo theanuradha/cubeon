@@ -46,6 +46,7 @@ class PersistenceHandler {
     private static final String TAG_QUERY = "query";//NOI18N
     private static final String TAG_IDS = "ids";//NOI18N
     private static final String TAG_ID = "id";//NOI18N
+    private static final String TAG_NAME = "name";//NOI18N
     private static final String TAG_TRAC_QUERY = "trac_query";//NOI18N
     private static final String TAG_TYPE = "type";//NOI18N
     private static final String TAG_TASK = "task";//NOI18N
@@ -106,6 +107,7 @@ class PersistenceHandler {
                         if (filterQuery.getQuery() != null) {
                             taskQuery.setAttribute(TAG_TRAC_QUERY, filterQuery.getQuery());
                         }
+                        taskQuery.setAttribute(TAG_NAME, filterQuery.getName());
                         Element idsElement = getEmptyElement(document, taskQuery, TAG_IDS);
                         for (String id : filterQuery.getIds()) {
                             Element idElement = document.createElement(TAG_TASK);
@@ -206,6 +208,7 @@ class PersistenceHandler {
                             case FILTER:
                                  {
                                     TracFilterQuery filterQuery = new TracFilterQuery(querySupport.getTaskRepository(), id);
+                                    String name = element.getAttribute(TAG_NAME);
                                     String query = element.getAttribute(TAG_TRAC_QUERY);
                                     TracTaskRepository repository = querySupport.getTaskRepository();
                                     
@@ -224,6 +227,7 @@ class PersistenceHandler {
                                             }
                                         }
                                     }
+                                    filterQuery.setName(name);
                                     filterQuery.setQuery(query);
                                     filterQuery.setIds(ids);
                                     jiraQuery = filterQuery;
