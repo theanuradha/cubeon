@@ -114,7 +114,7 @@ public class TracFilterQueryEditor extends javax.swing.JPanel implements TaskQue
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private String nomilize(String text) {
+    private String normalize(String text) {
         return text;//FIX ME 
     }
 
@@ -140,7 +140,7 @@ public class TracFilterQueryEditor extends javax.swing.JPanel implements TaskQue
         if (query == null) {
             query = (TracFilterQuery) querySupport.createTaskQuery(AbstractTracQuery.Type.FILTER);
         }
-        query.setQuery(nomilize(txtQuery.getText()));
+        query.setQuery(normalize(txtQuery.getText()));
         query.setName(txtName.getText());
         return query;
     }
