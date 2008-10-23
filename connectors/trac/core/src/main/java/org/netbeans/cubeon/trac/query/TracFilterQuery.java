@@ -83,59 +83,63 @@ public class TracFilterQuery extends AbstractTracQuery {
                                 "LBL_Synchronizing_Query", getName()));
                         handle.start();
                         handle.switchToIndeterminate();
+
+
+
                         try {
+                            TracSession session = repository.getSession();
+                            handle.progress(NbBundle.getMessage(TracFilterQuery.class, "LBL_Requsting_Issues_From_Repository"));
+                            List<Integer> remoteIssues = session.queryTickets(query);
 
-
-                            try {
-                                TracSession session = repository.getSession();
-                                handle.progress(NbBundle.getMessage(TracFilterQuery.class, "LBL_Requsting_Issues_From_Repository"));
-                                List<Integer> remoteIssues = session.queryTickets(query);
-
-                                ids.clear();
-                                handle.switchToDeterminate(remoteIssues.size());
-
-                                for (Integer ticketId : remoteIssues) {
-                                    Ticket ticket = null;
+                            ids.clear();
+                            handle.switchToDeterminate(remoteIssues.size());
+                            final int size = remoteIssues.size() < 5 ? remoteIssues.size() : 5;
+                            int[] idarray = new int[size];
+                            int current = 0;
+                            for (int i = 0; i < remoteIssues.size(); i++) {
+                                int ticketId = remoteIssues.get(i);
+                                idarray[current++] = ticketId;
+                                if (current == size) {
                                     try {
-                                        ticket = session.getTicket(ticketId);
-                                        String taskID = TracUtils.ticketToTaskId(ticket);
-                                        handle.progress(taskID + " :" + ticket.getSummary(),
-                                                remoteIssues.indexOf(ticketId));
-                                        if (ticket != null) {
-                                            TaskElement element = repository.getTaskElementById(taskID);
-                                            if (element != null) {
-                                                repository.update(ticket, element.getLookup().lookup(TracTask.class));
-                                            } else {
-                                                TracTask jiraTask = TracUtils.issueToTask(repository, ticket);
-                                                repository.update(ticket, jiraTask);
-                                                element = jiraTask;
+                                        List<Ticket> tickets = session.getTickets(idarray);
+                                        for (Ticket ticket : tickets) {
+                                            String taskID = TracUtils.ticketToTaskId(ticket);
+                                            handle.progress(taskID + " :" + ticket.getSummary(),
+                                                    remoteIssues.indexOf(ticketId));
+                                            if (ticket != null) {
+                                                TaskElement element = repository.getTaskElementById(taskID);
+                                                if (element != null) {
+                                                    repository.update(ticket, element.getLookup().lookup(TracTask.class));
+                                                } else {
+                                                    TracTask jiraTask = TracUtils.issueToTask(repository, ticket);
+                                                    repository.update(ticket, jiraTask);
+                                                    element = jiraTask;
+                                                }
+                                                extension.fireTaskAdded(element);
+                                                ids.add(element.getId());
+
                                             }
-                                            extension.fireTaskAdded(element);
-                                            ids.add(element.getId());
 
                                         }
-
                                     } catch (TracException tracException) {
                                         //ignore
                                     }
-
-
-
+                                    current = 0;
+                                    idarray = new int[size];
                                 }
-
-                            } catch (TracException ex) {
-                                TracExceptionHandler.notify(ex);
                             }
 
+                        } catch (TracException ex) {
+                            TracExceptionHandler.notify(ex);
                         } finally {
                             repository.getQuerySupport().modifyTaskQuery(TracFilterQuery.this);
                             handle.finish();
                             extension.fireSynchronized();
                         }
                     }
+
                 }
             });
-
 
         }
 
@@ -149,6 +153,7 @@ public class TracFilterQuery extends AbstractTracQuery {
             if (element != null) {
                 elements.add(element);
             }
+
         }
 
         return elements;
