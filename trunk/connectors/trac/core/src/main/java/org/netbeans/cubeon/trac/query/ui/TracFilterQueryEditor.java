@@ -115,7 +115,7 @@ public class TracFilterQueryEditor extends javax.swing.JPanel implements TaskQue
     }// </editor-fold>//GEN-END:initComponents
 
     private String nomilize(String text) {
-        return text.replace(" ", "");
+        return text;//FIX ME 
     }
 
     private void txtNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNameActionPerformed
