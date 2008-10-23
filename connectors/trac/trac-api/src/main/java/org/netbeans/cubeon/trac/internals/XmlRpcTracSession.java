@@ -42,7 +42,6 @@ import org.netbeans.cubeon.trac.api.TicketType;
 import org.netbeans.cubeon.trac.api.TicketVersion;
 import org.netbeans.cubeon.trac.api.TracException;
 import org.netbeans.cubeon.trac.api.TracSession;
-import org.openide.util.Exceptions;
 
 /**
  *

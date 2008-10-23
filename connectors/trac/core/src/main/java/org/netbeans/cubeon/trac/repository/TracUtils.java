@@ -34,8 +34,7 @@ import org.netbeans.cubeon.trac.tasks.TracTask;
  */
 public class TracUtils {
 
-    private  static final String TICKET = "Ticket #";
-
+    private static final String TICKET = "Ticket #";
 
     public static void createTicket(TracTaskRepository repository, TracTask task) throws TracException {
         if (task.isLocal()) {
@@ -60,16 +59,13 @@ public class TracUtils {
             List<TicketAction> ticketActions = session.getTicketActions(task.getTicketId());
             task.setActions(ticketActions);
             repository.persist(task);
-            //TODO FIX QUERYSUPPORT
-//        //remove old id from outgoing query
-//        repository.getQuerySupport().getOutgoingQuery().removeTaskId(old);
-
+            repository.getQuerySupport().getOutgoingQuery().removeTaskId(old);
             //notify aout task id changed
             repository.getExtension().fireIdChanged(old, task.getId());
         }
     }
 
-   public static Ticket taskToTicket(TracTaskRepository repository, TracTask task) {
+    public static Ticket taskToTicket(TracTaskRepository repository, TracTask task) {
         Ticket ticket = new Ticket(task.getTicketId());
         List<TicketField> fields = repository.getRepositoryAttributes().getTicketFields();
         for (TicketField ticketField : fields) {
@@ -105,7 +101,7 @@ public class TracUtils {
         }
         //cheack for status change
         String status = ticket.get(TracKeys.STATUS);
-        if (status!=null && !status.equals(cachedTask.getStatus().getId())) {
+        if (status != null && !status.equals(cachedTask.getStatus().getId())) {
             task.setAction(null);
         }
         //put changed atributes to task
@@ -137,7 +133,7 @@ public class TracUtils {
         //TODO ADD Comments to task
     }
 
-    public static String ticketToTaskId(Ticket ticket){
+    public static String ticketToTaskId(Ticket ticket) {
         return TICKET + ticket.getTicketId();
     }
 }
