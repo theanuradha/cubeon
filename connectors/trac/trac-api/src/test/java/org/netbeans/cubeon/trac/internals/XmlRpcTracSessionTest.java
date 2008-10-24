@@ -250,7 +250,7 @@ public class XmlRpcTracSessionTest extends TestCase {
         Thread.sleep(1000);//workaround to prevent http://trac-hacks.org/ticket/1863
         //create dumy TicketAction
         TicketAction dumyAction2 = new TicketAction("resolve");//NOI18N
-        ticket.put(TracKeys.RESOLUTION, "userfixed");
+        ticket.put(TracKeys.RESOLUTION, "fixed");
         ticket = tracSession.executeAction(dumyAction2, "close Ticket", ticket, false);
         assertEquals(ticket.get(TracKeys.STATUS), "closed");
 
