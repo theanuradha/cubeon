@@ -16,7 +16,9 @@
  */
 package org.netbeans.cubeon.trac.api;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -32,6 +34,7 @@ public class Ticket {
     private final Map<String, String> map = new HashMap<String, String>();
     private long createdDate = 0;
     private long updatedDate = 0;
+    private List<TicketChange> changes = new ArrayList<TicketChange>();
 
     public Ticket(int id, String summary, String description) {
         this.id = id;
@@ -91,7 +94,7 @@ public class Ticket {
      * 
      */
     public void put(String key, String value) {
-        if (value == null ) {
+        if (value == null) {
             //remove if valuve null
             map.remove(key);
         } else {
@@ -160,6 +163,18 @@ public class Ticket {
 
     public void setUpdatedDate(long updatedDate) {
         this.updatedDate = updatedDate;
+    }
+
+    public boolean removeTicketChange(TicketChange change) {
+        return changes.remove(change);
+    }
+
+    public boolean addTicketChange(TicketChange change) {
+        return changes.add(change);
+    }
+
+    public List<TicketChange> getTicketChanges() {
+        return new ArrayList<TicketChange>(changes);
     }
 
     @Override

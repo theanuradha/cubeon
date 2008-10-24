@@ -226,7 +226,8 @@ public class XmlRpcTracSessionTest extends TestCase {
         ticket = tracSession.updateTicket("Update Test", ticket, false);
         assertEquals(summary, ticket.getSummary());
         assertEquals("enhancement", ticket.get(TracKeys.TYPE));
-
+        assertFalse(ticket.getTicketChanges().isEmpty());
+        System.out.println(ticket.getTicketChanges());
         //test getTickets
         System.out.println("getTickets");
         List<Ticket> tickets = tracSession.getTickets(ticket.getTicketId());

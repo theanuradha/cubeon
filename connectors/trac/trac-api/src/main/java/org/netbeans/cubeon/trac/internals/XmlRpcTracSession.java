@@ -31,6 +31,7 @@ import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 import org.netbeans.cubeon.trac.api.Ticket;
 import org.netbeans.cubeon.trac.api.TicketAction;
+import org.netbeans.cubeon.trac.api.TicketChange;
 import org.netbeans.cubeon.trac.api.TicketComponent;
 import org.netbeans.cubeon.trac.api.TicketField;
 import org.netbeans.cubeon.trac.api.TicketMilestone;
@@ -357,14 +358,26 @@ public class XmlRpcTracSession implements TracSession {
 
     public Ticket getTicket(int id) throws TracException {
         try {
-            Object[] result = (Object[]) client.execute("ticket.get",//NOI18N
+            Object[] ticketCalls = new Object[2];
+            ticketCalls[0] = _createMultiCallElement("ticket.get",//NOI18N
                     new Object[]{id});
-
-            if (result != null && result.length == 4) {
-
-                return _extractTicket(result);
+            ticketCalls[1] = _createMultiCallElement("ticket.changeLog",//NOI18N
+                    new Object[]{id});
+            Object[] objects = (Object[]) client.execute("system.multicall",//NOI18N
+                    new Object[]{ticketCalls});
+            if (objects.length == 2) {
+                Ticket ticket = _extractTicket((Object[]) ((Object[]) objects[0])[0]);
+                if (ticket != null) {
+                    Object[] changes = (Object[]) ((Object[]) objects[1])[0];
+                    for (Object change : changes) {
+                        _extractTicketChanges(ticket, (Object[]) change);
+                    }
+                }
+                return ticket;
             }
+
             return null;
+
         } catch (XmlRpcException ex) {
             throw new TracException(ex);
         }
@@ -396,30 +409,48 @@ public class XmlRpcTracSession implements TracSession {
         return ticket;
     }
 
+    private void _extractTicketChanges(Ticket ticket, Object[] result) {
+        //time, author, field, old, new, permanent
+        final long time = ((Date) result[0]).getTime();
+        final String author = (String) result[1];
+        final String field = (String) result[2];
+        final String oldValue = (String) result[3];
+        final String newValue = (String) result[4];
+        ticket.addTicketChange(new TicketChange(time, author, field, oldValue,
+                newValue));
+    }
+
     public List<Ticket> getTickets(int... ids) throws TracException {
         List<Ticket> tickets = new ArrayList<Ticket>(ids.length);
         try {
-            Object[] ticketCalls = new Object[ids.length];
+            Object[] ticketCalls = new Object[ids.length * 2];
             int index = 0;
             for (int id : ids) {
                 ticketCalls[index] = _createMultiCallElement("ticket.get",//NOI18N
                         new Object[]{id});
                 index++;
+                ticketCalls[index] = _createMultiCallElement("ticket.changeLog",//NOI18N
+                        new Object[]{id});
+                index++;
             }
             Object[] objects = (Object[]) client.execute("system.multicall",//NOI18N
                     new Object[]{ticketCalls});
-            for (Object object : objects) {
-                Object[] result = (Object[]) object;
-                for (Object o : result) {
-                    if (o instanceof Object[]) {
-                        Ticket ticket = _extractTicket((Object[]) o);
-                        if (ticket != null) {
-                            tickets.add(ticket);
-                        }
-                    }
-                }
 
+            for (int i = 0; i < objects.length; i++) {
+                Object[] ticketResult = (Object[]) objects[i++];
+                Object[] changesResult = (Object[]) ((Object[]) objects[i])[0];
+
+                Ticket ticket = _extractTicket((Object[]) ticketResult[0]);
+                if (ticket != null) {
+                    for (Object object : changesResult) {
+                        _extractTicketChanges(ticket, (Object[]) object);
+                    }
+
+                    tickets.add(ticket);
+                }
             }
+
+
         } catch (XmlRpcException ex) {
             throw new TracException(ex);
         }
@@ -443,13 +474,13 @@ public class XmlRpcTracSession implements TracSession {
     public Ticket updateTicket(String comment, Ticket ticket, boolean notify) throws TracException {
 
         try {
-            Object [] result = (Object[]) client.execute("ticket.update",//NOI18N
+            client.execute("ticket.update",//NOI18N
                     new Object[]{ticket.getTicketId(), comment, ticket.getAttributes(), notify});
-            if (result != null && result.length == 4) {
 
-                return _extractTicket(result);
-            }
-            return ticket;
+
+            return getTicket(ticket.getTicketId());
+
+
         } catch (XmlRpcException ex) {
             throw new TracException(ex);
         }
@@ -505,11 +536,11 @@ public class XmlRpcTracSession implements TracSession {
         return ids;
     }
 
-    public Ticket executeAction(TicketAction action, String comment, Ticket ticket, boolean notify)throws TracException {
+    public Ticket executeAction(TicketAction action, String comment, Ticket ticket, boolean notify) throws TracException {
         try {
             client.execute("ticket.executeAction",
                     new Object[]{ticket.getTicketId(), action.getName(),
-                    comment,ticket.getAttributes(),notify});
+                        comment, ticket.getAttributes(), notify});
 
         } catch (XmlRpcException ex) {
             throw new TracException(ex);

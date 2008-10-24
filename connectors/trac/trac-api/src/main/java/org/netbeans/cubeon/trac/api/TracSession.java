@@ -150,6 +150,7 @@ public interface TracSession {
      */
     Ticket executeAction(TicketAction action, String comment, Ticket ticket, boolean notify) throws TracException;
 
+
     /**
      * Perform a ticket query, returning a list of ticket ID's.
      * @param query “query language” for specifying query filters. Basically, the filters are separated by ampersands (&). Each filter then consists of the ticket field name, an operator, and one or more values. More than one value are separated by a pipe (|), meaning that the filter matches any of the values.
