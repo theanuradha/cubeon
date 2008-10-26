@@ -20,25 +20,28 @@ import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.SAXException;
 
 /**
- * //@todo class description
+ * Base SAX handler, it contains base logic which will be used by every Bugzilla SAX handlers.
  *
  * @author radoslaw.holewa
  */
 public abstract class BaseSaxHandler extends DefaultHandler {
 
     public static final String TRUE_VALUE = "1";
-    
+
+    /**
+     * Content of element.
+     */
     protected StringBuffer elementContent;
 
     /**
      * Copies content of actualy processed element to elementContent variable.
      * 
-     * @param ch
-     * @param start
-     * @param length
-     * @throws org.xml.sax.SAXException
+     * @param characters - characters array
+     * @param start - begining of content
+     * @param length - length of content
+     * @throws SAXException - throws exception in case of any problems
      */
-    public void characters(char ch[], int start, int length) throws SAXException {
-        elementContent.append(ch, start, length);
+    public void characters(char characters[], int start, int length) throws SAXException {
+        elementContent.append(characters, start, length);
     }
 }

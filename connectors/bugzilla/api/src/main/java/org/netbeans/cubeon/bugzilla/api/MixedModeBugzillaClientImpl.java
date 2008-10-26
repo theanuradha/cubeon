@@ -30,7 +30,6 @@ import org.netbeans.cubeon.bugzilla.api.post.method.GetBugDetailsMethod;
 import org.netbeans.cubeon.bugzilla.api.post.method.GetRepositoryConfigurationMethod;
 import org.netbeans.cubeon.bugzilla.api.post.method.QueryBugsListPostMethod;
 import org.netbeans.cubeon.bugzilla.api.post.queries.BaseQuery;
-import org.netbeans.cubeon.bugzilla.api.post.queries.SpecificQuery;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -190,13 +189,18 @@ public class MixedModeBugzillaClientImpl implements BugzillaClient {
             if (bug.getTargetMilestone() != null) {
                 params.put("target_milestone", bug.getTargetMilestone());
             }
-            Map result = (HashMap)client.execute("Bug.create", new Object[]{params});
+            Map result = (HashMap) client.execute("Bug.create", new Object[]{params});
             return (Integer) result.get("id");
         } catch (XmlRpcException e) {
             throw new BugzillaConnectionException("Error during bug adding.", e);
         }
     }
 
+    /**
+     * Returns useful form of Bugzilla repository URL.
+     * @param url - Bugzilla repository URL
+     * @return - useful form of given URL
+     */
     private String formatUrlAddress(String url) {
         StringBuilder sb = new StringBuilder(url);
         if (!url.endsWith(URL_END_CHARACTER)) {
@@ -205,5 +209,4 @@ public class MixedModeBugzillaClientImpl implements BugzillaClient {
         sb.append(XML_RPC_SCRIPT);
         return sb.toString();
     }
-    
 }

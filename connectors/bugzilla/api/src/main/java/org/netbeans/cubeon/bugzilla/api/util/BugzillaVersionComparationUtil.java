@@ -38,12 +38,29 @@ public class BugzillaVersionComparationUtil {
         return result;
     }
 
+    /**
+     * Compares two not equals versions.
+     *
+     * @param first - first version
+     * @param second - second version
+     * @return - 1 if the first version is newer than the second version or -1 if the first is older
+     */
     private static int compareNotEqualsVersions(String first, String second) {
-        return 0;  //todo implement this
+        return 0;  //TODO implement this
     }
 
+    /**
+     * Versions comparator, it might be used to sort elements in list of versions.
+     */
     public class VersionsComparator implements Comparator<String> {
 
+        /**
+         * Compares two versions.
+         *
+         * @param first - first version
+         * @param second - second version
+         * @return - 1 if the first version is newer than the second version or -1 if the first is older
+         */
         public int compare(String first, String second) {
             return compareTwoVersions(first, second);
         }

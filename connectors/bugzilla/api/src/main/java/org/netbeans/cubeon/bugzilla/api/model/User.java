@@ -23,7 +23,14 @@ package org.netbeans.cubeon.bugzilla.api.model;
  */
 public class User {
 
+    /**
+     * Username.
+     */
     private String name;
+    
+    /**
+     * User's email.
+     */
     private String email;
 
     public String getName() {

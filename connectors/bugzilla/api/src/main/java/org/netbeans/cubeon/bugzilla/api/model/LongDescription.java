@@ -25,8 +25,19 @@ import java.util.Date;
  */
 public class LongDescription {
 
+    /**
+     * Information about person who has added description.
+     */
     private User who;
+
+    /**
+     * Deate of creation.
+     */
     private Date when;
+
+    /**
+     * Content of the description.
+     */
     private String text;
 
     public User getWho() {
