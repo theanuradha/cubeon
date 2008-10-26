@@ -27,6 +27,7 @@ import org.netbeans.cubeon.bugzilla.api.model.NewBug;
 import org.netbeans.cubeon.bugzilla.api.post.queries.SpecificQuery;
 
 /**
+ * Test for MixedMode Bugzilla client.
  *
  * @author radoslaw.holewa
  */

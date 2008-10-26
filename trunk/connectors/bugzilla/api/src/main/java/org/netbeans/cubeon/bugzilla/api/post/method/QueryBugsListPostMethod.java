@@ -20,9 +20,7 @@ import au.com.bytecode.opencsv.CSVReader;
 import org.netbeans.cubeon.bugzilla.api.exception.BugzillaParsingException;
 import org.netbeans.cubeon.bugzilla.api.model.BugSummary;
 import org.netbeans.cubeon.bugzilla.api.post.queries.BaseQuery;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -31,12 +29,15 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * //@todo class description
+ * POST method
  *
  * @author radoslaw.holewa
  */
 public class QueryBugsListPostMethod extends BaseBugzillaPostMethod<List<BugSummary>> {
 
+    /**
+     * Name of CGI script that will be used to receive result of this query.
+     */
     private static final String SCRIPT_NAME = "buglist.cgi";
 
     /**
@@ -54,6 +55,9 @@ public class QueryBugsListPostMethod extends BaseBugzillaPostMethod<List<BugSumm
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public List<BugSummary> getResult() throws BugzillaParsingException {
         try {
             return parseResponse(getResponseBodyAsStream());
@@ -62,11 +66,18 @@ public class QueryBugsListPostMethod extends BaseBugzillaPostMethod<List<BugSumm
         }
     }
 
-    private List<BugSummary> parseResponse(InputStream inputStream) throws SAXException, ParserConfigurationException, IOException {
+    /**
+     * Parses response.
+     *
+     * @param inputStream - input stream which contains content of query response
+     * @return - list of bugs
+     * @throws IOException - throws exception in case of problems during parsing
+     */
+    private List<BugSummary> parseResponse(InputStream inputStream) throws IOException {
         CSVReader reader = new CSVReader(new InputStreamReader(inputStream));
         List<BugSummary> result = new ArrayList<BugSummary>();
         /**
-         * at the begining we need to read the first line of file, this line
+         * At the begining we need to read the first line of file, this line
          * contains names of CSV file fields
          */
         String[] nextLine = reader.readNext();
@@ -76,19 +87,28 @@ public class QueryBugsListPostMethod extends BaseBugzillaPostMethod<List<BugSumm
         return result;
     }
 
-    private BugSummary parseLine(String[] nextLine) {
+    /**
+     * Parses one line of CSV file.
+     *
+     * @param lineContent - line content to parse
+     * @return - object representation of given line
+     */
+    private BugSummary parseLine(String[] lineContent) {
         BugSummary bug = new BugSummary();
-        bug.setId(Integer.parseInt(nextLine[0]));
-        bug.setSeverity(nextLine[1]);
-        bug.setPriority(nextLine[2]);
-        bug.setOperatingSystem(nextLine[3]);
-        bug.setAssignee(nextLine[4]);
-        bug.setStatus(nextLine[5]);
-        bug.setResolution(nextLine[6]);
-        bug.setSummary(nextLine[7]);
+        bug.setId(Integer.parseInt(lineContent[0]));
+        bug.setSeverity(lineContent[1]);
+        bug.setPriority(lineContent[2]);
+        bug.setOperatingSystem(lineContent[3]);
+        bug.setAssignee(lineContent[4]);
+        bug.setStatus(lineContent[5]);
+        bug.setResolution(lineContent[6]);
+        bug.setSummary(lineContent[7]);
         return bug;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String getScriptName() {
         return SCRIPT_NAME;
     }

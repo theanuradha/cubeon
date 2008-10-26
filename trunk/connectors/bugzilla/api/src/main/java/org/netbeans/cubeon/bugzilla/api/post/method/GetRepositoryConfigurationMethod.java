@@ -35,6 +35,9 @@ import javax.xml.parsers.SAXParserFactory;
  */
 public class GetRepositoryConfigurationMethod extends BaseBugzillaPostMethod<RepositoryConfiguration> {
 
+    /**
+     * Name of CGI script that will be used to receive repository configuration.
+     */
     private static final String SCRIPT_NAME = "config.cgi";
 
     /**
@@ -59,6 +62,15 @@ public class GetRepositoryConfigurationMethod extends BaseBugzillaPostMethod<Rep
         }
     }
 
+    /**
+     * Parses response.
+     *
+     * @param inputStream - input stream which contains content of repository configuration response
+     * @return - object which contains repository configuration
+     * @throws IOException - throws exception in case of problems during parsing
+     * @throws ParserConfigurationException - throws exception in case of any problems during initialization
+     * of parsers configuration
+     */
     private RepositoryConfiguration parseResponse(InputStream inputStream) throws SAXException, ParserConfigurationException, IOException {
         SaxRepositoryConfigurationHandler handler = new SaxRepositoryConfigurationHandler();
         SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
