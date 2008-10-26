@@ -80,6 +80,7 @@ public class MixedModeBugzillaClientTest extends TestCase {
         newBug.setPlatform("PC");
         newBug.setPriority("P1");
         newBug.setSeverity("major");
+        newBug.setAssignee("radoslaw.holewa@gmail.com");
         bugId = client.createBug(newBug);
         assertNotNull("Returned bug ID is NULL", bugId);
     }

@@ -35,6 +35,7 @@ public class SpecificQuery extends BaseQuery {
     public static final String QUERY_FORMAT = "specific";
     /**
      * Bug status, it's one of query criterions.
+     * Default value is ALL.
      */
     private String bugStatus = "__all__";
     /**

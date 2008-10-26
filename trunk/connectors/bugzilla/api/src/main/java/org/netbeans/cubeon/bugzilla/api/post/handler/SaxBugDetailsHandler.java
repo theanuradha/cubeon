@@ -46,6 +46,7 @@ public class SaxBugDetailsHandler extends BaseSaxHandler {
         this(null);
     }
 
+    //TODO change this method, it should receive configuration object as a parameter
     public SaxBugDetailsHandler(Object configuration) {
         this.configuration = configuration;
         if (configuration == null) {
@@ -59,12 +60,13 @@ public class SaxBugDetailsHandler extends BaseSaxHandler {
     }
 
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-        BugzillaElement elementEnum = BugzillaElement.getInstance(qName);
+        BugDetailsElements elementEnum = BugDetailsElements.getInstance(qName);
         if (elementEnum != null) {
             if (!inLongDesc) {
                 switch (elementEnum) {
                     case LONG_DESC:
-                        startLongDescProcessing();
+                        inLongDesc = true;
+                        longDescription = new LongDescription();
                         break;
                 }
             } else {
@@ -83,7 +85,7 @@ public class SaxBugDetailsHandler extends BaseSaxHandler {
     }
 
     public void endElement(String uri, String localName, String qName) throws SAXException {
-        BugzillaElement elementEnum = BugzillaElement.getInstance(qName);
+        BugDetailsElements elementEnum = BugDetailsElements.getInstance(qName);
         if (elementEnum != null) {
             String value = elementContent.toString();
             setBugDetailsValue(elementEnum, value);
@@ -91,10 +93,12 @@ public class SaxBugDetailsHandler extends BaseSaxHandler {
     }
 
     /**
-     * @param elementEnum
-     * @param value
+     * This method will set appropriate value on appropriate BugDetails object field.
+     *
+     * @param elementEnum - enum of field-related XML element
+     * @param value - value to set
      */
-    private void setBugDetailsValue(BugzillaElement elementEnum, String value) {
+    private void setBugDetailsValue(BugDetailsElements elementEnum, String value) {
         try {
             if (!inLongDesc) {
                 switch (elementEnum) {
@@ -192,24 +196,14 @@ public class SaxBugDetailsHandler extends BaseSaxHandler {
                         longDescription.setText(value);
                         break;
                     case LONG_DESC:
-                        LongDescription longDesc = endLongDescProcessing();
-                        bugDetails.getLongDescriptions().add(longDesc);
+                        inLongDesc = false;
+                        bugDetails.getLongDescriptions().add(longDescription);
                         break;
                 }
             }
         } catch (Exception e) {
             //we don't process errors
         }
-    }
-
-    private void startLongDescProcessing() {
-        inLongDesc = true;
-        longDescription = new LongDescription();
-    }
-
-    private LongDescription endLongDescProcessing() {
-        inLongDesc = false;
-        return longDescription;
     }
 
     /**
@@ -225,7 +219,7 @@ public class SaxBugDetailsHandler extends BaseSaxHandler {
     /**
      * Enum of XML response elements names.
      */
-    private enum BugzillaElement {
+    private enum BugDetailsElements {
 
         BUG_ID,
         CREATION_TS,
@@ -263,9 +257,9 @@ public class SaxBugDetailsHandler extends BaseSaxHandler {
          * @param elementName - NOT case sensitive name of the enum
          * @return - returns enum or NULL in case there was no enum with given name
          */
-        public static BugzillaElement getInstance(String elementName) {
+        public static BugDetailsElements getInstance(String elementName) {
             try {
-                return BugzillaElement.valueOf(elementName.toUpperCase(Locale.US));
+                return BugDetailsElements.valueOf(elementName.toUpperCase(Locale.US));
             } catch (IllegalArgumentException e) {
                 /**
                  * valueOf method throws IllegalArgumentException in case it can't find enum

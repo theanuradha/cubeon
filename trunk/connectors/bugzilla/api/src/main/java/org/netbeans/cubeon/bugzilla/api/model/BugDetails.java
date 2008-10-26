@@ -27,10 +27,26 @@ import java.util.List;
  */
 public class BugDetails {
 
+    /**
+     * Bug id.
+     */
     private Integer id;
+
+    /**
+     * Creation date.
+     */
     private Date creationDate;
+
+    /**
+     * Short description of the bug.
+     */
     private String shortDescription;
+
+    /**
+     * Date of last change.
+     */
     private Date deltaDate;
+    
     private Boolean reporterAccessible;
     private Boolean ccListAccessible;
     private Integer classificationId;

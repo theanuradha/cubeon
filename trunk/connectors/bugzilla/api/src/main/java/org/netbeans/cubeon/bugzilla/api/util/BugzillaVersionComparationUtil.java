@@ -26,9 +26,11 @@ import java.util.Comparator;
 public class BugzillaVersionComparationUtil {
 
     /**
-     * @param first
-     * @param second
-     * @return
+     * Static method, will be used to compare two versions of Bugzilla.
+     *
+     * @param first - first version
+     * @param second - second version
+     * @return - 1 if the first version is newer than the second version or -1 if the first is older
      */
     public static int compareTwoVersions(String first, String second) {
         int result = 0;
