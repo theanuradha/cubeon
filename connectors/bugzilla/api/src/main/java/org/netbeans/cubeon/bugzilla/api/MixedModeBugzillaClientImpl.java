@@ -42,6 +42,8 @@ import org.netbeans.cubeon.bugzilla.api.model.NewBug;
 /**
  * Bugzilla repository client implementation.
  *
+ * TODO make Bugzilla client thread-safe
+ *
  * @author radoslaw.holewa
  */
 public class MixedModeBugzillaClientImpl implements BugzillaClient {
@@ -54,6 +56,15 @@ public class MixedModeBugzillaClientImpl implements BugzillaClient {
     private final Integer userId;
     private String url;
 
+    /**
+     * Creates instance of MixedMode Bugzilla client.
+     *
+     * @param url - Bugzilla repository URL address
+     * @param user - Bugzilla user
+     * @param password - Bugzilla user's password
+     * @throws BugzillaException - throws exception in case there are any problems during initialization
+     * of Bugzilla client
+     */
     public MixedModeBugzillaClientImpl(String url, String user, String password) throws BugzillaException {
         this.url = url;
         config = createConfiguration(url, user, password);
@@ -111,12 +122,15 @@ public class MixedModeBugzillaClientImpl implements BugzillaClient {
      * {@inheritDoc}
      */
     public BugDetails getBugDetails(Integer bugId) throws BugzillaException {
+        GetBugDetailsMethod method = new GetBugDetailsMethod(url, bugId);
         try {
-            GetBugDetailsMethod method = new GetBugDetailsMethod(url, bugId);
+            //TODO take care of this HTTP result code
             int result = httpClient.executeMethod(method);
             return method.getResult();
         } catch (IOException e) {
             throw new BugzillaConnectionException("Error while invoking Post method.", e);
+        } finally {
+            method.releaseConnection();
         }
     }
 
@@ -124,12 +138,15 @@ public class MixedModeBugzillaClientImpl implements BugzillaClient {
      * {@inheritDoc}
      */
     public RepositoryConfiguration getRepositoryConfiguration() throws BugzillaException {
+        GetRepositoryConfigurationMethod method = new GetRepositoryConfigurationMethod(url);
         try {
-            GetRepositoryConfigurationMethod method = new GetRepositoryConfigurationMethod(url);
+            //TODO take care of this HTTP result code
             int result = httpClient.executeMethod(method);
             return method.getResult();
         } catch (IOException e) {
             throw new BugzillaConnectionException("Error while invoking Post method.", e);
+        } finally {
+            method.releaseConnection();
         }
     }
 
@@ -137,12 +154,15 @@ public class MixedModeBugzillaClientImpl implements BugzillaClient {
      * {@inheritdoc}
      */
     public List<BugSummary> queryForBugs(BaseQuery query) throws BugzillaException {
+        QueryBugsListPostMethod method = new QueryBugsListPostMethod(url, query);
         try {
-            QueryBugsListPostMethod method = new QueryBugsListPostMethod(url, query);
+            //TODO take care of this HTTP result code
             int result = httpClient.executeMethod(method);
             return method.getResult();
         } catch (IOException e) {
             throw new BugzillaConnectionException("Error while invoking Post method.", e);
+        } finally {
+            method.releaseConnection();
         }
     }
 
@@ -156,6 +176,7 @@ public class MixedModeBugzillaClientImpl implements BugzillaClient {
             params.put("component", bug.getComponent());
             params.put("summary", bug.getSummary());
             params.put("version", bug.getVersion());
+            //checking not mandatory properties
             if (bug.getDescription() != null) {
                 params.put("description", bug.getDescription());
             }

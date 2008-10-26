@@ -21,12 +21,15 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 /**
- * //@todo class description
+ * SAX handler, it will parse configuration setings received from Bugzilla repository.
  *
  * @author radoslaw.holewa
  */
 public class SaxRepositoryConfigurationHandler extends BaseSaxHandler {
 
+    /**
+     * Repository configuration, it contains product names, components, versions etc.
+     */
     private RepositoryConfiguration repositoryConfiguration;
 
     public void startDocument() throws SAXException {
@@ -39,6 +42,11 @@ public class SaxRepositoryConfigurationHandler extends BaseSaxHandler {
     public void endElement(String uri, String localName, String qName) throws SAXException {
     }
 
+    /**
+     * Returns repository configuration, it contains product names, components, versions etc.
+     *
+     * @return - repository configuration
+     */
     public RepositoryConfiguration getRepositoryConfiguration() {
         return repositoryConfiguration;
     }
