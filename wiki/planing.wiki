@@ -3,7 +3,7 @@
  * Task Repository Connectors (Using Cube°n Repository API/SPI).
     * [http://www.netbeans.org/kb/articles/issuezilla.html Issuezilla] Repository Connector.  ( Status : Started )
     * [http://trac.edgewall.org/ Trac] Repository Connector.  ( Status : Started )
-    * Bugzilla Repository Connector.   
+    * Bugzilla Repository Connector. ( Status : Started )  
     * [http://xplanner.org/ XPlanner] Repository  Connector.
 
  * Planning and Scheduling 
