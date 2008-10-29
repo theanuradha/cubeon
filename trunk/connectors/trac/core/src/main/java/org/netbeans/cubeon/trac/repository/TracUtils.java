@@ -71,7 +71,7 @@ public class TracUtils {
         for (TicketField ticketField : fields) {
             ticket.put(ticketField.getName(), task.get(ticketField.getName()));
         }
-
+        ticket.setTicketChanges(task.getTicketChanges());
 
         return ticket;
     }
@@ -89,7 +89,7 @@ public class TracUtils {
         tracTask.setCreatedDate(ticket.getCreatedDate());
         tracTask.setUpdatedDate(ticket.getUpdatedDate());
         tracTask.setTicketId(ticket.getTicketId());
-        //TODO ADD Comments to task
+        tracTask.setTicketChanges(ticket.getTicketChanges());
         return tracTask;
     }
 
@@ -116,6 +116,7 @@ public class TracUtils {
         task.setCreatedDate(ticket.getCreatedDate());
         task.setUpdatedDate(ticket.getUpdatedDate());
         task.setTicketId(ticket.getTicketId());
+        task.setTicketChanges(ticket.getTicketChanges());
     }
 
     public static void remoteToTask(TracTaskRepository repository, TracTask remoteTask, TracTask tracTask) {
@@ -126,11 +127,7 @@ public class TracUtils {
         //put created and updated date
         tracTask.setCreatedDate(remoteTask.getCreatedDate());
         tracTask.setUpdatedDate(remoteTask.getUpdatedDate());
-
-    }
-
-    public static void readComments(TracTaskRepository repository, TracTask task) {
-        //TODO ADD Comments to task
+        tracTask.setTicketChanges(remoteTask.getTicketChanges());
     }
 
     public static String ticketToTaskId(Ticket ticket) {

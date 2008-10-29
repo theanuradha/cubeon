@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.trac.api.TicketAction;
 import org.netbeans.cubeon.trac.api.TicketAction.Operation;
+import org.netbeans.cubeon.trac.api.TicketChange;
 import org.netbeans.cubeon.trac.tasks.TracTask;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
@@ -64,6 +65,13 @@ class TaskPersistenceHandler {
     private static final String TAG_ACTIONS = "actions";//NOI18N
     private static final String TAG_ACTION = "action";//NOI18N
     private static final String TAG_MODIFIED_FLAG = "tag_modified_flag";//NOI18N
+    private static final String TAG_CHANGES = "changes";//NOI18N
+    private static final String TAG_CHANGE = "change";//NOI18N
+    private static final String TAG_TIME = "time";//NOI18N
+    private static final String TAG_FIELD = "field";//NOI18N
+    private static final String TAG_NEW = "new";//NOI18N
+    private static final String TAG_OLD = "old";//NOI18N
+    private static final String TAG_AUTHOR = "author";//NOI18N
     //----------------------------------------------------
     private TracTaskRepository taskRepository;
     private final FileObject baseDir;
@@ -189,6 +197,26 @@ class TaskPersistenceHandler {
                 }
             }
 
+            //read changes
+            List<TicketChange> changes = new ArrayList<TicketChange>();
+            Element changesElement = findElement(element, TAG_CHANGES);
+            if (changesElement != null) {
+                NodeList changesNodeList = changesElement.getElementsByTagName(TAG_CHANGE);
+
+                for (int i = 0; i < changesNodeList.getLength(); i++) {
+                    Node changeNode = changesNodeList.item(i);
+                    if (changeNode.getNodeType() == Node.ELEMENT_NODE) {
+                        Element changeElement = (Element) changeNode;
+                        String field = changeElement.getAttribute(TAG_FIELD);
+                        String time = changeElement.getAttribute(TAG_TIME);
+                        String author = changeElement.getAttribute(TAG_AUTHOR);
+                        String oldValue = changeElement.getAttribute(TAG_OLD);
+                        String newValue = changeElement.getAttribute(TAG_NEW);
+                        changes.add(new TicketChange(Long.parseLong(time), author, field, oldValue, newValue));
+                    }
+                }
+            }
+
             TracTask tracTask = new TracTask(taskRepository, id,
                     Integer.parseInt(ticketId), name, description);
             readTracTask(element, tracTask);
@@ -207,6 +235,8 @@ class TaskPersistenceHandler {
             }
 
             tracTask.setNewComment(newcomment);
+
+            tracTask.setTicketChanges(changes);
 
             return tracTask;
 
@@ -258,29 +288,18 @@ class TaskPersistenceHandler {
 
 
         taskElement.setAttribute(UPDATED_DATE, String.valueOf(task.getUpdatedDate()));
+        List<TicketChange> ticketChanges = task.getTicketChanges();
+        Element commentsElement = getEmptyElement(document, taskElement, TAG_CHANGES);
+        for (TicketChange ticketChange : ticketChanges) {
+            Element element = document.createElement(TAG_CHANGE);
+            commentsElement.appendChild(element);
+            element.setAttribute(TAG_TIME, String.valueOf(ticketChange.getTime()));
+            element.setAttribute(TAG_FIELD, ticketChange.getField());
+            element.setAttribute(TAG_AUTHOR, ticketChange.getAuthor());
+            element.setAttribute(TAG_OLD, ticketChange.getOldValue());
+            element.setAttribute(TAG_NEW, ticketChange.getNewValuve());
 
-//        List<JiraComment> comments = task.getComments();
-//        Element commentsElement = getEmptyElement(document, taskElement, TAG_COMMENTS);
-//
-//        for (JiraComment comment : comments) {
-//            Element element = document.createElement(TAG_COMMENT);
-//            commentsElement.appendChild(element);
-//            element.setAttribute(TAG_ID, comment.getId());
-//            element.setAttribute(TAG_NAME, comment.getBody());
-//            element.setAttribute(TAG_AUTHOR, comment.getAuthor());
-//            if (comment.getUpdateAuthor() != null) {
-//                element.setAttribute(TAG_UPDATE_AUTHOR, comment.getUpdateAuthor());
-//            }
-//            if (comment.getCreated() != null) {
-//                element.setAttribute(TAG_CREATED_DATE, String.valueOf(comment.getCreated().getTime()));
-//
-//            }
-//            if (comment.getUpdated() != null) {
-//                element.setAttribute(TAG_UPDATE_DATE, String.valueOf(comment.getUpdated().getTime()));
-//            }
-//        }
-
-
+        }
 
     }
 
