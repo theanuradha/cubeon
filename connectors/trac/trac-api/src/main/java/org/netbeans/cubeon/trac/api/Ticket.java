@@ -173,6 +173,10 @@ public class Ticket {
         return changes.add(change);
     }
 
+    public void setTicketChanges(List<TicketChange> changes) {
+        this.changes=new ArrayList<TicketChange>(changes);
+    }
+
     public List<TicketChange> getTicketChanges() {
         return new ArrayList<TicketChange>(changes);
     }
