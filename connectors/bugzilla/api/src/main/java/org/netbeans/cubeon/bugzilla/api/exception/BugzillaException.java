@@ -21,7 +21,7 @@ package org.netbeans.cubeon.bugzilla.api.exception;
  *
  * @author radoslaw.holewa
  */
-public class BugzillaException extends RuntimeException {
+public class BugzillaException extends Exception {
 
     public BugzillaException(String message) {
         super(message);

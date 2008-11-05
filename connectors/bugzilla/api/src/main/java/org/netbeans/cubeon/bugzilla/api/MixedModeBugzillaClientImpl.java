@@ -17,6 +17,9 @@
 package org.netbeans.cubeon.bugzilla.api;
 
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
@@ -42,18 +45,43 @@ import org.netbeans.cubeon.bugzilla.api.model.NewBug;
 /**
  * Bugzilla repository client implementation.
  *
- * TODO make Bugzilla client thread-safe
- *
  * @author radoslaw.holewa
  */
 public class MixedModeBugzillaClientImpl implements BugzillaClient {
 
+    /**
+     * Bugzilla XML-RPC script, XML-RPC client has to connect to this script.
+     */
     public static final String XML_RPC_SCRIPT = "xmlrpc.cgi";
+
+    /**
+     * Character used at the end of URL.
+     */
     public static final String URL_END_CHARACTER = "/";
+
+    /**
+     * XML-RPC client configuration.
+     */
     private final XmlRpcClientConfigImpl config;
+
+    /**
+     * XML-RPC client instance.
+     */
     private final XmlRpcClient client;
+
+    /**
+     * HTTP client instance.
+     */
     private final HttpClient httpClient;
+
+    /**
+     * User ID.
+     */
     private final Integer userId;
+
+    /**
+     * URL address that will
+     */
     private String url;
 
     /**
@@ -70,7 +98,11 @@ public class MixedModeBugzillaClientImpl implements BugzillaClient {
         config = createConfiguration(url, user, password);
         client = new XmlRpcClient();
         XmlRpcCommonsTransportFactory factory = new XmlRpcCommonsTransportFactory(client);
-        httpClient = new HttpClient();
+        /**
+         * multi-threaded connection manager - it must be used in case there will be more than one
+         * thread that will use HttpClient
+         */
+        httpClient = new HttpClient(new MultiThreadedHttpConnectionManager());
         factory.setHttpClient(httpClient);
         client.setTransportFactory(factory);
         client.setConfig(config);
@@ -123,13 +155,11 @@ public class MixedModeBugzillaClientImpl implements BugzillaClient {
      */
     public BugDetails getBugDetails(Integer bugId) throws BugzillaException {
         GetBugDetailsMethod method = new GetBugDetailsMethod(url, bugId);
-        try {
-            //TODO take care of this HTTP result code
-            int result = httpClient.executeMethod(method);
+        try{
+            executeMethod( method );
             return method.getResult();
-        } catch (IOException e) {
-            throw new BugzillaConnectionException("Error while invoking Post method.", e);
         } finally {
+            // we have to release connection after using it
             method.releaseConnection();
         }
     }
@@ -140,34 +170,30 @@ public class MixedModeBugzillaClientImpl implements BugzillaClient {
     public RepositoryConfiguration getRepositoryConfiguration() throws BugzillaException {
         GetRepositoryConfigurationMethod method = new GetRepositoryConfigurationMethod(url);
         try {
-            //TODO take care of this HTTP result code
-            int result = httpClient.executeMethod(method);
+            executeMethod( method );
             return method.getResult();
-        } catch (IOException e) {
-            throw new BugzillaConnectionException("Error while invoking Post method.", e);
         } finally {
+            // we have to release connection after using it
             method.releaseConnection();
         }
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public List<BugSummary> queryForBugs(BaseQuery query) throws BugzillaException {
         QueryBugsListPostMethod method = new QueryBugsListPostMethod(url, query);
         try {
-            //TODO take care of this HTTP result code
-            int result = httpClient.executeMethod(method);
+            executeMethod( method );
             return method.getResult();
-        } catch (IOException e) {
-            throw new BugzillaConnectionException("Error while invoking Post method.", e);
         } finally {
+            // we have to release connection after using it
             method.releaseConnection();
         }
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public Integer createBug(NewBug bug) throws BugzillaException {
         try {
@@ -214,6 +240,24 @@ public class MixedModeBugzillaClientImpl implements BugzillaClient {
             return (Integer) result.get("id");
         } catch (XmlRpcException e) {
             throw new BugzillaConnectionException("Error during bug adding.", e);
+        }
+    }
+
+    /**
+     *  Wraps HTTP method invocation.
+     *  This method takes care of connection exceptions and HTTP method results.
+     *
+     * @param method - HTTP method that will be invoked
+     * @throws BugzillaConnectionException - throws exception in case of any errors
+     */
+    private void executeMethod( HttpMethod method ) throws BugzillaConnectionException {
+       try {
+            int result = httpClient.executeMethod(method);
+            if(result != HttpStatus.SC_OK) {
+              throw new BugzillaConnectionException( "Bad HTTP response: " + result);
+            }
+        } catch (IOException e) {
+            throw new BugzillaConnectionException("Error while invoking POST method.", e);
         }
     }
 

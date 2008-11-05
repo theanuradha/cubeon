@@ -54,7 +54,7 @@ public class MixedModeBugzillaClientTest extends TestCase {
         }
     }
 
-    public void testQueryForBugs() {
+    public void testQueryForBugs() throws Exception{
         if (client == null) {
             return;
         }
@@ -65,7 +65,7 @@ public class MixedModeBugzillaClientTest extends TestCase {
         assertNotNull("Returned bugs list is NULL", bugs);
     }
 
-    public void testCreateBug() {
+    public void testCreateBug() throws Exception {
         if (client == null) {
             return;
         }
@@ -85,7 +85,7 @@ public class MixedModeBugzillaClientTest extends TestCase {
         assertNotNull("Returned bug ID is NULL", bugId);
     }
 
-    public void testGetBugDetails() {
+    public void testGetBugDetails() throws Exception {
         if (client == null) {
             return;
         }

@@ -35,7 +35,7 @@ import javax.xml.parsers.SAXParserFactory;
 public class GetBugDetailsMethod extends BaseBugzillaPostMethod<BugDetails> {
 
     /**
-     * Name of CGI script used to retreive bug details.
+     * Name of CGI script used to retrieve bug details.
      */
     private static final String SHOW_BUG_CGI_SCRIPT = "show_bug.cgi";
 
@@ -67,9 +67,9 @@ public class GetBugDetailsMethod extends BaseBugzillaPostMethod<BugDetails> {
     }
 
     /**
-     * Parses XML content retreived from InputStream.
+     * Parses XML content retrieved from InputStream.
      *
-     * @param inputStream - input stream from which XML content will be retreived
+     * @param inputStream - input stream from which XML content will be retrieved
      * @return - {@see org.netbeans.cubeon.bugzilla.api.model.BugDetails} instance which will
      *         represent XML document data
      * @throws SAXException                 - throws exception if something goes wrong (it's SAX parsing exception)
