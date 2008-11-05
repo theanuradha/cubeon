@@ -18,6 +18,7 @@ package org.netbeans.cubeon.bugzilla.api.post.method;
 
 import au.com.bytecode.opencsv.CSVReader;
 import org.netbeans.cubeon.bugzilla.api.exception.BugzillaParsingException;
+import org.netbeans.cubeon.bugzilla.api.exception.BugzillaException;
 import org.netbeans.cubeon.bugzilla.api.model.BugSummary;
 import org.netbeans.cubeon.bugzilla.api.post.queries.BaseQuery;
 
@@ -45,8 +46,9 @@ public class QueryBugsListPostMethod extends BaseBugzillaPostMethod<List<BugSumm
      *
      * @param url   - Bugzilla repository URL address
      * @param query - query used to get bugs list
+     * @throws BugzillaException - throws exception in case there are any problems during method initialization
      */
-    public QueryBugsListPostMethod(String url, BaseQuery query) {
+    public QueryBugsListPostMethod(String url, BaseQuery query) throws BugzillaException {
         super(url);
         setParameter("ctype", "csv");
         Map<String, String> paramsMap = query.parametersMap();
@@ -71,20 +73,24 @@ public class QueryBugsListPostMethod extends BaseBugzillaPostMethod<List<BugSumm
      *
      * @param inputStream - input stream which contains content of query response
      * @return - list of bugs
-     * @throws IOException - throws exception in case of problems during parsing
+     * @throws BugzillaParsingException - throws exception in case of problems during parsing
      */
-    private List<BugSummary> parseResponse(InputStream inputStream) throws IOException {
+    private List<BugSummary> parseResponse(InputStream inputStream) throws BugzillaParsingException {
         CSVReader reader = new CSVReader(new InputStreamReader(inputStream));
         List<BugSummary> result = new ArrayList<BugSummary>();
         /**
          * At the begining we need to read the first line of file, this line
          * contains names of CSV file fields
          */
-        String[] nextLine = reader.readNext();
-        while ((nextLine = reader.readNext()) != null) {
-            result.add(parseLine(nextLine));
+        try {
+            String[] nextLine = reader.readNext();
+            while ((nextLine = reader.readNext()) != null) {
+                result.add(parseLine(nextLine));
+            }
+            return result;
+        } catch( IOException e ) {
+            throw new BugzillaParsingException( "Error while parsing query response lines.", e); 
         }
-        return result;
     }
 
     /**
@@ -92,9 +98,13 @@ public class QueryBugsListPostMethod extends BaseBugzillaPostMethod<List<BugSumm
      *
      * @param lineContent - line content to parse
      * @return - object representation of given line
+     * @throws BugzillaParsingException - throws exception in case of problems during parsing
      */
-    private BugSummary parseLine(String[] lineContent) {
+    private BugSummary parseLine(String[] lineContent) throws BugzillaParsingException {
         BugSummary bug = new BugSummary();
+        if(lineContent.length < 8) {
+          throw new BugzillaParsingException("Error during line parsing, invalid number of line elements.");
+        }
         bug.setId(Integer.parseInt(lineContent[0]));
         bug.setSeverity(lineContent[1]);
         bug.setPriority(lineContent[2]);

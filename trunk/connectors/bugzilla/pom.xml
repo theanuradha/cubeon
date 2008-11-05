@@ -9,7 +9,7 @@
     <artifactId>cubeon-bugzilla-module</artifactId>
     <packaging>pom</packaging>
     <name>Cube°n Bugzilla Module</name>
-    <description>Bugzilla Connector for the Cube°n </description>
+    <description>Bugzilla Connector for the Cube°n</description>
     <version>${cubeon.release}</version>
     <modules>
         <module>api</module>

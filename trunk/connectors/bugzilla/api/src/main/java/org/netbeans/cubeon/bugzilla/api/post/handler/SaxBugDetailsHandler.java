@@ -33,20 +33,50 @@ import java.util.Locale;
  */
 public class SaxBugDetailsHandler extends BaseSaxHandler {
 
+    /**
+     * QName of processed element.
+     */
     private String actualElementName;
+
+    /**
+     * Will XML parsed data. 
+     */
     private BugDetails bugDetails;
-    private Object configuration;//TODO change this
+
+    //TODO change this, it should contain configuration instance
+    private Object configuration;
+
+    /**
+     *  Date format used to parse bug date. 
+     */
     private DateFormat bugDateFormat;
+
+    /**
+     * Date format used to parse bug comment date.  
+     */
     private DateFormat commentDateFormat;
+
+    /**
+     * Contains attributes of actually processed element. 
+     */
     private Attributes attributes;
+
+    /**
+     * This flag indicates if SAX parser is currently parsing long description.  
+     */
     private boolean inLongDesc = false;
+
+    /**
+     * Contains content of parsed descriptin.
+     */
     private LongDescription longDescription;
 
     public SaxBugDetailsHandler() {
         this(null);
     }
 
-    //TODO change this method, it should receive configuration object as a parameter
+    //TODO change this method, it should receive configuration object as a parameter or the configuration
+    //TODO should be provided using setters
     public SaxBugDetailsHandler(Object configuration) {
         this.configuration = configuration;
         if (configuration == null) {
@@ -210,7 +240,7 @@ public class SaxBugDetailsHandler extends BaseSaxHandler {
      * Returns object representation of parsed XML content.
      *
      * @return - instance of {@see org.netbeans.cubeon.bugzilla.api.model.BugDetails} which contains
-     *         data retreived from parsed XML content.
+     *         data retrieved from parsed XML content.
      */
     public BugDetails getBugDetails() {
         return bugDetails;

@@ -27,15 +27,54 @@ import java.util.List;
  */
 public class RepositoryConfiguration {
 
+   /**
+    * Bugzilla statuses, this list contains all available statuses.
+    */
     private List<String> statuses = new ArrayList<String>();
+
+   /**
+    * This list contains statuses that might be set to closed bugs.
+    */
     private List<String> closedStatuses = new ArrayList<String>();
+
+    /**
+     * This list contains statuses that might be set to open bugs.
+     */
     private List<String> openStatuses = new ArrayList<String>();
+
+    /**
+     * Available resolutions.
+     */
     private List<String> resolutions = new ArrayList<String>();
+  
+    /**
+     * Available keywords list.
+     */
     private List<String> keywords = new ArrayList<String>();
+
+    /**
+     * Available platforms list. 
+     */
     private List<String> platforms = new ArrayList<String>();
+
+    /**
+     * List of available operating systems.
+     */
     private List<String> operatingSystems = new ArrayList<String>();
+
+    /**
+     * List of available priorities.
+     */
     private List<String> priorities = new ArrayList<String>();
+
+    /**
+     * List of available severities.
+     */
     private List<String> severities = new ArrayList<String>();
+
+    /**
+     * List of available products.
+     */
     private List<String> products = new ArrayList<String>();
 
     public List<String> getStatuses() {

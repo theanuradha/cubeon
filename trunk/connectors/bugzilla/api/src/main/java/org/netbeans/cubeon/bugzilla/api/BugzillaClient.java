@@ -77,6 +77,7 @@ public interface BugzillaClient {
      * Creates new bug in Bugzilla repository.
      *
      * @param bug - the bug to add
+     * @return - id of newly created bug
      * @throws BugzillaException - throws exception in case there are any errors during bug adding
      */
     Integer createBug(NewBug bug) throws BugzillaException;
