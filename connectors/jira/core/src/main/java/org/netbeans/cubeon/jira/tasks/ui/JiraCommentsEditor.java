@@ -49,6 +49,7 @@ import org.openide.util.lookup.Lookups;
  * @author Anuradha
  */
 public class JiraCommentsEditor extends javax.swing.JPanel implements ExplorerManager.Provider {
+    private static final long serialVersionUID = 1L;
 
     private JiraTaskEditorUI editorUI;
     private ExplorerManager explorerManager = new ExplorerManager();
@@ -215,7 +216,7 @@ public class JiraCommentsEditor extends javax.swing.JPanel implements ExplorerMa
         for (String line : multiLine) {
             buffer.append("\n").append(">").append(line);
         }
-        return buffer.toString();
+        return buffer.append("\n").toString();//move to next line
     }
 
     String getNewComment() {

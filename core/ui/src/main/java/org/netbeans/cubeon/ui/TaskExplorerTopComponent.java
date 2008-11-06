@@ -60,6 +60,7 @@ public final class TaskExplorerTopComponent extends TopComponent implements Expl
     private static TaskExplorerTopComponent instance;
     private static final String SELECTED_VIEW = "SELECTED_VIEW";//NOI18N
     private static final String PREFERRED_ID = "TaskExplorerTopComponent";//NOI18N
+    private static final long serialVersionUID = 3076553315734088248L;
     private final Preferences preferences = NbPreferences.forModule(TaskExplorerTopComponent.class);
     /** path to the icon used by the component and its open action */
     static final String ICON_PATH = "org/netbeans/cubeon/ui/task_explorer.png";
@@ -148,6 +149,7 @@ public final class TaskExplorerTopComponent extends TopComponent implements Expl
         }
         goBackToRoot.setVisible(true);
         goBackToRoot.setAction(new GoBack());
+        taskTreeView.setRootVisible(true);
     }
 
     public void goToRoot() {
@@ -157,6 +159,7 @@ public final class TaskExplorerTopComponent extends TopComponent implements Expl
         explorerManager.setRootContext(selectedView.getRootContext());
         expand();
         goBackToRoot.setVisible(false);
+        taskTreeView.setRootVisible(false);
         goBackToRoot.setAction(null);
     }
 
@@ -403,6 +406,7 @@ private void taskViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     }
 
     private class Context extends AbstractAction {
+        private static final long serialVersionUID = 5527829264450966761L;
 
         private final TaskContextManager contextManager;
 
@@ -433,6 +437,7 @@ private void taskViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     }
 
     private class GoBack extends AbstractAction {
+        private static final long serialVersionUID = 4293205969173010442L;
 
         public GoBack() {
             putValue(SHORT_DESCRIPTION, NbBundle.getMessage(TaskExplorerTopComponent.class, "LBL_Go_Back_ To_ Root"));

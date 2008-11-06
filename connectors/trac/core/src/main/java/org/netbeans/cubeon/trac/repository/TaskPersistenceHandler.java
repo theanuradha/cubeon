@@ -29,6 +29,7 @@ import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.trac.api.TicketAction;
 import org.netbeans.cubeon.trac.api.TicketAction.Operation;
 import org.netbeans.cubeon.trac.api.TicketChange;
+import org.netbeans.cubeon.trac.api.TicketChange.FieldChange;
 import org.netbeans.cubeon.trac.tasks.TracTask;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
@@ -60,7 +61,10 @@ class TaskPersistenceHandler {
     private static final String TAG_TASKS = "tasks";//NOI18N
     private static final String TAG_NEXT_ID = "next";//NOI18N
     private static final String TAG_TASK = "task";//NOI18N
-    private static final String TAG_COMMENT = "tag_comment";//NOI18N
+    private static final String TAG_NEW_COMMENT = "tag_comment";//NOI18N
+    private static final String TAG_COMMENTS = "comments";//NOI18N
+    private static final String TAG_COMMENT = "comment";//NOI18N
+    private static final String TAG_TEXT = "text";//NOI18N
     private static final String TAG_LOCAL = "tag_local";//NOI18N
     private static final String TAG_ACTIONS = "actions";//NOI18N
     private static final String TAG_ACTION = "action";//NOI18N
@@ -163,7 +167,7 @@ class TaskPersistenceHandler {
 
 
 
-            String newcomment = element.getAttribute(TAG_COMMENT);
+            String newcomment = element.getAttribute(TAG_NEW_COMMENT);
 
             //read actions
             String selectedAction = element.getAttribute(TAG_ACTION);
@@ -199,20 +203,35 @@ class TaskPersistenceHandler {
 
             //read changes
             List<TicketChange> changes = new ArrayList<TicketChange>();
-            Element changesElement = findElement(element, TAG_CHANGES);
-            if (changesElement != null) {
-                NodeList changesNodeList = changesElement.getElementsByTagName(TAG_CHANGE);
+            Element commentsElement = findElement(element, TAG_COMMENTS);
+            if (commentsElement != null) {
+                NodeList commentsNodeList = commentsElement.getElementsByTagName(TAG_COMMENT);
 
-                for (int i = 0; i < changesNodeList.getLength(); i++) {
-                    Node changeNode = changesNodeList.item(i);
-                    if (changeNode.getNodeType() == Node.ELEMENT_NODE) {
-                        Element changeElement = (Element) changeNode;
-                        String field = changeElement.getAttribute(TAG_FIELD);
-                        String time = changeElement.getAttribute(TAG_TIME);
-                        String author = changeElement.getAttribute(TAG_AUTHOR);
-                        String oldValue = changeElement.getAttribute(TAG_OLD);
-                        String newValue = changeElement.getAttribute(TAG_NEW);
-                        changes.add(new TicketChange(Long.parseLong(time), author, field, oldValue, newValue));
+                for (int i = 0; i < commentsNodeList.getLength(); i++) {
+                    Node commentNode = commentsNodeList.item(i);
+                    if (commentNode.getNodeType() == Node.ELEMENT_NODE) {
+                        Element commentElement = (Element) commentNode;
+
+                        String time = commentElement.getAttribute(TAG_TIME);
+                        String author = commentElement.getAttribute(TAG_AUTHOR);
+                        String comment = commentElement.getAttribute(TAG_TEXT);
+                        TicketChange tc = new TicketChange(Long.parseLong(time), author, comment);
+                        Element changesElement = findElement(commentElement, TAG_CHANGES);
+                        if (changesElement != null) {
+                            NodeList changesNodeList = changesElement.getElementsByTagName(TAG_CHANGE);
+                            for (int j = 0; j < changesNodeList.getLength(); j++) {
+                                Node changesNode = changesNodeList.item(j);
+                                if (changesNode.getNodeType() == Node.ELEMENT_NODE) {
+                                    Element changeElement = (Element) changesNode;
+                                    String field = changeElement.getAttribute(TAG_FIELD);
+                                    String oldValue = changeElement.getAttribute(TAG_OLD);
+                                    String newValue = changeElement.getAttribute(TAG_NEW);
+                                    tc.addFieldChange(new FieldChange(field, oldValue, newValue));
+                                }
+                            }
+                        }
+
+                        changes.add(tc);
                     }
                 }
             }
@@ -288,18 +307,7 @@ class TaskPersistenceHandler {
 
 
         taskElement.setAttribute(UPDATED_DATE, String.valueOf(task.getUpdatedDate()));
-        List<TicketChange> ticketChanges = task.getTicketChanges();
-        Element commentsElement = getEmptyElement(document, taskElement, TAG_CHANGES);
-        for (TicketChange ticketChange : ticketChanges) {
-            Element element = document.createElement(TAG_CHANGE);
-            commentsElement.appendChild(element);
-            element.setAttribute(TAG_TIME, String.valueOf(ticketChange.getTime()));
-            element.setAttribute(TAG_FIELD, ticketChange.getField());
-            element.setAttribute(TAG_AUTHOR, ticketChange.getAuthor());
-            element.setAttribute(TAG_OLD, ticketChange.getOldValue());
-            element.setAttribute(TAG_NEW, ticketChange.getNewValuve());
 
-        }
 
     }
 
@@ -351,7 +359,7 @@ class TaskPersistenceHandler {
             }
 
 
-            //persist JiraRemoteTask
+            //persist Trac ticket
             persist(task, document, taskElement);
 
             if (task.isLocal()) {
@@ -370,9 +378,9 @@ class TaskPersistenceHandler {
 
 
             if (task.getNewComment() != null) {
-                taskElement.setAttribute(TAG_COMMENT, task.getNewComment());
+                taskElement.setAttribute(TAG_NEW_COMMENT, task.getNewComment());
             } else {
-                taskElement.removeAttribute(TAG_COMMENT);
+                taskElement.removeAttribute(TAG_NEW_COMMENT);
             }
 
             //actions
@@ -391,6 +399,29 @@ class TaskPersistenceHandler {
                     operationElement.setAttribute(TAG_ID, operation.getName());
                 }
             }
+
+            List<TicketChange> ticketChanges = task.getTicketChanges();
+            Element commentsElement = getEmptyElement(document, taskElement, TAG_COMMENTS);
+            for (TicketChange ticketChange : ticketChanges) {
+                Element element = document.createElement(TAG_COMMENT);
+                commentsElement.appendChild(element);
+                element.setAttribute(TAG_TIME, String.valueOf(ticketChange.getTime()));
+                element.setAttribute(TAG_AUTHOR, ticketChange.getAuthor());
+                element.setAttribute(TAG_TEXT, ticketChange.getComment());
+                Element changesElement = getEmptyElement(document, element, TAG_CHANGES);
+                List<FieldChange> fieldChanges = ticketChange.getFieldChanges();
+                for (FieldChange fieldChange : fieldChanges) {
+                    Element changeElement = document.createElement(TAG_CHANGE);
+                    changesElement.appendChild(changeElement);
+                    changeElement.setAttribute(TAG_FIELD, fieldChange.getField());
+                    changeElement.setAttribute(TAG_OLD, fieldChange.getOldValue());
+                    changeElement.setAttribute(TAG_NEW, fieldChange.getNewValuve());
+                }
+
+
+            }
+
+
 
             saveTask(document, task.getId());
         }
