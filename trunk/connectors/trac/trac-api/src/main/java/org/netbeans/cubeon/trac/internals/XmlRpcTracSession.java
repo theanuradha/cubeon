@@ -369,9 +369,9 @@ public class XmlRpcTracSession implements TracSession {
                 Ticket ticket = _extractTicket((Object[]) ((Object[]) objects[0])[0]);
                 if (ticket != null) {
                     Object[] changes = (Object[]) ((Object[]) objects[1])[0];
-                    for (Object change : changes) {
-                        _extractTicketChanges(ticket, (Object[]) change);
-                    }
+
+                    _extractTicketChanges(ticket, changes);
+
                 }
                 return ticket;
             }
@@ -409,15 +409,31 @@ public class XmlRpcTracSession implements TracSession {
         return ticket;
     }
 
-    private void _extractTicketChanges(Ticket ticket, Object[] result) {
-        //time, author, field, old, new, permanent
-        final long time = ((Date) result[0]).getTime();
-        final String author = (String) result[1];
-        final String field = (String) result[2];
-        final String oldValue = (String) result[3];
-        final String newValue = (String) result[4];
-        ticket.addTicketChange(new TicketChange(time, author, field, oldValue,
-                newValue));
+    private void _extractTicketChanges(Ticket ticket, Object[] changes) {
+        List<TicketChange> ticketChanges = new ArrayList<TicketChange>();
+        for (Object change : changes) {
+            Object[] result = (Object[]) change;
+            //time, author, field, old, new, permanent
+            final long time = ((Date) result[0]).getTime();
+            final String author = (String) result[1];
+            TicketChange tc = new TicketChange(time, author);
+            int indexOf = ticketChanges.indexOf(tc);
+            if (indexOf != -1) {
+                tc = ticketChanges.get(indexOf);
+            } else {
+                ticketChanges.add(tc);
+            }
+
+            final String field = (String) result[2];
+            final String oldValue = (String) result[3];
+            final String newValue = (String) result[4];
+            if (field.equals("comment")) {//NOI18N
+                tc.setComment(newValue);
+            } else {
+                tc.addFieldChange(new TicketChange.FieldChange(field, oldValue, newValue));
+            }
+        }
+        ticket.setTicketChanges(ticketChanges);
     }
 
     public List<Ticket> getTickets(int... ids) throws TracException {
@@ -442,9 +458,9 @@ public class XmlRpcTracSession implements TracSession {
 
                 Ticket ticket = _extractTicket((Object[]) ticketResult[0]);
                 if (ticket != null) {
-                    for (Object object : changesResult) {
-                        _extractTicketChanges(ticket, (Object[]) object);
-                    }
+
+                    _extractTicketChanges(ticket, changesResult);
+
 
                     tickets.add(ticket);
                 }

@@ -28,6 +28,7 @@ import org.openide.util.RequestProcessor;
  * @author  Anuradha G
  */
 public class ConfigurationHandlerImpl extends javax.swing.JPanel implements ConfigurationHandler {
+    private static final long serialVersionUID = 3209605499584698376L;
 
     private TracTaskRepositoryProvider repositoryProvider;
     private TracTaskRepository repository;
