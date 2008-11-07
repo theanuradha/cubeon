@@ -1,3 +1,4 @@
+#labels jira
 == Create Jira Repository ==
 
 # Right Click on Repository View And invoke "New Task Repository..." and it will open wizard to select Repository Connector Type (Local,[GSJiraRepository Jira] etc...). 
