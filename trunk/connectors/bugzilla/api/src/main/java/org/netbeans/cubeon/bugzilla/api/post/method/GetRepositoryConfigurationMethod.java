@@ -19,6 +19,7 @@ package org.netbeans.cubeon.bugzilla.api.post.method;
 import org.netbeans.cubeon.bugzilla.api.exception.BugzillaParsingException;
 import org.netbeans.cubeon.bugzilla.api.model.RepositoryConfiguration;
 import org.netbeans.cubeon.bugzilla.api.post.handler.SaxRepositoryConfigurationHandler;
+import org.netbeans.cubeon.bugzilla.api.util.ProgressMonitor;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -52,6 +53,17 @@ public class GetRepositoryConfigurationMethod extends BaseBugzillaPostMethod<Rep
     }
 
     /**
+     * Two-arguments constructor of Bugzilla POST method which will be used to retrieve repository
+     * related configuration.
+     *
+     * @param url - Bugzilla repository URL address
+     * @param progressMonitor - progress monitor that will be used to inform about current processing status
+     */
+    public GetRepositoryConfigurationMethod( String url, ProgressMonitor progressMonitor ) {
+      super( url, progressMonitor );
+    }
+
+  /**
      * {@inheritDoc}
      */
     public RepositoryConfiguration getResult() throws BugzillaParsingException {
@@ -70,6 +82,7 @@ public class GetRepositoryConfigurationMethod extends BaseBugzillaPostMethod<Rep
      * @throws IOException - throws exception in case of problems during parsing
      * @throws ParserConfigurationException - throws exception in case of any problems during initialization
      * of parsers configuration
+     * @throws SAXException -throws exception in case of any problems during parsing using SAX parser
      */
     private RepositoryConfiguration parseResponse(InputStream inputStream) throws SAXException, ParserConfigurationException, IOException {
         SaxRepositoryConfigurationHandler handler = new SaxRepositoryConfigurationHandler();
