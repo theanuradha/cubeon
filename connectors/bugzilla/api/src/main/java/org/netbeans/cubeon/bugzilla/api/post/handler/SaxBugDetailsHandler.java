@@ -39,7 +39,7 @@ public class SaxBugDetailsHandler extends BaseSaxHandler {
     private String actualElementName;
 
     /**
-     * Will XML parsed data. 
+     * Will XML parsed data.
      */
     private BugDetails bugDetails;
 
@@ -47,22 +47,22 @@ public class SaxBugDetailsHandler extends BaseSaxHandler {
     private Object configuration;
 
     /**
-     *  Date format used to parse bug date. 
+     *  Date format used to parse bug date.
      */
     private DateFormat bugDateFormat;
 
     /**
-     * Date format used to parse bug comment date.  
+     * Date format used to parse bug comment date.
      */
     private DateFormat commentDateFormat;
 
     /**
-     * Contains attributes of actually processed element. 
+     * Contains attributes of actually processed element.
      */
     private Attributes attributes;
 
     /**
-     * This flag indicates if SAX parser is currently parsing long description.  
+     * This flag indicates if SAX parser is currently parsing long description.
      */
     private boolean inLongDesc = false;
 

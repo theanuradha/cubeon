@@ -31,7 +31,7 @@ public class LongDescription {
     private User who;
 
     /**
-     * Deate of creation.
+     * Date of creation.
      */
     private Date when;
 
