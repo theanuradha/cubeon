@@ -70,6 +70,7 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
     private static final String EMPTY = "";
     private final OpenInBrowserTaskAction openInBrowserTaskAction;
     private final SubmitTaskAction submitTaskAction;
+    private final TracCommentsEditor commentsEditor;
     final DocumentListener documentListener = new DocumentListener() {
 
         public void insertUpdate(DocumentEvent arg0) {
@@ -137,6 +138,7 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
     public TracTaskEditorUI(TracTask task) {
         this.task = task;
         initComponents();
+        commentsEditor = new TracCommentsEditor(this);
         openInBrowserTaskAction = new OpenInBrowserTaskAction(task);
         submitTaskAction = new SubmitTaskAction(task);
         refresh();
@@ -166,6 +168,7 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
         cmbResolution.removeItemListener(itemListener);
 
         loadDates();
+        commentsEditor.refresh();
         txtSummary.setText(task.getSummary());
         txtDescription.setText(task.getDescription());
         lblReportedBy.setText(task.get(REPORTER));
@@ -231,6 +234,7 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
         }
         submitTaskAction.setEnabled(task.isModifiedFlag());
         task.getTaskRepository().persist(task);
+        task.setNewComment(commentsEditor.getNewComment());
         return task;
     }
 
@@ -437,6 +441,10 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
                 processOperation(operation);
             }
         }
+    }
+
+    public TracCommentsEditor getCommentsEditor() {
+        return commentsEditor;
     }
 
     private void processOperation(Operation operation) {

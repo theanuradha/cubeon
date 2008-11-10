@@ -63,7 +63,7 @@ public class TracAttributeHandler implements EditorAttributeHandler {
     }
 
     public JComponent[] getComponent() {
-        return new JComponent[]{editorUI};
+        return new JComponent[]{editorUI,editorUI.getCommentsEditor()};
     }
 
     public void refresh() {

@@ -21,6 +21,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import org.netbeans.cubeon.analyzer.spi.StackTraceProvider;
 import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
 import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
@@ -31,6 +32,7 @@ import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
 import org.netbeans.cubeon.tasks.spi.task.TaskType;
 import org.netbeans.cubeon.trac.api.Ticket;
 import org.netbeans.cubeon.trac.api.TicketAction;
+import org.netbeans.cubeon.trac.api.TicketChange;
 import org.netbeans.cubeon.trac.api.TicketField;
 import org.netbeans.cubeon.trac.api.TracException;
 import org.netbeans.cubeon.trac.api.TracKeys;
@@ -56,6 +58,7 @@ public class TracTask extends Ticket implements TaskElement {
     private List<TicketAction> actions = new ArrayList<TicketAction>();
     private String newComment;
     private TicketAction action;
+    private final StackTraceProvider stackTraceProvider;
 
     public TracTask(TracTaskRepository taskRepository, String id,
             int ticketId, String summary, String description) {
@@ -64,6 +67,19 @@ public class TracTask extends Ticket implements TaskElement {
         this.id = id;
         extension = new TracTaskElementExtension(this);
         editorProvider = new TaskEditorProviderImpl(this);
+        stackTraceProvider = new StackTraceProvider() {
+
+            @Override
+            public List<String> getAnalyzableTexts() {
+                List<String> stacks = new ArrayList<String>();
+                stacks.add(getDescription());
+                List<TicketChange> changes = getTicketChanges();
+                for (TicketChange change : changes) {
+                    stacks.add(change.getComment());
+                }
+                return stacks;
+            }
+        };
     }
 
     public String getId() {
@@ -123,7 +139,7 @@ public class TracTask extends Ticket implements TaskElement {
     }
 
     public Lookup getLookup() {
-        return Lookups.fixed(this, extension, editorProvider, taskRepository);
+        return Lookups.fixed(this, extension, editorProvider, taskRepository, stackTraceProvider);
     }
 
     public TaskType getType() {
@@ -217,8 +233,8 @@ public class TracTask extends Ticket implements TaskElement {
         //put ticket resolution if not null else remove 
         if (resolution != null) {
             put(TracKeys.RESOLUTION, resolution.getId());
-        }else{
-           remove(TracKeys.RESOLUTION);
+        } else {
+            remove(TracKeys.RESOLUTION);
         }
 
         extension.fireResolutionChenged();
