@@ -18,6 +18,7 @@ package org.netbeans.cubeon.tasks.spi.repository;
 
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import java.awt.Image;
+import org.netbeans.cubeon.tasks.spi.Notifier;
 import org.openide.util.Lookup;
 
 /**
@@ -104,4 +105,7 @@ public interface TaskRepository {
      * @return Repository state
      */
     State getState();
+
+
+    Notifier<RepositoryEventAdapter> getNotifier();
 }

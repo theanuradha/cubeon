@@ -17,8 +17,9 @@
 package org.netbeans.cubeon.jira.query;
 
 import org.netbeans.cubeon.jira.repository.JiraTaskRepository;
-import org.netbeans.cubeon.tasks.spi.Extension;
+import org.netbeans.cubeon.tasks.spi.Notifier;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
+import org.netbeans.cubeon.tasks.spi.query.TaskQueryEventAdapter;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 
 /**
@@ -54,7 +55,7 @@ public abstract class AbstractJiraQuery implements TaskQuery {
         return repository;
     }
 
-    public Extension getExtension() {
+    public Notifier<TaskQueryEventAdapter> getNotifier() {
         return extension;
     }
 

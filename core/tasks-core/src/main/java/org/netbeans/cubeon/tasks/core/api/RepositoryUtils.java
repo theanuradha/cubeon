@@ -14,31 +14,21 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.netbeans.cubeon.tasks.spi;
+package org.netbeans.cubeon.tasks.core.api;
 
-import org.openide.util.Lookup;
+
 
 /**
  *
- * @author Anuradha G
+ * @author Anuradha
  */
-public interface Extension {
+public final class RepositoryUtils {
 
-    /**
-     * 
-     * @param inst
-     */
-    void remove(Object inst);
+    private RepositoryUtils() {
+    }
 
-    /**
-     * 
-     * @param inst
-     */
-    void add(Object inst);
-
-    /**
-     * 
-     * @return
-     */
-    Lookup getLookup();
+//    private static String getHashedPassword(String password) {
+//
+//
+//    }
 }

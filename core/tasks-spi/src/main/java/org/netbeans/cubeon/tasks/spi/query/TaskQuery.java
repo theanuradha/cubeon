@@ -69,5 +69,5 @@ public interface TaskQuery {
      */
     List<TaskElement> getTaskElements();
 
-    Extension getExtension();
+    Notifier<TaskQueryEventAdapter> getNotifier();
 }

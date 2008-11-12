@@ -91,7 +91,7 @@ public class JiraTaskRepositoryProvider implements TaskRepositoryType {
             if (!taskRepositorys.contains(jiraTaskRepository)) {
                 taskRepositorys.add(jiraTaskRepository);
             }
-            JiraRepositoryExtension extension = jiraTaskRepository.getExtension();
+            JiraRepositoryExtension extension = jiraTaskRepository.getNotifier();
             extension.fireNameChenged();
             extension.fireDescriptionChenged();
             RequestProcessor.getDefault().post(new Runnable() {
@@ -127,7 +127,7 @@ public class JiraTaskRepositoryProvider implements TaskRepositoryType {
             for (String id : taskIds) {
                 JiraTask task = jiraTaskRepository.getTaskElementById(id);
                 if (task != null) {
-                    jiraTaskRepository.getExtension().fireTaskRemoved(task);
+                    jiraTaskRepository.getNotifier().fireTaskRemoved(task);
                     factory.closeTask(task);
                 }
 

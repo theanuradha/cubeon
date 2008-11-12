@@ -17,40 +17,27 @@
 package org.netbeans.cubeon.local;
 
 import java.util.Collection;
-import org.netbeans.cubeon.tasks.spi.Extension;
+import org.netbeans.cubeon.tasks.spi.Notifier;
 import org.netbeans.cubeon.tasks.spi.task.TaskElementChangeAdapter;
 import org.openide.util.Lookup;
-import org.openide.util.lookup.AbstractLookup;
-import org.openide.util.lookup.InstanceContent;
+import org.openide.util.lookup.Lookups;
 
 /**
  *
  * @author Anuradha G
  */
-public class LocalTaskElementExtension implements Extension {
+public class LocalTaskElementExtension extends Notifier<TaskElementChangeAdapter> {
 
     private LocalTask localTask;
-    private InstanceContent content;
-    private Lookup lookup;
 
     public LocalTaskElementExtension(LocalTask localTask) {
         this.localTask = localTask;
-        content = new InstanceContent();
-        lookup = new AbstractLookup(content);
-    }
 
-    public final void remove(Object inst) {
-        content.remove(inst);
     }
-
-    public final void add(Object inst) {
-        content.add(inst);
-    }
-
 
     //events---------------------------
     void fireNameChenged() {
-        Collection<? extends TaskElementChangeAdapter> adapters = lookup.lookupAll(TaskElementChangeAdapter.class);
+        Collection<? extends TaskElementChangeAdapter> adapters = getAll();
         for (TaskElementChangeAdapter adapter : adapters) {
             adapter.nameChenged();
         }
@@ -58,35 +45,35 @@ public class LocalTaskElementExtension implements Extension {
     }
 
     void fireDescriptionChenged() {
-        Collection<? extends TaskElementChangeAdapter> adapters = lookup.lookupAll(TaskElementChangeAdapter.class);
+        Collection<? extends TaskElementChangeAdapter> adapters = getAll();
         for (TaskElementChangeAdapter adapter : adapters) {
             adapter.descriptionChenged();
         }
     }
 
     void firePriorityChenged() {
-        Collection<? extends TaskElementChangeAdapter> adapters = lookup.lookupAll(TaskElementChangeAdapter.class);
+        Collection<? extends TaskElementChangeAdapter> adapters = getAll();
         for (TaskElementChangeAdapter adapter : adapters) {
             adapter.priorityChenged();
         }
     }
 
     void fireStatusChenged() {
-        Collection<? extends TaskElementChangeAdapter> adapters = lookup.lookupAll(TaskElementChangeAdapter.class);
+        Collection<? extends TaskElementChangeAdapter> adapters = getAll();
         for (TaskElementChangeAdapter adapter : adapters) {
             adapter.statusChenged();
         }
     }
 
     void fireTypeChenged() {
-        Collection<? extends TaskElementChangeAdapter> adapters = lookup.lookupAll(TaskElementChangeAdapter.class);
+        Collection<? extends TaskElementChangeAdapter> adapters = getAll();
         for (TaskElementChangeAdapter adapter : adapters) {
             adapter.typeChenged();
         }
-        
+
     }
 
     public Lookup getLookup() {
-        return lookup;
+        return Lookups.singleton(this);
     }
 }

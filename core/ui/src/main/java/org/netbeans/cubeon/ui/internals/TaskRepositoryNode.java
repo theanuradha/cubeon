@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.Action;
-import org.netbeans.cubeon.tasks.spi.Extension;
+import org.netbeans.cubeon.tasks.spi.Notifier;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuerySupportProvider;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
@@ -41,7 +41,7 @@ import org.openide.util.Lookup;
 public class TaskRepositoryNode extends AbstractNode {
 
     private TaskRepository repository;
-    private final Extension extension;
+    private final Notifier<RepositoryEventAdapter> extension;
     private RepositoryEventAdapter eventAdapter;
 
     public static TaskRepositoryNode createTaskRepositoryNode(final TaskRepository repository, boolean withChildern) {
@@ -105,7 +105,7 @@ public class TaskRepositoryNode extends AbstractNode {
 
     private TaskRepositoryNode(Children children, final TaskRepository repository) {
         super(children, repository.getLookup());
-        extension = repository.getLookup().lookup(Extension.class);
+        extension = repository.getNotifier();
         this.repository = repository;
         setDisplayName(getNameWithStateTag(repository));
         setShortDescription(repository.getDescription());

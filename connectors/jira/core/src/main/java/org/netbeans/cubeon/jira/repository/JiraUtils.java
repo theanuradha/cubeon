@@ -189,7 +189,7 @@ public class JiraUtils {
         repository.persist(jiraTask);
         //remove old id from outgoing query
         repository.getQuerySupport().getOutgoingQuery().removeTaskId(old);
-        repository.getExtension().fireIdChanged(old, jiraTask.getId());
+        repository.getNotifier().fireIdChanged(old, jiraTask.getId());
         return jiraTask;
 
 

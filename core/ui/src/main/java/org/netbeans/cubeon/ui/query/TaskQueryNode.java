@@ -50,7 +50,7 @@ public class TaskQueryNode extends AbstractNode {
                 setShortDescription(query.getDescription());
             }
         };
-        query.getExtension().add(adapter);
+        query.getNotifier().add(adapter);
     }
 
     public TaskQueryNode(Children children, final TaskQuery query, boolean canDelete) {
@@ -67,7 +67,7 @@ public class TaskQueryNode extends AbstractNode {
                 setShortDescription(query.getDescription());
             }
         };
-        query.getExtension().add(adapter);
+        query.getNotifier().add(adapter);
     }
 
     @Override
@@ -104,6 +104,6 @@ public class TaskQueryNode extends AbstractNode {
 
     @Override
     public void destroy() throws IOException {
-        query.getExtension().remove(adapter);
+        query.getNotifier().remove(adapter);
     }
 }

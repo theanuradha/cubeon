@@ -365,7 +365,7 @@ public class TracTaskRepository implements TaskRepository {
         setState(State.ACTIVE);
     }
 
-    public TracRepositoryExtension getExtension() {
+    public TracRepositoryExtension getNotifier() {
         return extension;
     }
 

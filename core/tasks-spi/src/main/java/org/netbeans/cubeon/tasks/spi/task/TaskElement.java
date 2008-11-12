@@ -19,6 +19,7 @@ package org.netbeans.cubeon.tasks.spi.task;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import java.awt.Image;
 import java.net.URL;
+import org.netbeans.cubeon.tasks.spi.Notifier;
 import org.openide.util.Lookup;
 
 /**
@@ -85,4 +86,6 @@ public interface TaskElement {
      *
      */
     void synchronize();
+
+    Notifier<TaskElementChangeAdapter> getNotifier();
 }

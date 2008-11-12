@@ -17,40 +17,29 @@
 package org.netbeans.cubeon.trac.tasks;
 
 import java.util.Collection;
-import org.netbeans.cubeon.tasks.spi.Extension;
+import org.netbeans.cubeon.tasks.spi.Notifier;
 import org.netbeans.cubeon.tasks.spi.task.TaskElementChangeAdapter;
 import org.openide.util.Lookup;
-import org.openide.util.lookup.AbstractLookup;
-import org.openide.util.lookup.InstanceContent;
+import org.openide.util.lookup.Lookups;
 
 /**
  *
  * @author Anuradha G
  */
-public class TracTaskElementExtension implements Extension {
+public class TracTaskElementExtension extends  Notifier<TaskElementChangeAdapter> {
 
     private TracTask tracTask;
-    private InstanceContent content;
-    private Lookup lookup;
-
+    
     public TracTaskElementExtension(TracTask tracTask) {
         this.tracTask = tracTask;
-        content = new InstanceContent();
-        lookup = new AbstractLookup(content);
+      
     }
 
-    public final void remove(Object inst) {
-        content.remove(inst);
-    }
-
-    public final void add(Object inst) {
-        content.add(inst);
-    }
-
+  
 
     //events---------------------------
     public void fireNameChenged() {
-        Collection<? extends TaskElementChangeAdapter> adapters = lookup.lookupAll(TaskElementChangeAdapter.class);
+        Collection<? extends TaskElementChangeAdapter> adapters = getAll();
         for (TaskElementChangeAdapter adapter : adapters) {
             adapter.nameChenged();
         }
@@ -58,28 +47,28 @@ public class TracTaskElementExtension implements Extension {
     }
 
     public void fireDescriptionChenged() {
-        Collection<? extends TaskElementChangeAdapter> adapters = lookup.lookupAll(TaskElementChangeAdapter.class);
+        Collection<? extends TaskElementChangeAdapter> adapters = getAll();
         for (TaskElementChangeAdapter adapter : adapters) {
             adapter.descriptionChenged();
         }
     }
 
     public void firePriorityChenged() {
-        Collection<? extends TaskElementChangeAdapter> adapters = lookup.lookupAll(TaskElementChangeAdapter.class);
+        Collection<? extends TaskElementChangeAdapter> adapters = getAll();
         for (TaskElementChangeAdapter adapter : adapters) {
             adapter.priorityChenged();
         }
     }
 
     public void fireStatusChenged() {
-        Collection<? extends TaskElementChangeAdapter> adapters = lookup.lookupAll(TaskElementChangeAdapter.class);
+        Collection<? extends TaskElementChangeAdapter> adapters = getAll();
         for (TaskElementChangeAdapter adapter : adapters) {
             adapter.statusChenged();
         }
     }
 
     public void fireTypeChenged() {
-        Collection<? extends TaskElementChangeAdapter> adapters = lookup.lookupAll(TaskElementChangeAdapter.class);
+        Collection<? extends TaskElementChangeAdapter> adapters = getAll();
         for (TaskElementChangeAdapter adapter : adapters) {
             adapter.typeChenged();
         }
@@ -87,7 +76,7 @@ public class TracTaskElementExtension implements Extension {
     }
 
     public void fireResolutionChenged() {
-        Collection<? extends TaskElementChangeAdapter> adapters = lookup.lookupAll(TaskElementChangeAdapter.class);
+        Collection<? extends TaskElementChangeAdapter> adapters = getAll();
         for (TaskElementChangeAdapter adapter : adapters) {
             adapter.resolutionChenged();
         }
@@ -95,7 +84,7 @@ public class TracTaskElementExtension implements Extension {
     }
 
     public void fireStateChenged() {
-        Collection<? extends TaskElementChangeAdapter> adapters = lookup.lookupAll(TaskElementChangeAdapter.class);
+        Collection<? extends TaskElementChangeAdapter> adapters = getAll();
         for (TaskElementChangeAdapter adapter : adapters) {
             adapter.stateChange();
         }
@@ -103,6 +92,6 @@ public class TracTaskElementExtension implements Extension {
     }
 
     public Lookup getLookup() {
-        return lookup;
+        return Lookups.singleton(this);
     }
 }

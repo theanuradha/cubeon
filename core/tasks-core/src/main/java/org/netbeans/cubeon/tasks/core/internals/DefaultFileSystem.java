@@ -25,7 +25,7 @@ import org.netbeans.cubeon.tasks.core.api.TaskRepositoryHandler;
 import org.netbeans.cubeon.tasks.core.api.TasksFileSystem;
 import org.netbeans.cubeon.tasks.core.spi.TaskNodeView;
 import org.netbeans.cubeon.tasks.core.views.CategorizedTaskNodeView;
-import org.netbeans.cubeon.tasks.spi.Extension;
+import org.netbeans.cubeon.tasks.spi.Notifier;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.repository.RepositoryEventAdapter;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
@@ -44,7 +44,7 @@ public class DefaultFileSystem implements TasksFileSystem {
 
     static final String TASKS_XML_PATH = "cubeon/tasks"; //NOI18N
     private final PersistenceHandler handler;
-
+    private    RepositoryEventAdapter adapter;
     public DefaultFileSystem() {
 
         FileObject fileObject = null;
@@ -63,7 +63,7 @@ public class DefaultFileSystem implements TasksFileSystem {
 
         final CubeonContext context = Lookup.getDefault().lookup(CubeonContext.class);
 
-        final RepositoryEventAdapter adapter = new RepositoryEventAdapter() {
+       adapter= new RepositoryEventAdapter() {
 
             @Override
             public void taskElementIdChenged(String repoId,String oldId, String newId) {
@@ -85,7 +85,7 @@ public class DefaultFileSystem implements TasksFileSystem {
         };
        final TaskRepositoryHandler repositoryHandler = context.getLookup().lookup(TaskRepositoryHandler.class);
         for (TaskRepository repository : repositoryHandler.getTaskRepositorys()) {
-           final Extension extension = repository.getLookup().lookup(Extension.class);
+           final Notifier<RepositoryEventAdapter> extension = repository.getNotifier();
             extension.add(adapter);
         }
     }

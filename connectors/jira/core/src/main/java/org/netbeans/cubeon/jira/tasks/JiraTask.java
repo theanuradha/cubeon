@@ -29,8 +29,10 @@ import org.netbeans.cubeon.jira.repository.attributes.JiraComment;
 import org.netbeans.cubeon.jira.repository.ui.JiraActionsProvider;
 import org.netbeans.cubeon.jira.utils.JiraExceptionHandler;
 import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
+import org.netbeans.cubeon.tasks.spi.Notifier;
 import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
+import org.netbeans.cubeon.tasks.spi.task.TaskElementChangeAdapter;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.task.TaskResolution;
 import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
@@ -247,5 +249,9 @@ public class JiraTask extends JiraRemoteTask implements TaskElement {
         } catch (JiraException ex) {
             JiraExceptionHandler.notify(ex);
         }
+    }
+
+    public Notifier<TaskElementChangeAdapter> getNotifier() {
+        return extension;
     }
 }
