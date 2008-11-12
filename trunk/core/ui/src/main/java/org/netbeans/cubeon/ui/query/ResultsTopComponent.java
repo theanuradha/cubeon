@@ -155,7 +155,7 @@ final class ResultsTopComponent extends TopComponent implements ExplorerManager.
         if (taskQuery != null) {
 
             if (this.taskQuery != null) {
-                this.taskQuery.getExtension().remove(adapter);
+                this.taskQuery.getNotifier().remove(adapter);
                 adapter = null;
             }
             final Children.Array array = new Children.Array();
@@ -209,7 +209,7 @@ final class ResultsTopComponent extends TopComponent implements ExplorerManager.
                     });
                 }
             };
-            taskQuery.getExtension().add(adapter);
+            taskQuery.getNotifier().add(adapter);
 
             queryNode.updateNodeTag("Synchronizing...");
             loadQueries(array, queryNode);

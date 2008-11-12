@@ -17,40 +17,27 @@
 package org.netbeans.cubeon.jira.tasks;
 
 import java.util.Collection;
-import org.netbeans.cubeon.tasks.spi.Extension;
+import org.netbeans.cubeon.tasks.spi.Notifier;
 import org.netbeans.cubeon.tasks.spi.task.TaskElementChangeAdapter;
 import org.openide.util.Lookup;
-import org.openide.util.lookup.AbstractLookup;
-import org.openide.util.lookup.InstanceContent;
+import org.openide.util.lookup.Lookups;
 
 /**
  *
  * @author Anuradha G
  */
-public class JiraTaskElementExtension implements Extension {
+public class JiraTaskElementExtension extends Notifier<TaskElementChangeAdapter> {
 
     private JiraTask jiraTask;
-    private InstanceContent content;
-    private Lookup lookup;
 
     public JiraTaskElementExtension(JiraTask jiraTask) {
         this.jiraTask = jiraTask;
-        content = new InstanceContent();
-        lookup = new AbstractLookup(content);
-    }
 
-    public final void remove(Object inst) {
-        content.remove(inst);
     }
-
-    public final void add(Object inst) {
-        content.add(inst);
-    }
-
 
     //events---------------------------
     public void fireNameChenged() {
-        Collection<? extends TaskElementChangeAdapter> adapters = lookup.lookupAll(TaskElementChangeAdapter.class);
+        Collection<? extends TaskElementChangeAdapter> adapters = getAll();
         for (TaskElementChangeAdapter adapter : adapters) {
             adapter.nameChenged();
         }
@@ -58,28 +45,28 @@ public class JiraTaskElementExtension implements Extension {
     }
 
     public void fireDescriptionChenged() {
-        Collection<? extends TaskElementChangeAdapter> adapters = lookup.lookupAll(TaskElementChangeAdapter.class);
+        Collection<? extends TaskElementChangeAdapter> adapters = getAll();
         for (TaskElementChangeAdapter adapter : adapters) {
             adapter.descriptionChenged();
         }
     }
 
     public void firePriorityChenged() {
-        Collection<? extends TaskElementChangeAdapter> adapters = lookup.lookupAll(TaskElementChangeAdapter.class);
+        Collection<? extends TaskElementChangeAdapter> adapters = getAll();
         for (TaskElementChangeAdapter adapter : adapters) {
             adapter.priorityChenged();
         }
     }
 
     public void fireStatusChenged() {
-        Collection<? extends TaskElementChangeAdapter> adapters = lookup.lookupAll(TaskElementChangeAdapter.class);
+        Collection<? extends TaskElementChangeAdapter> adapters = getAll();
         for (TaskElementChangeAdapter adapter : adapters) {
             adapter.statusChenged();
         }
     }
 
     public void fireTypeChenged() {
-        Collection<? extends TaskElementChangeAdapter> adapters = lookup.lookupAll(TaskElementChangeAdapter.class);
+        Collection<? extends TaskElementChangeAdapter> adapters = getAll();
         for (TaskElementChangeAdapter adapter : adapters) {
             adapter.typeChenged();
         }
@@ -87,7 +74,7 @@ public class JiraTaskElementExtension implements Extension {
     }
 
     public void fireResolutionChenged() {
-        Collection<? extends TaskElementChangeAdapter> adapters = lookup.lookupAll(TaskElementChangeAdapter.class);
+        Collection<? extends TaskElementChangeAdapter> adapters = getAll();
         for (TaskElementChangeAdapter adapter : adapters) {
             adapter.resolutionChenged();
         }
@@ -95,7 +82,7 @@ public class JiraTaskElementExtension implements Extension {
     }
 
     public void fireStateChenged() {
-        Collection<? extends TaskElementChangeAdapter> adapters = lookup.lookupAll(TaskElementChangeAdapter.class);
+        Collection<? extends TaskElementChangeAdapter> adapters = getAll();
         for (TaskElementChangeAdapter adapter : adapters) {
             adapter.stateChange();
         }
@@ -103,6 +90,6 @@ public class JiraTaskElementExtension implements Extension {
     }
 
     public Lookup getLookup() {
-        return lookup;
+        return Lookups.singleton(this);
     }
 }

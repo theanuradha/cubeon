@@ -18,8 +18,9 @@ package org.netbeans.cubeon.ui.query;
 
 import java.util.List;
 import org.netbeans.cubeon.tasks.core.api.TagNode;
-import org.netbeans.cubeon.tasks.spi.Extension;
+import org.netbeans.cubeon.tasks.spi.Notifier;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
+import org.netbeans.cubeon.tasks.spi.query.TaskQueryEventAdapter;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuerySupportProvider;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
@@ -105,8 +106,8 @@ public class TaskQueryChildern extends Children.Keys<TaskQuery> {
             return null;
         }
 
-        public Extension getExtension() {
-            return null;
+        public Notifier<TaskQueryEventAdapter> getNotifier() {
+            return new Notifier<TaskQueryEventAdapter>();
         }
     }
 }

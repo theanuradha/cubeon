@@ -17,43 +17,34 @@
 package org.netbeans.cubeon.local.query;
 
 import java.util.Collection;
-import org.netbeans.cubeon.tasks.spi.Extension;
+import org.netbeans.cubeon.tasks.spi.Notifier;
 import org.netbeans.cubeon.tasks.spi.query.TaskQueryEventAdapter;
 import org.openide.util.Lookup;
-import org.openide.util.lookup.AbstractLookup;
-import org.openide.util.lookup.InstanceContent;
+import org.openide.util.lookup.Lookups;
 
 /**
  *
  * @author Anuradha
  */
-public class QueryExtension implements Extension {
+public class QueryExtension extends  Notifier<TaskQueryEventAdapter> {
 
-    private InstanceContent content;
-    private Lookup lookup;
+   
     private LocalQuery query;
 
     public QueryExtension(LocalQuery query) {
         this.query = query;
-        content = new InstanceContent();
-        lookup = new AbstractLookup(content);
+       
     }
 
-    public final void remove(Object inst) {
-        content.remove(inst);
-    }
-
-    public final void add(Object inst) {
-        content.add(inst);
-    }
+   
 
     public Lookup getLookup() {
-        return lookup;
+        return Lookups.singleton(this);
     }
 
     //events---------------------------
     void fireAttributesUpdated() {
-        Collection<? extends TaskQueryEventAdapter> adapters = lookup.lookupAll(TaskQueryEventAdapter.class);
+        Collection<? extends TaskQueryEventAdapter> adapters = getAll();
         for (TaskQueryEventAdapter adapter : adapters) {
             adapter.atributesupdated();
         }
@@ -61,14 +52,14 @@ public class QueryExtension implements Extension {
     }
 
     void fireSynchronized() {
-        Collection<? extends TaskQueryEventAdapter> adapters = lookup.lookupAll(TaskQueryEventAdapter.class);
+        Collection<? extends TaskQueryEventAdapter> adapters = getAll();
         for (TaskQueryEventAdapter adapter : adapters) {
             adapter.querySynchronized();
         }
 
     }
     void fireRemoved() {
-        Collection<? extends TaskQueryEventAdapter> adapters = lookup.lookupAll(TaskQueryEventAdapter.class);
+        Collection<? extends TaskQueryEventAdapter> adapters = getAll();
         for (TaskQueryEventAdapter adapter : adapters) {
             adapter.removed();
         }

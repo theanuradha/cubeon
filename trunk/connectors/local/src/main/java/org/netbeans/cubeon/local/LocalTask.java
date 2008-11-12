@@ -26,8 +26,10 @@ import org.netbeans.cubeon.analyzer.spi.StackTraceProvider;
 import org.netbeans.cubeon.local.internals.TaskEditorProviderImpl;
 import org.netbeans.cubeon.local.repository.*;
 import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
+import org.netbeans.cubeon.tasks.spi.Notifier;
 import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
+import org.netbeans.cubeon.tasks.spi.task.TaskElementChangeAdapter;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
@@ -196,5 +198,9 @@ public class LocalTask implements TaskElement {
         TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
         factory.save(this);
         factory.refresh(this);
+    }
+
+    public Notifier<TaskElementChangeAdapter> getNotifier() {
+        return extension;
     }
 }

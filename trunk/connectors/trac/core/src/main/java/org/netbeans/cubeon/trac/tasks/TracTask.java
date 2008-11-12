@@ -23,8 +23,10 @@ import java.util.ArrayList;
 import java.util.List;
 import org.netbeans.cubeon.analyzer.spi.StackTraceProvider;
 import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
+import org.netbeans.cubeon.tasks.spi.Notifier;
 import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
+import org.netbeans.cubeon.tasks.spi.task.TaskElementChangeAdapter;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.task.TaskResolution;
 import org.netbeans.cubeon.tasks.spi.task.TaskSeverity;
@@ -324,5 +326,9 @@ public class TracTask extends Ticket implements TaskElement {
         hash = 29 * hash + (this.taskRepository != null ? this.taskRepository.hashCode() : 0);
         hash = 29 * hash + (this.id != null ? this.id.hashCode() : 0);
         return hash;
+    }
+
+    public Notifier<TaskElementChangeAdapter> getNotifier() {
+       return extension;
     }
 }

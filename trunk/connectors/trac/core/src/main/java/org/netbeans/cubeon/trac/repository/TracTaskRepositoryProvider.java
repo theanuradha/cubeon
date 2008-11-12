@@ -92,7 +92,7 @@ public class TracTaskRepositoryProvider implements TaskRepositoryType {
             if (!taskRepositorys.contains(tracTaskRepository)) {
                 taskRepositorys.add(tracTaskRepository);
             }
-            TracRepositoryExtension extension = tracTaskRepository.getExtension();
+            TracRepositoryExtension extension = tracTaskRepository.getNotifier();
             extension.fireNameChenged();
             extension.fireDescriptionChenged();
             RequestProcessor.getDefault().post(new Runnable() {
@@ -127,7 +127,7 @@ public class TracTaskRepositoryProvider implements TaskRepositoryType {
             for (String id : taskIds) {
                 TracTask task = tracTaskRepository.getTaskElementById(id);
                 if (task != null) {
-                    tracTaskRepository.getExtension().fireTaskRemoved(task);
+                    tracTaskRepository.getNotifier().fireTaskRemoved(task);
                     factory.closeTask(task);
                 }
 

@@ -29,7 +29,7 @@ import org.netbeans.cubeon.tasks.core.api.TaskFolder;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskBadgeProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
-import org.netbeans.cubeon.tasks.spi.Extension;
+import org.netbeans.cubeon.tasks.spi.Notifier;
 import org.netbeans.cubeon.tasks.spi.repository.TaskPriorityProvider;
 import org.netbeans.cubeon.tasks.spi.repository.TaskStatusProvider;
 import org.netbeans.cubeon.tasks.spi.repository.TaskTypeProvider;
@@ -64,7 +64,7 @@ public class TaskElementNode extends AbstractNode {
     private static final String TAG = "<font color=\"#808080\"> <s> ";//NOI18N
     private static final Logger LOG = Logger.getLogger(TaskElementNode.class.getName());
     private final TaskElement element;
-    private final Extension extension;
+    private final Notifier<TaskElementChangeAdapter> extension;
     private SaveCookie cookie;
     private InstanceContent content;
     private DataObject dataObject;
@@ -111,7 +111,7 @@ public class TaskElementNode extends AbstractNode {
         this.element = element;
         setDisplayName(element.getName());
         setShortDescription(extractTaskDescription(element));
-        extension = element.getLookup().lookup(Extension.class);
+        extension = element.getNotifier();
 
         this.cookie = new SaveCookie() {
 
@@ -320,13 +320,6 @@ public class TaskElementNode extends AbstractNode {
         return dataObject;
     }
 
-    @Override
-    protected void finalize() throws Throwable {
-        context.removeContextListener(contextListener);
-        extension.remove(changeAdapter);
-        super.finalize();
-        LOG.fine(new StringBuffer("Finalize Node :").append(element.getDisplayName()).toString());//NOI18N
-    }
 }
 
 

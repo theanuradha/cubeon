@@ -277,7 +277,7 @@ public class JiraTaskRepository implements TaskRepository {
         return provider;
     }
 
-    public JiraRepositoryExtension getExtension() {
+    public JiraRepositoryExtension getNotifier() {
         return extension;
     }
 

@@ -212,14 +212,14 @@ class TaskFolderImpl implements TaskFolder, TaskFolderRefreshable {
 
     private void registerEventAdapter() {
         if (taskQuery != null) {
-            taskQuery.getExtension().add(eventAdapter);
+            taskQuery.getNotifier().add(eventAdapter);
         }
     }
 
     private void deregisterEventAdapter() {
         if (taskQuery != null) {
 
-            taskQuery.getExtension().remove(eventAdapter);
+            taskQuery.getNotifier().remove(eventAdapter);
 
         }
     }

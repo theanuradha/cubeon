@@ -17,44 +17,34 @@
 package org.netbeans.cubeon.local.repository;
 
 import java.util.Collection;
-import org.netbeans.cubeon.tasks.spi.Extension;
+import org.netbeans.cubeon.tasks.spi.Notifier;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.repository.RepositoryEventAdapter;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.util.Lookup;
-import org.openide.util.lookup.AbstractLookup;
-import org.openide.util.lookup.InstanceContent;
+import org.openide.util.lookup.Lookups;
 
 /**
  *
  * @author Anuradha
  */
-public class LocalRepositoryExtension implements Extension {
+public class LocalRepositoryExtension extends  Notifier<RepositoryEventAdapter> {
 
     private LocalTaskRepository repository;
-    private InstanceContent content;
-    private Lookup lookup;
+   
 
     public LocalRepositoryExtension(LocalTaskRepository repository) {
         this.repository = repository;
-        content = new InstanceContent();
-        lookup = new AbstractLookup(content);
+     
     }
 
-    public final void remove(Object inst) {
-        content.remove(inst);
-    }
-
-    public final void add(Object inst) {
-        content.add(inst);
-    }
-
+   
     public Lookup getLookup() {
-        return lookup;
+        return Lookups.singleton(this);
     }
     //events---------------------------
     public void fireNameChenged() {
-        Collection<? extends RepositoryEventAdapter> adapters = lookup.lookupAll(RepositoryEventAdapter.class);
+        Collection<? extends RepositoryEventAdapter> adapters = getAll();
         for (RepositoryEventAdapter adapter : adapters) {
             adapter.nameChenged();
         }
@@ -62,14 +52,14 @@ public class LocalRepositoryExtension implements Extension {
     }
 
     public void fireDescriptionChenged() {
-        Collection<? extends RepositoryEventAdapter> adapters = lookup.lookupAll(RepositoryEventAdapter.class);
+        Collection<? extends RepositoryEventAdapter> adapters = getAll();
         for (RepositoryEventAdapter adapter : adapters) {
             adapter.descriptionChenged();
         }
     }
 
     public void fireQueryAdded(TaskQuery query) {
-        Collection<? extends RepositoryEventAdapter> adapters = lookup.lookupAll(RepositoryEventAdapter.class);
+        Collection<? extends RepositoryEventAdapter> adapters = getAll();
         for (RepositoryEventAdapter adapter : adapters) {
             adapter.queryAdded(query);
         }
@@ -77,13 +67,13 @@ public class LocalRepositoryExtension implements Extension {
 
 
     public void fireQueryRemoved(TaskQuery query) {
-        Collection<? extends RepositoryEventAdapter> adapters = lookup.lookupAll(RepositoryEventAdapter.class);
+        Collection<? extends RepositoryEventAdapter> adapters = getAll();
         for (RepositoryEventAdapter adapter : adapters) {
             adapter.queryRemoved(query);
         }
     }
      public void fireTaskRemoved(TaskElement  element) {
-        Collection<? extends RepositoryEventAdapter> adapters = lookup.lookupAll(RepositoryEventAdapter.class);
+        Collection<? extends RepositoryEventAdapter> adapters = getAll();
         for (RepositoryEventAdapter adapter : adapters) {
             adapter.taskElementRemoved(element);
         }

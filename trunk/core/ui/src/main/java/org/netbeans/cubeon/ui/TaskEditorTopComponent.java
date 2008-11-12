@@ -23,7 +23,7 @@ import org.netbeans.cubeon.context.api.TaskContextManager;
 import org.netbeans.cubeon.tasks.core.api.CubeonContext;
 import org.netbeans.cubeon.tasks.core.api.CubeonContextListener;
 import org.netbeans.cubeon.tasks.core.api.TasksFileSystem;
-import org.netbeans.cubeon.tasks.spi.Extension;
+import org.netbeans.cubeon.tasks.spi.Notifier;
 import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider.EditorAttributeHandler;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
@@ -48,10 +48,11 @@ import org.openide.windows.TopComponent;
 final class TaskEditorTopComponent extends TopComponent implements SaveCookie, ChangeListener, CubeonContextListener {
 
     private static final String PREFERRED_ID = "TaskEditorTopComponent";
+    private static final long serialVersionUID = 1L;
     private final TaskElement element;
     private final TaskElementNode editorNode;
     private final EditorAttributeHandler eah;
-    private final Extension extension;
+    private final Notifier<TaskElementChangeAdapter> extension;
     private final TaskElementChangeAdapter changeAdapter;
     private final TaskEditorFactoryImpl factoryImpl;
     private final CubeonContext context;
@@ -72,7 +73,7 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
         eah = editorProvider.createEditorAttributeHandler();
 
         _updateNameInEDT(eah.getName());
-        extension = element.getLookup().lookup(Extension.class);
+        extension = element.getNotifier();
         setIcon(element.getImage());
         TaskRepository taskRepository = element.getTaskRepository();
 

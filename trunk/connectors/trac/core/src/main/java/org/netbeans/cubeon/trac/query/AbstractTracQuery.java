@@ -17,8 +17,9 @@
 package org.netbeans.cubeon.trac.query;
 
 
-import org.netbeans.cubeon.tasks.spi.Extension;
+import org.netbeans.cubeon.tasks.spi.Notifier;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
+import org.netbeans.cubeon.tasks.spi.query.TaskQueryEventAdapter;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.trac.repository.TracTaskRepository;
 
@@ -55,7 +56,7 @@ public abstract class AbstractTracQuery implements TaskQuery {
         return repository;
     }
 
-    public Extension getExtension() {
+    public Notifier<TaskQueryEventAdapter> getNotifier() {
         return extension;
     }
 

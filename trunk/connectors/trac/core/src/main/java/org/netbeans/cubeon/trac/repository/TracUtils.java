@@ -61,7 +61,7 @@ public class TracUtils {
             repository.persist(task);
             repository.getQuerySupport().getOutgoingQuery().removeTaskId(old);
             //notify aout task id changed
-            repository.getExtension().fireIdChanged(old, task.getId());
+            repository.getNotifier().fireIdChanged(old, task.getId());
         }
     }
 
