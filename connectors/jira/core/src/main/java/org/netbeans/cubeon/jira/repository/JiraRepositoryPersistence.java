@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import org.netbeans.cubeon.tasks.core.api.RepositoryUtils;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
@@ -44,6 +45,8 @@ class JiraRepositoryPersistence {
     private static final String TAG_REPOSITORY = "repository";//NOI18N
     private static final String TAG_ID = "id";//NOI18N
     private static final String TAG_USERID = "user";//NOI18N
+    private static final String TAG_VERSION = "version";//NOI18N
+    private static final String VERSION = "1.0";//NOI18N
     private static final String TAG_URL = "url";//NOI18N
     private static final String TAG_PROJECT = "project";//NOI18N
     private static final String TAG_PASSWORD_HASH = "password";//NOI18N
@@ -88,6 +91,7 @@ class JiraRepositoryPersistence {
         }
 
         repositoryElement.setAttribute(TAG_ID, repository.getId());
+        repositoryElement.setAttribute(TAG_VERSION, VERSION);
         repositoryElement.setAttribute(TAG_NAME, repository.getName());
         repositoryElement.setAttribute(TAG_DESCRIPTION, repository.getDescription());
         repositoryElement.setAttribute(TAG_USERID, repository.getUserName());
@@ -97,7 +101,8 @@ class JiraRepositoryPersistence {
         } else {
             repositoryElement.removeAttribute(TAG_PROJECT);
         }
-        repositoryElement.setAttribute(TAG_PASSWORD_HASH, repository.getPassword());//FIXME add hash
+        repositoryElement.setAttribute(TAG_PASSWORD_HASH, RepositoryUtils.encodePassword(repository.getUserName(),
+                repository.getPassword()));
 
         putConfigurationFragment(repositorysElement);
     }
@@ -136,6 +141,7 @@ class JiraRepositoryPersistence {
 
     List<JiraTaskRepository> getJiraTaskRepositorys() {
         List<JiraTaskRepository> repositorys = new ArrayList<JiraTaskRepository>();
+        List<JiraTaskRepository> markForUpdate = new ArrayList<JiraTaskRepository>();
         Element repositorysElement = getConfigurationFragment(TAG_REPOSITORIES);
 
         if (repositorysElement != null) {
@@ -148,15 +154,25 @@ class JiraRepositoryPersistence {
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element element = (Element) node;
                     String id = element.getAttribute(TAG_ID);
+                    String version = element.getAttribute(TAG_VERSION);
                     String name = element.getAttribute(TAG_NAME);
                     String description = element.getAttribute(TAG_DESCRIPTION);
                     String url = element.getAttribute(TAG_URL);
                     String user = element.getAttribute(TAG_USERID);
                     String project = element.getAttribute(TAG_PROJECT);
 
-                    String password = element.getAttribute(TAG_PASSWORD_HASH);//FIXME
-                    //FIXME
-                    JiraTaskRepository jiraTaskRepository = new JiraTaskRepository(provider, id, name, description);
+                    String password = element.getAttribute(TAG_PASSWORD_HASH);
+                    JiraTaskRepository jiraTaskRepository;
+                    //backwade compatibility for versions before <1.0
+                    if (VERSION.equals(version)) {
+                        password = RepositoryUtils.decodePassword(user, password);
+                        jiraTaskRepository = new JiraTaskRepository(provider, id, name, description);
+                    } else {
+                        jiraTaskRepository = new JiraTaskRepository(provider, id, name, description);
+                        markForUpdate.add(jiraTaskRepository);
+                    }
+
+
                     jiraTaskRepository.setUserName(user);
                     jiraTaskRepository.setPassword(password);
                     jiraTaskRepository.setURL(url);
@@ -170,8 +186,10 @@ class JiraRepositoryPersistence {
                 }
             }
         }
-
-
+        //merge old versions before <1.0 with verstion tag and password encoding 
+        for (JiraTaskRepository jiraTaskRepository : markForUpdate) {
+            addRepository(jiraTaskRepository);
+        }
         return repositorys;
 
 

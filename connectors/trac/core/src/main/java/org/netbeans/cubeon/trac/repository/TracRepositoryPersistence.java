@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import org.netbeans.cubeon.tasks.core.api.RepositoryUtils;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
@@ -44,6 +45,8 @@ class TracRepositoryPersistence {
     private static final String TAG_REPOSITORY = "repository";//NOI18N
     private static final String TAG_ID = "id";//NOI18N
     private static final String TAG_USERID = "user";//NOI18N
+    private static final String TAG_VERSION = "version";//NOI18N
+    private static final String VERSION_ID = "1.0";//NOI18N
     private static final String TAG_URL = "url";//NOI18N
     private static final String TAG_PROJECT = "project";//NOI18N
     private static final String TAG_PASSWORD_HASH = "password";//NOI18N
@@ -88,12 +91,15 @@ class TracRepositoryPersistence {
         }
 
         repositoryElement.setAttribute(TAG_ID, repository.getId());
+        repositoryElement.setAttribute(TAG_VERSION, VERSION_ID);
         repositoryElement.setAttribute(TAG_NAME, repository.getName());
         repositoryElement.setAttribute(TAG_DESCRIPTION, repository.getDescription());
         repositoryElement.setAttribute(TAG_USERID, repository.getUserName());
         repositoryElement.setAttribute(TAG_URL, repository.getURL());
-       
-        repositoryElement.setAttribute(TAG_PASSWORD_HASH, repository.getPassword());//FIXME add hash
+
+        repositoryElement.setAttribute(TAG_PASSWORD_HASH,
+                RepositoryUtils.encodePassword(repository.getUserName(),
+                repository.getPassword()));
 
         putConfigurationFragment(repositorysElement);
     }
@@ -132,6 +138,7 @@ class TracRepositoryPersistence {
 
     List<TracTaskRepository> getTracTaskRepositorys() {
         List<TracTaskRepository> repositorys = new ArrayList<TracTaskRepository>();
+       
         Element repositorysElement = getConfigurationFragment(TAG_REPOSITORIES);
 
         if (repositorysElement != null) {
@@ -144,19 +151,22 @@ class TracRepositoryPersistence {
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element element = (Element) node;
                     String id = element.getAttribute(TAG_ID);
+                    String version = element.getAttribute(TAG_VERSION);
                     String name = element.getAttribute(TAG_NAME);
                     String description = element.getAttribute(TAG_DESCRIPTION);
                     String url = element.getAttribute(TAG_URL);
                     String user = element.getAttribute(TAG_USERID);
-                    String project = element.getAttribute(TAG_PROJECT);
 
-                    String password = element.getAttribute(TAG_PASSWORD_HASH);//FIXME
-                    //FIXME
-                    TracTaskRepository tracTaskRepository = new TracTaskRepository(provider, id, name, description);
+                    TracTaskRepository tracTaskRepository;
+                    String password = element.getAttribute(TAG_PASSWORD_HASH);
+                    //decode passwade using RepositoryUtils
+                    password = RepositoryUtils.decodePassword(user, password);
+
+                    tracTaskRepository = new TracTaskRepository(provider, id, name, description);
                     tracTaskRepository.setUserName(user);
                     tracTaskRepository.setPassword(password);
                     tracTaskRepository.setURL(url);
-                    
+
                     tracTaskRepository.loadAttributes();
                     repositorys.add(tracTaskRepository);
                 }
