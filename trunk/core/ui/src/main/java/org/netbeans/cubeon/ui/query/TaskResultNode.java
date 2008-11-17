@@ -136,6 +136,6 @@ public class TaskResultNode extends AbstractNode {
 
     @Override
     public Transferable drag() throws IOException {
-       return  NodeTransfer.transferable(this, NodeTransfer.COPY);
+       return  NodeTransfer.transferable(this, NodeTransfer.DND_COPY);
     }
 }

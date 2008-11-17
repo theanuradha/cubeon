@@ -18,6 +18,7 @@ package org.netbeans.cubeon.tasks.core.internals;
 
 import java.awt.Image;
 import java.awt.datatransfer.Transferable;
+import java.awt.dnd.DnDConstants;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -116,14 +117,16 @@ public class TaskFolderNode extends AbstractNode {
     @Override
     public PasteType getDropType(final Transferable t, final int action, int index) {
         final Node[] ns = NodeTransfer.nodes(t,
-                NodeTransfer.DND_COPY_OR_MOVE);
+                DnDConstants.ACTION_COPY_OR_MOVE+NodeTransfer.DND_MOVE );
         TaskElement element = null;
         boolean support = false;
-        for (Node dropNode : ns) {
-            element = dropNode.getLookup().lookup(TaskElement.class);
-            if (element != null && !folder.contains(element)) {
-                support = true;
-                break;
+        if (ns != null) {
+            for (Node dropNode : ns) {
+                element = dropNode.getLookup().lookup(TaskElement.class);
+                if (element != null && !folder.contains(element)) {
+                    support = true;
+                    break;
+                }
             }
         }
         if (support) {
@@ -138,7 +141,7 @@ public class TaskFolderNode extends AbstractNode {
                         for (Node dropNode : ns) {
                             TaskElement element = dropNode.getLookup().lookup(TaskElement.class);
                             if (element != null && !folder.contains(element)) {
-                                if ((action & NodeTransfer.MOVE) != 0) {
+                                if ((action & NodeTransfer.DND_MOVE) != 0) {
                                     TaskFolderImpl oldFolderImpl =
                                             dropNode.getParentNode().getLookup().lookup(TaskFolderImpl.class);
                                     if (oldFolderImpl != null) {
