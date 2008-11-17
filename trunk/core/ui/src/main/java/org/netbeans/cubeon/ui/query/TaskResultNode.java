@@ -17,6 +17,8 @@
 package org.netbeans.cubeon.ui.query;
 
 import java.awt.Image;
+import java.awt.datatransfer.Transferable;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.Action;
@@ -34,6 +36,7 @@ import org.netbeans.cubeon.ui.taskelemet.OpenInBrowserAction;
 import org.netbeans.cubeon.ui.taskelemet.SynchronizeTaskAction;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
+import org.openide.nodes.NodeTransfer;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -129,5 +132,10 @@ public class TaskResultNode extends AbstractNode {
         }
         buffer.append("</html>");
         return buffer.toString();
+    }
+
+    @Override
+    public Transferable drag() throws IOException {
+       return  NodeTransfer.transferable(this, NodeTransfer.COPY);
     }
 }

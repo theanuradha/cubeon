@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.Action;
 import org.netbeans.cubeon.tasks.spi.Notifier;
+import org.netbeans.cubeon.tasks.spi.Notifier.NotifierReference;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuerySupportProvider;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
@@ -42,7 +43,7 @@ public class TaskRepositoryNode extends AbstractNode {
 
     private TaskRepository repository;
     private final Notifier<RepositoryEventAdapter> extension;
-    private RepositoryEventAdapter eventAdapter;
+    private NotifierReference<RepositoryEventAdapter> notifierReference;
 
     public static TaskRepositoryNode createTaskRepositoryNode(final TaskRepository repository, boolean withChildern) {
         final TaskRepositoryNode node;
@@ -50,7 +51,8 @@ public class TaskRepositoryNode extends AbstractNode {
         if (withChildern && repository.getLookup().lookup(TaskQuerySupportProvider.class) != null) {
             final TaskQueryChildern childern = new TaskQueryChildern(repository);
             node = new TaskRepositoryNode(childern, repository);
-            node.eventAdapter = new RepositoryEventAdapter() {
+
+            node.notifierReference = node.extension.add(new RepositoryEventAdapter() {
 
                 @Override
                 public void nameChenged() {
@@ -76,12 +78,12 @@ public class TaskRepositoryNode extends AbstractNode {
                 public void stateChanged(State state) {
                     node.setDisplayName(TaskRepositoryNode.getNameWithStateTag(repository));
                 }
-            };
-            node.extension.add(node.eventAdapter);
+            });
         } else {
             node = new TaskRepositoryNode(Children.LEAF, repository);
 
-            node.eventAdapter = new RepositoryEventAdapter() {
+
+            node.notifierReference = node.extension.add(new RepositoryEventAdapter() {
 
                 @Override
                 public void nameChenged() {
@@ -97,8 +99,7 @@ public class TaskRepositoryNode extends AbstractNode {
                 public void stateChanged(State state) {
                     node.setDisplayName(TaskRepositoryNode.getNameWithStateTag(repository));
                 }
-            };
-            node.extension.add(node.eventAdapter);
+            });
         }
         return node;
     }
@@ -183,6 +184,8 @@ public class TaskRepositoryNode extends AbstractNode {
     @Override
     public void destroy() throws IOException {
         super.destroy();
-        extension.remove(eventAdapter);
+        if (notifierReference != null) {
+            extension.remove(notifierReference);
+        }
     }
 }

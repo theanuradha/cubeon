@@ -17,23 +17,33 @@
 package org.netbeans.cubeon.tasks.core.internals;
 
 import java.awt.Image;
+import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import org.netbeans.cubeon.tasks.core.api.NodeUtils;
 import org.netbeans.cubeon.tasks.core.api.TaskFolder;
+import org.netbeans.cubeon.tasks.core.api.TaskNodeFactory;
+import org.netbeans.cubeon.tasks.core.api.TasksFileSystem;
 import org.netbeans.cubeon.tasks.core.spi.TaskFolderActionsProvider;
+import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
+import org.openide.nodes.Node;
+import org.openide.nodes.NodeTransfer;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 import org.openide.util.actions.Presenter;
 import org.openide.util.actions.Presenter.Popup;
+import org.openide.util.datatransfer.PasteType;
 import org.openide.util.lookup.Lookups;
 
 /**
@@ -43,6 +53,7 @@ import org.openide.util.lookup.Lookups;
 public class TaskFolderNode extends AbstractNode {
 
     private TaskFolder folder;
+    TaskNodeFactory factory = Lookup.getDefault().lookup(TaskNodeFactory.class);
 
     public TaskFolderNode(TaskFolder folder, Children children) {
         super(children, Lookups.fixed(folder));
@@ -102,7 +113,63 @@ public class TaskFolderNode extends AbstractNode {
         return actions.toArray(new Action[actions.size()]);
     }
 
+    @Override
+    public PasteType getDropType(final Transferable t, final int action, int index) {
+        final Node[] ns = NodeTransfer.nodes(t,
+                NodeTransfer.DND_COPY_OR_MOVE);
+        TaskElement element = null;
+        boolean support = false;
+        for (Node dropNode : ns) {
+            element = dropNode.getLookup().lookup(TaskElement.class);
+            if (element != null && !folder.contains(element)) {
+                support = true;
+                break;
+            }
+        }
+        if (support) {
+
+            if (element != null && !folder.contains(element)) {
+                return new PasteType() {
+
+                    public Transferable paste() throws IOException {
+                        TasksFileSystem fileSystem = Lookup.getDefault().lookup(TasksFileSystem.class);
+                        TaskFolderImpl folderImpl = folder.getLookup().lookup(TaskFolderImpl.class);
+                        Set<TaskFolderImpl> markToRefresh = new HashSet<TaskFolderImpl>();
+                        for (Node dropNode : ns) {
+                            TaskElement element = dropNode.getLookup().lookup(TaskElement.class);
+                            if (element != null && !folder.contains(element)) {
+                                if ((action & NodeTransfer.MOVE) != 0) {
+                                    TaskFolderImpl oldFolderImpl =
+                                            dropNode.getParentNode().getLookup().lookup(TaskFolderImpl.class);
+                                    if (oldFolderImpl != null) {
+                                        fileSystem.removeTaskElement(oldFolderImpl, element);
+                                        //add to refresh 
+                                        markToRefresh.add(oldFolderImpl);
+
+                                    }
+                                }
+                                if (folderImpl != null) {
+                                    fileSystem.addTaskElement(folderImpl, element);
+                                    //add to refresh
+                                    markToRefresh.add(folderImpl);
+                                }
+                            }
+                        }
+                        //refresh changed folders
+                        for (TaskFolderImpl taskFolderImpl : markToRefresh) {
+                            taskFolderImpl.refreshContent();
+                        }
+                        return null;
+                    }
+                };
+            }
+        }
+        return null;
+    }
+
     private class NewActions extends AbstractAction implements Presenter.Popup {
+
+        private static final long serialVersionUID = 7150861423568497818L;
 
         public NewActions() {
             putValue(NAME, NbBundle.getMessage(TaskFolderNode.class, "LBL_NEW"));

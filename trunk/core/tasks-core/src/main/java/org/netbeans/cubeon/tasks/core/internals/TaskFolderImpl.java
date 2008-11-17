@@ -23,6 +23,7 @@ import org.netbeans.cubeon.tasks.core.api.RefreshableChildren;
 import org.netbeans.cubeon.tasks.core.api.TaskFolder;
 import org.netbeans.cubeon.tasks.core.api.TaskFolderRefreshable;
 import org.netbeans.cubeon.tasks.core.api.TasksFileSystem;
+import org.netbeans.cubeon.tasks.spi.Notifier.NotifierReference;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.query.TaskQueryEventAdapter;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
@@ -45,7 +46,7 @@ class TaskFolderImpl implements TaskFolder, TaskFolderRefreshable {
     protected final List<TaskFolderImpl> taskFolders = new ArrayList<TaskFolderImpl>();
     protected final List<TaskElement> taskElements = new ArrayList<TaskElement>();
     private TaskQuery taskQuery;
-    private TaskQueryEventAdapter eventAdapter;
+    private NotifierReference<TaskQueryEventAdapter> notifierReference;
 
     protected TaskFolderImpl(TaskFolderImpl parent, String name,
             String description, boolean basic) {
@@ -60,32 +61,7 @@ class TaskFolderImpl implements TaskFolder, TaskFolderRefreshable {
             folderChildren = new TaskElementChilren(this);
             folderNode = new TaskFolderNode(this, folderChildren.getChildren());
         }
-        eventAdapter = new TaskQueryEventAdapter() {
 
-            @Override
-            public void querySynchronized() {
-                RequestProcessor.getDefault().post(new Runnable() {
-
-                    public void run() {
-                        assert taskQuery != null;
-                        List<TaskElement> taskElements = taskQuery.getTaskElements();
-                        for (TaskElement taskElement : taskElements) {
-                            if (!contains(taskElement)) {
-                                addTaskElement(taskElement);
-                            }
-                        }
-                        refreshNode();
-                    }
-                });
-            }
-
-            @Override
-            public void removed() {
-                TasksFileSystem fileSystem = Lookup.getDefault().lookup(TasksFileSystem.class);
-                //remove query
-                fileSystem.setTaskQuery(TaskFolderImpl.this, null);
-            }
-        };
 
         registerEventAdapter();
     }
@@ -196,9 +172,7 @@ class TaskFolderImpl implements TaskFolder, TaskFolderRefreshable {
         this.taskQuery = query;
 
         if (query != null) {
-
             registerEventAdapter();
-        } else {
         }
 
         if (folderNode instanceof TaskFolderNode) {
@@ -212,14 +186,39 @@ class TaskFolderImpl implements TaskFolder, TaskFolderRefreshable {
 
     private void registerEventAdapter() {
         if (taskQuery != null) {
-            taskQuery.getNotifier().add(eventAdapter);
+            notifierReference = taskQuery.getNotifier().add(new TaskQueryEventAdapter() {
+
+                @Override
+                public void querySynchronized() {
+                    RequestProcessor.getDefault().post(new Runnable() {
+
+                        public void run() {
+                            assert taskQuery != null;
+                            List<TaskElement> taskElements = taskQuery.getTaskElements();
+                            for (TaskElement taskElement : taskElements) {
+                                if (!contains(taskElement)) {
+                                    addTaskElement(taskElement);
+                                }
+                            }
+                            refreshNode();
+                        }
+                    });
+                }
+
+                @Override
+                public void removed() {
+                    TasksFileSystem fileSystem = Lookup.getDefault().lookup(TasksFileSystem.class);
+                    //remove query
+                    fileSystem.setTaskQuery(TaskFolderImpl.this, null);
+                }
+            });
         }
     }
 
     private void deregisterEventAdapter() {
-        if (taskQuery != null) {
+        if (taskQuery != null && notifierReference != null) {
 
-            taskQuery.getNotifier().remove(eventAdapter);
+            taskQuery.getNotifier().remove(notifierReference);
 
         }
     }

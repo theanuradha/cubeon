@@ -20,6 +20,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import org.netbeans.cubeon.jira.repository.JiraTaskRepository;
 import org.netbeans.cubeon.tasks.spi.Notifier;
+import org.netbeans.cubeon.tasks.spi.Notifier.NotifierReference;
 import org.netbeans.cubeon.tasks.spi.repository.RepositoryEventAdapter;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository.State;
@@ -31,18 +32,18 @@ import org.openide.util.RequestProcessor;
  * @author Anuradha
  */
 public class UpdateAttributesAction extends AbstractAction {
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = 1L;
     private final JiraTaskRepository repository;
     private final Notifier<RepositoryEventAdapter> extension;
-    private final RepositoryEventAdapter adapter;
+    private final NotifierReference<RepositoryEventAdapter> notifierReference;
 
     public UpdateAttributesAction(JiraTaskRepository repository) {
         this.repository = repository;
         putValue(NAME, NbBundle.getMessage(UpdateAttributesAction.class, "LBL_Update_Attributes"));
         setEnabled(repository.getState() == TaskRepository.State.ACTIVE);
         extension = repository.getNotifier();
-        extension.add(adapter = new RepositoryEventAdapter() {
+        notifierReference = extension.add(new RepositoryEventAdapter() {
 
             @Override
             public synchronized void stateChanged(State state) {
@@ -62,6 +63,4 @@ public class UpdateAttributesAction extends AbstractAction {
             }
         });
     }
-
-    
 }

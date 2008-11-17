@@ -28,15 +28,16 @@ import java.util.logging.Logger;
  */
 public class Notifier<T> {
 
-    private final WeakHashMap<T, T> weakHashMap = new WeakHashMap<T, T>();
+    private final WeakHashMap<NotifierReference<T>, T> weakHashMap =
+            new WeakHashMap<NotifierReference<T>, T>();
     private final static Logger Notifier = Logger.getLogger(Notifier.class.getName());
 
     /**
      * 
      * @param inst
      */
-    public final void remove(T inst) {
-        weakHashMap.remove(inst);
+    public final void remove(NotifierReference<T> reference) {
+        weakHashMap.remove(reference);
         Notifier.info("ON remove SIZE :" + weakHashMap.size());
     }
 
@@ -44,9 +45,11 @@ public class Notifier<T> {
      * 
      * @param inst
      */
-    public final void add(T inst) {
-        weakHashMap.put(inst, inst);
+    public final NotifierReference<T> add(T inst) {
+        NotifierReference<T> notifierReference=new NotifierReference<T>(inst);
+        weakHashMap.put(notifierReference, inst);
         Notifier.info("ON ADD SIZE :" + weakHashMap.size());
+        return notifierReference;
     }
 
     public final Collection<T> getAll() {
@@ -57,5 +60,18 @@ public class Notifier<T> {
             }
         }
         return ts;
+    }
+
+    public final static class NotifierReference<T> {
+
+        private T t;
+
+        public NotifierReference(T t) {
+            this.t = t;
+        }
+
+        public T getT() {
+            return t;
+        }
     }
 }
