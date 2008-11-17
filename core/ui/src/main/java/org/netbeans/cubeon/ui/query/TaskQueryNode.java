@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.Action;
+import org.netbeans.cubeon.tasks.spi.Notifier.NotifierReference;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.query.TaskQueryEventAdapter;
 import org.openide.nodes.AbstractNode;
@@ -35,22 +36,22 @@ public class TaskQueryNode extends AbstractNode {
 
     private TaskQuery query;
     private boolean canDelete = true;
-    private final TaskQueryEventAdapter adapter;
+    private NotifierReference<TaskQueryEventAdapter> notifierReference;
 
     public TaskQueryNode(final TaskQuery query) {
         super(Children.LEAF);
         this.query = query;
         setDisplayName(query.getName());
         setShortDescription(query.getDescription());
-        adapter = new TaskQueryEventAdapter() {
+
+        notifierReference = query.getNotifier().add(new TaskQueryEventAdapter() {
 
             @Override
             public void atributesupdated() {
                 setDisplayName(query.getName());
                 setShortDescription(query.getDescription());
             }
-        };
-        query.getNotifier().add(adapter);
+        });
     }
 
     public TaskQueryNode(Children children, final TaskQuery query, boolean canDelete) {
@@ -59,15 +60,14 @@ public class TaskQueryNode extends AbstractNode {
         this.canDelete = canDelete;
         setDisplayName(query.getName());
         setShortDescription(query.getDescription());
-        adapter = new TaskQueryEventAdapter() {
+        notifierReference = query.getNotifier().add(new TaskQueryEventAdapter() {
 
             @Override
             public void atributesupdated() {
                 setDisplayName(query.getName());
                 setShortDescription(query.getDescription());
             }
-        };
-        query.getNotifier().add(adapter);
+        });
     }
 
     @Override
@@ -104,6 +104,8 @@ public class TaskQueryNode extends AbstractNode {
 
     @Override
     public void destroy() throws IOException {
-        query.getNotifier().remove(adapter);
+        if (notifierReference != null) {
+            query.getNotifier().remove(notifierReference);
+        }
     }
 }

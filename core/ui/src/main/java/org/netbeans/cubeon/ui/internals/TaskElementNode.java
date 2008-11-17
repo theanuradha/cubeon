@@ -17,6 +17,7 @@
 package org.netbeans.cubeon.ui.internals;
 
 import java.awt.Image;
+import java.awt.datatransfer.Transferable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,6 +31,7 @@ import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskBadgeProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.Notifier;
+import org.netbeans.cubeon.tasks.spi.Notifier.NotifierReference;
 import org.netbeans.cubeon.tasks.spi.repository.TaskPriorityProvider;
 import org.netbeans.cubeon.tasks.spi.repository.TaskStatusProvider;
 import org.netbeans.cubeon.tasks.spi.repository.TaskTypeProvider;
@@ -50,6 +52,7 @@ import org.openide.loaders.DataLoaderPool;
 import org.openide.loaders.DataObject;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
+import org.openide.nodes.NodeTransfer;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
@@ -68,7 +71,7 @@ public class TaskElementNode extends AbstractNode {
     private SaveCookie cookie;
     private InstanceContent content;
     private DataObject dataObject;
-    private final TaskElementChangeAdapter changeAdapter;
+    private NotifierReference<TaskElementChangeAdapter> notifierReference;
     private final CubeonContextListener contextListener;
     private TaskFolder container;
     private boolean extendedActions;
@@ -134,7 +137,8 @@ public class TaskElementNode extends AbstractNode {
             }
         };
         context.addContextListener(contextListener);
-        changeAdapter = new TaskElementChangeAdapter() {
+
+        notifierReference = extension.add(new TaskElementChangeAdapter() {
 
             @Override
             public void nameChenged() {
@@ -164,8 +168,7 @@ public class TaskElementNode extends AbstractNode {
             public void stateChange() {
                 fireIconChange();
             }
-        };
-        extension.add(changeAdapter);
+        });
     }
 
     private static String extractTaskDescription(TaskElement element) {
@@ -319,6 +322,22 @@ public class TaskElementNode extends AbstractNode {
         }
         return dataObject;
     }
+
+    @Override
+    public void destroy()  {
+        if (notifierReference != null) {
+            element.getNotifier().remove(notifierReference);
+        }
+    }
+
+    @Override
+    public Transferable drag() throws IOException {
+       return  NodeTransfer.transferable(this, NodeTransfer.MOVE);
+    }
+
+    
+
+
 
 }
 

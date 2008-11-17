@@ -24,6 +24,7 @@ import org.netbeans.cubeon.tasks.core.api.CubeonContext;
 import org.netbeans.cubeon.tasks.core.api.CubeonContextListener;
 import org.netbeans.cubeon.tasks.core.api.TasksFileSystem;
 import org.netbeans.cubeon.tasks.spi.Notifier;
+import org.netbeans.cubeon.tasks.spi.Notifier.NotifierReference;
 import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider.EditorAttributeHandler;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
@@ -53,7 +54,7 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
     private final TaskElementNode editorNode;
     private final EditorAttributeHandler eah;
     private final Notifier<TaskElementChangeAdapter> extension;
-    private final TaskElementChangeAdapter changeAdapter;
+    private NotifierReference<TaskElementChangeAdapter> notifierReference;
     private final TaskEditorFactoryImpl factoryImpl;
     private final CubeonContext context;
     private final TaskContextManager contextManager;
@@ -95,7 +96,8 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
 
         setActivatedNodes(new Node[]{editorNode = TaskElementNode.createNode(Children.LEAF, element, this)});
         eah.addChangeListener(this);
-        changeAdapter = new TaskElementChangeAdapter() {
+
+        notifierReference = extension.add(new TaskElementChangeAdapter() {
 
             @Override
             public void nameChenged() {
@@ -120,8 +122,7 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
                 });
 
             }
-        };
-        extension.add(changeAdapter);
+        });
         _focus();
         context.addContextListener(this);
     }
@@ -265,7 +266,10 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
 
     @Override
     protected void componentClosed() {
-        extension.remove(changeAdapter);
+        extension.remove(notifierReference);
+
+        editorNode.destroy();
+
         context.removeContextListener(this);
         factoryImpl.notifyRemove(element);
     }

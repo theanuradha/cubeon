@@ -16,6 +16,7 @@
  */
 package org.netbeans.cubeon.tasks.core.internals;
 
+import java.io.IOException;
 import org.netbeans.cubeon.tasks.core.api.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -68,7 +69,16 @@ public class TaskElementChilren extends Children.Keys<TaskElementChilren.TaskKey
 
     @Override
     protected void addNotify() {
-
+        //remove 
+        Node[] ns = getChildren().getNodes(true);
+        for (Node node : ns) {
+            try {
+                node.destroy();
+            } catch (IOException ex) {
+                //ignore
+            }
+        }
+        setKeys(new TaskKey[0]);
         List<TaskElement> elements = new ArrayList<TaskElement>();
         List<TaskElementFilter> filters = new ArrayList<TaskElementFilter>();
         for (TaskElementFilter taskElementFilter : Lookup.getDefault().lookupAll(TaskElementFilter.class)) {
@@ -99,6 +109,7 @@ public class TaskElementChilren extends Children.Keys<TaskElementChilren.TaskKey
         setKeys(keys);
     }
 
+    
     public Children getChildren() {
         return this;
     }

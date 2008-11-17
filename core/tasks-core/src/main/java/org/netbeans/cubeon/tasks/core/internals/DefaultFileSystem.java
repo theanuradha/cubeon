@@ -26,6 +26,7 @@ import org.netbeans.cubeon.tasks.core.api.TasksFileSystem;
 import org.netbeans.cubeon.tasks.core.spi.TaskNodeView;
 import org.netbeans.cubeon.tasks.core.views.CategorizedTaskNodeView;
 import org.netbeans.cubeon.tasks.spi.Notifier;
+import org.netbeans.cubeon.tasks.spi.Notifier.NotifierReference;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.repository.RepositoryEventAdapter;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
@@ -44,7 +45,8 @@ public class DefaultFileSystem implements TasksFileSystem {
 
     static final String TASKS_XML_PATH = "cubeon/tasks"; //NOI18N
     private final PersistenceHandler handler;
-    private    RepositoryEventAdapter adapter;
+    private final List<NotifierReference<RepositoryEventAdapter>> notifierReferences = new ArrayList<NotifierReference<RepositoryEventAdapter>>();
+
     public DefaultFileSystem() {
 
         FileObject fileObject = null;
@@ -63,30 +65,31 @@ public class DefaultFileSystem implements TasksFileSystem {
 
         final CubeonContext context = Lookup.getDefault().lookup(CubeonContext.class);
 
-       adapter= new RepositoryEventAdapter() {
 
-            @Override
-            public void taskElementIdChenged(String repoId,String oldId, String newId) {
-                handler.changeTaskElementId(repoId,oldId, newId);
-            }
+        final TaskRepositoryHandler repositoryHandler = context.getLookup().lookup(TaskRepositoryHandler.class);
+        for (TaskRepository repository : repositoryHandler.getTaskRepositorys()) {
+            final Notifier<RepositoryEventAdapter> extension = repository.getNotifier();
+            NotifierReference<RepositoryEventAdapter> reference = extension.add(new RepositoryEventAdapter() {
 
-            @Override
-            public void taskElementRemoved(TaskElement element) {
-                List<TaskFolder> subFolders = getRootTaskFolder().getSubFolders();
-                for (TaskFolder taskFolder : subFolders) {
-                    if (taskFolder.contains(element)) {
-                        TaskFolderImpl folderImpl = taskFolder.getLookup().lookup(TaskFolderImpl.class);
-                        assert folderImpl != null;
-                        folderImpl.removeTaskElement(element);
-                        handler.removeTaskElement(folderImpl, element);
+                @Override
+                public void taskElementIdChenged(String repoId, String oldId, String newId) {
+                    handler.changeTaskElementId(repoId, oldId, newId);
+                }
+
+                @Override
+                public void taskElementRemoved(TaskElement element) {
+                    List<TaskFolder> subFolders = getRootTaskFolder().getSubFolders();
+                    for (TaskFolder taskFolder : subFolders) {
+                        if (taskFolder.contains(element)) {
+                            TaskFolderImpl folderImpl = taskFolder.getLookup().lookup(TaskFolderImpl.class);
+                            assert folderImpl != null;
+                            folderImpl.removeTaskElement(element);
+                            handler.removeTaskElement(folderImpl, element);
+                        }
                     }
                 }
-            }
-        };
-       final TaskRepositoryHandler repositoryHandler = context.getLookup().lookup(TaskRepositoryHandler.class);
-        for (TaskRepository repository : repositoryHandler.getTaskRepositorys()) {
-           final Notifier<RepositoryEventAdapter> extension = repository.getNotifier();
-            extension.add(adapter);
+            });
+            notifierReferences.add(reference);
         }
     }
 
@@ -163,7 +166,7 @@ public class DefaultFileSystem implements TasksFileSystem {
     }
 
     public TaskNodeView getFilesystemView() {
-        TaskNodeView contextView ;
+        TaskNodeView contextView;
         Lookup.getDefault().lookupAll(TaskNodeView.class);//FIXME may be lookup bug
         contextView = Lookup.getDefault().lookup(CategorizedTaskNodeView.class);
         assert contextView != null;

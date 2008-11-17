@@ -24,6 +24,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.swing.Action;
+import org.netbeans.cubeon.tasks.spi.Notifier.NotifierReference;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.query.TaskQueryEventAdapter;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
@@ -47,6 +48,7 @@ final class ResultsTopComponent extends TopComponent implements ExplorerManager.
     private static ResultsTopComponent instance;
     /** path to the icon used by the component and its open action */
     static final String ICON_PATH = "org/netbeans/cubeon/ui/query/results.png";
+    private static final long serialVersionUID = 1L;
     private transient ExplorerManager explorerManager = new ExplorerManager();
     private static final String PREFERRED_ID = "ResultsTopComponent";
     private BeanTreeView treeView = new BeanTreeView();
@@ -149,20 +151,21 @@ final class ResultsTopComponent extends TopComponent implements ExplorerManager.
     }
     private volatile Task task;
     private TaskQuery taskQuery;
-    private TaskQueryEventAdapter adapter;
+    private NotifierReference<TaskQueryEventAdapter> notifierReference;
 
     synchronized void showResults(final TaskQuery taskQuery) {
         if (taskQuery != null) {
 
-            if (this.taskQuery != null) {
-                this.taskQuery.getNotifier().remove(adapter);
-                adapter = null;
+            if (this.taskQuery != null && notifierReference != null) {
+                this.taskQuery.getNotifier().remove(notifierReference);
+                notifierReference = null;
             }
             final Children.Array array = new Children.Array();
             this.taskQuery = taskQuery;
             final ResultQueryNode queryNode = new ResultQueryNode(array, taskQuery);
             explorerManager.setRootContext(queryNode);
-            adapter = new TaskQueryEventAdapter() {
+
+            notifierReference = taskQuery.getNotifier().add(new TaskQueryEventAdapter() {
 
                 @Override
                 public void atributesupdated() {
@@ -208,8 +211,7 @@ final class ResultsTopComponent extends TopComponent implements ExplorerManager.
                         }
                     });
                 }
-            };
-            taskQuery.getNotifier().add(adapter);
+            });
 
             queryNode.updateNodeTag("Synchronizing...");
             loadQueries(array, queryNode);
