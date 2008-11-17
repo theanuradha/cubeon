@@ -324,7 +324,7 @@ public class TaskElementNode extends AbstractNode {
     }
 
     @Override
-    public void destroy()  {
+    public void destroy() {
         if (notifierReference != null) {
             element.getNotifier().remove(notifierReference);
         }
@@ -332,13 +332,16 @@ public class TaskElementNode extends AbstractNode {
 
     @Override
     public Transferable drag() throws IOException {
-       return  NodeTransfer.transferable(this, NodeTransfer.MOVE);
+        return NodeTransfer.transferable(this, NodeTransfer.DND_MOVE);
     }
 
     
 
-
-
+    
+    @Override
+    public boolean canCut() {
+        return true;
+    }
 }
 
 
