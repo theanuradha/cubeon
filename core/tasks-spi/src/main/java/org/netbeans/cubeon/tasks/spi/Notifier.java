@@ -38,7 +38,7 @@ public class Notifier<T> {
      */
     public final void remove(NotifierReference<T> reference) {
         weakHashMap.remove(reference);
-        Notifier.info("ON remove SIZE :" + weakHashMap.size());
+        Notifier.fine("ON remove SIZE :" + weakHashMap.size());
     }
 
     /**
@@ -48,7 +48,7 @@ public class Notifier<T> {
     public final NotifierReference<T> add(T inst) {
         NotifierReference<T> notifierReference=new NotifierReference<T>(inst);
         weakHashMap.put(notifierReference, inst);
-        Notifier.info("ON ADD SIZE :" + weakHashMap.size());
+        Notifier.fine("ON ADD SIZE :" + weakHashMap.size());
         return notifierReference;
     }
 
