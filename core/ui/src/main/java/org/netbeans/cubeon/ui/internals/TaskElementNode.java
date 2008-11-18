@@ -165,6 +165,12 @@ public class TaskElementNode extends AbstractNode {
             }
 
             @Override
+            public void resolutionChenged() {
+                 fireDisplayNameChange(getDisplayName() + "_#", element.getName());//NOI18N
+                setShortDescription(extractTaskDescription(element));
+            }
+
+            @Override
             public void stateChange() {
                 fireIconChange();
             }
