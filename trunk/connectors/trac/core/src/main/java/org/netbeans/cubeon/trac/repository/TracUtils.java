@@ -104,7 +104,6 @@ public class TracUtils {
         if (status != null && !status.equals(cachedTask.getStatus().getId())) {
             task.setAction(null);
         }
-        task.setNewComment("");//remove comment
         //put changed atributes to task
         Set<Entry<String, String>> entrySet = ticket.getAttributes().entrySet();
         for (Entry<String, String> entry : entrySet) {
