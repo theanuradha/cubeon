@@ -191,9 +191,7 @@ public class TracTaskRepository implements TaskRepository {
 
             TracSession session = getSession();
             Ticket issue = session.getTicket(task.getTicketId());
-            //read actions
-            List<TicketAction> ticketActions = session.getTicketActions(task.getTicketId());
-            task.setActions(ticketActions);
+            
             update(issue, task);
 
         }
@@ -213,6 +211,9 @@ public class TracTaskRepository implements TaskRepository {
 
                     //marege changes with remote ticket
                     TracUtils.maregeToTask(this, issue, cachedTask, task);
+                    //read actions
+                    List<TicketAction> ticketActions = getSession().getTicketActions(task.getTicketId());
+                    task.setActions(ticketActions);
                     persist(task);
 
                     //make cache up to date
