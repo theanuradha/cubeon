@@ -28,6 +28,7 @@ import org.openide.util.NbBundle;
  * @author Anuradha
  */
 public class OpenAction extends AbstractAction {
+    private static final long serialVersionUID = 8170584779537197106L;
 
     private TaskElement element;
 
