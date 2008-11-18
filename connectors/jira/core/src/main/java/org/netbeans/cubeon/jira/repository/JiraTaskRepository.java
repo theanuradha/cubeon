@@ -230,6 +230,8 @@ public class JiraTaskRepository implements TaskRepository {
 
    public void remove(JiraTask jiraTask) {
         handler.removeTaskElement(jiraTask);
+        cache.removeTaskElement(jiraTask);
+        extension.fireTaskRemoved(jiraTask);
     }
 
     public void cache(JiraRemoteTask remoteTask) {

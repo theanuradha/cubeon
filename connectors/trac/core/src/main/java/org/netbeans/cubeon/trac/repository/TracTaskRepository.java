@@ -177,6 +177,8 @@ public class TracTaskRepository implements TaskRepository {
 
     public void remove(TracTask tracTask) {
         handler.removeTaskElement(tracTask);
+        cache.removeTaskElement(tracTask);
+        extension.fireTaskRemoved(tracTask);
     }
 
     public void cache(TracTask tracTask) {
