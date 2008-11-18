@@ -258,6 +258,8 @@ public class TracTaskRepository implements TaskRepository {
                 cache(remoteTask);
                 //persist task changs by server
                 task.setModifiedFlag(false);
+                //Crear New Comment field 
+                task.setNewComment("");
                 List<TicketAction> ticketActions = session.getTicketActions(task.getTicketId());
                 task.setActions(ticketActions);
                 persist(task);
