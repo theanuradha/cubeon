@@ -24,6 +24,7 @@
       * Tracking of Locally Modified tasks and revert modifications.
 
  * [GS_Task_Explorer Task Explorer View] 
+      * Drag n  Drop Task Management. 
       * API/SPI for adding and customizing Views. 
       * Categorizable Task View ( Folder base ).
       * Tasks Filtering and Sorting (Ex: Priority,Status etc.. base filtering and sorting ).
