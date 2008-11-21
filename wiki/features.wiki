@@ -15,7 +15,7 @@
       * Customized Jira Repositories including custom workflows.
       * Tracking of Locally Modified tasks and revert modifications.
       * Repository permissions based  to create, modify tasks.
-    * [GSTracRepository Trac Repository Connector](Comming on 1.0.3.0)  
+    * [GSTracRepository Trac Repository Connector](Coming on 1.0.3.0)  
       * Supports to connect Trac 0.11 repository.
       * Create/Modify Task *offline/online* and merge task with remote repository.
       * Rich Task Editor with attributes editing, workflow actions and comments.  
@@ -24,7 +24,7 @@
       * Tracking of Locally Modified tasks and revert modifications.
 
  * [GS_Task_Explorer Task Explorer View] 
-      * Drag n  Drop Task Management. (Comming on 1.0.3.0) 
+      * Drag n  Drop Task Management. (Coming on 1.0.3.0) 
       * API/SPI for adding and customizing Views. 
       * Categorizable Task View ( Folder base ).
       * Tasks Filtering and Sorting (Ex: Priority,Status etc.. base filtering and sorting ).
