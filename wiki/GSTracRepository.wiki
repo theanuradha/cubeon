@@ -1,7 +1,7 @@
 #labels trac
 #Trac Repository Connector
 
-== Jira Repository ==
+== Trac Repository ==
 
 Cube°n Trac Connector is for Connect to [http://trac.edgewall.org/ Trac issue tracking system].
 
@@ -21,4 +21,3 @@ Cube°n Trac Connector is for Connect to [http://trac.edgewall.org/ Trac issue t
 
 #  Adding Comments
            [http://cubeon.googlecode.com/svn/images/tracaddingComments.PNG]
-
