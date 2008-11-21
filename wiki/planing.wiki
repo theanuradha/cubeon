@@ -2,7 +2,7 @@
 == Cube°n Future Plans ==
  * Task Repository Connectors (Using Cube°n Repository API/SPI).
     * [http://www.netbeans.org/kb/articles/issuezilla.html Issuezilla] Repository Connector.  ( Status : Started )
-    * [http://trac.edgewall.org/ Trac] Repository Connector.  ( Status : Started )
+    * ~~[http://trac.edgewall.org/ Trac] Repository Connector.~~  (1.0.3.0)
     * Bugzilla Repository Connector. ( Status : [BugzillaSupport Started] )  
     * [http://xplanner.org/ XPlanner] Repository  Connector.
 
@@ -13,7 +13,7 @@
  * Task Explorer
    * Task Groups (like Project Groups aka Working Sets).
    * Import, Export and Cloning Tasks 
-   * Support Drag'n'Drop  
+   * ~~Support Drag'n'Drop~~  (1.0.3.0)  
 
  * [http://code.google.com/p/cubeon/issues/detail?id=5 Project based auto configuration ]
    
