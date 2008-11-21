@@ -63,8 +63,12 @@ public class XmlRpcTracSession implements TracSession {
     XmlRpcTracSession(String url, String user, String password) throws TracException {
         try {
             config = new XmlRpcClientConfigImpl();
-            //append "/login/xmlrpc" to url 
-            config.setServerURL(new URL(url + "/login/xmlrpc"));//NOI18N
+            //check closing '/' is avaiable
+            if (!url.trim().endsWith("/") || !url.trim().endsWith("/")) {
+                url += "/";
+            }
+            //append "/login/xmlrpc" to url
+            config.setServerURL(new URL(url + "login/xmlrpc"));//NOI18N
             //user name and pass to trac
             //TODO may be need to annnonymous 
             config.setBasicUserName(user);
