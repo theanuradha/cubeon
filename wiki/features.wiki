@@ -19,7 +19,7 @@
       * Supports to connect Trac 0.11 repository.
       * Create/Modify Task *offline/online* and merge task with remote repository.
       * Rich Task Editor with attributes editing, workflow actions and comments.  
-      * Create Query form remote repository filters. 
+      * Trac Repository Query Support. 
       * Customized Trac Repositories including custom workflows.
       * Tracking of Locally Modified tasks and revert modifications.
 
