@@ -1,0 +1,24 @@
+#labels trac
+#Trac Repository Connector
+
+== Jira Repository ==
+
+Cube°n Trac Connector is for Connect to [http://trac.edgewall.org/ Trac issue tracking system].
+
+  * Features
+      * Supports to connect Trac 0.11 repository.
+      * Create/Modify Task *offline/online* and merge task with remote repository.
+      * Rich Task Editor with attributes editing, workflow actions and comments.  
+      * Trac Repository Query Support. 
+      * Customized Trac Repositories including custom workflows.
+      * Tracking of Locally Modified tasks and revert modifications.
+
+[CreateTracRepository Create Trac Repository]
+
+#  [GS_Task_Explorer Create Task] and It will open Trac Task Editor
+
+           [http://cubeon.googlecode.com/svn/images/tracTaskEditor.PNG]
+
+#  Adding Comments
+           [http://cubeon.googlecode.com/svn/images/tracaddingComments.PNG]
+
