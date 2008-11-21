@@ -2,6 +2,7 @@
 #labels trac,Featured
 
 = Cube'n release -1.0.3.0 =
+ The Cube'n team is happy to announce the 1.0.3.0 release of Task integration for Netbeans (Cube'n). 
  ==Whats New==
   * [GSTracRepository Trac Repository Connector]  
       * Supports to connect Trac 0.11 repository.
@@ -13,3 +14,5 @@
   * Drag n Drop Task Management.
       * Task explorer task management 
       * Query result view to task explorer
+
+  Please file any issue/feature request you encunted 
