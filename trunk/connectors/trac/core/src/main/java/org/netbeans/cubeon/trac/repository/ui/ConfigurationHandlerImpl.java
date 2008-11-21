@@ -6,6 +6,8 @@
 package org.netbeans.cubeon.trac.repository.ui;
 
 import java.awt.Color;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -19,6 +21,7 @@ import org.netbeans.cubeon.trac.api.TracException;
 import org.netbeans.cubeon.trac.api.TracSession;
 import org.netbeans.cubeon.trac.repository.TracTaskRepository;
 import org.netbeans.cubeon.trac.repository.TracTaskRepositoryProvider;
+import org.openide.awt.HtmlBrowser.URLDisplayer;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
@@ -135,6 +138,7 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
         jProgressBar1 = new javax.swing.JProgressBar();
         btnValidate = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
 
         lblName.setText(NbBundle.getMessage(ConfigurationHandlerImpl.class, "ConfigurationHandlerImpl.lblName.text")); // NOI18N
 
@@ -165,13 +169,23 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
         jLabel2.setForeground(javax.swing.UIManager.getDefaults().getColor("Label.disabledForeground"));
         jLabel2.setText(NbBundle.getMessage(ConfigurationHandlerImpl.class, "ConfigurationHandlerImpl.jLabel2.text", new Object[] {})); // NOI18N
 
+        jLabel3.setText(NbBundle.getMessage(ConfigurationHandlerImpl.class, "ConfigurationHandlerImpl.jLabel3.text")); // NOI18N
+        jLabel3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel3MouseClicked(evt);
+            }
+        });
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createSequentialGroup()
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(jLabel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE))
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
                         .addContainerGap()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE)
@@ -190,7 +204,7 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
                                     .add(txtPassword)
                                     .add(txtUiserId, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 143, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                             .add(jLabel1)))
-                    .add(layout.createSequentialGroup()
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
                         .add(20, 20, 20)
                         .add(jLabel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE)))
                 .addContainerGap())
@@ -220,7 +234,9 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                             .add(txtPassword, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                             .add(lblPassword))))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 64, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                .add(jLabel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 47, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 36, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(btnValidate)
@@ -262,10 +278,22 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
         });
 
     }//GEN-LAST:event_btnValidateActionPerformed
+
+    private void jLabel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseClicked
+        try {
+            URLDisplayer.getDefault().
+                    showURL(new URL(
+                    "http://code.google.com/p/cubeon/wiki/GSTracRepository"));//NOI18N
+        } catch (MalformedURLException ex) {
+            //ignore
+        }
+    }//GEN-LAST:event_jLabel3MouseClicked
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnValidate;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JLabel lblName;
