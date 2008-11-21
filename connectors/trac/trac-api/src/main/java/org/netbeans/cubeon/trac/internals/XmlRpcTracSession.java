@@ -64,7 +64,7 @@ public class XmlRpcTracSession implements TracSession {
         try {
             config = new XmlRpcClientConfigImpl();
             //check closing '/' is avaiable
-            if (!url.trim().endsWith("/") || !url.trim().endsWith("/")) {
+            if (!url.trim().endsWith("/") || !url.trim().endsWith("\\")) {
                 url += "/";
             }
             //append "/login/xmlrpc" to url
