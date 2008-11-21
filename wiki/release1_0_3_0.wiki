@@ -1,5 +1,5 @@
 #summary of Cube'n release -1.0.3.0
-#labels trac
+#labels trac,Featured
 
 = Cube'n release -1.0.3.0 =
 
@@ -11,3 +11,6 @@
       * Trac Repository Query Support. 
       * Customized Trac Repositories including custom workflows.
       * Tracking of Locally Modified tasks and revert modifications.
+  * Drag n Drop Task Management.
+      *Task explorer task management 
+      *Query result view to task explorer
