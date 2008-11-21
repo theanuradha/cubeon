@@ -4,5 +4,10 @@
 = Cube'n release -1.0.3.0 =
 
  ==Whats New==
-  * Tarc Repository Connectoer 
-  
+  * [GSTracRepository Trac Repository Connector]  
+      * Supports to connect Trac 0.11 repository.
+      * Create/Modify Task *offline/online* and merge task with remote repository.
+      * Rich Task Editor with attributes editing, workflow actions and comments.  
+      * Trac Repository Query Support. 
+      * Customized Trac Repositories including custom workflows.
+      * Tracking of Locally Modified tasks and revert modifications.
