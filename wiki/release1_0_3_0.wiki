@@ -2,6 +2,7 @@
 #labels trac,Featured
 
 = Cube'n release -1.0.3.0 =
+  Cube'n Team please to release 1.0.3.0 with lots of Bug fixes and Trac 0.11 Connector  Support 
 
  ==Whats New==
   * [GSTracRepository Trac Repository Connector]  
