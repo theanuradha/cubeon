@@ -12,6 +12,16 @@ Cube°n Trac Connector is for Connect to [http://trac.edgewall.org/ Trac issue t
       * Trac Repository Query Support. 
       * Customized Trac Repositories including custom workflows.
       * Tracking of Locally Modified tasks and revert modifications.
+  
+  * Installation prerequisites
+      * You will need a special version of the [http://trac-hacks.org/wiki/XmlRpcPlugin Trac-XMLRPC Plugin]. 
+      * The original available plugin has some problems with Trac 0.11 and the custom workflow. 
+      * These are fixed and the version of the XMLRPC is incremented to 1.5. 
+      * You can get this enhanced version via
+          * downloading the [http://cubeon.googlecode.com/files/workflow-actions.patch patch] and appling it to the latest available version from the official [http://trac-hacks.org/svn/xmlrpcplugin SVN] or
+          * downloading the [http://cubeon.googlecode.com/files/TracXMLRPC-1.5.0-py2.5.egg Trac-XMLRPC PythonEgg] for Python 2.5
+      * Add the PythonEgg to the plugin directory of your Trac repository
+      * Further details can be found on the original distribution [http://trac-hacks.org/wiki/XmlRpcPlugin site]
 
 [CreateTracRepository Create Trac Repository]
 
