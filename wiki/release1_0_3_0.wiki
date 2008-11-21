@@ -16,4 +16,4 @@
       * Task explorer task management 
       * Query result view to task explorer
 
-  Please Join our [http://groups.google.com/group/cubeon-user User group] 
+  Please Join our [http://groups.google.com/group/cubeon-user User group] and bug reports and feature requests are welcome in the project [http://code.google.com/p/cubeon/issues/list issue tracker]. 
