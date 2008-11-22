@@ -15,7 +15,7 @@ Cube°n Trac Connector is for Connect to [http://trac.edgewall.org/ Trac issue t
   
   * Installation prerequisites
       * You will need a special version of the [http://trac-hacks.org/wiki/XmlRpcPlugin Trac-XMLRPC Plugin]. 
-      * The original available plugin has some [http://trac-hacks.org/attachment/ticket/3110 problems] with Trac 0.11 and the custom workflow. 
+      * The original available plugin has some [http://trac-hacks.org/ticket/3110 problems] with Trac 0.11 and the custom workflow. 
       * These are fixed and the version of the XMLRPC is incremented to 1.5. 
       * You can get this enhanced version via
           * downloading the [http://cubeon.googlecode.com/files/workflow-actions.patch patch] and appling it to the latest available version from the official [http://trac-hacks.org/svn/xmlrpcplugin SVN] or
