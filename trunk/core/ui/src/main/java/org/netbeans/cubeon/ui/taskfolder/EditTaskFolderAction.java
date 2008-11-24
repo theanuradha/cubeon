@@ -32,6 +32,7 @@ import org.openide.util.NbBundle;
  */
 public class EditTaskFolderAction extends AbstractAction {
 
+    private static final long serialVersionUID = -5852493137443898928L;
     private TaskFolder folder;
 
     public EditTaskFolderAction(TaskFolder folder) {
@@ -39,8 +40,9 @@ public class EditTaskFolderAction extends AbstractAction {
         putValue(NAME, NbBundle.getMessage(EditTaskFolderAction.class, "LBL_Edit_Folder"));
         putValue(SHORT_DESCRIPTION, NbBundle.getMessage(EditTaskFolderAction.class,
                 "LBL_Edit_Folder_Description"));
-
-    //putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke("F2"));//NOI18N
+        TasksFileSystem fileSystem = Lookup.getDefault().lookup(TasksFileSystem.class);
+        //if default folder do not allow edit
+        setEnabled(!fileSystem.getDefaultFolder().equals(folder));
 
     }
 

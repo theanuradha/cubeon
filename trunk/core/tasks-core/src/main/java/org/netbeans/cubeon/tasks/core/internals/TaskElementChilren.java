@@ -51,10 +51,14 @@ public class TaskElementChilren extends Children.Keys<TaskElementChilren.TaskKey
 
     private static boolean isFilterd(TaskElement element, List<TaskElementFilter> filters) {
 
+        CubeonContext context = Lookup.getDefault().lookup(CubeonContext.class);
+        //do not filter active task 
+        if (!element.equals(context.getActive())) {
 
-        for (TaskElementFilter filter : filters) {
-            if (filter.isFiltered(element)) {
-                return true;
+            for (TaskElementFilter filter : filters) {
+                if (filter.isFiltered(element)) {
+                    return true;
+                }
             }
         }
         return false;
@@ -109,7 +113,6 @@ public class TaskElementChilren extends Children.Keys<TaskElementChilren.TaskKey
         setKeys(keys);
     }
 
-    
     public Children getChildren() {
         return this;
     }
