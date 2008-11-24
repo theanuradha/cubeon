@@ -35,13 +35,16 @@ import org.openide.util.NbBundle;
  */
 public class DeleteTaskFolderAction extends AbstractAction {
 
+    private static final long serialVersionUID = 7598113202066878927L;
     private TaskFolder folder;
 
     public DeleteTaskFolderAction(TaskFolder folder) {
         this.folder = folder;
         putValue(NAME, NbBundle.getMessage(DeleteTaskFolderAction.class, "LBL_Delete_Folder"));
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke("DELETE"));//NOI18N
-
+        TasksFileSystem fileSystem = Lookup.getDefault().lookup(TasksFileSystem.class);
+        //if default folder do not allow delete
+        setEnabled(!fileSystem.getDefaultFolder().equals(folder));
     }
 
     public void actionPerformed(ActionEvent e) {
