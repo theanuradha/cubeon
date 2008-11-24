@@ -1,5 +1,5 @@
 #summary of Cube'n release -1.0.3.0
-#labels trac,Deprecated
+#labels trac,Featured
 
 = Cube'n release -1.0.3.0 =
  The Cube'n team is happy to announce the 1.0.3.0 release of Task integration for Netbeans (Cube'n). This release is primarily focused on Trac Repository Connector,Usability (D'n'D) bug fixes, improving stability and performance.
