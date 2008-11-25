@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
+<filesystem>
+
+    <folder name="Editors">
+        <folder name="text">
+            <folder name="x-java">
+                <folder name="Popup">
+                    <file name="org-netbeans-cubeon-java-bridge-TaskContextAction.instance">    
+                        <attr name="position" intvalue="10000"/>
+                    </file>
+                </folder>
+            </folder>
+            <folder name="x-groovy">
+                <folder name="Popup">
+                    <file name="org-netbeans-cubeon-java-bridge-TaskContextAction.instance">    
+                        <attr name="position" intvalue="10000"/>
+                    </file>
+                </folder>
+            </folder>
+            <folder name="xml">
+                <folder name="Popup">
+                    <file name="org-netbeans-cubeon-java-bridge-TaskContextAction.instance">    
+                        <attr name="position" intvalue="10000"/>
+                    </file>
+                </folder>
+            </folder>
+            <folder name="x-properties">
+                <folder name="Popup">
+                    <file name="org-netbeans-cubeon-java-bridge-TaskContextAction.instance">
+                        <attr name="position" intvalue="10000"/>
+                    </file>
+                </folder>
+            </folder>
+            <folder name="x-jsp">
+                <folder name="Popup">
+                    <file name="org-netbeans-cubeon-java-bridge-TaskContextAction.instance">
+                        <attr name="position" intvalue="10000"/>
+                    </file>
+                </folder>
+            </folder>
+            <folder name="html">
+                <folder name="Popup">
+                    <file name="org-netbeans-cubeon-java-bridge-TaskContextAction.instance">
+                        <attr name="position" intvalue="10000"/>
+                    </file>
+                </folder>
+            </folder>
+            <folder name="javascript">
+                <folder name="Popup">
+                    <file name="org-netbeans-cubeon-java-bridge-TaskContextAction.instance">
+                        <attr name="position" intvalue="10000"/>
+                    </file>
+                </folder>
+            </folder>
+
+        </folder>
+    </folder>
+
+    <!-- :::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
+
+    <folder name="Loaders">
+        <folder name="text">
+            <folder name="x-java">
+                <folder name="Actions">
+                    <file name="org-netbeans-cubeon-java-bridge-TaskContextAction.instance">
+                        <attr name="position" intvalue="2950"/>
+                    </file>
+                </folder>
+            </folder>
+            <folder name="x-groovy">
+                <folder name="Actions">
+                    <file name="org-netbeans-cubeon-java-bridge-TaskContextAction.instance">
+                        <attr name="position" intvalue="2950"/>
+                    </file>
+                </folder>
+            </folder>
+            <folder name="xml">
+                <folder name="Actions">
+                    <file name="org-netbeans-cubeon-java-bridge-TaskContextAction.instance">
+                        <attr name="position" intvalue="2950"/>
+                    </file>
+                </folder>
+            </folder>
+            <folder name="x-properties">
+                <folder name="Actions">
+                    <file name="org-netbeans-cubeon-java-bridge-TaskContextAction.instance">
+                        <attr name="position" intvalue="2950"/>
+                    </file>
+                </folder>
+            </folder>
+            <folder name="x-jsp">
+                <folder name="Actions">
+                    <file name="org-netbeans-cubeon-java-bridge-TaskContextAction.instance">
+                        <attr name="position" intvalue="2950"/>
+                    </file>
+                </folder>
+            </folder>
+            <folder name="html">
+                <folder name="Actions">
+                    <file name="org-netbeans-cubeon-java-bridge-TaskContextAction.instance">
+                        <attr name="position" intvalue="2950"/>
+                    </file>
+                </folder>
+            </folder>
+            <folder name="javascript">
+                <folder name="Actions">
+                    <file name="org-netbeans-cubeon-java-bridge-TaskContextAction.instance">
+                        <attr name="position" intvalue="2950"/>
+                    </file>
+                </folder>
+            </folder>
+            <folder name="x-css">
+                <folder name="Actions">
+                    <file name="org-netbeans-cubeon-java-bridge-TaskContextAction.instance">
+                        <attr name="position" intvalue="2950"/>
+                    </file>
+                </folder>
+            </folder>
+        </folder>
+    </folder>
+</filesystem>

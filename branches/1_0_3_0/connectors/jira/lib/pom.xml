@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.netbeans.cubeon</groupId>
+        <artifactId>cubeon-jira-module</artifactId>
+        <version>${cubeon.release}</version>
+    </parent>
+    <artifactId>jira-connecter-lib</artifactId>
+    <packaging>jar</packaging>
+    <name>Cube°n Jira Soap Lib</name>
+    <version>${cubeon.release}</version>
+    <description>Jira soap library</description>
+    <dependencies>
+        <dependency>
+            <groupId>com.dolby.jira.net</groupId>
+            <artifactId>jira-soap</artifactId>
+            <version>0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util</artifactId>
+            <version>${netbeans.release}</version>
+        </dependency>
+        <dependency>
+            <groupId>axis</groupId>
+            <artifactId>axis</artifactId>
+            <version>1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>axis</groupId>
+            <artifactId>axis-jaxrpc</artifactId>
+            <version>1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>axis</groupId>
+            <artifactId>axis-saaj</artifactId>
+            <version>1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>axis</groupId>
+            <artifactId>axis-wsdl4j</artifactId>
+            <version>1.5.1</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-discovery</groupId>
+            <artifactId>commons-discovery</artifactId>
+            <version>0.2</version>
+        </dependency>
+        
+        
+    </dependencies>
+    <repositories>
+        <repository>
+            <id>atlassian-m2-contrib</id>
+            <name>Atlassian Maven 2 Contributor Repository</name>
+            <url>http://svn.atlassian.com/svn/public/contrib/repository/maven2</url>
+            <snapshots>
+            </snapshots>
+        </repository>
+    </repositories>
+</project>

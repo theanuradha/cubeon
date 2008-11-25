@@ -1,0 +1,4 @@
+org.netbeans.cubeon.java.bridge.JavaResourceProvider
+#position=2000
+org.netbeans.cubeon.java.bridge.stacktrace.STResourceProvider
+#position=3000
