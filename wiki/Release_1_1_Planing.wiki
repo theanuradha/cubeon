@@ -1,0 +1,12 @@
+#labels Phase-Implementation
+#Release 1.1 Planing
+
+= Release 1.1 Planing =
+
+
+= Next Version Features Planing=
+  * Attachment Support API/SPI for Connectors 
+  * UI framework for task Editor
+  * Support WorkSets
+  * Backup support
+  * Task Cloning
