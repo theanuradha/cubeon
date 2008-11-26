@@ -4,9 +4,10 @@
 = Release 1.1 Planing =
 
 
-= Next Version Features Planing=
+= Wish List =
   * Attachment Support API/SPI for Connectors 
   * UI framework for task Editor
   * Support WorkSets
   * Backup support
   * Task Cloning
+  * Integrating build servers ([http://code.google.com/p/cubeon/issues/detail?id=15 Hudson] etc..)
