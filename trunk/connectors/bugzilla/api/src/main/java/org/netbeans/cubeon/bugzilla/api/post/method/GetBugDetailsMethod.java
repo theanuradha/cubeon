@@ -37,7 +37,7 @@ public class GetBugDetailsMethod extends BaseBugzillaPostMethod<BugDetails> {
     /**
      * Name of CGI script used to retrieve bug details.
      */
-    private static final String SHOW_BUG_CGI_SCRIPT = "show_bug.cgi";
+    public static final String SHOW_BUG_CGI_SCRIPT = "show_bug.cgi";
 
     /**
      * Two-arguments constructor.
@@ -48,7 +48,7 @@ public class GetBugDetailsMethod extends BaseBugzillaPostMethod<BugDetails> {
     public GetBugDetailsMethod(String url, Integer bugId) {
         super(url);
         this.setParameter("ctype", "xml");
-        this.setParameter("id", String.valueOf(bugId));
+        this.setParameter("id", bugId.toString());
         this.setParameter("excludefield", "attachmentdata");
     }
 

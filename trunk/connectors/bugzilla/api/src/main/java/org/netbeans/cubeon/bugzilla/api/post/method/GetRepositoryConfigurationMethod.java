@@ -39,7 +39,7 @@ public class GetRepositoryConfigurationMethod extends BaseBugzillaPostMethod<Rep
     /**
      * Name of CGI script that will be used to receive repository configuration.
      */
-    private static final String SCRIPT_NAME = "config.cgi";
+    public static final String SCRIPT_NAME = "config.cgi";
 
     /**
      * Constructor of Bugzilla POST method which will be used to retrieve repository

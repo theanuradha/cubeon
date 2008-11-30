@@ -24,6 +24,7 @@ import org.netbeans.cubeon.bugzilla.api.post.queries.BaseQuery;
 
 import java.util.Map;
 import java.util.List;
+
 import org.netbeans.cubeon.bugzilla.api.model.NewBug;
 
 /**
@@ -43,7 +44,7 @@ public interface BugzillaClient {
      * @return - map with parameters for eg. id of user
      * @throws BugzillaException - throws exception in case of any problems during login operation
      */
-    Map doLogin(String user, String password) throws BugzillaException;
+    Map doLogin( String user, String password ) throws BugzillaException;
 
     /**
      * Returns bug details.
@@ -52,7 +53,7 @@ public interface BugzillaClient {
      * @return - bug details
      * @throws BugzillaException - throws exception in case of any problems during getting bug details
      */
-    BugDetails getBugDetails(Integer bugId) throws BugzillaException;
+    BugDetails getBugDetails( Integer bugId ) throws BugzillaException;
 
     /**
      * Returns Bugzilla remote repository specific values like products, varsions etc.
@@ -71,7 +72,7 @@ public interface BugzillaClient {
      * @throws BugzillaException - throws exception in case there were any errors during
      *                           bugs list retrieving
      */
-    List<BugSummary> queryForBugs(BaseQuery query) throws BugzillaException;
+    List<BugSummary> queryForBugs( BaseQuery query ) throws BugzillaException;
 
     /**
      * Creates new bug in Bugzilla repository.
@@ -80,5 +81,13 @@ public interface BugzillaClient {
      * @return - id of newly created bug
      * @throws BugzillaException - throws exception in case there are any errors during bug adding
      */
-    Integer createBug(NewBug bug) throws BugzillaException;
+    Integer createBug( NewBug bug ) throws BugzillaException;
+
+    /**
+     * Returns URL for bug with given id.
+     *
+     * @param id - task id
+     * @return - task URL
+     */
+    String getBugUrl( String id );
 }

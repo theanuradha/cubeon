@@ -23,69 +23,84 @@ import org.netbeans.cubeon.tasks.spi.Notifier;
 import org.openide.util.Lookup;
 
 /**
+ * Common interface used to represent task.
  *
  * @author Anuradha G
  */
 public interface TaskElement {
 
     /**
-     * 
-     * @return
+     * Returns task ID.
+     *
+     * @return - task ID
      */
     String getId();
 
     /**
-     * 
-     * @return
+     * Returns task name.
+     *
+     * @return - task name
      */
     String getName();
 
     /**
-     * 
-     * @return
+     * Returns task display name, this name will be displayed on UI components.
+     *
+     * @return - dosplay name
      */
     String getDisplayName();
 
     /**
-     * 
-     * @return
+     * Returns task description.
+     *
+     * @return - task description
      */
     String getDescription();
 
     /**
-     * 
-     * @return
+     * Returns task repository in which thask was created.
+     *
+     * @return - task repository
      */
     TaskRepository getTaskRepository();
 
     /**
-     * 
-     * @return
+     * Returns task lookup.
+     *
+     * @return - task lookup
      */
     Lookup getLookup();
 
     /**
-     * 
-     * @return
+     * Retirns true if task was completed.
+     *
+     * @return - true if task was completed, false if it isn't
      */
     boolean isCompleted();
 
     /**
-     * 
-     * @return
+     * Returns task image.
+     *
+     * @return - task image
      */
     Image getImage();
 
     /**
-     * 
-     * @return
+     * Returns task URL, this URL will be used to render links.
+     *
+     * @return - task URL
      */
     URL getUrl();
 
     /**
-     *
+     * Synchronizes state of task.
      */
     void synchronize();
 
+    /**
+     * Returns notifier which will is used to notify about task changes
+     *
+     * @return - task notifier
+     */
     Notifier<TaskElementChangeAdapter> getNotifier();
 }

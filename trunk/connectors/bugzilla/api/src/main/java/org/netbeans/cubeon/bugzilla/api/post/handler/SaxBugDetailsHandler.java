@@ -133,7 +133,7 @@ public class SaxBugDetailsHandler extends BaseSaxHandler {
             if (!inLongDesc) {
                 switch (elementEnum) {
                     case BUG_ID:
-                        bugDetails.setId(Integer.valueOf(value));
+                        bugDetails.setId(value);
                         break;
                     case CREATION_TS:
                         bugDetails.setCreationDate(bugDateFormat.parse(value));

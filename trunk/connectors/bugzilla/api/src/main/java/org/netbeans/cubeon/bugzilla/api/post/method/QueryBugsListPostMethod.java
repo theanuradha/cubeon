@@ -39,7 +39,7 @@ public class QueryBugsListPostMethod extends BaseBugzillaPostMethod<List<BugSumm
     /**
      * Name of CGI script that will be used to receive result of this query.
      */
-    private static final String SCRIPT_NAME = "buglist.cgi";
+    public static final String SCRIPT_NAME = "buglist.cgi";
 
     /**
      * Constructor of query bugs list Bugzilla POST method.
@@ -105,7 +105,7 @@ public class QueryBugsListPostMethod extends BaseBugzillaPostMethod<List<BugSumm
         if(lineContent.length < 8) {
           throw new BugzillaParsingException("Error during line parsing, invalid number of line elements.");
         }
-        bug.setId(Integer.parseInt(lineContent[0]));
+        bug.setId(lineContent[0]);
         bug.setSeverity(lineContent[1]);
         bug.setPriority(lineContent[2]);
         bug.setOperatingSystem(lineContent[3]);

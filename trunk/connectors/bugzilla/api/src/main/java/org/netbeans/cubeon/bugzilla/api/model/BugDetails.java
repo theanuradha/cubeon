@@ -30,7 +30,7 @@ public class BugDetails {
     /**
      * Bug id.
      */
-    private Integer id;
+    private String id;
 
     /**
      * Creation date.
@@ -46,7 +46,7 @@ public class BugDetails {
      * Date of last change.
      */
     private Date deltaDate;
-    
+
     private Boolean reporterAccessible;
     private Boolean ccListAccessible;
     private Integer classificationId;
@@ -68,11 +68,11 @@ public class BugDetails {
     private List<String> cc = new ArrayList<String>();
     private List<LongDescription> longDescriptions = new ArrayList<LongDescription>();
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -258,5 +258,18 @@ public class BugDetails {
 
     public void setLongDescriptions(List<LongDescription> longDescriptions) {
         this.longDescriptions = longDescriptions;
+    }
+
+    public BugSummary getBugSummary() {
+        BugSummary bugSummary = new BugSummary();
+        bugSummary.setAssignee( assignedTo.getEmail() );
+        bugSummary.setId( id );
+        bugSummary.setOperatingSystem( os );
+        bugSummary.setPriority( priority );
+        bugSummary.setResolution( resolution );
+        bugSummary.setSeverity( severity );
+        bugSummary.setStatus( bugStatus );
+        bugSummary.setSummary( shortDescription );
+        return bugSummary;
     }
 }

@@ -25,9 +25,24 @@ package org.netbeans.cubeon.bugzilla.api.model;
 public class BugSummary {
 
     /**
+     * Closed bug status value.
+     */
+    public static final String CLOSED_STATUS = "CLOSED";
+
+    /**
+     * Open bug status value.
+     */
+    public static final String OPEN_STATUS = "OPEN";
+
+    /**
+     * Enhancment severity value.
+     */
+    public static final String ENHANCMENT_SERVERITY = "ENHANCMENT";
+
+    /**
      * Bug id.
      */
-    private Integer id;
+    private String id;
     /**
      * Bug's short description.
      */
@@ -57,11 +72,11 @@ public class BugSummary {
      */
     private String resolution;
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId( String id ) {
         this.id = id;
     }
 
@@ -69,7 +84,7 @@ public class BugSummary {
         return summary;
     }
 
-    public void setSummary(String summary) {
+    public void setSummary( String summary ) {
         this.summary = summary;
     }
 
@@ -77,7 +92,7 @@ public class BugSummary {
         return severity;
     }
 
-    public void setSeverity(String severity) {
+    public void setSeverity( String severity ) {
         this.severity = severity;
     }
 
@@ -85,7 +100,7 @@ public class BugSummary {
         return priority;
     }
 
-    public void setPriority(String priority) {
+    public void setPriority( String priority ) {
         this.priority = priority;
     }
 
@@ -93,7 +108,7 @@ public class BugSummary {
         return operatingSystem;
     }
 
-    public void setOperatingSystem(String operatingSystem) {
+    public void setOperatingSystem( String operatingSystem ) {
         this.operatingSystem = operatingSystem;
     }
 
@@ -101,7 +116,7 @@ public class BugSummary {
         return assignee;
     }
 
-    public void setAssignee(String assignee) {
+    public void setAssignee( String assignee ) {
         this.assignee = assignee;
     }
 
@@ -109,7 +124,7 @@ public class BugSummary {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus( String status ) {
         this.status = status;
     }
 
@@ -117,7 +132,11 @@ public class BugSummary {
         return resolution;
     }
 
-    public void setResolution(String resolution) {
+    public void setResolution( String resolution ) {
         this.resolution = resolution;
+    }
+
+    public boolean isEnhancment() {
+        return ENHANCMENT_SERVERITY.equalsIgnoreCase( severity );
     }
 }
