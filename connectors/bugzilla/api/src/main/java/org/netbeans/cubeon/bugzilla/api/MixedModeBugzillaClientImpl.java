@@ -153,7 +153,7 @@ public class MixedModeBugzillaClientImpl implements BugzillaClient {
     /**
      * {@inheritDoc}
      */
-    public BugDetails getBugDetails(Integer bugId) throws BugzillaException {
+    public BugDetails getBugDetails(Integer  bugId) throws BugzillaException {
         GetBugDetailsMethod method = new GetBugDetailsMethod(url, bugId);
         try{
             executeMethod( method );
@@ -273,5 +273,15 @@ public class MixedModeBugzillaClientImpl implements BugzillaClient {
         }
         sb.append(XML_RPC_SCRIPT);
         return sb.toString();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getBugUrl( String id ) {
+        if (!url.endsWith("/")) {
+            url += "/";
+        }
+        return url + GetBugDetailsMethod.SHOW_BUG_CGI_SCRIPT + "?id=" + id;
     }
 }

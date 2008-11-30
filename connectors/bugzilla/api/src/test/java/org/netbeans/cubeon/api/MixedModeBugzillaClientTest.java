@@ -34,7 +34,7 @@ import org.netbeans.cubeon.bugzilla.api.post.queries.SpecificQuery;
 public class MixedModeBugzillaClientTest extends TestCase {
 
     private BugzillaClient client;
-    private Integer bugId;
+    private static Integer bugId;
 
     public MixedModeBugzillaClientTest(String name) {
         super(name);
