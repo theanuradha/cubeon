@@ -1,5 +1,5 @@
 /*
- *  Copyright 2008 tk206781.
+ *  Copyright 2008 Tomas Knappek.
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,13 +14,6 @@
  *  limitations under the License.
  *  under the License.
  */
-
-/*
- * ConfigurationHandlerImpl.java
- *
- * Created on Nov 26, 2008, 9:06:05 PM
- */
-
 package org.netbeans.cubeon.javanet.ui;
 
 import java.awt.Color;
@@ -42,7 +35,7 @@ import org.openide.util.RequestProcessor;
 
 /**
  *
- * @author tk206781
+ * @author Tomas Knappek
  */
 public class ConfigurationHandlerImpl extends javax.swing.JPanel implements ConfigurationHandler {
 

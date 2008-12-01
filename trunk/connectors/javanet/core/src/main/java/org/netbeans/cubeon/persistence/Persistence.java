@@ -15,15 +15,24 @@
  *  under the License.
  */
 
-package org.netbeans.cubeon.javanet.persistence;
+package org.netbeans.cubeon.persistence;
 
-import org.netbeans.cubeon.javanet.tasks.JavanetTask;
-import org.netbeans.cubeon.persistence.TaskPersistence;
+import java.util.List;
 
 /**
  *
  * @author Tomas Knappek
  */
-public interface JavanetTaskPersistence extends TaskPersistence<JavanetTask>{
+public interface Persistence<T> {
+
+    public void add(T type);
+
+    public T getById(String id);
+
+    public List<T> getAll();
+
+    public List<String> getAllIds();
+
+    public void remove(String id);
 
 }
