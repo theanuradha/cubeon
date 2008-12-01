@@ -19,16 +19,73 @@
             </plugin>
         </plugins>
     </build>
+    <repositories>
+        <repository>
+            <id>java.net</id>
+            <name>repository hosted on java.net</name>
+            <url>http://download.java.net/maven/2</url>
+            <releases>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
     <dependencies>
+        <!-- javanettasks dependency (all transitive dependencies have to be here too, to be placed into nbm -->
+        <dependency>
+            <groupId>javanettasks</groupId>
+            <artifactId>javanettasks</artifactId>
+            <version>1.0.18</version>
+        </dependency>
+        <dependency>
+            <groupId>nekohtml</groupId>
+            <artifactId>nekohtml</artifactId>
+            <version>0.9.5</version>
+        </dependency>
+        <dependency>
+            <groupId>javanettasks</groupId>
+            <artifactId>httpunit</artifactId>
+            <version>1.5.4</version>
+        </dependency>
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>2.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>jtidy</groupId>
+            <artifactId>jtidy</artifactId>
+            <version>4aug2000r7-dev</version>
+        </dependency>
+        <dependency>
+            <groupId>dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+            <version>1.6.1</version>
+        </dependency>
+        <dependency>
+            <groupId>jaxen</groupId>
+            <artifactId>jaxen</artifactId>
+            <version>1.1.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>xom</groupId>
+                    <artifactId>xom</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>jdom</groupId>
+                    <artifactId>jdom</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- end of javanettasks dependency -->
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-nodes</artifactId>
             <version>${netbeans.release}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.netbeans.cubeon</groupId>
-            <artifactId>jira-connecter-lib</artifactId>
-            <version>${cubeon.release}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.cubeon</groupId>
@@ -86,5 +143,5 @@
             <artifactId>org-jdesktop-layout</artifactId>
             <version>${netbeans.release}</version>
         </dependency>
-    </dependencies>
+    </dependencies>    
 </project>
