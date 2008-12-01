@@ -1,5 +1,5 @@
 /*
- *  Copyright 2008 tk206781.
+ *  Copyright 2008 Tomas Knappek.
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import org.netbeans.cubeon.tasks.spi.task.TaskElementActionsProvider;
 
 /**
  *
- * @author tk206781
+ * @author Tomas Knappek
  */
 public class JavanetTaskActionsProviderImpl implements TaskElementActionsProvider {
 

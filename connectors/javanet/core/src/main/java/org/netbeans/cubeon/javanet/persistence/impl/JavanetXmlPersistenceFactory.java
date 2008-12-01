@@ -15,15 +15,25 @@
  *  under the License.
  */
 
-package org.netbeans.cubeon.javanet.persistence;
+package org.netbeans.cubeon.javanet.persistence.impl;
 
-import org.netbeans.cubeon.javanet.tasks.JavanetTask;
-import org.netbeans.cubeon.persistence.TaskPersistence;
+import org.netbeans.cubeon.persistence.Persistence;
+import org.netbeans.cubeon.persistence.PersistenceFactory;
+import org.netbeans.cubeon.persistence.RepoPersistence;
 
 /**
  *
  * @author Tomas Knappek
  */
-public interface JavanetTaskPersistence extends TaskPersistence<JavanetTask>{
+public class JavanetXmlPersistenceFactory extends PersistenceFactory {
+
+    @Override
+    protected <E extends Persistence> E createPersistence(Class<E> c) {
+        if (RepoPersistence.class.isAssignableFrom(c)) {
+            return (E) new JavanetXmlRepoPersistence();
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
 
 }

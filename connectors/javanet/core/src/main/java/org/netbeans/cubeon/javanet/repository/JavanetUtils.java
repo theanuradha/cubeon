@@ -15,15 +15,13 @@
  *  under the License.
  */
 
-package org.netbeans.cubeon.javanet.persistence;
-
-import org.netbeans.cubeon.javanet.tasks.JavanetTask;
-import org.netbeans.cubeon.persistence.TaskPersistence;
+package org.netbeans.cubeon.javanet.repository;
 
 /**
  *
  * @author Tomas Knappek
  */
-public interface JavanetTaskPersistence extends TaskPersistence<JavanetTask>{
+public class JavanetUtils {
+
 
 }
