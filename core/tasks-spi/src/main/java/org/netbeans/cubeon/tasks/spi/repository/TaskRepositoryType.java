@@ -79,7 +79,7 @@ public interface TaskRepositoryType {
      * Returns a list of all the TaskRepository's registered with the implementing connector instance
      * @return List of TaskRepository instances
      */
-    List<TaskRepository> getRepositorys();
+    List<? extends TaskRepository> getRepositorys();
 
     /**
      * Returns a repository associated with a specific id (String)
