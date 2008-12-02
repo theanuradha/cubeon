@@ -11,4 +11,8 @@
   * Support WorkSets
   * Backup support
   * Task Cloning
-  * Integrating build servers ([http://code.google.com/p/cubeon/issues/detail?id=15 Hudson] etc..)
+  * Integrating build servers ([http://code.google.com/p/cubeon/issues/detail?id=15 Hudson] etc..) 
+ * Connectors
+  * Bugzilla Support
+  * Java.net Support 
+ 
