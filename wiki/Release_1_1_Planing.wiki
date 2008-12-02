@@ -5,6 +5,7 @@
 
 
 = Wish List =
+ * Cube'n Core 
   * Attachment Support API/SPI for Connectors 
   * UI framework for task Editor
   * Support WorkSets
