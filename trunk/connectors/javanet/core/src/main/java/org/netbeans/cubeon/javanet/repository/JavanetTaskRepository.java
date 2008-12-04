@@ -21,8 +21,6 @@ import java.awt.Image;
 import org.kohsuke.jnt.JNProject;
 import org.kohsuke.jnt.JavaNet;
 import org.kohsuke.jnt.ProcessingException;
-import org.netbeans.cubeon.tasks.spi.Notifier;
-import org.netbeans.cubeon.tasks.spi.repository.RepositoryEventAdapter;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.util.Exceptions;
@@ -68,6 +66,7 @@ public class JavanetTaskRepository implements TaskRepository {
 
     public JavanetTaskRepository(JavanetTaskRepositoryProvider taskRepoProvider, JavaNet javaNet,
             JNProject jnProject, String userName, String password) {
+        _id = jnProject.getName();
         _javanet = javaNet;
         _taskRepoProvider = taskRepoProvider;
         _jnProject = jnProject;
@@ -116,7 +115,7 @@ public class JavanetTaskRepository implements TaskRepository {
     }
 
     public void synchronize() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //TODO: implement this
     }
 
     public State getState() {
@@ -128,7 +127,7 @@ public class JavanetTaskRepository implements TaskRepository {
         _notifier.fireStateChanged(state);
     }
 
-    public Notifier<RepositoryEventAdapter> getNotifier() {
+    public JavanetTaskRepositoryNotifier getNotifier() {
         return _notifier;
     }
 

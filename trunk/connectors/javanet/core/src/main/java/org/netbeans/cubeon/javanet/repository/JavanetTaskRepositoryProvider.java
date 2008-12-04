@@ -18,16 +18,16 @@
 package org.netbeans.cubeon.javanet.repository;
 
 import java.awt.Image;
-import java.util.ArrayList;
 import java.util.List;
 import org.netbeans.cubeon.javanet.persistence.JavanetRepoPersistence;
-import org.netbeans.cubeon.javanet.persistence.JavanetTaskPersistence;
 import org.netbeans.cubeon.javanet.ui.ConfigurationHandlerImpl;
 import org.netbeans.cubeon.persistence.PersistenceFactory;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepositoryType;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 
@@ -38,6 +38,7 @@ import org.openide.util.lookup.Lookups;
 public class JavanetTaskRepositoryProvider implements TaskRepositoryType {
 
     JavanetRepoPersistence _persistence = null;
+    List<JavanetTaskRepository> _repos = null;
 
     public JavanetTaskRepositoryProvider() {
         _persistence = PersistenceFactory.getPersistence(JavanetRepoPersistence.class);
@@ -66,7 +67,34 @@ public class JavanetTaskRepositoryProvider implements TaskRepositoryType {
     }
 
     public TaskRepository persistRepository(TaskRepository taskRepository) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        final JavanetTaskRepository javanetTaskRepository =
+                taskRepository.getLookup().lookup(JavanetTaskRepository.class);
+        if (javanetTaskRepository != null) {
+            _persistence.add(javanetTaskRepository);
+            _persistence.save();
+            _repos.add(javanetTaskRepository);
+
+            JavanetTaskRepositoryNotifier notifier = javanetTaskRepository.getNotifier();
+            //notifier.fireNameChenged();
+            //notifier.fireDescriptionChenged();
+            RequestProcessor.getDefault().post(new Runnable() {
+
+                public void run() {
+                    try {
+                        //reconnect and update repository
+                        //javanetTaskRepository.reconnect();
+                        //javanetTaskRepository.updateAttributes();
+                        javanetTaskRepository.synchronize();
+                    } catch (Exception ex) {
+                        Exceptions.printStackTrace(ex);
+                    }
+                }
+            });
+
+            return taskRepository;
+
+        }
+        return null;
     }
 
     public boolean removeRepository(TaskRepository taskRepository) {
@@ -74,7 +102,10 @@ public class JavanetTaskRepositoryProvider implements TaskRepositoryType {
     }
 
     public List<JavanetTaskRepository> getRepositorys() {
-        return _persistence.getAll();
+        if (_repos == null) {
+            _repos = _persistence.getAll();
+        }
+        return _repos;
     }
 
     public TaskRepository getRepositoryById(String Id) {

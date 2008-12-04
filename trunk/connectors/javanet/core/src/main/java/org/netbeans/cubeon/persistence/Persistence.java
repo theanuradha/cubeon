@@ -35,4 +35,6 @@ public interface Persistence<T> {
 
     public void remove(String id);
 
+    public void save();
+
 }
