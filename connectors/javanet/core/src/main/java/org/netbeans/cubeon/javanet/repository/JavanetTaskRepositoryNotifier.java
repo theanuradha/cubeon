@@ -26,7 +26,7 @@ import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
  *
  * @author Tomas Knappek
  */
-public class JavanetTaskRepositoryNotifier extends  Notifier<RepositoryEventAdapter> {
+public class JavanetTaskRepositoryNotifier extends Notifier<RepositoryEventAdapter> {
 
     private JavanetTaskRepository repository;
   

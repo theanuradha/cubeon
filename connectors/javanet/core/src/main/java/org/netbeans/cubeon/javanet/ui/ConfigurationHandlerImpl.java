@@ -34,7 +34,7 @@ import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 
 /**
- *
+ * @author Anuradha G
  * @author Tomas Knappek
  */
 public class ConfigurationHandlerImpl extends javax.swing.JPanel implements ConfigurationHandler {
@@ -44,7 +44,9 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
     private JavanetTaskRepository _taskRepo = null;
     private JavanetTaskRepositoryProvider _taskRepoProvider = null;
 
-    /** Creates new form ConfigurationHandlerImpl */
+    /** 
+     * Creates new form ConfigurationHandlerImpl
+     */
     public ConfigurationHandlerImpl() {
         initComponents();
         prbProgress.setVisible(false);
@@ -260,8 +262,8 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
         _taskRepo = taskRepository.getLookup().lookup(JavanetTaskRepository.class);
         if (_taskRepo != null) {
             txtProjectName.setText(_taskRepo.getName());
-            //txtUserId.setText(_taskRepo.getUserName());
-            //txtPassword.setText(_taskRepo.getPassword());
+            txtUserId.setText(_taskRepo.getUserName());
+            txtPassword.setText(_taskRepo.getPassword());
 
         } else {
             txtProjectName.requestFocus();

@@ -88,6 +88,9 @@ public abstract class AbstractXmlPersistence<T> implements Persistence<T> {
         return ret;
     }
 
+    public void save() {
+        saveDocument();
+    }
 
 
     protected final Document getDocument() {
@@ -101,7 +104,7 @@ public abstract class AbstractXmlPersistence<T> implements Persistence<T> {
                 } else {
                     assert getTagRoot() != null;
                     _doc = XMLUtil.createDocument(getTagRoot(), null, null, null);
-                    _doc.createElement(getTagElements());
+                    _doc.getDocumentElement().appendChild(_doc.createElement(getTagElements()));
                 }
             } catch (SAXException ex) {
                 Exceptions.printStackTrace(ex);
@@ -139,6 +142,7 @@ public abstract class AbstractXmlPersistence<T> implements Persistence<T> {
             String id = element.getAttribute(TAG_ID);
             removeElement(id);
         }
+        saveDocument();
         Element elements = findElement(getDocument().getDocumentElement(), getTagElements());
         elements.appendChild(element);
 

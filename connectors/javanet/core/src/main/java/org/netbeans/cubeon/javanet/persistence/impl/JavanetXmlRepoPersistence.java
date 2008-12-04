@@ -18,6 +18,7 @@ package org.netbeans.cubeon.javanet.persistence.impl;
 
 import org.netbeans.cubeon.javanet.persistence.JavanetRepoPersistence;
 import org.netbeans.cubeon.javanet.repository.JavanetTaskRepository;
+import org.netbeans.cubeon.tasks.core.api.RepositoryUtils;
 import org.w3c.dom.Element;
 
 /**
@@ -40,7 +41,7 @@ public class JavanetXmlRepoPersistence extends AbstractXmlPersistence<JavanetTas
 
     @Override
     protected String getBaseDir() {
-        return "javanet-test";
+        return "cubeon/javanet_repositories";
     }
 
     @Override
@@ -63,7 +64,8 @@ public class JavanetXmlRepoPersistence extends AbstractXmlPersistence<JavanetTas
         String id = element.getAttribute(TAG_ID);        
         String name = element.getAttribute(TAG_NAME);                
         String user = element.getAttribute(TAG_USERID);
-        String password = element.getAttribute(TAG_PASSWORD_HASH);
+        String passwordHash = element.getAttribute(TAG_PASSWORD_HASH);
+        String password = RepositoryUtils.decodePassword(user, passwordHash);
 
         JavanetTaskRepository repo = null;
         if (name != null && user != null && password != null) {
@@ -74,6 +76,12 @@ public class JavanetXmlRepoPersistence extends AbstractXmlPersistence<JavanetTas
 
     @Override
     protected Element mapToElement(JavanetTaskRepository t) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Element element = getDocument().createElement(getTagElement());
+        element.setAttribute(TAG_ID, t.getId());
+        element.setAttribute(TAG_NAME, t.getName());
+        element.setAttribute(TAG_USERID, t.getUserName());
+        element.setAttribute(TAG_PASSWORD_HASH, RepositoryUtils.encodePassword(t.getUserName(),
+                t.getPassword()));
+        return element;
     }
 }
