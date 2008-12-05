@@ -177,7 +177,10 @@ public class TracTaskRepository implements TaskRepository {
 
     public void remove(TracTask tracTask) {
         handler.removeTaskElement(tracTask);
-        cache.removeTaskElement(tracTask);
+        //issue-26 check if loacl as local task not on cache
+        if (!tracTask.isLocal()) {
+            cache.removeTaskElement(tracTask);
+        }
         extension.fireTaskRemoved(tracTask);
     }
 
@@ -191,7 +194,7 @@ public class TracTaskRepository implements TaskRepository {
 
             TracSession session = getSession();
             Ticket issue = session.getTicket(task.getTicketId());
-            
+
             update(issue, task);
 
         }
