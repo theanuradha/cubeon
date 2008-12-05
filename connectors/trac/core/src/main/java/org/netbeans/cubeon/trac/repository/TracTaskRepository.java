@@ -177,7 +177,10 @@ public class TracTaskRepository implements TaskRepository {
 
     public void remove(TracTask tracTask) {
         handler.removeTaskElement(tracTask);
+        //issue-26 check if loacl as local task not on cache
+        if(!tracTask.isLocal()){
         cache.removeTaskElement(tracTask);
+        }
         extension.fireTaskRemoved(tracTask);
     }
 
