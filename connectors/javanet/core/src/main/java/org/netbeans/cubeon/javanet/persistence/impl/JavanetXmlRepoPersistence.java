@@ -69,19 +69,19 @@ public class JavanetXmlRepoPersistence extends AbstractXmlPersistence<JavanetTas
 
         JavanetTaskRepository repo = null;
         if (name != null && user != null && password != null) {
-            repo = new JavanetTaskRepository(null, name, user, password);
+            repo = new JavanetTaskRepository(null, id, name, user, password);
         }
         return repo;
     }
 
     @Override
     protected Element mapToElement(JavanetTaskRepository t) {
-        Element element = getDocument().createElement(getTagElement());
+        Element element = getDocument().createElement(getTagElement());        
         element.setAttribute(TAG_ID, t.getId());
         element.setAttribute(TAG_NAME, t.getName());
         element.setAttribute(TAG_USERID, t.getUserName());
         element.setAttribute(TAG_PASSWORD_HASH, RepositoryUtils.encodePassword(t.getUserName(),
-                t.getPassword()));
+                t.getPassword()));        
         return element;
     }
 }

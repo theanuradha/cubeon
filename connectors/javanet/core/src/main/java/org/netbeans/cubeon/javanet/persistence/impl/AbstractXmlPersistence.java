@@ -149,10 +149,21 @@ public abstract class AbstractXmlPersistence<T> implements Persistence<T> {
     }
 
     protected final void removeElement(String id) {
-        Element el = getDocument().getElementById(id);
-        if (el != null) {
-            Node parent = el.getParentNode();
-            parent.removeChild(el);
+        if (id == null) return;
+        Element elements = findElement(getDocument().getDocumentElement(), getTagElements());
+        NodeList children = elements.getChildNodes();
+        for (int i = 0; i < children.getLength(); i++) {
+            Node node = children.item(i);
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element) node;
+                if (element.hasAttribute(TAG_ID)) {
+                    String eid = element.getAttribute(TAG_ID);
+                    if (id.equals(eid)) {
+                        elements.removeChild(element);
+                        break;
+                    }
+                }
+            }
         }
     }
 

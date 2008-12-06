@@ -98,12 +98,27 @@ public class JavanetTaskRepositoryProvider implements TaskRepositoryType {
     }
 
     public boolean removeRepository(TaskRepository taskRepository) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        JavanetTaskRepository javanetTaskRepository =
+                taskRepository.getLookup().lookup(JavanetTaskRepository.class);
+        try {
+            _persistence.remove(javanetTaskRepository.getId());
+            _persistence.save();
+            _repos.remove(javanetTaskRepository);
+            return true;
+        } catch (Exception e) {
+            Exceptions.printStackTrace(e);
+            return false;
+        }
     }
 
     public List<JavanetTaskRepository> getRepositorys() {
         if (_repos == null) {
             _repos = _persistence.getAll();
+
+            //TODO: this is ugly - should be redesigned
+            for (JavanetTaskRepository repo : _repos) {
+                repo.setRepositoryProvider(this);
+            }
         }
         return _repos;
     }
