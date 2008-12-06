@@ -44,11 +44,14 @@ public class JavanetTaskRepository implements TaskRepository {
     private State _state = State.INACTIVE;
     private JavanetTaskRepositoryNotifier _notifier = new JavanetTaskRepositoryNotifier(this);
 
-    private void connect() {
+    private synchronized void connect() {
         try {
-            _javanet = JavaNet.connect(_userName, _password);
-            _jnProject = _javanet.getProject(_projectName);
-            _state = State.ACTIVE;
+            if (_state == State.INACTIVE) {
+                _javanet = JavaNet.connect(_userName, _password);
+                _jnProject = _javanet.getProject(_projectName);
+                _state = State.ACTIVE;
+                _notifier.fireStateChanged(_state);
+            }
         } catch (ProcessingException ex) {
             _state = State.INACTIVE;
             Exceptions.printStackTrace(ex);
@@ -56,12 +59,13 @@ public class JavanetTaskRepository implements TaskRepository {
         
     }
 
-    public JavanetTaskRepository(JavanetTaskRepositoryProvider taskRepoProvider,
+    public JavanetTaskRepository(JavanetTaskRepositoryProvider taskRepoProvider, String id,
             String projectName, String userName, String password) {        
-        _taskRepoProvider = taskRepoProvider;        
+        _taskRepoProvider = taskRepoProvider;
+        _id = id;
+        _projectName = projectName;
         _userName = userName;
-        _password = password;
-        connect();
+        _password = password;        
     }
 
     public JavanetTaskRepository(JavanetTaskRepositoryProvider taskRepoProvider, JavaNet javaNet,
@@ -81,21 +85,24 @@ public class JavanetTaskRepository implements TaskRepository {
     }
 
     public String getName() {
-        return _jnProject.getName();
+        return _projectName;
     }
 
     public String getDescription() {
+        String desc = getProjectName() + " repository";
         try {
-            return _jnProject.getSummary();
+            if (_jnProject != null) {
+                desc = _jnProject.getSummary();
+            }
         } catch (ProcessingException ex) {
-            Exceptions.printStackTrace(ex);
-            return null;
+            Exceptions.printStackTrace(ex);            
         }
+        return desc;
     }
 
     public Lookup getLookup() {
         //TODO: not complete
-        return Lookups.fixed(this);
+        return Lookups.fixed(this, _taskRepoProvider);
     }
 
     public Image getImage() {
@@ -116,6 +123,7 @@ public class JavanetTaskRepository implements TaskRepository {
 
     public void synchronize() {
         //TODO: implement this
+        connect();
     }
 
     public State getState() {
@@ -145,6 +153,10 @@ public class JavanetTaskRepository implements TaskRepository {
 
     public String getProjectName () {
         return _projectName;
+    }
+
+    void setRepositoryProvider(JavanetTaskRepositoryProvider provider) {
+        _taskRepoProvider = provider;
     }
 
 }
