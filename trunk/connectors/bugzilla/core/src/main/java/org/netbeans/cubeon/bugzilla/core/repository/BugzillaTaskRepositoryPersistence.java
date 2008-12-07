@@ -27,6 +27,7 @@ import org.xml.sax.InputSource;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -46,6 +47,10 @@ public class BugzillaTaskRepositoryPersistence extends BaseXMLPersistenceImpl {
      * Bugzilla repositories configuration file.
      */
     public static final String BUGZILLA_REPOSITORIES_CONF_FILE = "repositories.xml";
+    /**
+     * Repositories node.
+     */
+    private static final String NODE_REPOSITORIES = "repositories";
     /**
      * Repository node name.
      */
@@ -105,19 +110,21 @@ public class BugzillaTaskRepositoryPersistence extends BaseXMLPersistenceImpl {
             DocumentBuilder documentBuilder = null;
             documentBuilder = documentBuilderFactory.newDocumentBuilder();
             Document document = documentBuilder.newDocument();
-            Element root = document.createElement(NODE_REPOSITORY);
-            root.setAttribute(ATTRIBUTE_ID, taskRepository.getId());
+            Element repositoryElement = document.createElement(NODE_REPOSITORY);
+            repositoryElement.setAttribute(ATTRIBUTE_ID, taskRepository.getId());
             Map<String, String> elementsMap = new LinkedHashMap<String, String>();
             elementsMap.put(NODE_NAME, taskRepository.getName());
             elementsMap.put(NODE_URL, taskRepository.getUrl());
             elementsMap.put(NODE_DESCRIPTION, taskRepository.getDescription());
             elementsMap.put(NODE_USERNAME, taskRepository.getUsername());
             elementsMap.put(NODE_PASSWORD, taskRepository.getPassword());
-            root = createCompleteElement(root, elementsMap, document);
+            repositoryElement = createCompleteElement(repositoryElement, elementsMap, document);
             FileObject configFile = getConfigurationFile(BUGZILLA_REPOSITORIES_CONF_FILE);
             document = XMLUtil.parse(new InputSource(configFile.getInputStream()), false, true, null, null);
             removeRepositoryFromDocument(taskRepository, document);
-            document.appendChild(root);
+            NodeList nodeList = document.getElementsByTagName(NODE_REPOSITORIES);
+            Node repositoriesElement = nodeList.item(0);
+            repositoriesElement.appendChild(repositoryElement);
             saveDocumentToFile(document, configFile);
         } catch (Exception e) {
             Exceptions.printStackTrace(e);
@@ -233,12 +240,49 @@ public class BugzillaTaskRepositoryPersistence extends BaseXMLPersistenceImpl {
      * @param fileName - configuration file name
      * @return - file object
      * @throws IOException - throws exception in case of any errors during file opening
+     * @throws javax.xml.parsers.ParserConfigurationException - throws this exception in case there were problems
+     * during parser initialization
      */
-    private FileObject getConfigurationFile(String fileName) throws IOException {
+    private FileObject getConfigurationFile(String fileName) throws IOException, ParserConfigurationException {
         FileObject configFile = baseDir.getFileObject(fileName);
         if (configFile == null) {
-            configFile = baseDir.createData(BUGZILLA_REPOSITORIES_CONF_FILE);
+            configFile = createConfigurationFile(fileName);
         }
         return configFile;
+    }
+
+    /**
+     * Creates repositories configuration file.
+     * @param fileName - file name
+     * @return - repositories configuration file
+     * @throws IOException - throws exception in case there are errors during file creation
+     * @throws ParserConfigurationException - throws exception in case there are errors during parser initialization
+     */
+    private FileObject createConfigurationFile(String fileName) throws IOException, ParserConfigurationException {
+        FileObject configFile;
+        configFile = baseDir.createData(fileName);
+        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+        Document document = documentBuilder.newDocument();
+        Element repositoriesElement = document.createElement(NODE_REPOSITORIES);
+        document.appendChild(repositoriesElement);
+        saveDocumentToFile(document, configFile);
+        return configFile;
+    }
+
+    /**
+     * Removes repositories configuration file.
+     * Be careful using this method!
+     * @param fileName - file name
+     */
+    public void removeConfigurationFile(String fileName) {
+        try {
+            FileObject configFile = baseDir.getFileObject(fileName);
+            if (configFile != null) {
+                configFile.delete();
+            }
+        } catch (IOException e) {
+            Exceptions.printStackTrace(e);
+        }
     }
 }
