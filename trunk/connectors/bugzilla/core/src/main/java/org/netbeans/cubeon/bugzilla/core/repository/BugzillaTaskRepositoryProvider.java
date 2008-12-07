@@ -33,6 +33,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -45,7 +46,7 @@ public class BugzillaTaskRepositoryProvider implements TaskRepositoryType {
     /**
      * Base path of Bugzilla repositories configuration.
      */
-    private static final String BASE_PATH = "cubeon/bugzilla_repositories/";
+    private static final String BASE_PATH = "cubeon/bugzilla/repositories/";
 
     /**
      * Task repository ID.
@@ -60,7 +61,7 @@ public class BugzillaTaskRepositoryProvider implements TaskRepositoryType {
     /**
      * Persistance manager, it's responsible for persisting Bugzilla repositories configuration.
      */
-    private BugzillaRepositoryPersistence persistence;
+    private BugzillaTaskRepositoryPersistence persistence;
 
     /**
      * List of all configured Bugzilla repositories.
@@ -84,7 +85,7 @@ public class BugzillaTaskRepositoryProvider implements TaskRepositoryType {
             Exceptions.printStackTrace( ex );
         }
         assert baseDir != null;
-        persistence = new BugzillaRepositoryPersistence( this, baseDir );
+        persistence = new BugzillaTaskRepositoryPersistence( this, baseDir );
     }
 
     /**
@@ -160,7 +161,10 @@ public class BugzillaTaskRepositoryProvider implements TaskRepositoryType {
      */
     public java.util.List<TaskRepository> getRepositorys() {
         if( !initiailzed.getAndSet( true ) ) {
-            repositories.addAll( persistence.getBugzillaTaskRepositories() );
+            Collection<? extends BugzillaTaskRepository> repos = persistence.getBugzillaTaskRepositories();
+            if( repos != null ) {
+                repositories.addAll( repos );
+            }
         }
         return new ArrayList<TaskRepository>( repositories );
     }

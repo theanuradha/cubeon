@@ -44,6 +44,11 @@ public class BugzillaTask implements TaskElement {
     private BugSummary bugSummary;
 
     /**
+     * Task type local/remote.
+     */
+    private boolean isLocalTask = true;
+
+    /**
      * Task repository.
      */
     private BugzillaTaskRepository taskRepository;

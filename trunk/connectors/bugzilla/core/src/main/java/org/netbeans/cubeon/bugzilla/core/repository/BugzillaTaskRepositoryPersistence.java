@@ -17,6 +17,7 @@
 package org.netbeans.cubeon.bugzilla.core.repository;
 
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileLock;
 import org.openide.util.Exceptions;
 import org.openide.xml.XMLUtil;
 import org.w3c.dom.Element;
@@ -26,10 +27,16 @@ import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.ParserConfigurationException;
 import java.util.Collection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.LinkedHashMap;
 import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * Bugzilla repository persistence class, it will be used to add new repository or delete one
@@ -37,7 +44,7 @@ import java.io.IOException;
  *
  * @author radoslaw.holewa
  */
-public class BugzillaRepositoryPersistence {
+public class BugzillaTaskRepositoryPersistence {
 
     /**
      * Bugzilla repositories configuration file.
@@ -75,6 +82,11 @@ public class BugzillaRepositoryPersistence {
     private static final String NODE_DESCRIPTION = "description";
 
     /**
+     * Repository ID attribute.
+     */
+    private static final String ATTRIBUTE_ID = "id";
+
+    /**
      * Base directory for Bugzilla repository configuration data.
      */
     private FileObject baseDir;
@@ -89,7 +101,7 @@ public class BugzillaRepositoryPersistence {
      * @param taskRepositoryProvider - task repository provider which provides repository managment logic
      * @param baseDir                - base Bugzilla repository configuration directory
      */
-    public BugzillaRepositoryPersistence( BugzillaTaskRepositoryProvider taskRepositoryProvider, FileObject baseDir ) {
+    public BugzillaTaskRepositoryPersistence( BugzillaTaskRepositoryProvider taskRepositoryProvider, FileObject baseDir ) {
         this.taskRepositoryProvider = taskRepositoryProvider;
         this.baseDir = baseDir;
     }
@@ -100,27 +112,78 @@ public class BugzillaRepositoryPersistence {
      * @param taskRepository - task repository which will be added
      */
     public void addRepository( BugzillaTaskRepository taskRepository ) {
-        //todo implement this
+        try {
+            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder documentBuilder = null;
+            documentBuilder = documentBuilderFactory.newDocumentBuilder();
+            Document document = documentBuilder.newDocument();
+            Element root = document.createElement( NODE_REPOSITORY );
+            root.setAttribute( ATTRIBUTE_ID, taskRepository.getId() );
+            Map<String, String> elementsMap = new LinkedHashMap<String, String>();
+            elementsMap.put( NODE_NAME, taskRepository.getName() );
+            elementsMap.put( NODE_URL, taskRepository.getUrl() );
+            elementsMap.put( NODE_DESCRIPTION, taskRepository.getDescription() );
+            elementsMap.put( NODE_USERNAME, taskRepository.getUsername() );
+            elementsMap.put( NODE_PASSWORD, taskRepository.getPassword() );
+            root = createCompleteElement( root, elementsMap, document );
+            FileObject configFile = getConfigurationFile( BUGZILLA_REPOSITORIES_CONF_FILE );
+            document = XMLUtil.parse( new InputSource( configFile.getInputStream() ), false, true, null, null );
+            removeRepositoryFromDocument( taskRepository, document );
+            document.appendChild( root );
+            saveDocumentToFile( document );
+        } catch( Exception e ) {
+            Exceptions.printStackTrace( e );
+        }
     }
 
     /**
-     * Removes given repository.
+     * Removes given repository from DOM document.
+     *
+     * @param taskRepository - task repository to remove
+     * @param document       - DOM document
+     */
+    private void removeRepositoryFromDocument( BugzillaTaskRepository taskRepository, Document document ) {
+        NodeList nodeList = document.getElementsByTagName( "repository" );
+        Node node = null;
+        for( int i = 0; i < nodeList.getLength(); i++ ) {
+            node = nodeList.item( i );
+            String id = node.getAttributes().getNamedItem( ATTRIBUTE_ID ).getTextContent();
+            if( taskRepository.getId().equals( id ) ) {
+                document.removeChild( node );
+            }
+        }
+    }
+
+    /**
+     * Creates complete content for given root element and it's childrens provided as a map of values.
+     *
+     * @param rootElement - root element, it will contain child elements created using provided map
+     * @param values      - map of values
+     * @param document    - document, it will be used to create child elements
+     * @return - filled root element
+     */
+    private Element createCompleteElement( Element rootElement, Map<String, String> values, Document document ) {
+        Element childElement = null;
+        for( String name : values.keySet() ) {
+            childElement = document.createElement( name );
+            childElement.setTextContent( values.get( name ) );
+            rootElement.appendChild( childElement );
+        }
+        return rootElement;
+    }
+
+    /**
+     * Removes given repository (if it exist).
      *
      * @param taskRepository - repository which will be removed
      */
     public void removeRepository( BugzillaTaskRepository taskRepository ) {
         Document document = null;
         try {
-            taskRepository.getUrl();
             FileObject configFile = getConfigurationFile( BUGZILLA_REPOSITORIES_CONF_FILE );
             document = XMLUtil.parse( new InputSource( configFile.getInputStream() ), false, true, null, null );
-            NodeList nodeList = document.getElementsByTagName( "repository" );
-            Node node = null;
-            NodeList childNodes = null;
-            for( int i = 0; i < nodeList.getLength(); i++ ) {
-                node = nodeList.item( i );
-                childNodes = node.getChildNodes();
-            }
+            removeRepositoryFromDocument( taskRepository, document );
+            saveDocumentToFile( document );//todo refactor it
         } catch( Exception e ) {
             Exceptions.printStackTrace( e );
         }
@@ -168,6 +231,7 @@ public class BugzillaRepositoryPersistence {
      * Rarses one repository element.
      *
      * @param nodeList - list of one-repository related nodes
+     * @return - bugzilla task repository
      */
     private BugzillaTaskRepository parseRepository( NodeList nodeList ) {
         BugzillaTaskRepository repository = new BugzillaTaskRepository();
@@ -200,8 +264,9 @@ public class BugzillaRepositoryPersistence {
      */
     private void saveElement( Element element ) {
         Document document = null;
+        FileObject configFile;
         try {
-            FileObject configFile = getConfigurationFile( BUGZILLA_REPOSITORIES_CONF_FILE );
+            configFile = getConfigurationFile( BUGZILLA_REPOSITORIES_CONF_FILE );
             document = XMLUtil.parse( new InputSource( configFile.getInputStream() ), false, true, null, null );
         } catch( IOException e ) {
             Exceptions.attachMessage( e, "Error while opening configuration file." );
@@ -209,7 +274,37 @@ public class BugzillaRepositoryPersistence {
             Exceptions.attachMessage( e, "Error while parsing configuration file" );
         }
         document.appendChild( element );
-        //todo implement this
+        saveDocumentToFile( document );
+    }
+
+    /**
+     * Saves document to file.
+     *
+     * @param document - document to save
+     */
+    private void saveDocumentToFile( Document document ) {
+        FileObject configFile;
+        FileLock fileLock = null;
+        OutputStream out = null;
+        try {
+            configFile = getConfigurationFile( BUGZILLA_REPOSITORIES_CONF_FILE );
+            fileLock = configFile.lock();
+            out = configFile.getOutputStream( fileLock );
+            XMLUtil.write( document, out, "UTF-8" );
+        } catch( IOException ex ) {
+            Exceptions.printStackTrace( ex );
+        } finally {
+            if( out != null ) {
+                try {
+                    out.close();
+                } catch( IOException ex ) {
+                    Exceptions.printStackTrace( ex );
+                }
+            }
+            if( fileLock != null ) {
+                fileLock.releaseLock();
+            }
+        }
     }
 
     /**
