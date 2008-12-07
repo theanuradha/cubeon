@@ -32,6 +32,7 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
+import org.openide.util.lookup.Lookups;
 
 import java.awt.*;
 import java.util.Map;
@@ -147,7 +148,7 @@ public class BugzillaTaskRepository implements TaskRepository {
      * {@inheritDoc}
      */
     public Lookup getLookup() {
-        return null;  //TODO implement this
+        return Lookups.fixed( this, provider );
     }
 
     /**
@@ -167,7 +168,7 @@ public class BugzillaTaskRepository implements TaskRepository {
     /**
      * {@inheritDoc}
      */
-    public TaskElement getTaskElementById( String id ) {
+    public synchronized TaskElement getTaskElementById( String id ) {
         BugzillaTask task = bugzillaTasks.get( id );
         if( task == null ) {
             try {
@@ -175,7 +176,7 @@ public class BugzillaTaskRepository implements TaskRepository {
                 task = new BugzillaTask( bugDetails.getBugSummary(), this );
                 bugzillaTasks.put( id, task );
             } catch( BugzillaException e ) {
-                //todo implement this
+                //do nothing
             }
         }
         return task;
@@ -185,7 +186,8 @@ public class BugzillaTaskRepository implements TaskRepository {
      * {@inheritDoc}
      */
     public void persist( TaskElement element ) {
-        //todo implement this
+        BugSummary bugSummary = element.getLookup().lookup( BugSummary.class );
+
     }
 
     /**
@@ -193,10 +195,9 @@ public class BugzillaTaskRepository implements TaskRepository {
      */
     public void synchronize() {
         RequestProcessor.getDefault().post( new Runnable() {
-
             public void run() {
                 synchronized( SYNCHRONIZATION_LOCK ) {
-
+                   //todo implement this
                 }
             }
         } );
@@ -293,8 +294,16 @@ public class BugzillaTaskRepository implements TaskRepository {
         this.name = name;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
     public void setUsername( String username ) {
         this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public void setPassword( String password ) {
