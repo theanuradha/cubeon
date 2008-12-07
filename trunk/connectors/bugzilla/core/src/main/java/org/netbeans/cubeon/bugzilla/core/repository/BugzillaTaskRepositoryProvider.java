@@ -32,8 +32,8 @@ import org.openide.util.lookup.Lookups;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
