@@ -6,6 +6,7 @@
 
 = Wish List =
  * Cube'n Core 
+  * Automatic Repository Synchronizing
   * Attachment Support API/SPI for Connectors 
   * UI framework for task Editor
   * Support WorkSets
