@@ -1,4 +1,6 @@
 Manifest-Version: 1.0
 OpenIDE-Module-Localizing-Bundle: org/netbeans/cubeon/trac/api/Bundle.properties
 AutoUpdate-Show-In-Client: false
+OpenIDE-Module-Public-Packages: org.netbeans.cubeon.trac.api.**
+                               
 

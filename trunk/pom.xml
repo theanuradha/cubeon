@@ -7,7 +7,7 @@
     <name>Cube°n</name>
     <description>Cube°n Task-Focused Interface for NetBeans </description>
     <url>http://cubeon.googlecode.com</url>
-    <version>${cubeon.release}</version>
+    <version>1.1.0.0</version>
     <inceptionYear>2008</inceptionYear>
     <scm>
         <connection>scm:svn:http://cubeon.googlecode.com/svn/trunk/</connection>
@@ -42,6 +42,9 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
                     <version>2.2</version>
+                    <configuration>
+                        <useDefaultManifestFile>true</useDefaultManifestFile>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -101,7 +104,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>nbm-maven-plugin</artifactId>
-                    <version>2.7-alpha-2</version>
+                    <version>3.0-SNAPSHOT</version>
                     <extensions>true</extensions>
                     <configuration>
                         <descriptor>src/main/nbm/module.xml</descriptor>
@@ -171,7 +174,7 @@
         <java15.home>${java.home}/..</java15.home>
       <!-- the version of netbeans we depend on-->
         <netbeans.release>RELEASE65-SNAPSHOT</netbeans.release>
-        <cubeon.release>1.0.3.0</cubeon.release>
+        <cubeon.release>1.1.0.0</cubeon.release>
     </properties>
   <!--reporting>
       <plugins>
