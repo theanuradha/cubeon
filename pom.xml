@@ -166,6 +166,12 @@
                 <updatePolicy>never</updatePolicy>
             </snapshots>
         </repository>
+        <repository>
+            <id>codehaus</id>
+            <name>Codehaus for nbm plug-in</name>
+            <!--Will Change to repository.codehaus.org when 3.0 of nbm plug-in release -->
+            <url>http://snapshots.repository.codehaus.org</url>
+        </repository>
     </repositories>
     <dependencyManagement>
     </dependencyManagement>
