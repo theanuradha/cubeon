@@ -3,14 +3,14 @@
     <parent>
         <groupId>org.netbeans.cubeon</groupId>
         <artifactId>cubeon-context</artifactId>
-        <version>${cubeon.release}</version>
+        <version>1.1.0.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>cubeon-context-spi</artifactId>
     <packaging>nbm</packaging>
     <name>Cube°n Context SPI</name>
     <description>Cube°n Task Context SPI</description>
-    <version>${cubeon.release}</version>
+    <version>1.1.0.0</version>
     <dependencies>
         <dependency>
             <groupId>org.netbeans.api</groupId>
