@@ -194,10 +194,12 @@ class TaskFolderImpl implements TaskFolder, TaskFolderRefreshable {
 
                         public void run() {
                             assert taskQuery != null;
+                            TasksFileSystem fileSystem = Lookup.getDefault().lookup(TasksFileSystem.class);
                             List<TaskElement> taskElements = taskQuery.getTaskElements();
                             for (TaskElement taskElement : taskElements) {
                                 if (!contains(taskElement)) {
-                                    addTaskElement(taskElement);
+                                    //add task
+                                    fileSystem.addTaskElement(TaskFolderImpl.this, taskElement);
                                 }
                             }
                             refreshNode();
