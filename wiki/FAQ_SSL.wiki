@@ -1,3 +1,4 @@
+#labels FAQ
 === How to setup communication with https / SSL based repositories ===
 
 First get the public certificate of the server. You can use your favourite browser to save it (try clicking on the lock icon and look for export or save button).
