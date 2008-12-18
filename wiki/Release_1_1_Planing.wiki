@@ -1,4 +1,4 @@
-#labels Phase-Implementation
+#labels Phase-Implementation,Featured
 #Release 1.1 Planing
 
 = Release 1.1 Planing =
@@ -6,7 +6,7 @@
 
 = Wish List =
  * Cube'n Core 
-  * Automatic Repository Synchronizing
+  * Automatic Repository Synchronizing (Started)
   * Attachment Support API/SPI for Connectors 
   * UI framework for task Editor
   * Support WorkSets
