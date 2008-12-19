@@ -77,7 +77,7 @@ public class TracFilterQuery extends AbstractTracQuery {
             RequestProcessor.getDefault().post(new Runnable() {
 
                 public void run() {
-                    synchronized (TracFilterQuery.this) {
+                    synchronized (repository.SYNCHRONIZE_QUERY_LOCK) {
                         extension.fireSynchronizing();
                         ProgressHandle handle = ProgressHandleFactory.createHandle(NbBundle.getMessage(TracFilterQuery.class,
                                 "LBL_Synchronizing_Query", getName()));
