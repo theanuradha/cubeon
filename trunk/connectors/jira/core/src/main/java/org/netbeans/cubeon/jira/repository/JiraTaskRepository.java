@@ -35,6 +35,7 @@ import org.netbeans.cubeon.jira.repository.attributes.JiraProject;
 import org.netbeans.cubeon.jira.tasks.JiraRemoteTask;
 import org.netbeans.cubeon.jira.tasks.JiraTask;
 import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
+import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.filesystems.FileObject;
@@ -84,6 +85,7 @@ public class JiraTaskRepository implements TaskRepository {
     private volatile JiraSession session;
     //locks
     private final Object SYNCHRONIZE_LOCK = new Object();
+    public final Object SYNCHRONIZE_QUERY_LOCK = new Object();
     private final Object FILTER_UPDATE_LOCK = new Object();
     //----
 
@@ -159,24 +161,29 @@ public class JiraTaskRepository implements TaskRepository {
                             NbBundle.getMessage(JiraTaskRepository.class,
                             "LBL_Synchronizing_Tasks", getName()));
                     handle.start(taskIds.size());
+
                     try {
-                        for (String id : taskIds) {
-                            JiraTask jiraTask = getTaskElementById(id);
-                            if (jiraTask != null && !jiraTask.isLocal()) {
-
-                                handle.progress(jiraTask.getId() + " : " + jiraTask.getName(), taskIds.indexOf(id));
-                                try {
-                                    update(jiraTask);
-                                } catch (JiraException ex) {
-                                    Logger.getLogger(JiraTaskRepository.class.getName()).warning(ex.getMessage());
+                        JiraSession session = getSession();
+                        if (session != null) {
+                            for (String id : taskIds) {
+                                JiraTask jiraTask = getTaskElementById(id);
+                                if (jiraTask != null && !jiraTask.isLocal()) {
+                                    handle.progress(jiraTask.getId() + " : " + jiraTask.getName(), taskIds.indexOf(id));
+                                    update(session, jiraTask);
                                 }
-
                             }
 
+                            List<TaskQuery> taskQuerys = querySupport.getTaskQuerys();
+                            for (TaskQuery taskQuery : taskQuerys) {
+                                taskQuery.synchronize();
+                            }
                         }
+                    } catch (JiraException ex) {
+                        Logger.getLogger(JiraTaskRepository.class.getName()).warning(ex.getMessage());
                     } finally {
                         handle.finish();
                     }
+
                 }
             }
         });
@@ -228,7 +235,7 @@ public class JiraTaskRepository implements TaskRepository {
         }
     }
 
-   public void remove(JiraTask jiraTask) {
+    public void remove(JiraTask jiraTask) {
         handler.removeTaskElement(jiraTask);
         cache.removeTaskElement(jiraTask);
         extension.fireTaskRemoved(jiraTask);
@@ -378,11 +385,15 @@ public class JiraTaskRepository implements TaskRepository {
         synchronized (task) {
 
             JiraSession js = getSession();
-            RemoteIssue issue = js.getIssue(task.getId());
-            update(issue, task);
 
+            update(js, task);
         }
 
+    }
+
+    private void update(JiraSession js, JiraTask task) throws JiraException {
+        RemoteIssue issue = js.getIssue(task.getId());
+        update(issue, task);
     }
 
     public void update(RemoteIssue issue, JiraTask task) throws JiraException {

@@ -96,7 +96,7 @@ public interface TaskRepository {
     void persist(TaskElement element);
 
     /**
-     * Sycnchronize the list of task elements with the server
+     * Sycnchronize the list of queries and task elements with the server
      */
     void synchronize();
 

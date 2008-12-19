@@ -22,6 +22,7 @@ import java.util.List;
 import org.netbeans.cubeon.local.LocalTask;
 import org.netbeans.cubeon.local.query.LocalQuerySupport;
 import org.netbeans.cubeon.tasks.spi.Notifier;
+import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.repository.RepositoryEventAdapter;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
@@ -133,8 +134,12 @@ public class LocalTaskRepository implements TaskRepository {
         }
     }
 
-    public void synchronize (){
-       //do nothing
+    public void synchronize() {
+
+        List<TaskQuery> taskQuerys = querySupport.getTaskQuerys();
+        for (TaskQuery taskQuery : taskQuerys) {
+            taskQuery.synchronize();
+        }
     }
 
     public LocalTaskPriorityProvider getLocalTaskPriorityProvider() {
@@ -174,6 +179,6 @@ public class LocalTaskRepository implements TaskRepository {
     }
 
     public Notifier<RepositoryEventAdapter> getNotifier() {
-       return extension;
+        return extension;
     }
 }

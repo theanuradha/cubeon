@@ -71,7 +71,7 @@ public class JiraFilterQuery extends AbstractJiraQuery {
             RequestProcessor.getDefault().post(new Runnable() {
 
                 public void run() {
-                    synchronized (JiraFilterQuery.this) {
+                    synchronized (repository.SYNCHRONIZE_QUERY_LOCK) {
                         extension.fireSynchronizing();
                         ProgressHandle handle = ProgressHandleFactory.createHandle(NbBundle.getMessage(JiraFilterQuery.class,
                                 "LBL_Synchronizing_Query", getName()));

@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
 import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
+import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.trac.api.Ticket;
@@ -76,6 +77,7 @@ public class TracTaskRepository implements TaskRepository {
     private Map<String, TracTask> map = new HashMap<String, TracTask>();
     //locks
     private final Object SYNCHRONIZE_LOCK = new Object();
+    public final Object SYNCHRONIZE_QUERY_LOCK = new Object();
 
     public TracTaskRepository(TracTaskRepositoryProvider provider,
             String id, String name, String description) {
@@ -178,8 +180,8 @@ public class TracTaskRepository implements TaskRepository {
     public void remove(TracTask tracTask) {
         handler.removeTaskElement(tracTask);
         //issue-26 check if loacl as local task not on cache
-        if(!tracTask.isLocal()){
-        cache.removeTaskElement(tracTask);
+        if (!tracTask.isLocal()) {
+            cache.removeTaskElement(tracTask);
         }
         extension.fireTaskRemoved(tracTask);
     }
@@ -193,12 +195,16 @@ public class TracTaskRepository implements TaskRepository {
         synchronized (task) {
 
             TracSession session = getSession();
-            Ticket issue = session.getTicket(task.getTicketId());
-            
-            update(issue, task);
+            update(session, task);
 
         }
 
+    }
+
+    private void update(TracSession session, TracTask task) throws TracException {
+        Ticket issue = session.getTicket(task.getTicketId());
+
+        update(issue, task);
     }
 
     public void update(Ticket issue, TracTask task) throws TracException {
@@ -296,24 +302,34 @@ public class TracTaskRepository implements TaskRepository {
                             "LBL_Synchronizing_Tasks", getName()));
                     handle.start(taskIds.size());
                     try {
-                        for (String id : taskIds) {
-                            TracTask tracTask = getTaskElementById(id);
-                            if (tracTask != null && !tracTask.isLocal()) {
+                        TracSession session = getSession();
+                        if (session != null) {
+                            for (String id : taskIds) {
+                                TracTask tracTask = getTaskElementById(id);
+                                if (tracTask != null && !tracTask.isLocal()) {
 
-                                handle.progress(tracTask.getId() + " : " + tracTask.getName(), taskIds.indexOf(id));
-                                try {
-                                    update(tracTask);
-                                } catch (TracException ex) {
-                                    Logger.getLogger(TracTaskRepository.class.getName()).warning(ex.getMessage());
+                                    handle.progress(tracTask.getId() + " : " + tracTask.getName(), taskIds.indexOf(id));
+
+                                    update(session, tracTask);
+
+
                                 }
 
                             }
-
+                            List<TaskQuery> taskQuerys = querySupport.getTaskQuerys();
+                            for (TaskQuery taskQuery : taskQuerys) {
+                                taskQuery.synchronize();
+                            }
                         }
+                    } catch (TracException ex) {
+                        Logger.getLogger(TracTaskRepository.class.getName()).warning(ex.getMessage());
                     } finally {
                         handle.finish();
                     }
+
+
                 }
+
             }
         });
     }
