@@ -17,10 +17,21 @@
 package org.netbeans.cubeon.trac.query;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.TreeSet;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuerySupportProvider;
-import org.netbeans.cubeon.trac.query.ui.TracFilterQueryEditor;
+import org.netbeans.cubeon.trac.api.TicketField;
+import org.netbeans.cubeon.ui.query.QueryEditor;
+import org.netbeans.cubeon.ui.query.QueryFilter;
+import org.netbeans.cubeon.ui.query.QueryField;
+import org.netbeans.cubeon.ui.query.QuerySupport;
 import org.netbeans.cubeon.trac.repository.TracRepositoryExtension;
 import org.netbeans.cubeon.trac.repository.TracTaskRepository;
 
@@ -28,13 +39,15 @@ import org.netbeans.cubeon.trac.repository.TracTaskRepository;
  *
  * @author Anuradha
  */
-public class TracQuerySupport implements TaskQuerySupportProvider {
+public class TracQuerySupport implements TaskQuerySupportProvider, QuerySupport<TracFilterQuery> {
 
     private List<TaskQuery> taskQuerys = new ArrayList<TaskQuery>(0);
     private TracTaskRepository repository;
     private TracRepositoryExtension extension;
     private PersistenceHandler handler;
     private final TracOGChangesQuery outgoingQuery;
+    List<QueryField> queryFields = new LinkedList<QueryField>();
+    private static Logger LOG = Logger.getLogger(TracQuerySupport.class.getName());
 
     public TracQuerySupport(TracTaskRepository repository, TracRepositoryExtension extension) {
         this.repository = repository;
@@ -57,7 +70,7 @@ public class TracQuerySupport implements TaskQuerySupportProvider {
 
     public void refresh() {
         handler.refresh();
-
+        refreshQueryFields();
     }
 
     public List<TaskQuery> getTaskQuerys() {
@@ -73,15 +86,15 @@ public class TracQuerySupport implements TaskQuerySupportProvider {
             switch (abstractJiraQuery.getType()) {
                 case FILTER:
                      {
-                        TracFilterQueryEditor editor = new TracFilterQueryEditor(this);
-                        editor.setQuery(query.getLookup().lookup(TracFilterQuery.class));
+                        QueryEditor editor = new QueryEditor(this);
+                        editor.setTaskQuery(query.getLookup().lookup(TracFilterQuery.class));
                         configurationHandler = editor;
                     }
                     break;
             }
 
         } else {
-            configurationHandler = new TracFilterQueryEditor(this);
+            configurationHandler = new QueryEditor(this);
         }
         return configurationHandler;
     }
@@ -160,4 +173,152 @@ public class TracQuerySupport implements TaskQuerySupportProvider {
     public TracOGChangesQuery getOutgoingQuery() {
         return outgoingQuery;
     }
+
+    @Override
+    public List<QueryField> getQueryFields() {
+        return queryFields;
+    }
+
+    @Override
+    public void setQueryFromFilters(TracFilterQuery query, List<QueryFilter> filters) {
+        StringBuilder queryString = new StringBuilder();
+
+        boolean firstField = true;
+        for (QueryFilter filter : filters) {
+            // append field seperator
+            if (firstField)
+                firstField = false;
+            else
+                queryString.append("&"); // NOI18N
+
+            // append field name
+            queryString.append(filter.getField().getName());
+
+            // append match
+            queryString.append(getMatchString(filter.getMatch()));
+
+            // append values
+            boolean firstValue = true;
+            for (Object value : filter.getValues()) {
+                // append value sperator
+                if (firstValue)
+                    firstValue = false;
+                else
+                    queryString.append("|"); // NOI18N
+                //TODO: mask value (=,&,|)
+                // append value
+                queryString.append(value.toString());
+            }
+        }
+
+        // set native query string
+        query.setQuery(queryString.toString());
+
+        LOG.info("setQueryFromFilters: query=["+queryString+"] "+filters); // NOI18N
+    }
+
+    @Override
+    public List<QueryFilter> createFiltersFromQuery(TracFilterQuery query) {
+        List<QueryFilter> filters = new LinkedList<QueryFilter>();
+
+        // split native query string to fields
+        String queryString = query.getQuery();
+        String[] fields = queryString.split("&"); // NOI18N
+
+        // pattern to split field name, match and values
+        Pattern fieldPattern = Pattern.compile("(\\w*)(=|~=|\\^=|\\$=|!=|!~=|!\\^=|!\\$=)(\\S*)"); // NOI18N
+
+        for (String field : fields) {
+            Matcher fieldSplit = fieldPattern.matcher(field);
+            if (fieldSplit.matches()) {
+                // get query field
+                QueryField queryField = getQueryField(fieldSplit.group(1));
+                if (queryField != null) {
+                    // get values
+                    List<String> values = Arrays.asList(fieldSplit.group(3).split("\\|")); // NOI18N
+                    //TODO: unmask values (=,&,|)
+                    if (!values.isEmpty())
+                        // create filter and add to list
+                        filters.add(new QueryFilter(queryField,
+                                getMatch(fieldSplit.group(2)),
+                                new HashSet(values))); // NOI18N
+                } else
+                    LOG.info("unknown field name '"+fieldSplit.group(1)+ // NOI18N
+                            "' for query string: "+queryString); // NOI18N
+            } else
+                LOG.info("malformed field '"+field+ // NOI18N
+                        "' for query string: "+queryString); // NOI18N
+        }
+
+        LOG.info("createFiltersFromQuery: query=["+queryString+"] "+filters); // NOI18N
+        return filters;
+    }
+
+    @Override
+    public TracFilterQuery createQuery() {
+        return new TracFilterQuery(repository, handler.nextTaskId());
+    }
+
+    @Override
+    public void setQueryName(TracFilterQuery query, String name) {
+        query.setName(name);
+    }
+
+    private void refreshQueryFields() {
+        queryFields.clear();
+        int order = 0; // TicketField doesn't supply the order attribute yet
+        for (TicketField field : repository.getRepositoryAttributes().getTicketFields()) {
+            QueryField.Type type = QueryField.Type.TEXT;
+            if ("textarea".equals(field.getType())) { // NOI18N
+                type = QueryField.Type.TEXTAREA;
+            } else if ("radio".equals(field.getType())) { // NOI18N
+                type = QueryField.Type.RADIO;
+            } else if ("checkbox".equals(field.getType())) { // NOI18N
+                type = QueryField.Type.CHECKBOX;
+            } else if ("select".equals(field.getType())) { // NOI18N
+                type = QueryField.Type.SELECT;
+            }
+            queryFields.add(new QueryField(field.getName(), field.getLabel(),
+                    type, order++, new TreeSet(field.getOptions())));
+        }
+    }
+
+    private QueryFilter.Match getMatch(String match) {
+        if ("~=".equals(match)) // NOI18N
+            return QueryFilter.Match.CONTAINS;
+        else if ("^=".equals(match)) // NOI18N
+            return QueryFilter.Match.STARTS_WITH;
+        else if ("$=".equals(match)) // NOI18N
+            return QueryFilter.Match.ENDS_WITH;
+        else if ("!=".equals(match)) // NOI18N
+            return QueryFilter.Match.IS_NOT;
+        else if ("!~=".equals(match)) // NOI18N
+            return QueryFilter.Match.CONTAINS_NOT;
+        return QueryFilter.Match.IS;
+    }
+
+    private QueryField getQueryField(String name) {
+        for (QueryField queryField : queryFields)
+            if (queryField.getName().equals(name))
+                return queryField;
+        return null;
+    }
+
+    private String getMatchString(QueryFilter.Match match) {
+        switch (match) {
+            case CONTAINS:
+                return "~="; // NOI18N
+            case STARTS_WITH:
+                return "^="; // NOI18N
+            case ENDS_WITH:
+                return "$="; // NOI18N
+            case IS_NOT:
+                return "!="; // NOI18N
+            case CONTAINS_NOT:
+                return "!~="; // NOI18N
+            default:
+                return "="; // NOI18N
+        }
+    }
+
 }
