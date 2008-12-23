@@ -19,9 +19,8 @@ package org.netbeans.cubeon.ui.query.editor;
 
 import java.awt.Component;
 import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.ListCellRenderer;
+import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import org.netbeans.cubeon.ui.query.QueryFilter;
 import org.openide.util.NbBundle;
 
@@ -45,26 +44,18 @@ public class FilterMatchComboBox extends JComboBox {
         setRenderer(new FilterMatchRenderer());
     }
 
-    private static class FilterMatchRenderer extends JLabel implements ListCellRenderer {
-
-        public FilterMatchRenderer() {
-            setOpaque(true);
-        }
-
+    private static class FilterMatchRenderer extends BasicComboBoxRenderer {
         @Override
-        public Component getListCellRendererComponent(JList list,
-                Object value,
-                int index,
-                boolean isSelected,
-                boolean cellHasFocus) {
+        public Component getListCellRendererComponent(JList list, Object value,
+                int index, boolean isSelected, boolean cellHasFocus) {
 
             if (value instanceof QueryFilter.Match) {
-                setText(NbBundle.getMessage(FilterMatchComboBox.class,
-                        "LBL_Match_"+value.toString())); // NOI18N
-            } else
-                setText(""); // NOI18N
+                value = NbBundle.getMessage(FilterMatchComboBox.class,
+                        "LBL_Match_"+value.toString()); // NOI18N
+            }
 
-            return this;
+            return super.getListCellRendererComponent(list, value, index,
+                    isSelected, cellHasFocus);
         }
     }
 
