@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -205,9 +206,9 @@ public class TracQuerySupport implements TaskQuerySupportProvider, QuerySupport<
                     firstValue = false;
                 else
                     queryString.append("|"); // NOI18N
-                //TODO: mask value (=,&,|)
                 // append value
-                queryString.append(value.toString());
+                //TODO: mask value (=,&,|); by now these characters are replaced by space
+                queryString.append(value.toString().replaceAll("[=&|]", " ")); // NOI18N
             }
         }
 
@@ -226,7 +227,7 @@ public class TracQuerySupport implements TaskQuerySupportProvider, QuerySupport<
         String[] fields = queryString.split("&"); // NOI18N
 
         // pattern to split field name, match and values
-        Pattern fieldPattern = Pattern.compile("(\\w*)(=|~=|\\^=|\\$=|!=|!~=|!\\^=|!\\$=)(\\S*)"); // NOI18N
+        Pattern fieldPattern = Pattern.compile("(\\w*)(=|~=|\\^=|\\$=|!=|!~=|!\\^=|!\\$=)(.*)"); // NOI18N
 
         for (String field : fields) {
             Matcher fieldSplit = fieldPattern.matcher(field);
@@ -234,13 +235,27 @@ public class TracQuerySupport implements TaskQuerySupportProvider, QuerySupport<
                 // get query field
                 QueryField queryField = getQueryField(fieldSplit.group(1));
                 if (queryField != null) {
+                    // get match
+                    QueryFilter.Match match = getMatch(fieldSplit.group(2));
                     // get values
                     List<String> values = Arrays.asList(fieldSplit.group(3).split("\\|")); // NOI18N
                     //TODO: unmask values (=,&,|)
+                    // workaround for old queries like "status!=closed"
+                    if ((queryField.getType() == QueryField.Type.CHECKBOX ||
+                            queryField.getType() == QueryField.Type.RADIO) &&
+                            match != QueryFilter.Match.IS) {
+                        List<String> allValues = 
+                                queryField.getType() == QueryField.Type.RADIO ?
+                                new ArrayList(queryField.getOptions()) :
+                                new ArrayList(Arrays.asList("0", "1")); // NOI18N
+                        allValues.removeAll(values);
+                        values = allValues;
+                        match = QueryFilter.Match.IS;
+                    }
                     if (!values.isEmpty())
                         // create filter and add to list
                         filters.add(new QueryFilter(queryField,
-                                getMatch(fieldSplit.group(2)),
+                                match,
                                 new HashSet(values))); // NOI18N
                 } else
                     LOG.info("unknown field name '"+fieldSplit.group(1)+ // NOI18N
