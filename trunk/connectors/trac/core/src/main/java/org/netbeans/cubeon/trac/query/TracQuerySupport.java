@@ -18,11 +18,9 @@ package org.netbeans.cubeon.trac.query;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -256,7 +254,7 @@ public class TracQuerySupport implements TaskQuerySupportProvider, QuerySupport<
                         // create filter and add to list
                         filters.add(new QueryFilter(queryField,
                                 match,
-                                new HashSet(values))); // NOI18N
+                                new LinkedHashSet(values))); // NOI18N
                 } else
                     LOG.info("unknown field name '"+fieldSplit.group(1)+ // NOI18N
                             "' for query string: "+queryString); // NOI18N
@@ -294,7 +292,7 @@ public class TracQuerySupport implements TaskQuerySupportProvider, QuerySupport<
                 type = QueryField.Type.SELECT;
             }
             queryFields.add(new QueryField(field.getName(), field.getLabel(),
-                    type, order++, new TreeSet(field.getOptions())));
+                    type, order++, new LinkedHashSet(field.getOptions())));
         }
     }
 
