@@ -34,9 +34,10 @@ final class TaskQueryAttributes extends JPanel {
         handler = tqsp.createConfigurationHandler(object.getQuery());
         handler.addChangeListener(wizard);
         lblMainHeader.setText(NbBundle.getMessage(TaskQueryAttributes.class,
-                "LBL_Create_New", object.getRepository().getName()));
+                object.getQuery() == null ? "LBL_Create_New" : "LBL_Edit_Query",
+                object.getRepository().getName()));
         lblSubHeader.setText(NbBundle.getMessage(TaskQueryAttributes.class,
-                "LBL_Create_New_Dec"));
+                object.getQuery() == null ? "LBL_Create_New_Dec" : "LBL_Edit_Query_Dec"));
         pnlHolder.removeAll();
         pnlHolder.add(handler.getComponent(), BorderLayout.CENTER);
         pnlHolder.repaint();
