@@ -30,6 +30,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -307,7 +308,7 @@ public class QueryEditor extends javax.swing.JPanel implements TaskQuerySupportP
 
         QueryField field = null;
         QueryFilter.Match match = null;
-        Set<Object> values = new HashSet<Object>();
+        Set<Object> values = new LinkedHashSet<Object>();
         for (FilterLine line : lines) {
             if (line.isNewField()) {
                 // add filter
@@ -316,7 +317,7 @@ public class QueryEditor extends javax.swing.JPanel implements TaskQuerySupportP
                 // start new filter
                 field = line.getField();
                 match = line.getMatch();
-                values = new HashSet<Object>();
+                values = new LinkedHashSet<Object>();
             }
             // set values
             line.getValues(values);
