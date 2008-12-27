@@ -60,7 +60,7 @@ public abstract class AbstractTracQuery implements TaskQuery {
         return extension;
     }
 
-    public QueryExtension getJiraExtension() {
+    public QueryExtension getTracExtension() {
         return extension;
     }
 

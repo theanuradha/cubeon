@@ -40,7 +40,7 @@ import org.xml.sax.SAXException;
 class TracRepositoryPersistence {
 
     private static final String REPOSITORYS_FILE_NAME = "repositorys.xml"; //NOI18N
-    private static final String TAG_ROOT = "jira-task-repository-configuration";//NOI18N
+    private static final String TAG_ROOT = "trac-task-repository-configuration";//NOI18N
     private static final String TAG_REPOSITORIES = "repositories";//NOI18N
     private static final String TAG_REPOSITORY = "repository";//NOI18N
     private static final String TAG_ID = "id";//NOI18N
