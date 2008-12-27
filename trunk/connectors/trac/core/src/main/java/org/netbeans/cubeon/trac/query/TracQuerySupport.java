@@ -124,7 +124,7 @@ public class TracQuerySupport implements TaskQuerySupportProvider, QuerySupport<
             return;
         }
         handler.addTaskQuery(localQuery);
-        localQuery.getJiraExtension().fireAttributesUpdated();
+        localQuery.getTracExtension().fireAttributesUpdated();
     }
 
     public void removeTaskQuery(TaskQuery query) {
@@ -135,7 +135,7 @@ public class TracQuerySupport implements TaskQuerySupportProvider, QuerySupport<
         handler.removeTaskQuery(localQuery);
         taskQuerys.remove(localQuery);
         extension.fireQueryRemoved(localQuery);
-        localQuery.getJiraExtension().fireRemoved();
+        localQuery.getTracExtension().fireRemoved();
     }
 
     public TaskQuery findTaskQueryById(String id) {

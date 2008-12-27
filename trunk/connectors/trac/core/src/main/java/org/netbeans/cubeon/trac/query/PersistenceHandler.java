@@ -55,8 +55,8 @@ class PersistenceHandler {
     private FileObject baseDir;
     private static final Object LOCK = new Object();
 
-    PersistenceHandler(TracQuerySupport jiraQuerySupport, FileObject fileObject) {
-        this.querySupport = jiraQuerySupport;
+    PersistenceHandler(TracQuerySupport querySupport, FileObject fileObject) {
+        this.querySupport = querySupport;
         this.baseDir = fileObject;
 
     }
@@ -65,7 +65,7 @@ class PersistenceHandler {
         //do validations changes here
     }
 
-    void addTaskQuery(AbstractTracQuery abstractJiraQuery) {
+    void addTaskQuery(AbstractTracQuery abstractTracQuery) {
         synchronized (LOCK) {
 
             Document document = getDocument();
@@ -86,7 +86,7 @@ class PersistenceHandler {
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element element = (Element) node;
                     String id = element.getAttribute(TAG_ID);
-                    if (abstractJiraQuery.getId().equals(id)) {
+                    if (abstractTracQuery.getId().equals(id)) {
                         taskQuery = element;
                         break;
                     }
@@ -98,12 +98,12 @@ class PersistenceHandler {
                 tasksElement.appendChild(taskQuery);
 
             }
-            taskQuery.setAttribute(TAG_ID, abstractJiraQuery.getId());
-            taskQuery.setAttribute(TAG_TYPE, abstractJiraQuery.getType().name());
-            switch (abstractJiraQuery.getType()) {
+            taskQuery.setAttribute(TAG_ID, abstractTracQuery.getId());
+            taskQuery.setAttribute(TAG_TYPE, abstractTracQuery.getType().name());
+            switch (abstractTracQuery.getType()) {
                 case FILTER:
                      {
-                        TracFilterQuery filterQuery = abstractJiraQuery.getLookup().lookup(TracFilterQuery.class);
+                        TracFilterQuery filterQuery = abstractTracQuery.getLookup().lookup(TracFilterQuery.class);
                         if (filterQuery.getQuery() != null) {
                             taskQuery.setAttribute(TAG_TRAC_QUERY, filterQuery.getQuery());
                         }
@@ -203,7 +203,7 @@ class PersistenceHandler {
 
                         String typeString = element.getAttribute(TAG_TYPE);
                         AbstractTracQuery.Type type = AbstractTracQuery.Type.valueOf(typeString);
-                        AbstractTracQuery jiraQuery = null;
+                        AbstractTracQuery abstractTracQuery = null;
                         switch (type) {
                             case FILTER:
                                  {
@@ -230,7 +230,7 @@ class PersistenceHandler {
                                     filterQuery.setName(name);
                                     filterQuery.setQuery(query);
                                     filterQuery.setIds(ids);
-                                    jiraQuery = filterQuery;
+                                    abstractTracQuery = filterQuery;
                                 }
                                 break;
                         }
@@ -239,7 +239,7 @@ class PersistenceHandler {
 
 
                         //----------------------------------------------------------------------
-                        localQuerys.add(jiraQuery);
+                        localQuerys.add(abstractTracQuery);
                     }
                 }
                 querySupport.setTaskQuery(localQuerys);
