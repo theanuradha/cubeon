@@ -17,6 +17,7 @@
 package org.netbeans.cubeon.bugzilla.core.repository;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
 import org.openide.filesystems.FileLock;
@@ -25,6 +26,9 @@ import org.openide.util.Exceptions;
 import org.openide.xml.XMLUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 /**
  * Contains common XML processing logic.
@@ -77,5 +81,58 @@ public class BaseXMLPersistenceImpl {
                 fileLock.releaseLock();
             }
         }
+    }
+
+    /**
+     * Loads W3C document from given file.
+     *
+     * @param file - file
+     * @return - W3C document representation
+     */
+    public Document loadDocumentFromFile(FileObject file) {
+        Document result = null;
+        FileLock fileLock = null;
+        InputStream in = null;
+        try {
+            fileLock = file.lock();
+            in = file.getInputStream();
+            result = XMLUtil.parse(new InputSource(in), false, true, null, null);
+        } catch (Exception e) {
+            Exceptions.attachMessage(e, "Error while reading DOM document from file.");
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
+            }
+        }
+        if (fileLock != null) {
+            fileLock.releaseLock();
+        }
+        return result;
+    }
+
+    /**
+     * Returns parent node for id element with given id-value.
+     *
+     * @param document - document that contains node with given id-value
+     * @param id - id-value
+     * @return - parent node or NULL in case there is no node with given id-value
+     */
+    public Node getParentNodeForId(Document document, String id) {
+        Node result = null;
+        NodeList nodeList = document.getElementsByTagName("id");
+        Node node = null;
+        int lenght = nodeList.getLength();
+        for (int i = 0; i < lenght; i++) {
+            node = nodeList.item(i);
+            if (id.equals(node.getTextContent())) {
+                result = node.getParentNode();
+                break;
+            }
+        }
+        return result;
     }
 }

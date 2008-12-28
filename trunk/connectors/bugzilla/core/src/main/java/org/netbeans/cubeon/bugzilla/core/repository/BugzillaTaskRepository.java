@@ -162,6 +162,7 @@ public class BugzillaTaskRepository implements TaskRepository {
      * {@inheritDoc}
      */
     public TaskElement createTaskElement( String summary, String description ) {
+        
         return null;  //todo implement this
     }
 
@@ -187,7 +188,8 @@ public class BugzillaTaskRepository implements TaskRepository {
      */
     public void persist( TaskElement element ) {
         BugSummary bugSummary = element.getLookup().lookup( BugSummary.class );
-
+        
+        //TODO implement this
     }
 
     /**
