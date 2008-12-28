@@ -52,9 +52,13 @@ public class BugzillaTask implements TaskElement {
      * Task repository.
      */
     private BugzillaTaskRepository taskRepository;
+    
+    public BugzillaTask() {
+    }
 
     /**
-     * One-argument constructor, it takes BugSummary as a parameter.
+     * Two-arguments constructor, it takes BugSummary and BugzillaTaskRepository as
+     * parameters.
      *
      * @param bugSummary     - bug summary which contains basic informations about bug
      * @param taskRepository - task repository containing this task

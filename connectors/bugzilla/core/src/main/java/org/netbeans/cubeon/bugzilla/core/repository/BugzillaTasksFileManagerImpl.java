@@ -16,6 +16,7 @@
  */
 package org.netbeans.cubeon.bugzilla.core.repository;
 
+import java.util.ArrayList;
 import org.netbeans.cubeon.bugzilla.core.tasks.BugzillaTask;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
@@ -28,6 +29,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.netbeans.cubeon.bugzilla.api.model.BugSummary;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * Bugzilla configuration file manager implementation.
@@ -40,32 +44,26 @@ public class BugzillaTasksFileManagerImpl extends BaseXMLPersistenceImpl impleme
      * Task element tag name.
      */
     private static final String ELEMENT_TASK = "task";
-
     /**
      * Task id tag name.
      */
     private static final String ELEMENT_ID = "id";
-
     /**
      * Task name tag name.
      */
     private static final String ELEMENT_NAME = "name";
-
     /**
      * Task url tag name.
      */
     private static final String ELEMENT_URL = "url";
-
     /**
      * Task display name tag name.
      */
     private static final String ELEMENT_DISPLAY_NAME = "display_name";
-
     /**
      * Task description tag name.
      */
     private static final String ELEMENT_DESCRIPTION = "description";
-
     /**
      * FileObject for tasks file in which tasks will be stored.
      */
@@ -77,44 +75,44 @@ public class BugzillaTasksFileManagerImpl extends BaseXMLPersistenceImpl impleme
      *
      * @param tasksFile - file object with handle to file in which tasks will be stored
      */
-    public BugzillaTasksFileManagerImpl( FileObject tasksFile ) {
+    public BugzillaTasksFileManagerImpl(FileObject tasksFile) {
         this.tasksFile = tasksFile;
     }
 
     /**
      * {@inheritDoc}
      */
-    public void persistTask( BugzillaTask bugzillaTask ) {
+    public void persistTask(BugzillaTask bugzillaTask) {
         try {
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
             Document document = documentBuilder.newDocument();
-            Element root = document.createElement( ELEMENT_TASK );
+            Element root = document.createElement(ELEMENT_TASK);
             Map<String, String> elementsMap = new LinkedHashMap<String, String>();
-            elementsMap.put( ELEMENT_ID, bugzillaTask.getId() );
-            elementsMap.put( ELEMENT_NAME, bugzillaTask.getName() );
-            elementsMap.put( ELEMENT_URL, bugzillaTask.getUrl().toString() );
-            elementsMap.put( ELEMENT_DISPLAY_NAME, bugzillaTask.getDisplayName() );
-            elementsMap.put( ELEMENT_DESCRIPTION, bugzillaTask.getDescription() );
-            root = createCompleteElement( root, elementsMap, document );
-            
-        } catch( ParserConfigurationException e ) {
-            Exceptions.printStackTrace( e );
+            elementsMap.put(ELEMENT_ID, bugzillaTask.getId());
+            elementsMap.put(ELEMENT_NAME, bugzillaTask.getName());
+            elementsMap.put(ELEMENT_URL, bugzillaTask.getUrl().toString());
+            elementsMap.put(ELEMENT_DISPLAY_NAME, bugzillaTask.getDisplayName());
+            elementsMap.put(ELEMENT_DESCRIPTION, bugzillaTask.getDescription());
+            root = createCompleteElement(root, elementsMap, document);
+
+        } catch (ParserConfigurationException e) {
+            Exceptions.printStackTrace(e);
         }
     }
 
     /**
      * {@inheritDoc}
      */
-    public BugzillaTask loadTask( String taskId ) {
-        
+    public BugzillaTask loadTask(String taskId) {
+
         return null;
     }
 
     /**
      * {@inheritDoc}
      */
-    public void removeTask( String taskId ) {
+    public void removeTask(String taskId) {
         //todo implement this
     }
 
@@ -122,7 +120,49 @@ public class BugzillaTasksFileManagerImpl extends BaseXMLPersistenceImpl impleme
      * {@inheritDoc}
      */
     public List<BugzillaTask> loadAllTasks() {
-        //todo implement this
-        return null;
+        List<BugzillaTask> result = new ArrayList<BugzillaTask>();
+        Document document = loadDocumentFromFile(tasksFile);
+        if (document != null) {
+            NodeList nodeList = document.getElementsByTagName(ELEMENT_TASK);
+            BugzillaTask bugzillaTask = null;
+            Node node = null;
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                node = nodeList.item(i);
+                bugzillaTask = parseTaskNode(node);
+                if(bugzillaTask != null) {
+                    result.add(bugzillaTask);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Parses given task node.
+     *
+     * @param node - task node that will be parsed
+     * @return - BugzillaTask representation
+     */
+    private BugzillaTask parseTaskNode(Node node) {
+        BugzillaTask result = null;
+        NodeList nodeList = node.getChildNodes();
+        if (nodeList != null) {
+            String nodeName = null;
+            Node childNode = null;
+            result = new BugzillaTask();
+            BugSummary bugSummary = new BugSummary();
+            result.setBugSummary(bugSummary);
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                childNode = nodeList.item(i);
+                nodeName = childNode.getNodeName();
+                //TODO is it OK?
+                if (ELEMENT_DISPLAY_NAME.equals(nodeName)) {
+                    bugSummary.setSummary(childNode.getTextContent());
+                } else if (ELEMENT_ID.equals(nodeName)) {
+                    bugSummary.setId(childNode.getTextContent());
+                }
+            }
+        }
+        return result;
     }
 }
