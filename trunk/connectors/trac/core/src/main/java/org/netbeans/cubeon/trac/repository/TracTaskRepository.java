@@ -126,11 +126,11 @@ public class TracTaskRepository implements TaskRepository {
         return Utilities.loadImage("org/netbeans/cubeon/trac/trac-repository.png");
     }
 
-    public TaskElement createTaskElement(String summery, String description) {
+    public TaskElement createTaskElement(String summary, String description) {
         String nextTaskId = handler.nextTaskId();
         nextTaskId = "New-" + nextTaskId;//NOI18N
         TracTask tracTask = new TracTask(this, nextTaskId, -1/*for localy new tickets*/,
-                summery, description);
+                summary, description);
         tracTask.setLocal(true);
         tracTask.put(TracKeys.PRIORITY,
                 repositoryAttributes.getTicketFiledByName(TracKeys.PRIORITY).getValue());
