@@ -17,7 +17,10 @@
 package org.netbeans.cubeon.local.query;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import org.netbeans.cubeon.local.LocalTask;
 import org.netbeans.cubeon.local.repository.LocalTaskRepository;
 import org.netbeans.cubeon.tasks.spi.Notifier;
@@ -28,6 +31,8 @@ import org.netbeans.cubeon.tasks.spi.task.TaskType;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.query.TaskQueryEventAdapter;
+import org.netbeans.cubeon.ui.query.QueryFilter;
+import org.netbeans.cubeon.ui.query.QueryFilter.Match;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.Lookups;
@@ -41,14 +46,19 @@ public class LocalQuery implements TaskQuery {
     private final String id;
     private String name;
     private LocalTaskRepository repository;
+    private QueryFilter.Match prioritiesMatch = QueryFilter.Match.IS;
     private List<TaskPriority> priorities = new ArrayList<TaskPriority>();
+    private QueryFilter.Match typesMatch = QueryFilter.Match.IS;;
     private List<TaskType> types = new ArrayList<TaskType>();
+    private QueryFilter.Match statesMatch = QueryFilter.Match.IS;;
     private List<TaskStatus> states = new ArrayList<TaskStatus>();
-    private String contain;
-    private boolean summary;
-    private boolean description;
+    private QueryFilter.Match summaryMatch = QueryFilter.Match.IS;;
+    private Set<String> summarySearch = new LinkedHashSet<String>();
+    private QueryFilter.Match descriptionMatch = QueryFilter.Match.IS;;
+    private Set<String> descriptionSearch = new LinkedHashSet<String>();
+    private QueryFilter.Match textMatch = QueryFilter.Match.IS;;
+    private Set<String> textSearch = new LinkedHashSet<String>();
     private final QueryExtension extension;
-    private MatchType matchType = MatchType.CONTAIN;
 
     public LocalQuery(String id, String name, LocalTaskRepository repository) {
         this.id = id;
@@ -86,6 +96,14 @@ public class LocalQuery implements TaskQuery {
         extension.fireSynchronized();
     }
 
+    public Match getPrioritiesMatch() {
+        return prioritiesMatch;
+    }
+
+    public void setPrioritiesMatch(Match prioritiesMatch) {
+        this.prioritiesMatch = prioritiesMatch;
+    }
+
     public List<TaskPriority> getPriorities() {
         return priorities;
     }
@@ -102,12 +120,28 @@ public class LocalQuery implements TaskQuery {
         this.repository = repository;
     }
 
+    public Match getStatesMatch() {
+        return statesMatch;
+    }
+
+    public void setStatesMatch(Match statesMatch) {
+        this.statesMatch = statesMatch;
+    }
+
     public List<TaskStatus> getStates() {
         return states;
     }
 
     public void setStates(List<TaskStatus> states) {
         this.states = new ArrayList<TaskStatus>(states);
+    }
+
+    public Match getTypesMatch() {
+        return typesMatch;
+    }
+
+    public void setTypesMatch(Match typesMatch) {
+        this.typesMatch = typesMatch;
     }
 
     public List<TaskType> getTypes() {
@@ -118,74 +152,20 @@ public class LocalQuery implements TaskQuery {
         this.types = new ArrayList<TaskType>(types);
     }
 
-    private boolean checkContain(TaskElement element) {
-        boolean b = !summary && !description;
-        if (summary) {
-
-            b = getMatchType(element.getName(), contain);
-        }
-        if (!b && description) {
-            b = getMatchType(element.getDescription(), contain);
-        }
-        return b;
-    }
-
-    private boolean getMatchType(String s1, String s2) {
-        switch (matchType) {
-            case CONTAIN:
-                return s1.toLowerCase().contains(s2.toLowerCase());
-            case STARTS_WITH:
-                return s1.toLowerCase().startsWith(s2.toLowerCase());
-            case ENDS_WITH:
-                return s1.toLowerCase().endsWith(s2.toLowerCase());
-            case EQUALS:
-                return s1.equalsIgnoreCase(s2);
-
-        }
-        return false;
-    }
-
+    @Override
     public List<TaskElement> getTaskElements() {
         List<TaskElement> elements = new ArrayList<TaskElement>();
         for (LocalTask element : repository.getLocalTasks()) {
-
-
-            if (contain == null || contain.trim().length() == 0 || checkContain(element)) {
-                if (priorities.size() == 0 || priorities.contains(element.getPriority())) {
-                    if (types.size() == 0 || types.contains(element.getType())) {
-                        if (states.size() == 0 || states.contains(element.getStatus())) {
-                            elements.add(element);
-                        }
-                    }
-
-                }
-            }
+            if ((checkText(element.getName(), textMatch, textSearch) ||
+                    checkText(element.getDescription(), textMatch, textSearch)) &&
+                    checkText(element.getName(), summaryMatch, summarySearch) &&
+                    checkText(element.getDescription(), descriptionMatch, descriptionSearch) &&
+                    checkList(element.getStatus(), statesMatch, states) &&
+                    checkList(element.getPriority(), prioritiesMatch, priorities) &&
+                    checkList(element.getType(), typesMatch, types))
+                elements.add(element);
         }
         return elements;
-    }
-
-    public String getContain() {
-        return contain;
-    }
-
-    public void setContain(String contain) {
-        this.contain = contain;
-    }
-
-    public boolean isDescription() {
-        return description;
-    }
-
-    public void setDescription(boolean description) {
-        this.description = description;
-    }
-
-    public boolean isSummary() {
-        return summary;
-    }
-
-    public void setSummary(boolean summary) {
-        this.summary = summary;
     }
 
     public Notifier<TaskQueryEventAdapter> getNotifier() {
@@ -196,11 +176,97 @@ public class LocalQuery implements TaskQuery {
         return extension;
     }
 
-    public MatchType getMatchType() {
-        return matchType;
+    public Match getSummaryMatch() {
+        return summaryMatch;
     }
 
-    public void setMatchType(MatchType matchType) {
-        this.matchType = matchType;
+    public void setSummaryMatch(Match summaryMatch) {
+        this.summaryMatch = summaryMatch;
     }
+
+    public Set<String> getSummarySearch() {
+        return summarySearch;
+    }
+
+    public void setSummarySearch(Set<String> summarySearch) {
+        this.summarySearch = summarySearch;
+    }
+
+    public Match getDescriptionMatch() {
+        return descriptionMatch;
+    }
+
+    public void setDescriptionMatch(Match descriptionMatch) {
+        this.descriptionMatch = descriptionMatch;
+    }
+
+    public Set<String> getDescriptionSearch() {
+        return descriptionSearch;
+    }
+
+    public void setDescriptionSearch(Set<String> descriptionSearch) {
+        this.descriptionSearch = descriptionSearch;
+    }
+
+    public Match getTextMatch() {
+        return textMatch;
+    }
+
+    public void setTextMatch(Match textMatch) {
+        this.textMatch = textMatch;
+    }
+
+    public Set<String> getTextSearch() {
+        return textSearch;
+    }
+
+    public void setTextSearch(Set<String> textSearch) {
+        this.textSearch = textSearch;
+    }
+
+    private boolean checkText(String text, QueryFilter.Match match, Set<String> values) {
+        if (values.isEmpty())
+            return true;
+        if (text == null || text.trim().length() == 0)
+            return false;
+
+        boolean found = false;
+        Iterator<String> iterator = values.iterator();
+        while (!found && iterator.hasNext()) {
+            String value = iterator.next();
+            switch (match) {
+                case IS:
+                case IS_NOT:
+                    found = text.equalsIgnoreCase(value);
+                    break;
+                case CONTAINS:
+                case CONTAINS_NOT:
+                    found =  text.toLowerCase().contains(value.toLowerCase());
+                    break;
+                case STARTS_WITH:
+                    found =  text.toLowerCase().startsWith(value.toLowerCase());
+                    break;
+                case ENDS_WITH:
+                    found = text.toLowerCase().endsWith(value.toLowerCase());
+                    break;
+            }
+        }
+        return match == QueryFilter.Match.IS_NOT
+                || match == QueryFilter.Match.CONTAINS_NOT ? !found : found;
+    }
+
+    private boolean checkList(Object element, QueryFilter.Match match, List values) {
+        if (values.isEmpty())
+            return true;
+        if (element == null)
+            return false;
+
+        boolean found = false;
+        Iterator iterator = values.iterator();
+        while (!found && iterator.hasNext())
+            found = element.equals(iterator.next());
+
+        return match == QueryFilter.Match.IS_NOT ? !found : found;
+    }
+
 }
