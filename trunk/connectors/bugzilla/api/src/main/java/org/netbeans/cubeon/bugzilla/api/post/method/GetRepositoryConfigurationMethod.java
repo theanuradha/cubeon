@@ -17,7 +17,7 @@
 package org.netbeans.cubeon.bugzilla.api.post.method;
 
 import org.netbeans.cubeon.bugzilla.api.exception.BugzillaParsingException;
-import org.netbeans.cubeon.bugzilla.api.model.RepositoryConfiguration;
+import org.netbeans.cubeon.bugzilla.api.model.RepositoryAttributes;
 import org.netbeans.cubeon.bugzilla.api.post.handler.SaxRepositoryConfigurationHandler;
 import org.netbeans.cubeon.bugzilla.api.util.ProgressMonitor;
 import org.xml.sax.SAXException;
@@ -34,7 +34,7 @@ import javax.xml.parsers.SAXParserFactory;
  *
  * @author radoslaw.holewa
  */
-public class GetRepositoryConfigurationMethod extends BaseBugzillaPostMethod<RepositoryConfiguration> {
+public class GetRepositoryConfigurationMethod extends BaseBugzillaPostMethod<RepositoryAttributes> {
 
     /**
      * Name of CGI script that will be used to receive repository configuration.
@@ -66,7 +66,7 @@ public class GetRepositoryConfigurationMethod extends BaseBugzillaPostMethod<Rep
   /**
      * {@inheritDoc}
      */
-    public RepositoryConfiguration getResult() throws BugzillaParsingException {
+    public RepositoryAttributes getResult() throws BugzillaParsingException {
         try {
             return parseResponse(getResponseBodyAsStream());
         } catch (Exception e) {
@@ -84,7 +84,7 @@ public class GetRepositoryConfigurationMethod extends BaseBugzillaPostMethod<Rep
      * of parsers configuration
      * @throws SAXException -throws exception in case of any problems during parsing using SAX parser
      */
-    private RepositoryConfiguration parseResponse(InputStream inputStream) throws SAXException, ParserConfigurationException, IOException {
+    private RepositoryAttributes parseResponse(InputStream inputStream) throws SAXException, ParserConfigurationException, IOException {
         SaxRepositoryConfigurationHandler handler = new SaxRepositoryConfigurationHandler();
         SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
         parser.parse(inputStream, handler);

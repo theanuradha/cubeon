@@ -28,7 +28,7 @@ import org.netbeans.cubeon.bugzilla.api.exception.BugzillaConnectionException;
 import org.netbeans.cubeon.bugzilla.api.exception.BugzillaException;
 import org.netbeans.cubeon.bugzilla.api.model.BugSummary;
 import org.netbeans.cubeon.bugzilla.api.model.BugDetails;
-import org.netbeans.cubeon.bugzilla.api.model.RepositoryConfiguration;
+import org.netbeans.cubeon.bugzilla.api.model.RepositoryAttributes;
 import org.netbeans.cubeon.bugzilla.api.post.method.GetBugDetailsMethod;
 import org.netbeans.cubeon.bugzilla.api.post.method.GetRepositoryConfigurationMethod;
 import org.netbeans.cubeon.bugzilla.api.post.method.QueryBugsListPostMethod;
@@ -167,7 +167,7 @@ public class MixedModeBugzillaClientImpl implements BugzillaClient {
     /**
      * {@inheritDoc}
      */
-    public RepositoryConfiguration getRepositoryConfiguration() throws BugzillaException {
+    public RepositoryAttributes getRepositoryAttributes() throws BugzillaException {
         GetRepositoryConfigurationMethod method = new GetRepositoryConfigurationMethod(url);
         try {
             executeMethod( method );

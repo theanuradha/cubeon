@@ -39,6 +39,7 @@ import java.text.MessageFormat;
 import java.util.Map;
 import java.util.HashMap;
 import javax.tools.FileObject;
+import org.netbeans.cubeon.bugzilla.api.model.RepositoryAttributes;
 import org.openide.util.Exceptions;
 
 /**
@@ -89,6 +90,12 @@ public class BugzillaTaskRepository implements TaskRepository {
      * Bugzilla repository client, it is responsible for retrieving repository data and publishing tasks.
      */
     private BugzillaClient client;
+
+    /**
+     * Contains repository attributes.
+     */
+    private BugzillaRepositoryAttributes repositoryAttributes;
+    
     /**
      * Synchronziation lock object, used during synchronization.
      */
@@ -213,6 +220,14 @@ public class BugzillaTaskRepository implements TaskRepository {
                 }
             }
         });
+    }
+
+    public void updateRepositoryAttributes() {
+        try {
+            RepositoryAttributes attributes = client.getRepositoryAttributes();
+        } catch (BugzillaException ex) {
+            Exceptions.printStackTrace(ex);
+        }
     }
 
     /**
