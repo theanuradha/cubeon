@@ -30,6 +30,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.netbeans.cubeon.bugzilla.api.model.BugSummary;
+import org.netbeans.cubeon.bugzilla.core.exception.BugzillaRepositoryException;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -95,9 +96,9 @@ public class BugzillaTasksFileManagerImpl extends BaseXMLPersistenceImpl impleme
             elementsMap.put(ELEMENT_DISPLAY_NAME, bugzillaTask.getDisplayName());
             elementsMap.put(ELEMENT_DESCRIPTION, bugzillaTask.getDescription());
             root = createCompleteElement(root, elementsMap, document);
-
+            saveDocumentToFile(document, tasksFile);
         } catch (ParserConfigurationException e) {
-            Exceptions.printStackTrace(e);
+            throw new BugzillaRepositoryException("Could not persist task in tasks file.", e);
         }
     }
 
@@ -160,6 +161,8 @@ public class BugzillaTasksFileManagerImpl extends BaseXMLPersistenceImpl impleme
                     bugSummary.setSummary(childNode.getTextContent());
                 } else if (ELEMENT_ID.equals(nodeName)) {
                     bugSummary.setId(childNode.getTextContent());
+                } else if(ELEMENT_DESCRIPTION.equals(nodeName)) {
+                    bugSummary.setDescription(childNode.getTextContent());
                 }
             }
         }

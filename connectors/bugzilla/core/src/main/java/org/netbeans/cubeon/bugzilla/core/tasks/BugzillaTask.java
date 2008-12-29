@@ -42,17 +42,19 @@ public class BugzillaTask implements TaskElement {
      * Bug summary.
      */
     private BugSummary bugSummary;
-
+    /**
+     * Local task id.
+     */
+    private String localId;
     /**
      * Task type local/remote.
      */
     private boolean isLocalTask = true;
-
     /**
      * Task repository.
      */
     private BugzillaTaskRepository taskRepository;
-    
+
     public BugzillaTask() {
     }
 
@@ -63,7 +65,7 @@ public class BugzillaTask implements TaskElement {
      * @param bugSummary     - bug summary which contains basic informations about bug
      * @param taskRepository - task repository containing this task
      */
-    public BugzillaTask( BugSummary bugSummary, BugzillaTaskRepository taskRepository ) {
+    public BugzillaTask(BugSummary bugSummary, BugzillaTaskRepository taskRepository) {
         this.bugSummary = bugSummary;
         this.taskRepository = taskRepository;
     }
@@ -72,7 +74,7 @@ public class BugzillaTask implements TaskElement {
      * {@inheritDoc}
      */
     public String getId() {
-        return bugSummary.getId();
+        return localId;
     }
 
     /**
@@ -93,7 +95,7 @@ public class BugzillaTask implements TaskElement {
      * {@inheritDoc}
      */
     public String getDescription() {
-        return bugSummary.getSummary();
+        return bugSummary.getDescription();
     }
 
     /**
@@ -107,27 +109,27 @@ public class BugzillaTask implements TaskElement {
      * {@inheritDoc}
      */
     public Lookup getLookup() {
-        return Lookups.fixed( this );
+        return Lookups.fixed(this);
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean isCompleted() {
-        return BugSummary.CLOSED_STATUS.equals( bugSummary.getStatus() );
+        return BugSummary.CLOSED_STATUS.equals(bugSummary.getStatus());
     }
 
     /**
      * {@inheritDoc}
      */
     public Image getImage() {
-        Image image = Utilities.loadImage( "org/netbeans/cubeon/bugzilla/core/task.png" );
-        if( bugSummary.isEnhancment() ) {
-            image = Utilities.mergeImages( image,
-                    Utilities.loadImage( "org/netbeans/cubeon/local/bullet_enhancement.png" ), 0, 0 );
+        Image image = Utilities.loadImage("org/netbeans/cubeon/bugzilla/core/task.png");
+        if (bugSummary.isEnhancment()) {
+            image = Utilities.mergeImages(image,
+                    Utilities.loadImage("org/netbeans/cubeon/local/bullet_enhancement.png"), 0, 0);
         } else {
-            image = Utilities.mergeImages( image,
-                    Utilities.loadImage( "org/netbeans/cubeon/local/bullet_defact.png" ), 0, 0 );
+            image = Utilities.mergeImages(image,
+                    Utilities.loadImage("org/netbeans/cubeon/local/bullet_defact.png"), 0, 0);
         }
         return image;
     }
@@ -138,8 +140,8 @@ public class BugzillaTask implements TaskElement {
     public URL getUrl() {
         URL url = null;
         try {
-            url = new URL( taskRepository.getBugUrl( bugSummary.getId() ) );
-        } catch( MalformedURLException e ) {
+            url = new URL(taskRepository.getBugUrl(bugSummary.getId()));
+        } catch (MalformedURLException e) {
             //ignore
         }
         return url;
@@ -149,9 +151,11 @@ public class BugzillaTask implements TaskElement {
      * {@inheritDoc}
      */
     public void synchronize() {
-        BugSummary summary = taskRepository.getSynchronizedTask( bugSummary.getId() );
-        if( summary != null ) {
-            bugSummary = summary;
+        if (bugSummary != null && bugSummary.getId() != null) {
+            BugSummary summary = taskRepository.getSynchronizedTask(bugSummary.getId());
+            if (summary != null) {
+                bugSummary = summary;
+            }
         }
     }
 
@@ -162,7 +166,11 @@ public class BugzillaTask implements TaskElement {
         return null;  //TODO implement this
     }
 
-    public void setBugSummary( BugSummary bugSummary ) {
+    public void setBugSummary(BugSummary bugSummary) {
         this.bugSummary = bugSummary;
+    }
+
+    public void setLocalId(String localId) {
+        this.localId = localId;
     }
 }
