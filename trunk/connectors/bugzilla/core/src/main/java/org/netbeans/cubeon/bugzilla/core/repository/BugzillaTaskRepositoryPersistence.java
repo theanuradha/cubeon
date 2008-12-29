@@ -230,7 +230,6 @@ public class BugzillaTaskRepositoryPersistence extends BaseXMLPersistenceImpl {
                 repository.setDescription(value);
             }
         }
-        repository.setProvider(taskRepositoryProvider);
         return repository;
     }
 

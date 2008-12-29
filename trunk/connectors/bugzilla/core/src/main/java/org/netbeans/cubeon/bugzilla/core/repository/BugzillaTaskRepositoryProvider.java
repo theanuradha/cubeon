@@ -120,7 +120,7 @@ public class BugzillaTaskRepositoryProvider implements TaskRepositoryType {
      * {@inheritDoc}
      */
     public Lookup getLookup() {
-        return Lookups.fixed( this );
+        return Lookups.fixed( this, baseDir );
     }
 
     /**

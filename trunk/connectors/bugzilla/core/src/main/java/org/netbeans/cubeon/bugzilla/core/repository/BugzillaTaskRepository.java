@@ -35,8 +35,11 @@ import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 
 import java.awt.*;
+import java.text.MessageFormat;
 import java.util.Map;
 import java.util.HashMap;
+import javax.tools.FileObject;
+import org.openide.util.Exceptions;
 
 /**
  * Main class of Cubeon Bugzilla task repository.
@@ -46,55 +49,50 @@ import java.util.HashMap;
 public class BugzillaTaskRepository implements TaskRepository {
 
     /**
-     * Bugzilla task repository provider, it provides basic logic used to manage repositories.
+     * Bugzilla tasks file manager, it provides tasks file managment logic
+     * eg. persist, load, update.
      */
-    private BugzillaTaskRepositoryProvider provider;
-
+    private BugzillaTasksFileManager tasksFileManager;
     /**
      * Current repository instance ID.
      */
     private String id;
-
     /**
      * Current repository instance description.
      */
     private String description;
-
     /**
      * Current repository name.
      */
     private String name;
-
     /**
      * Actual repository state.
      */
     private State state;
-
     /**
      * Repository user name.
      */
     private String username;
-
     /**
      * Repository password.
      */
     private String password;
-
     /**
      * Repository URL.
      */
     private String url;
-
+    /**
+     * Last local task id.
+     */
+    private int lastLocalTaskNumber;
     /**
      * Bugzilla repository client, it is responsible for retrieving repository data and publishing tasks.
      */
     private BugzillaClient client;
-
     /**
      * Synchronziation lock object, used during synchronization.
      */
     private final Object SYNCHRONIZATION_LOCK = new Object();
-
     /**
      * Map of Bugzilla tasks.
      */
@@ -115,12 +113,12 @@ public class BugzillaTaskRepository implements TaskRepository {
      * @param name        - repository name
      * @param url         - repository URL
      */
-    public BugzillaTaskRepository( BugzillaTaskRepositoryProvider provider, String id, String description, String name, String url ) {
-        this.provider = provider;
+    public BugzillaTaskRepository(FileObject repositoryTasksFile, String id, String description, String name, String url) {
         this.id = id;
         this.description = description;
         this.name = name;
         this.url = url;
+        this.tasksFileManager = createTasksFileManager(repositoryTasksFile);
     }
 
     /**
@@ -148,36 +146,43 @@ public class BugzillaTaskRepository implements TaskRepository {
      * {@inheritDoc}
      */
     public Lookup getLookup() {
-        return Lookups.fixed( this, provider );
+        return Lookups.fixed(this);
     }
 
     /**
      * {@inheritDoc}
      */
     public Image getImage() {
-        return Utilities.loadImage( "org/netbeans/cubeon/bugzilla/repository/bugzilla-repository.png" );
+        return Utilities.loadImage("org/netbeans/cubeon/bugzilla/repository/bugzilla-repository.png");
     }
 
     /**
      * {@inheritDoc}
      */
-    public TaskElement createTaskElement( String summary, String description ) {
-        
-        return null;  //todo implement this
+    public TaskElement createTaskElement(String summary, String description) {
+        BugzillaTask task = new BugzillaTask();
+        BugSummary bugSummary = new BugSummary();
+        bugSummary.setSummary(summary);
+        bugSummary.setDescription(description);
+        //TODO check attributes
+        String localTaskId = getNextAvailableLocalTaskId();
+        task.setLocalId(localTaskId);
+        task.setBugSummary(bugSummary);
+        return task;
     }
 
     /**
      * {@inheritDoc}
      */
-    public synchronized TaskElement getTaskElementById( String id ) {
-        BugzillaTask task = bugzillaTasks.get( id );
-        if( task == null ) {
+    public synchronized TaskElement getTaskElementById(String id) {
+        BugzillaTask task = bugzillaTasks.get(id);
+        if (task == null) {
             try {
-                BugDetails bugDetails = client.getBugDetails( new Integer( id ) );
-                task = new BugzillaTask( bugDetails.getBugSummary(), this );
-                bugzillaTasks.put( id, task );
-            } catch( BugzillaException e ) {
-                //do nothing
+                BugDetails bugDetails = client.getBugDetails(new Integer(id));
+                task = new BugzillaTask(bugDetails.getBugSummary(), this);
+                bugzillaTasks.put(id, task);
+            } catch (BugzillaException e) {
+                Exceptions.printStackTrace(e);
             }
         }
         return task;
@@ -186,23 +191,28 @@ public class BugzillaTaskRepository implements TaskRepository {
     /**
      * {@inheritDoc}
      */
-    public void persist( TaskElement element ) {
-        BugSummary bugSummary = element.getLookup().lookup( BugSummary.class );
-        
-        //TODO implement this
+    public void persist(TaskElement element) {
+        try {
+            BugzillaTask task = element.getLookup().lookup(BugzillaTask.class);
+            tasksFileManager.persistTask(task);
+            bugzillaTasks.put(task.getId(), task);
+        } catch (Exception e) {
+            Exceptions.printStackTrace(e);
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     public void synchronize() {
-        RequestProcessor.getDefault().post( new Runnable() {
+        RequestProcessor.getDefault().post(new Runnable() {
+
             public void run() {
-                synchronized( SYNCHRONIZATION_LOCK ) {
-                   //todo implement this
+                synchronized (SYNCHRONIZATION_LOCK) {
+                    //todo implement this
                 }
             }
-        } );
+        });
     }
 
     /**
@@ -219,7 +229,6 @@ public class BugzillaTaskRepository implements TaskRepository {
         return null;  //todo implement this
     }
 
-
     public String getUrl() {
         return url;
     }
@@ -231,7 +240,7 @@ public class BugzillaTaskRepository implements TaskRepository {
      * @throws BugzillaException -throws exception incase of any errors during connection
      */
     public synchronized BugzillaClient getClient() throws BugzillaException {
-        if( client == null ) {
+        if (client == null) {
             reconnect();
         }
         return client;
@@ -244,14 +253,14 @@ public class BugzillaTaskRepository implements TaskRepository {
      */
     public synchronized void reconnect() throws BugzillaException {
         ProgressHandle handle = ProgressHandleFactory.createHandle(
-                NbBundle.getMessage( BugzillaTaskRepository.class, "LBL_Connecting", getName() ) );
+                NbBundle.getMessage(BugzillaTaskRepository.class, "LBL_Connecting", getName()));
         handle.start();
         handle.switchToIndeterminate();
         try {
             //making client NULL
             client = null;
             //creating new instance of client
-            client = new MixedModeBugzillaClientImpl( getUrl(), username, password );
+            client = new MixedModeBugzillaClientImpl(getUrl(), username, password);
         } finally {
             handle.finish();
         }
@@ -263,12 +272,12 @@ public class BugzillaTaskRepository implements TaskRepository {
      * @param id - bug id
      * @return - synchronized bug summary
      */
-    public BugSummary getSynchronizedTask( final String id ) {
+    public BugSummary getSynchronizedTask(final String id) {
         BugSummary bugSummary = null;
         try {
-            BugDetails bugDetails = client.getBugDetails( new Integer( id ) );
+            BugDetails bugDetails = client.getBugDetails(new Integer(id));
             bugSummary = bugDetails.getBugSummary();
-        } catch( BugzillaException e ) {
+        } catch (BugzillaException e) {
             //ignore
         }
         return bugSummary;
@@ -280,19 +289,34 @@ public class BugzillaTaskRepository implements TaskRepository {
      * @param id - bug id
      * @return - URL address
      */
-    public String getBugUrl( String id ) {
-        return client.getBugUrl( id );
+    public String getBugUrl(String id) {
+        return client.getBugUrl(id);
     }
 
-    public void setProvider( BugzillaTaskRepositoryProvider provider ) {
-        this.provider = provider;
+    /**
+     * Creates tasks file manager for this Bugzilla repository.
+     * @param repositoryConfigurationDir - repository configuration directory
+     * @return - tasks file manager
+     */
+    private BugzillaTasksFileManager createTasksFileManager(FileObject repositoryConfigurationDir) {
+        //TODO implement this
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    public void setDescription( String description ) {
+    /**
+     * Returns next available id for local task in this Bugzilla repository.
+     *
+     * @return - next available local task id
+     */
+    private String getNextAvailableLocalTaskId() {
+        return MessageFormat.format("NEW_{0}_{1}", id, lastLocalTaskNumber);
+    }
+
+    public void setDescription(String description) {
         this.description = description;
     }
 
-    public void setName( String name ) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -300,7 +324,7 @@ public class BugzillaTaskRepository implements TaskRepository {
         return username;
     }
 
-    public void setUsername( String username ) {
+    public void setUsername(String username) {
         this.username = username;
     }
 
@@ -308,11 +332,15 @@ public class BugzillaTaskRepository implements TaskRepository {
         return password;
     }
 
-    public void setPassword( String password ) {
+    public void setPassword(String password) {
         this.password = password;
     }
 
-    public void setUrl( String url ) {
+    public void setUrl(String url) {
         this.url = url;
+    }
+
+    public void setLastLocalTaskNumber(int lastLocalTaskNumber) {
+        this.lastLocalTaskNumber = lastLocalTaskNumber;
     }
 }
