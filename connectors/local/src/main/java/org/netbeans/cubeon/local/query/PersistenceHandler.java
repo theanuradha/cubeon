@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import org.netbeans.cubeon.local.repository.LocalTaskPriorityProvider;
 import org.netbeans.cubeon.local.repository.LocalTaskRepository;
@@ -29,6 +30,7 @@ import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
 import org.netbeans.cubeon.tasks.spi.task.TaskType;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
+import org.netbeans.cubeon.ui.query.QueryFilter;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
@@ -64,6 +66,15 @@ class PersistenceHandler {
     private static final String TAG_TYPE = "type";//NOI18N
     private static final String TAG_MATCH_TYPE = "match_type";//NOI18N
     private static final String TAG_NEXT_ID = "next";//NOI18N
+    private static final String TAG_MATCH = "match";//NOI18N
+    private static final String TAG_SUMMARIES = "summaries";//NOI18N
+    private static final String TAG_DESCRIPTIONS = "descriptions";//NOI18N
+    private static final String TAG_TEXTS = "texts";//NOI18N
+    private static final String TAG_TEXT = "text";//NOI18N
+   private static final String TAG_VERSION = "version"; // NOI18N
+
+    private static final String VERSION_1 = "1"; // NOI18N
+
     private LocalQuerySupport localQuerySupport;
     private FileObject baseDir;
     private static final Object LOCK = new Object();
@@ -87,6 +98,7 @@ class PersistenceHandler {
             //check tasksElement null and create element
             if (tasksElement == null) {
                 tasksElement = document.createElement(TAG_QUERYS);
+                tasksElement.setAttribute(TAG_VERSION, VERSION_1);
                 root.appendChild(tasksElement);
             }
             Element taskQuery = null;
@@ -113,16 +125,17 @@ class PersistenceHandler {
             }
             taskQuery.setAttribute(TAG_ID, localQuery.getId());
             taskQuery.setAttribute(TAG_NAME, localQuery.getName());
-            List<TaskPriority> priorities = localQuery.getPriorities();
 
             Element taskpriorities = getEmptyElement(document, taskQuery, TAG_PRIORITIES);
-            for (TaskPriority tp : priorities) {
+            taskpriorities.setAttribute(TAG_MATCH, localQuery.getPrioritiesMatch().toString());
+            for (TaskPriority tp : localQuery.getPriorities()) {
                 Element element = document.createElement(TAG_PRIORITY);
                 taskpriorities.appendChild(element);
                 element.appendChild(document.createTextNode(tp.getId()));
             }
             //---------------------------------------------------------------------------
             Element taskTypes = getEmptyElement(document, taskQuery, TAG_TYPES);
+            taskTypes.setAttribute(TAG_MATCH, localQuery.getTypesMatch().toString());
             for (TaskType tt : localQuery.getTypes()) {
                 Element element = document.createElement(TAG_TYPE);
                 taskTypes.appendChild(element);
@@ -130,16 +143,36 @@ class PersistenceHandler {
             }
             //---------------------------------------------------------------------------
             Element taskStates = getEmptyElement(document, taskQuery, TAG_STATES);
+            taskStates.setAttribute(TAG_MATCH, localQuery.getStatesMatch().toString());
             for (TaskStatus ts : localQuery.getStates()) {
                 Element element = document.createElement(TAG_STATUS);
                 taskStates.appendChild(element);
                 element.appendChild(document.createTextNode(ts.getId()));
             }
-
-            taskQuery.setAttribute(TAG_CONTAIN, localQuery.getContain());
-            taskQuery.setAttribute(TAG_MATCH_TYPE, localQuery.getMatchType().name());
-            taskQuery.setAttribute(TAG_SUMMARY, String.valueOf(localQuery.isSummary()));
-            taskQuery.setAttribute(TAG_DESCRIPTION, String.valueOf(localQuery.isDescription()));
+            //---------------------------------------------------------------------------
+            Element taskSummaries = getEmptyElement(document, taskQuery, TAG_SUMMARIES);
+            taskSummaries.setAttribute(TAG_MATCH, localQuery.getSummaryMatch().toString());
+            for (String summary : localQuery.getSummarySearch()) {
+                Element element = document.createElement(TAG_SUMMARY);
+                taskSummaries.appendChild(element);
+                element.appendChild(document.createTextNode(summary));
+            }
+            //---------------------------------------------------------------------------
+            Element taskDescriptions = getEmptyElement(document, taskQuery, TAG_DESCRIPTIONS);
+            taskDescriptions.setAttribute(TAG_MATCH, localQuery.getDescriptionMatch().toString());
+            for (String description : localQuery.getDescriptionSearch()) {
+                Element element = document.createElement(TAG_DESCRIPTION);
+                taskDescriptions.appendChild(element);
+                element.appendChild(document.createTextNode(description));
+            }
+            //---------------------------------------------------------------------------
+            Element taskTexts = getEmptyElement(document, taskQuery, TAG_TEXTS);
+            taskTexts.setAttribute(TAG_MATCH, localQuery.getTextMatch().toString());
+            for (String text : localQuery.getTextSearch()) {
+                Element element = document.createElement(TAG_TEXT);
+                taskTexts.appendChild(element);
+                element.appendChild(document.createTextNode(text));
+            }
             save(document);
         }
     }
@@ -200,7 +233,7 @@ class PersistenceHandler {
                 nextElement.setAttribute(TAG_ID, String.valueOf(++nextID));
             }
             save(document);
-            id = id + "-" + nextID;
+            id = id + "-" + nextID; // NOI18N
         }
         return id;
 
@@ -240,14 +273,16 @@ class PersistenceHandler {
                             priorities.add(priorityProvider.getTaskPriorityById(pid));
                         }
                         localQuery.setPriorities(priorities);
+                        localQuery.setPrioritiesMatch(getMatch(elementPriority));
                         //----------------------------------------------------------------------
-                        Element elementtypes = findElement(element, TAG_TYPES);
-                        tagsTexts = getTagsTexts(elementtypes, TAG_TYPE);
+                        Element elementTypes = findElement(element, TAG_TYPES);
+                        tagsTexts = getTagsTexts(elementTypes, TAG_TYPE);
                         List<TaskType> types = new ArrayList<TaskType>();
                         for (String tid : tagsTexts) {
                             types.add(localTaskTypeProvider.getTaskTypeById(tid));
                         }
                         localQuery.setTypes(types);
+                        localQuery.setTypesMatch(getMatch(elementTypes));
                         //----------------------------------------------------------------------
                         Element elementStates = findElement(element, TAG_STATES);
                         tagsTexts = getTagsTexts(elementStates, TAG_STATUS);
@@ -256,19 +291,22 @@ class PersistenceHandler {
                             states.add(statusProvider.getTaskStatusById(sid));
                         }
                         localQuery.setStates(states);
+                        localQuery.setStatesMatch(getMatch(elementStates));
                         //----------------------------------------------------------------------
-                        String content = element.getAttribute(TAG_CONTAIN);
-                        String match_Type = element.getAttribute(TAG_MATCH_TYPE);
-                        if (match_Type != null && match_Type.trim().length() > 0) {
-                            MatchType matchType = MatchType.valueOf(match_Type);
-                            localQuery.setMatchType(matchType);
-                        }
-                        localQuery.setContain(content);
+                        Element elementSummaries = findElement(element, TAG_SUMMARIES);
+                        localQuery.setSummarySearch(
+                                new HashSet<String>(getTagsTexts(elementSummaries, TAG_SUMMARY)));
+                        localQuery.setSummaryMatch(getMatch(elementSummaries));
 
-                        String summary = element.getAttribute(TAG_SUMMARY);
-                        localQuery.setSummary(Boolean.parseBoolean(summary));
-                        String description = element.getAttribute(TAG_DESCRIPTION);
-                        localQuery.setDescription(Boolean.parseBoolean(description));
+                        Element elementDescriptions = findElement(element, TAG_DESCRIPTIONS);
+                        localQuery.setDescriptionSearch(
+                                new HashSet<String>(getTagsTexts(elementDescriptions, TAG_DESCRIPTION)));
+                        localQuery.setDescriptionMatch(getMatch(elementDescriptions));
+
+                        Element elementTexts = findElement(element, TAG_TEXTS);
+                        localQuery.setTextSearch(
+                                new HashSet<String>(getTagsTexts(elementTexts, TAG_TEXT)));
+                        localQuery.setTextMatch(getMatch(elementTexts));
                         //----------------------------------------------------------------------
                         localQuerys.add(localQuery);
                     }
@@ -280,6 +318,8 @@ class PersistenceHandler {
 
     private List<String> getTagsTexts(Element element, String tag) {
         List<String> texts = new ArrayList<String>();
+        if (element == null)
+            return texts;
         NodeList nodes =
                 element.getElementsByTagName(tag);
         for (int i = 0; i < nodes.getLength(); i++) {
@@ -288,6 +328,13 @@ class PersistenceHandler {
         }
 
         return texts;
+    }
+
+    private QueryFilter.Match getMatch(Element element) {
+        String matchString = element == null ? null : element.getAttribute(TAG_MATCH);
+        if (matchString == null || matchString.trim().length() == 0)
+            return QueryFilter.Match.IS;
+        return QueryFilter.Match.valueOf(matchString);
     }
 
     private Document getDocument() {
@@ -313,7 +360,9 @@ class PersistenceHandler {
                 }
             }
 
-
+            // check version and update if needed
+            if (doc != null)
+                updateVersion(doc);
 
         } else {
             doc = XMLUtil.createDocument(TAG_ROOT, NAMESPACE, null, null);
@@ -374,4 +423,100 @@ class PersistenceHandler {
         }
         return null;
     }
+
+    private void updateVersion(Document doc) {
+        // get root element
+        Element rootElement = doc.getDocumentElement();
+        if (rootElement == null)
+            return;
+        // get queries element
+        Element queriesElement = findElement(rootElement, TAG_QUERYS);
+        if (queriesElement == null)
+            return;
+
+        // get version
+        String version = queriesElement.getAttribute(TAG_VERSION);
+        // current version: no updated needed
+        if (VERSION_1.equals(version))
+            return;
+
+        // set version
+        queriesElement.setAttribute(TAG_VERSION, VERSION_1);
+
+        // update
+        NodeList queryList = queriesElement.getElementsByTagName(TAG_QUERY);
+        for (int i = 0 ; i < queryList.getLength() ; i++) {
+            if (queryList.item(i).getNodeType() == Node.ELEMENT_NODE) {
+                Element queryElement = (Element) queryList.item(i);
+
+                // add match IS to priorities, types and states
+                Element prioritiesElement = findElement(queryElement, TAG_PRIORITIES);
+                if (prioritiesElement != null)
+                    prioritiesElement.setAttribute(TAG_MATCH, QueryFilter.Match.IS.toString());
+                Element typesElement = findElement(queryElement, TAG_TYPES);
+                if (typesElement != null)
+                    typesElement.setAttribute(TAG_MATCH, QueryFilter.Match.IS.toString());
+                Element statesElement = findElement(queryElement, TAG_STATES);
+                if (statesElement != null)
+                    statesElement.setAttribute(TAG_MATCH, QueryFilter.Match.IS.toString());
+
+                // match type
+                String matchString = queryElement.getAttribute(TAG_MATCH_TYPE);
+                QueryFilter.Match match = QueryFilter.Match.CONTAINS;
+                if ("STARTS_WITH".equals(matchString)) // NOI18N
+                    match = QueryFilter.Match.STARTS_WITH;
+                else if ("ENDS_WITH".equals(matchString)) // NOI18N
+                    match = QueryFilter.Match.ENDS_WITH;
+                else if ("EQUALS".equals(matchString)) // NOI18N
+                    match = QueryFilter.Match.IS;
+
+                // summaries element
+                Element summariesElement = doc.createElement(TAG_SUMMARIES);
+                summariesElement.setAttribute(TAG_MATCH, match.toString());
+                queryElement.appendChild(summariesElement);
+                // descriptions element
+                Element descriptionsElement = doc.createElement(TAG_DESCRIPTIONS);
+                descriptionsElement.setAttribute(TAG_MATCH, match.toString());
+                queryElement.appendChild(descriptionsElement);
+                // texts element
+                Element textsElement = doc.createElement(TAG_TEXTS);
+                textsElement.setAttribute(TAG_MATCH, match.toString());
+                queryElement.appendChild(textsElement);
+
+                // remarks: search for text inside summary or description is
+                // supported by a new query field "text".
+                boolean summary = Boolean.parseBoolean(queryElement.getAttribute(TAG_SUMMARY));
+                boolean description = Boolean.parseBoolean(queryElement.getAttribute(TAG_DESCRIPTION));
+                if (summary && description) {
+                    // text
+                    Element textElement = doc.createElement(TAG_TEXT);
+                    textsElement.appendChild(textElement);
+                    textElement.appendChild(doc.createTextNode(
+                            queryElement.getAttribute(TAG_CONTAIN)));
+                } else if (summary) {
+                    // summary
+                    Element summaryElement = doc.createElement(TAG_SUMMARY);
+                    summariesElement.appendChild(summaryElement);
+                    summaryElement.appendChild(doc.createTextNode(
+                            queryElement.getAttribute(TAG_CONTAIN)));
+                } else if (description) {
+                    // description
+                    Element descriptionElement = doc.createElement(TAG_DESCRIPTION);
+                    descriptionsElement.appendChild(descriptionElement);
+                    descriptionElement.appendChild(doc.createTextNode(
+                            queryElement.getAttribute(TAG_CONTAIN)));
+                }
+
+                // remove old unused tags
+                queryElement.removeAttribute(TAG_CONTAIN);
+                queryElement.removeAttribute(TAG_SUMMARY);
+                queryElement.removeAttribute(TAG_DESCRIPTION);
+                queryElement.removeAttribute(TAG_MATCH_TYPE);
+            }
+        }
+
+        // save document
+        save(doc);
+    }
+
 }

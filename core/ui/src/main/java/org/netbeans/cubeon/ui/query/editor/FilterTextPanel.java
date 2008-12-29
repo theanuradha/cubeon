@@ -47,7 +47,7 @@ public class FilterTextPanel extends AbstractFilterValuePanel {
     @Override
     public void getValues(Set<? super Object> values) {
         String value = text.getText();
-        if (value != null && !value.isEmpty())
+        if (value != null && value.trim().length() > 0)
             values.add(value);
     }
 }
