@@ -25,7 +25,7 @@ import java.util.List;
  *
  * @author radoslaw.holewa
  */
-public class RepositoryConfiguration {
+public class RepositoryAttributes {
 
    /**
     * Bugzilla statuses, this list contains all available statuses.

@@ -16,7 +16,7 @@
  */
 package org.netbeans.cubeon.bugzilla.api.post.handler;
 
-import org.netbeans.cubeon.bugzilla.api.model.RepositoryConfiguration;
+import org.netbeans.cubeon.bugzilla.api.model.RepositoryAttributes;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -30,10 +30,10 @@ public class SaxRepositoryConfigurationHandler extends BaseSaxHandler {
     /**
      * Repository configuration, it contains product names, components, versions etc.
      */
-    private RepositoryConfiguration repositoryConfiguration;
+    private RepositoryAttributes repositoryConfiguration;
 
     public void startDocument() throws SAXException {
-        repositoryConfiguration = new RepositoryConfiguration();
+        repositoryConfiguration = new RepositoryAttributes();
     }
 
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
@@ -47,7 +47,7 @@ public class SaxRepositoryConfigurationHandler extends BaseSaxHandler {
      *
      * @return - repository configuration
      */
-    public RepositoryConfiguration getRepositoryConfiguration() {
+    public RepositoryAttributes getRepositoryConfiguration() {
         return repositoryConfiguration;
     }
 }

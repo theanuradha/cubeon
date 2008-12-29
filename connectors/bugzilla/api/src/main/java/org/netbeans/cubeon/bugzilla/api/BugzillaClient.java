@@ -18,7 +18,7 @@ package org.netbeans.cubeon.bugzilla.api;
 
 import org.netbeans.cubeon.bugzilla.api.exception.BugzillaException;
 import org.netbeans.cubeon.bugzilla.api.model.BugDetails;
-import org.netbeans.cubeon.bugzilla.api.model.RepositoryConfiguration;
+import org.netbeans.cubeon.bugzilla.api.model.RepositoryAttributes;
 import org.netbeans.cubeon.bugzilla.api.model.BugSummary;
 import org.netbeans.cubeon.bugzilla.api.post.queries.BaseQuery;
 
@@ -58,11 +58,11 @@ public interface BugzillaClient {
     /**
      * Returns Bugzilla remote repository specific values like products, varsions etc.
      *
-     * @return - object with whole repository-specific configuration
+     * @return - object with repository-specific attributes
      * @throws BugzillaException - throws exception in case there were any errors during
-     *                           configuration retrieving
+     *                           attributes retrieving
      */
-    RepositoryConfiguration getRepositoryConfiguration() throws BugzillaException;
+    RepositoryAttributes getRepositoryAttributes() throws BugzillaException;
 
     /**
      * Returns list of bugs retrieved using given query.
