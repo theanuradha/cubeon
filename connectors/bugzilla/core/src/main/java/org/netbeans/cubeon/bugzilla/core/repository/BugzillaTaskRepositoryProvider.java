@@ -16,7 +16,6 @@
  */
 package org.netbeans.cubeon.bugzilla.core.repository;
 
-import org.netbeans.cubeon.bugzilla.core.repository.ui.ConfigurationHandlerImpl;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepositoryType;
 import org.openide.filesystems.FileObject;
@@ -35,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.netbeans.cubeon.bugzilla.core.repository.ui.ConfigurationHandlerImpl;
 
 /**
  * It provides information about repositories and repositories managment logic (add/get/delete).
