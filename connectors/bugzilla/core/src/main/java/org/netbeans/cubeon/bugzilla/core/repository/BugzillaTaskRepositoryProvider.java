@@ -187,4 +187,13 @@ public class BugzillaTaskRepositoryProvider implements TaskRepositoryType {
     public ConfigurationHandler createConfigurationHandler() {
         return new ConfigurationHandlerImpl( this );
     }
+
+    /**
+     * Returns base configuration directory for Bugzilla repository.
+     * 
+     * @return - base configuration directory
+     */
+    public FileObject getBaseDir() {
+        return baseDir;
+    }
 }
