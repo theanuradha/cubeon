@@ -38,8 +38,8 @@ import java.awt.*;
 import java.text.MessageFormat;
 import java.util.Map;
 import java.util.HashMap;
-import javax.tools.FileObject;
 import org.netbeans.cubeon.bugzilla.api.model.RepositoryAttributes;
+import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
 
 /**
@@ -49,6 +49,10 @@ import org.openide.util.Exceptions;
  */
 public class BugzillaTaskRepository implements TaskRepository {
 
+    /**
+     * Task repository provider.
+     */
+    BugzillaTaskRepositoryProvider repositoryProvider;
     /**
      * Bugzilla tasks file manager, it provides tasks file managment logic
      * eg. persist, load, update.
@@ -90,12 +94,10 @@ public class BugzillaTaskRepository implements TaskRepository {
      * Bugzilla repository client, it is responsible for retrieving repository data and publishing tasks.
      */
     private BugzillaClient client;
-
     /**
      * Contains repository attributes.
      */
     private BugzillaRepositoryAttributes repositoryAttributes;
-    
     /**
      * Synchronziation lock object, used during synchronization.
      */
@@ -120,12 +122,13 @@ public class BugzillaTaskRepository implements TaskRepository {
      * @param name        - repository name
      * @param url         - repository URL
      */
-    public BugzillaTaskRepository(FileObject repositoryTasksFile, String id, String description, String name, String url) {
+    public BugzillaTaskRepository(BugzillaTaskRepositoryProvider provider, String id, String description, String name, String url) {
         this.id = id;
         this.description = description;
         this.name = name;
         this.url = url;
-        this.tasksFileManager = createTasksFileManager(repositoryTasksFile);
+        this.tasksFileManager = createTasksFileManager(provider.getBaseDir());
+        this.repositoryProvider = provider;
     }
 
     /**
@@ -313,9 +316,10 @@ public class BugzillaTaskRepository implements TaskRepository {
      * @param repositoryConfigurationDir - repository configuration directory
      * @return - tasks file manager
      */
-    private BugzillaTasksFileManager createTasksFileManager(FileObject repositoryConfigurationDir) {
-        //TODO implement this
-        throw new UnsupportedOperationException("Not yet implemented");
+    private BugzillaTasksFileManager createTasksFileManager(FileObject baseConfigDir) {
+
+        BugzillaTasksFileManager fileManager = new BugzillaTasksFileManagerImpl(baseConfigDir);
+        return fileManager;
     }
 
     /**
