@@ -284,7 +284,11 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
      * {@inheritDoc}
      */
     public boolean isValidConfiguration() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if ((!valid) && lblNotify.getText().trim().length() == 0) {
+            lblNotify.setText(NbBundle.getMessage(ConfigurationHandlerImpl.class, "LBL_Please_Validate_Configuration"));
+            lblNotify.setForeground(Color.blue);
+        }
+        return valid;
     }
 
     /**

@@ -113,7 +113,7 @@ public class BugzillaTaskRepositoryProvider implements TaskRepositoryType {
      * {@inheritDoc}
      */
     public Image getImage() {
-        return Utilities.loadImage( "org/netbeans/cubeon/bugzilla/core/repository/bugzilla-logo.gif" );
+        return Utilities.loadImage( "org/netbeans/cubeon/bugzilla/core/bugzilla.png" );
     }
 
     /**
