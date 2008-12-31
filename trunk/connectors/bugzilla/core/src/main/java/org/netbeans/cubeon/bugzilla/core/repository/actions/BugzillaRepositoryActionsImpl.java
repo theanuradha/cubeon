@@ -14,10 +14,12 @@
  *  limitations under the License.
  *  under the License.
  */
-
 package org.netbeans.cubeon.bugzilla.core.repository.actions;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.Action;
+import org.netbeans.cubeon.bugzilla.core.repository.BugzillaTaskRepository;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepositoryActionsProvider;
 
@@ -26,13 +28,19 @@ import org.netbeans.cubeon.tasks.spi.repository.TaskRepositoryActionsProvider;
  *
  * @author radoslaw.holewa
  */
-public class BugzillaRepositoryActionsImpl implements TaskRepositoryActionsProvider{
+public class BugzillaRepositoryActionsImpl implements TaskRepositoryActionsProvider {
 
     /**
      * {@inheritDoc}
      */
     public Action[] getActions(TaskRepository repository) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        BugzillaTaskRepository ttr = repository.getLookup().lookup(BugzillaTaskRepository.class);
+        if (ttr != null) {
+            List<Action> actions = new ArrayList<Action>();
+            //TODO add additional actions
+            actions.add(null);
+            return actions.toArray(new Action[actions.size()]);
+        }
+        return new Action[0];
     }
-
 }

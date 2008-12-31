@@ -147,6 +147,10 @@ public class BugzillaTask implements TaskElement {
         return url;
     }
 
+    public void setTaskRepository(BugzillaTaskRepository repository) {
+        this.taskRepository = repository;
+    }
+
     /**
      * {@inheritDoc}
      */

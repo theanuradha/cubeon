@@ -42,13 +42,12 @@ public class BaseXMLPersistenceImpl {
      *
      * @param rootElement - root element, it will contain child elements created using provided map
      * @param values      - map of values
-     * @param document    - document, it will be used to create child elements
      * @return - filled root element
      */
-    public Element createCompleteElement(Element rootElement, Map<String, String> values, Document document) {
+    public Element createCompleteElement(Element rootElement, Map<String, String> values) {
         Element childElement = null;
         for (String name : values.keySet()) {
-            childElement = document.createElement(name);
+            childElement = rootElement.getOwnerDocument().createElement(name);
             childElement.setTextContent(values.get(name));
             rootElement.appendChild(childElement);
         }

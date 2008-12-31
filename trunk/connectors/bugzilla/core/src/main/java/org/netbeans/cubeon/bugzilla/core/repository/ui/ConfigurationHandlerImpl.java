@@ -162,7 +162,7 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addContainerGap(332, Short.MAX_VALUE))
+                .addContainerGap(328, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(lblNotify, javax.swing.GroupLayout.PREFERRED_SIZE, 417, javax.swing.GroupLayout.PREFERRED_SIZE)
