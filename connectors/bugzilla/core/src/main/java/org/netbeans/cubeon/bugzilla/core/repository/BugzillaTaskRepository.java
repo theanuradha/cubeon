@@ -169,7 +169,7 @@ public class BugzillaTaskRepository implements TaskRepository {
      * {@inheritDoc}
      */
     public Image getImage() {
-        return Utilities.loadImage("org/netbeans/cubeon/bugzilla/repository/bugzilla-repository.png");
+        return Utilities.loadImage("org/netbeans/cubeon/bugzilla/core/bugzilla-repository.png");
     }
 
     /**
@@ -184,6 +184,7 @@ public class BugzillaTaskRepository implements TaskRepository {
         String localTaskId = getNextAvailableLocalTaskId();
         task.setLocalId(localTaskId);
         task.setBugSummary(bugSummary);
+        task.setTaskRepository(this);
         return task;
     }
 

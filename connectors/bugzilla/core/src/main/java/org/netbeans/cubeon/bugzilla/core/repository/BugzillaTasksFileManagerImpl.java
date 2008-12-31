@@ -95,7 +95,7 @@ public class BugzillaTasksFileManagerImpl extends BaseXMLPersistenceImpl impleme
             elementsMap.put(ELEMENT_URL, bugzillaTask.getUrl().toString());
             elementsMap.put(ELEMENT_DISPLAY_NAME, bugzillaTask.getDisplayName());
             elementsMap.put(ELEMENT_DESCRIPTION, bugzillaTask.getDescription());
-            root = createCompleteElement(root, elementsMap, document);
+            root = createCompleteElement(root, elementsMap);
             saveDocumentToFile(document, tasksFile);
         } catch (ParserConfigurationException e) {
             throw new BugzillaRepositoryException("Could not persist task in tasks file.", e);

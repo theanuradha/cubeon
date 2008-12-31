@@ -118,11 +118,11 @@ public class BugzillaTaskRepositoryPersistence extends BaseXMLPersistenceImpl {
             elementsMap.put(NODE_DESCRIPTION, taskRepository.getDescription());
             elementsMap.put(NODE_USERNAME, taskRepository.getUsername());
             elementsMap.put(NODE_PASSWORD, taskRepository.getPassword());
-            repositoryElement = createCompleteElement(repositoryElement, elementsMap, document);
             FileObject configFile = getConfigurationFile(BUGZILLA_REPOSITORIES_CONF_FILE);
             document = XMLUtil.parse(new InputSource(configFile.getInputStream()), false, true, null, null);
             removeRepositoryFromDocument(taskRepository, document);
             NodeList nodeList = document.getElementsByTagName(NODE_REPOSITORIES);
+            repositoryElement = createCompleteElement(repositoryElement, elementsMap);
             Node repositoriesElement = nodeList.item(0);
             repositoriesElement.appendChild(repositoryElement);
             saveDocumentToFile(document, configFile);
