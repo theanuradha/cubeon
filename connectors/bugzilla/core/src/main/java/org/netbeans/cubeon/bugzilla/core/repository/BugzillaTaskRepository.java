@@ -59,6 +59,10 @@ public class BugzillaTaskRepository implements TaskRepository {
      */
     private BugzillaTasksFileManager tasksFileManager;
     /**
+     * Repository notification extension.
+     */
+    private final BugzillaRepositoryExtension extension;
+    /**
      * Current repository instance ID.
      */
     private String id;
@@ -71,9 +75,9 @@ public class BugzillaTaskRepository implements TaskRepository {
      */
     private String name;
     /**
-     * Actual repository state.
+     * Actual repository state, default inactive.
      */
-    private State state;
+    private State state = State.INACTIVE;
     /**
      * Repository user name.
      */
@@ -111,6 +115,7 @@ public class BugzillaTaskRepository implements TaskRepository {
      * Default constructor.
      */
     public BugzillaTaskRepository() {
+        this.extension = new BugzillaRepositoryExtension();
     }
 
     /**
@@ -123,6 +128,7 @@ public class BugzillaTaskRepository implements TaskRepository {
      * @param url         - repository URL
      */
     public BugzillaTaskRepository(BugzillaTaskRepositoryProvider provider, String id, String description, String name, String url) {
+        this();
         this.id = id;
         this.description = description;
         this.name = name;
@@ -244,7 +250,7 @@ public class BugzillaTaskRepository implements TaskRepository {
      * {@inheritDoc}
      */
     public Notifier<RepositoryEventAdapter> getNotifier() {
-        return null;  //todo implement this
+        return extension;
     }
 
     public String getUrl() {
