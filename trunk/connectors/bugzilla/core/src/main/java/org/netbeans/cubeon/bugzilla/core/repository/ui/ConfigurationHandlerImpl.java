@@ -296,6 +296,7 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
             repository = new BugzillaTaskRepository(repositoryProvider, uniqueRepoId, txtName.getText().trim().toLowerCase(), txtName.getText().trim(), txtName.getText().trim());
         }
         repository.setName(txtName.getText().trim());
+        repository.setDescription(txtName.getText().trim());
         repository.setUsername(txtUiserId.getText().trim());
         repository.setPassword(new String(txtPassword.getPassword()));
         String url = txtId.getText().trim();
