@@ -38,7 +38,7 @@ public interface TaskQuerySupportProvider {
      *
      * @return
      */
-    List<TaskQuery> getTaskQuerys();
+    List<? extends TaskQuery> getTaskQuerys();
 
     /**
      * save modifid attributes
