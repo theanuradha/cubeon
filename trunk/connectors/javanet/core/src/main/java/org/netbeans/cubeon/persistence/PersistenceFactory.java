@@ -17,6 +17,7 @@
 
 package org.netbeans.cubeon.persistence;
 
+import org.netbeans.cubeon.javanet.persistence.JavanetQueryPersistence;
 import org.netbeans.cubeon.javanet.persistence.JavanetRepoPersistence;
 import org.netbeans.cubeon.javanet.persistence.impl.JavanetXmlPersistenceFactory;
 
@@ -38,7 +39,7 @@ public abstract class PersistenceFactory {
      * @return
      */
     private static <E extends Persistence> PersistenceFactory getFactory(Class<E> c) {
-        if (c.equals(JavanetRepoPersistence.class)) {
+        if (c.equals(JavanetRepoPersistence.class) || c.equals(JavanetQueryPersistence.class)) {
             return new JavanetXmlPersistenceFactory();
         } else {
             throw new IllegalArgumentException("Unknown class: " + c);

@@ -19,6 +19,7 @@ package org.netbeans.cubeon.javanet.persistence.impl;
 
 import org.netbeans.cubeon.persistence.Persistence;
 import org.netbeans.cubeon.persistence.PersistenceFactory;
+import org.netbeans.cubeon.persistence.QueryPersitence;
 import org.netbeans.cubeon.persistence.RepoPersistence;
 
 /**
@@ -31,6 +32,8 @@ public class JavanetXmlPersistenceFactory extends PersistenceFactory {
     protected <E extends Persistence> E createPersistence(Class<E> c) {
         if (RepoPersistence.class.isAssignableFrom(c)) {
             return (E) new JavanetXmlRepoPersistence();
+        } else if (QueryPersitence.class.isAssignableFrom(c)) {
+            return (E) new JavanetXmlQueryPersistence();
         } else {
             throw new IllegalArgumentException();
         }

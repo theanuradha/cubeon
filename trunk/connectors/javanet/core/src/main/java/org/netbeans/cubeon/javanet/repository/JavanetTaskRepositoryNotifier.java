@@ -19,6 +19,7 @@ package org.netbeans.cubeon.javanet.repository;
 
 import java.util.Collection;
 import org.netbeans.cubeon.tasks.spi.Notifier;
+import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.repository.RepositoryEventAdapter;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 
@@ -40,6 +41,19 @@ public class JavanetTaskRepositoryNotifier extends Notifier<RepositoryEventAdapt
                 getAll();
         for (RepositoryEventAdapter adapter : adapters) {
             adapter.stateChanged(state);
+        }
+    }
+    public void fireQueryAdded(TaskQuery query) {
+        Collection<? extends RepositoryEventAdapter> adapters = getAll();
+        for (RepositoryEventAdapter adapter : adapters) {
+            adapter.queryAdded(query);
+        }
+    }
+
+    public void fireQueryRemoved(TaskQuery query) {
+        Collection<? extends RepositoryEventAdapter> adapters = getAll();
+        for (RepositoryEventAdapter adapter : adapters) {
+            adapter.queryRemoved(query);
         }
     }
 }

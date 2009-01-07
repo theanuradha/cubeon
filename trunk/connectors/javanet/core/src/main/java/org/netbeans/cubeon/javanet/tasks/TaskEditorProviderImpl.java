@@ -1,5 +1,5 @@
 /*
- *  Copyright 2008 Tomas Knappek.
+ *  Copyright 2008 Anuradha.
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,14 +15,24 @@
  *  under the License.
  */
 
-package org.netbeans.cubeon.persistence;
+package org.netbeans.cubeon.javanet.tasks;
 
-import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
+import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider;
 
 /**
  *
+ * @author Anuradha
  * @author Tomas Knappek
  */
-public interface QueryPersitence<T extends TaskQuery> extends Persistence<T> {
+public class TaskEditorProviderImpl implements TaskEditorProvider{
+ private JavanetTask task;
 
+    public TaskEditorProviderImpl(JavanetTask task) {
+        this.task = task;
+    }
+
+    public EditorAttributeHandler createEditorAttributeHandler() {
+        return new JavanetAttributeHandler(task);
+    }
+ 
 }

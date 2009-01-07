@@ -83,6 +83,11 @@
 
         <!-- end of javanettasks dependency -->
         <dependency>
+            <groupId>org.netbeans.cubeon</groupId>
+            <artifactId>cubeon-ui</artifactId>
+            <version>${cubeon.release}</version>
+        </dependency>
+        <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-nodes</artifactId>
             <version>${netbeans.release}</version>

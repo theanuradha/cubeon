@@ -18,13 +18,24 @@
 package org.netbeans.cubeon.javanet.repository;
 
 import java.awt.Image;
+import org.kohsuke.jnt.JNIssue;
+import org.kohsuke.jnt.JNIssueTracker;
 import org.kohsuke.jnt.JNProject;
 import org.kohsuke.jnt.JavaNet;
 import org.kohsuke.jnt.ProcessingException;
+import org.netbeans.api.progress.ProgressHandle;
+import org.netbeans.api.progress.ProgressHandleFactory;
+import org.netbeans.cubeon.javanet.query.JavanetQuerySupport;
+import org.netbeans.cubeon.javanet.tasks.JavanetTask;
+import org.netbeans.cubeon.javanet.tasks.actions.Revertable;
+import org.netbeans.cubeon.javanet.tasks.actions.Submitable;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
+import org.netbeans.cubeon.ui.query.QuerySupport;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
+import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 
@@ -32,30 +43,39 @@ import org.openide.util.lookup.Lookups;
  *
  * @author Tomas Knappek
  */
-public class JavanetTaskRepository implements TaskRepository {
+public class JavanetTaskRepository implements TaskRepository, Submitable, Revertable {
 
     private JavaNet _javanet = null;
     private JavanetTaskRepositoryProvider _taskRepoProvider = null;
     private JNProject _jnProject = null;
+    private JNIssueTracker _jnIssueTracker = null;
     private String _userName = null;
     private String _password = null;
     private String _projectName = null;
     private String _id = null;
-    private State _state = State.INACTIVE;
+    private State _state = State.ACTIVE;
     private JavanetTaskRepositoryNotifier _notifier = new JavanetTaskRepositoryNotifier(this);
+    private QuerySupport _querySupport = null;
+
+     //locks
+    private final Object SYNCHRONIZE_LOCK = new Object();
 
     private synchronized void connect() {
+        ProgressHandle handle = ProgressHandleFactory.createHandle(
+                NbBundle.getMessage(JavanetTaskRepository.class, "LBL_Connecting", getName()));
+        handle.start();
+        handle.switchToIndeterminate();
         try {
-            if (_state == State.INACTIVE) {
-                _javanet = JavaNet.connect(_userName, _password);
-                _jnProject = _javanet.getProject(_projectName);
-                _state = State.ACTIVE;
-                _notifier.fireStateChanged(_state);
-            }
+            _javanet = JavaNet.connect(_userName, _password);
+            _jnProject = _javanet.getProject(_projectName);
+            _jnIssueTracker = _jnProject.getIssueTracker();
         } catch (ProcessingException ex) {
             _state = State.INACTIVE;
+            _notifier.fireStateChanged(_state);
             Exceptions.printStackTrace(ex);
-        }
+        } finally {
+            handle.finish();
+        }        
         
     }
 
@@ -65,7 +85,8 @@ public class JavanetTaskRepository implements TaskRepository {
         _id = id;
         _projectName = projectName;
         _userName = userName;
-        _password = password;        
+        _password = password;
+        _querySupport = new JavanetQuerySupport(this, _notifier);
     }
 
     public JavanetTaskRepository(JavanetTaskRepositoryProvider taskRepoProvider, JavaNet javaNet,
@@ -77,7 +98,7 @@ public class JavanetTaskRepository implements TaskRepository {
         _projectName = jnProject.getName();
         _userName = userName;
         _password = password;
-        _state = State.ACTIVE;
+        _querySupport = new JavanetQuerySupport(this, _notifier);
     }
 
     public String getId() {
@@ -102,7 +123,7 @@ public class JavanetTaskRepository implements TaskRepository {
 
     public Lookup getLookup() {
         //TODO: not complete
-        return Lookups.fixed(this, _taskRepoProvider);
+        return Lookups.fixed(this, _taskRepoProvider, _querySupport);
     }
 
     public Image getImage() {
@@ -113,7 +134,14 @@ public class JavanetTaskRepository implements TaskRepository {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public TaskElement getTaskElementById(String arg0) {
+    public TaskElement getTaskElementById(String sid) {
+
+        int id = Integer.parseInt(sid);
+        try {
+            JNIssue issue = _jnIssueTracker.get(id);
+        } catch (ProcessingException ex) {
+            Exceptions.printStackTrace(ex);
+        }
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -122,8 +150,42 @@ public class JavanetTaskRepository implements TaskRepository {
     }
 
     public void synchronize() {
-        //TODO: implement this
         connect();
+        RequestProcessor.getDefault().post(new Runnable() {
+
+            public void run() {                
+                synchronized (SYNCHRONIZE_LOCK) {
+//                    List<String> taskIds = handler.getTaskIds();
+//                    if (taskIds.isEmpty()) {
+//                        return;
+//                    }
+                    ProgressHandle handle = ProgressHandleFactory.createHandle(
+                            NbBundle.getMessage(JavanetTaskRepository.class,
+                            "LBL_Synchronizing_Tasks", getName()));
+//                    handle.start(taskIds.size());
+                    handle.start();
+                    try {
+//                        for (String id : taskIds) {
+//                            TracTask tracTask = getTaskElementById(id);
+//                            if (tracTask != null && !tracTask.isLocal()) {
+//
+//                                handle.progress(tracTask.getId() + " : " + tracTask.getName(), taskIds.indexOf(id));
+//                                try {
+//                                    update(tracTask);
+//                                } catch (TracException ex) {
+//                                    Logger.getLogger(TracTaskRepository.class.getName()).warning(ex.getMessage());
+//                                }
+//
+//                            }
+//
+//                        }
+                    } finally {
+                        handle.finish();
+                    }
+                }
+            }
+        });
+        
     }
 
     public State getState() {
@@ -157,6 +219,18 @@ public class JavanetTaskRepository implements TaskRepository {
 
     void setRepositoryProvider(JavanetTaskRepositoryProvider provider) {
         _taskRepoProvider = provider;
+    }
+
+    public void submit(JavanetTask task) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void remove(JavanetTask task) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void revert(JavanetTask task) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }
