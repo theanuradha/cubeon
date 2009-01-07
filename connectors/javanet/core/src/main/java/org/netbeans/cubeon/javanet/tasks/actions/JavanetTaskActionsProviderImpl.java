@@ -17,7 +17,10 @@
 
 package org.netbeans.cubeon.javanet.tasks.actions;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.Action;
+import org.netbeans.cubeon.javanet.tasks.JavanetTask;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskElementActionsProvider;
 
@@ -28,7 +31,16 @@ import org.netbeans.cubeon.tasks.spi.task.TaskElementActionsProvider;
 public class JavanetTaskActionsProviderImpl implements TaskElementActionsProvider {
 
     public Action[] getActions(TaskElement element) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        List<Action> actions = new ArrayList<Action>();
+        JavanetTask task = element.getLookup().lookup(JavanetTask.class);
+        if (task != null) {
+            actions.add(null);
+            actions.add(new SubmitTaskAction(task));
+            actions.add(null);
+
+        }
+
+        return actions.toArray(new Action[actions.size()]);
     }
 
 }

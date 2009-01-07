@@ -14,15 +14,18 @@
  *  limitations under the License.
  *  under the License.
  */
+package org.netbeans.cubeon.javanet.tasks.actions;
 
-package org.netbeans.cubeon.persistence;
-
-import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
+import org.netbeans.cubeon.javanet.tasks.JavanetTask;
 
 /**
  *
  * @author Tomas Knappek
  */
-public interface QueryPersitence<T extends TaskQuery> extends Persistence<T> {
+public interface Revertable {
 
+    public void remove(JavanetTask task);
+
+    public void revert(JavanetTask task);
+    
 }

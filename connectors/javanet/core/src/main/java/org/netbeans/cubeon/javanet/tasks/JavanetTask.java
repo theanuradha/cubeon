@@ -19,11 +19,12 @@ package org.netbeans.cubeon.javanet.tasks;
 import java.awt.Image;
 import java.net.URL;
 import org.kohsuke.jnt.JNIssue;
+import org.netbeans.cubeon.javanet.repository.JavanetTaskRepository;
 import org.netbeans.cubeon.tasks.spi.Notifier;
-import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskElementChangeAdapter;
 import org.openide.util.Lookup;
+import org.openide.util.lookup.Lookups;
 
 /**
  *
@@ -32,9 +33,11 @@ import org.openide.util.Lookup;
 public class JavanetTask implements TaskElement {
 
     JNIssue _jnIssue = null;
+    JavanetTaskRepository _repo = null;
 
-    public JavanetTask(JNIssue jnIssue) {
+    public JavanetTask(JavanetTaskRepository repo, JNIssue jnIssue) {
         _jnIssue = jnIssue;
+        _repo = repo;
     }
 
     public String getId() {
@@ -62,12 +65,12 @@ public class JavanetTask implements TaskElement {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public TaskRepository getTaskRepository() {
+    public JavanetTaskRepository getTaskRepository() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public Lookup getLookup() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return Lookups.fixed(this, _repo);
     }
 
     public boolean isCompleted() {
@@ -80,6 +83,10 @@ public class JavanetTask implements TaskElement {
 
     public URL getUrl() {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public boolean isModified() {
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     public void synchronize() {

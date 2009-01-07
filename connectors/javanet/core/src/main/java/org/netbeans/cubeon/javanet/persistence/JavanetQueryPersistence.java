@@ -1,5 +1,5 @@
 /*
- *  Copyright 2008 Tomas Knappek.
+ *  Copyright 2009 Tomas Knappek.
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,14 +15,15 @@
  *  under the License.
  */
 
-package org.netbeans.cubeon.persistence;
+package org.netbeans.cubeon.javanet.persistence;
 
-import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
+import org.netbeans.cubeon.javanet.query.JavanetRemoteQuery;
+import org.netbeans.cubeon.persistence.QueryPersitence;
 
 /**
  *
  * @author Tomas Knappek
  */
-public interface QueryPersitence<T extends TaskQuery> extends Persistence<T> {
+public interface JavanetQueryPersistence extends QueryPersitence<JavanetRemoteQuery> {
 
 }
