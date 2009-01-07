@@ -16,6 +16,7 @@
  */
 package org.netbeans.cubeon.ui.query;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.netbeans.cubeon.tasks.core.api.TagNode;
 import org.netbeans.cubeon.tasks.spi.Notifier;
@@ -61,7 +62,7 @@ public class TaskQueryChildern extends Children.Keys<TaskQuery> {
 
     @Override
     protected void addNotify() {
-        List<TaskQuery> taskQuerys = provider.getTaskQuerys();
+        List<TaskQuery> taskQuerys = new ArrayList<TaskQuery>(provider.getTaskQuerys());
         if (taskQuerys.size() == 0) {
             taskQuerys.add(dummyQuery);
         }
