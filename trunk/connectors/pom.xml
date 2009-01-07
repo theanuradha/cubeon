@@ -15,8 +15,6 @@
         <module>jira</module>
         <module>local</module>
         <module>trac</module>
-        <module>bugzilla</module>
-        <module>javanet</module>
     </modules>
     <build>
         <pluginManagement>
@@ -35,4 +33,18 @@
             </plugins>
         </pluginManagement>
     </build>
+    <profiles>
+        <profile>
+            <id>java-net</id>
+            <modules>
+                <module>javanet</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>bugzilla</id>
+            <modules>
+                <module>bugzilla</module>
+            </modules>
+        </profile>
+    </profiles>
 </project>
