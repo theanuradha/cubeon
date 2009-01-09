@@ -146,7 +146,8 @@ public class JiraSession {
 
     public RemoteProject[] getProjects() throws JiraException {
         try {
-            return service.getProjects(token);
+            //Issue-44
+            return service.getProjectsNoSchemes(token);
         } catch (Exception ex) {
             throw new JiraException(ex);
         }
