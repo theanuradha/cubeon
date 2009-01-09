@@ -464,7 +464,19 @@ class JiraAttributesPersistence {
         project.setAttribute(TAG_DESCRIPTION, rp.getDescription());
         project.setAttribute(TAG_LEAD, rp.getLead());
 
-        RemoteIssueType[] issueTypes = session.getIssueTypesForProject(rp.getId());
+        RemoteIssueType[] issueTypes = null;
+        /**
+         * Workaround for Issue-41,
+         * see http://code.google.com/p/cubeon/issues/detail?id=41
+         */
+        try {
+            issueTypes = session.getIssueTypesForProject(rp.getId());
+        } catch (JiraException je) {
+             LOG.warning( je.getMessage());
+             LOG.info("missing getIssueTypesForProject and switch to getIssueTypes ");
+            issueTypes = session.getIssueTypes();
+        }
+        
         Element types = document.createElement(TAG_TYPES);
         project.appendChild(types);
         for (RemoteIssueType rit : issueTypes) {
