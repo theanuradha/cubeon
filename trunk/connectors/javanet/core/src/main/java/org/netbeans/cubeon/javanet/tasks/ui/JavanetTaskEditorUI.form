@@ -243,6 +243,9 @@
               <StringArray count="0"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="cmbComponentItemStateChanged"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="lblSubComponent">
           <Properties>
@@ -380,7 +383,7 @@
             </Property>
           </Properties>
         </Component>
-        <Component class="javax.swing.JComboBox" name="cmOs">
+        <Component class="javax.swing.JComboBox" name="cmbOs">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
               <StringArray count="0"/>

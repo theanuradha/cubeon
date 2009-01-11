@@ -24,10 +24,10 @@ import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider;
  * @author Anuradha
  * @author Tomas Knappek
  */
-public class TaskEditorProviderImpl implements TaskEditorProvider{
+public class JavanetTaskEditorProviderImpl implements TaskEditorProvider{
  private JavanetTask task;
 
-    public TaskEditorProviderImpl(JavanetTask task) {
+    public JavanetTaskEditorProviderImpl(JavanetTask task) {
         this.task = task;
     }
 

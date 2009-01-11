@@ -37,7 +37,7 @@ public class OpenInBrowserTaskAction extends AbstractAction {
         this.task = task;
         putValue(NAME, NbBundle.getMessage(OpenInBrowserTaskAction.class, "LBL_Open_Task_In_Browser"));
         putValue(SHORT_DESCRIPTION,  NbBundle.getMessage(OpenInBrowserTaskAction.class, "LBL_Open_Task_In_Browser"));
-        putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/trac/web.png")));
+        putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/javanet/web.png")));
     }
 
 
