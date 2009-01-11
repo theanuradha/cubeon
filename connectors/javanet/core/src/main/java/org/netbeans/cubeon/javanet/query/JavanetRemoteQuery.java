@@ -34,7 +34,7 @@ import org.openide.util.lookup.Lookups;
  */
 public class JavanetRemoteQuery implements TaskQuery{
 
-    TaskRepository _repository;
+    JavanetTaskRepository _repository;
     String _id;
     QueryExtension _extension;
     String _projectName;
@@ -73,7 +73,7 @@ public class JavanetRemoteQuery implements TaskQuery{
     }
 
     public void setTaskRepository(TaskRepository taskRepo) {
-        this._repository = taskRepo;
+        this._repository = (JavanetTaskRepository) taskRepo;
     }
 
     public void setProjectName(String name) {
@@ -92,11 +92,12 @@ public class JavanetRemoteQuery implements TaskQuery{
     }
 
     public void synchronize() {
-        
+        //TODO: implement synchronize
     }
 
     public List<TaskElement> getTaskElements() {
-        return new LinkedList<TaskElement>();
+        List<TaskElement> elements = _repository.executeRemoteQuery(_id);
+        return elements;
     }
 
     public Notifier<TaskQueryEventAdapter> getNotifier() {

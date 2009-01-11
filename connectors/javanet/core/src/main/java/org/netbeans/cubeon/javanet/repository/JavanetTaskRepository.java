@@ -18,7 +18,12 @@
 package org.netbeans.cubeon.javanet.repository;
 
 import java.awt.Image;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import org.kohsuke.jnt.JNIssue;
+import org.kohsuke.jnt.JNIssueComponent;
 import org.kohsuke.jnt.JNIssueTracker;
 import org.kohsuke.jnt.JNProject;
 import org.kohsuke.jnt.JavaNet;
@@ -56,11 +61,16 @@ public class JavanetTaskRepository implements TaskRepository, Submitable, Revert
     private State _state = State.ACTIVE;
     private JavanetTaskRepositoryNotifier _notifier = new JavanetTaskRepositoryNotifier(this);
     private QuerySupport _querySupport = null;
+    Map<String, JNIssueComponent> _components;
 
      //locks
     private final Object SYNCHRONIZE_LOCK = new Object();
 
     private synchronized void connect() {
+        if (_javanet != null) {
+            //TODO: need to check the session is not expired? how?
+            return;
+        }
         ProgressHandle handle = ProgressHandleFactory.createHandle(
                 NbBundle.getMessage(JavanetTaskRepository.class, "LBL_Connecting", getName()));
         handle.start();
@@ -139,11 +149,27 @@ public class JavanetTaskRepository implements TaskRepository, Submitable, Revert
         int id = Integer.parseInt(sid);
         try {
             JNIssue issue = _jnIssueTracker.get(id);
+            return new JavanetTask(this, issue);
         } catch (ProcessingException ex) {
-            Exceptions.printStackTrace(ex);
+            throw new IllegalStateException(ex);
         }
-        throw new UnsupportedOperationException("Not supported yet.");
+        
     }
+
+    public List<TaskElement> executeRemoteQuery(String name) {
+        try {
+            connect();
+            Map<Integer, JNIssue> mIssues = _jnIssueTracker.getIssuesByQuery(name);
+            List<TaskElement> lIssues = new LinkedList<TaskElement>();
+            for (JNIssue issue: mIssues.values()) {
+                lIssues.add(new JavanetTask(this, issue));
+            }
+            return lIssues;
+        } catch (ProcessingException ex) {
+            throw new IllegalStateException(ex);
+        }
+    }
+
 
     public void persist(TaskElement arg0) {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -220,6 +246,89 @@ public class JavanetTaskRepository implements TaskRepository, Submitable, Revert
     void setRepositoryProvider(JavanetTaskRepositoryProvider provider) {
         _taskRepoProvider = provider;
     }
+
+    private Map<String, JNIssueComponent> getComponentsMap() throws ProcessingException {
+        if (_components == null) {
+            _components = _jnIssueTracker.getComponents();
+        }
+        return _components;
+    }
+
+    public List<String> getComponents() {        
+        try {
+            return new ArrayList<String>(getComponentsMap().keySet());
+        } catch (ProcessingException ex) {
+            Exceptions.printStackTrace(ex);
+            return null;
+        }
+    }
+
+    public List<String> getSubComponents(String component) {
+        try {
+            JNIssueComponent comp = getComponentsMap().get(component);
+            return new ArrayList<String>(comp.getSubcomponents().keySet());
+        } catch (ProcessingException ex) {
+            Exceptions.printStackTrace(ex);
+            return null;
+        }
+    }
+
+    public List<String> getVersions(String component) {
+        try {
+            JNIssueComponent comp = getComponentsMap().get(component);
+            return comp.getVersions();
+        } catch (ProcessingException ex) {
+            Exceptions.printStackTrace(ex);
+            return null;
+        }
+    }
+
+    public List<String> getMilestones(String component) {
+        try {
+            JNIssueComponent comp = getComponentsMap().get(component);
+            return comp.getTargetMilestones();
+        } catch (ProcessingException ex) {
+            Exceptions.printStackTrace(ex);
+            return null;
+        }
+    }
+
+    public List<String> getIssueType() {
+        try {
+            return _jnIssueTracker.getIssueTypes();
+        } catch (ProcessingException ex) {
+            Exceptions.printStackTrace(ex);
+            return null;
+        }
+    }
+
+    public List<String> getPriorities() {
+        try {
+            return _jnIssueTracker.getPriorities();
+        } catch (ProcessingException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return null;
+    }
+
+    public List<String> getPlatforms() {
+        try {
+            return _jnIssueTracker.getPlatforms();
+        } catch (ProcessingException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return null;
+    }
+
+    public List<String> getSystems() {
+        try {
+            return _jnIssueTracker.getOpSystems();
+        } catch (ProcessingException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return null;
+    }
+
 
     public void submit(JavanetTask task) {
         throw new UnsupportedOperationException("Not supported yet.");

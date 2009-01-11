@@ -42,7 +42,7 @@ public class SubmitTaskAction extends AbstractAction {
         this.task = task;
         putValue(NAME, NbBundle.getMessage(SubmitTaskAction.class, "LBL_Submit_Local_Changes"));
         putValue(SHORT_DESCRIPTION, NbBundle.getMessage(SubmitTaskAction.class, "LBL_Submit_Local_Changes"));
-        putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/trac/task-submit.png")));
+        putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/javanet/task-submit.png")));
         setEnabled(task.isModified());
     }
 

@@ -25,12 +25,12 @@ package org.netbeans.cubeon.javanet.tasks.ui;
 import org.netbeans.cubeon.javanet.tasks.actions.SubmitTaskAction;
 import org.netbeans.cubeon.javanet.tasks.actions.OpenInBrowserTaskAction;
 import java.awt.EventQueue;
+import java.awt.Font;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -46,7 +46,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.netbeans.cubeon.javanet.repository.JavanetTaskRepository;
 import org.netbeans.cubeon.javanet.tasks.JavanetTask;
-import org.netbeans.cubeon.tasks.spi.task.TaskResolution;
 import org.openide.util.NbBundle;
 
 
@@ -64,6 +63,8 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
     private static final String EMPTY = "";
     private final OpenInBrowserTaskAction openInBrowserTaskAction;
     private final SubmitTaskAction submitTaskAction;
+    private JavanetTaskRepository _repo;
+
     final DocumentListener documentListener = new DocumentListener() {
 
         public void insertUpdate(DocumentEvent arg0) {
@@ -127,9 +128,10 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
         }
     };
 
-    /** Creates new form TracTaskEditorUI */
+
     public JavanetTaskEditorUI(JavanetTask task) {
         this.task = task;
+        this._repo = task.getTaskRepository();
         initComponents();
         openInBrowserTaskAction = new OpenInBrowserTaskAction(task);
         submitTaskAction = new SubmitTaskAction(task);
@@ -143,58 +145,58 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
     }
 
     public void refresh() {
-//        txtSummary.getDocument().removeDocumentListener(documentListener);
-//        txtAssignee.getDocument().removeDocumentListener(documentListener);
-//        txtDescription.getDocument().removeDocumentListener(documentListener);
-//        txtKeyWord.getDocument().removeDocumentListener(documentListener);
-//        txtCc.getDocument().removeDocumentListener(documentListener);
+        txtSummary.getDocument().removeDocumentListener(documentListener);
+        txtAssignee.getDocument().removeDocumentListener(documentListener);
+        txtDescription.getDocument().removeDocumentListener(documentListener);
+        txtKeyWord.getDocument().removeDocumentListener(documentListener);
+        txtCc.getDocument().removeDocumentListener(documentListener);
 //
-//        cmbPriority.removeItemListener(itemListener);
+        cmbPriority.removeItemListener(itemListener);
 //        cmbActions.removeItemListener(itemListener);
-//        cmbType.removeItemListener(itemListener);
-//        cmbComponent.removeItemListener(itemListener);
-//        cmbMilestone.removeItemListener(itemListener);
-//        cmbVersion.removeItemListener(itemListener);
-//        cmbSeverity.removeItemListener(itemListener);
+        cmbType.removeItemListener(itemListener);
+        cmbComponent.removeItemListener(itemListener);
+        cmbMilestone.removeItemListener(itemListener);
+        cmbVersion.removeItemListener(itemListener);
+        cmbSeverity.removeItemListener(itemListener);
 //        cmbActions.removeItemListener(actionitemListener);
 //        cmbResolution.removeItemListener(itemListener);
 //
-//        loadDates();
-//        commentsEditor.refresh();
-//        txtSummary.setText(task.getSummary());
-//        txtDescription.setText(task.getDescription());
+        loadDates();
+//commentsEditor.refresh();
+        txtSummary.setText(task.getName());
+        Font boldFont=new Font(txtSummary.getFont().getName(),Font.BOLD,txtSummary.getFont().getSize());
+        txtSummary.setFont(boldFont);
+        txtDescription.setText(task.getDescription());                
 //        lblReportedBy.setText(task.get(REPORTER));
-//        txtAssignee.setText(task.get(OWNER));
-//        lblStatus.setText(NbBundle.getMessage(JavanetTaskEditorUI.class,
-//                "TracTaskEditorUI.lblStatus.text",
-//                task.isLocal()
-//                ? NbBundle.getMessage(JavanetTaskEditorUI.class, "LBL_Local")
-//                : task.get(STATUS))); // NOI18N
+        txtAssignee.setText(task.getAssignedTo());
+        lblStatus.setText(task.getStatus());
+        boldFont=new Font(lblStatus.getFont().getName(),Font.BOLD,lblStatus.getFont().getSize());
+        lblStatus.setFont(boldFont);
 //        txtCc.setText(task.get(TracKeys.CC));
 //        txtKeyWord.setText(task.get(TracKeys.KEYWORDS));
 //
-//        loadAttibutes();
+        loadAttributes();
 //
-//        txtSummary.getDocument().addDocumentListener(documentListener);
-//        txtAssignee.getDocument().addDocumentListener(documentListener);
-//        txtDescription.getDocument().addDocumentListener(documentListener);
-//        txtKeyWord.getDocument().addDocumentListener(documentListener);
-//        txtCc.getDocument().addDocumentListener(documentListener);
+        txtSummary.getDocument().addDocumentListener(documentListener);
+        txtAssignee.getDocument().addDocumentListener(documentListener);
+        txtDescription.getDocument().addDocumentListener(documentListener);
+        txtKeyWord.getDocument().addDocumentListener(documentListener);
+        txtCc.getDocument().addDocumentListener(documentListener);
 //
-//        cmbPriority.addItemListener(itemListener);
+        cmbPriority.addItemListener(itemListener);
 //        cmbActions.addItemListener(itemListener);
 //        cmbType.addItemListener(itemListener);
-//        cmbComponent.addItemListener(itemListener);
-//        cmbMilestone.addItemListener(itemListener);
-//        cmbVersion.addItemListener(itemListener);
-//        cmbSeverity.addItemListener(itemListener);
+        cmbComponent.addItemListener(itemListener);
+        cmbMilestone.addItemListener(itemListener);
+        cmbVersion.addItemListener(itemListener);
+        cmbSeverity.addItemListener(itemListener);
 //        cmbActions.addItemListener(actionitemListener);
 //        cmbResolution.addItemListener(itemListener);
 //
 //
 //        openInBrowserTaskAction.setEnabled(!task.isLocal());
 //        submitTaskAction.setEnabled(task.isModifiedFlag());
-//        modifiedFlag.set(false);
+        modifiedFlag.set(false);
     }
 
     private String getSelectedValve(JComboBox comboBox) {
@@ -256,9 +258,23 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
         }
     }
 
-    private void loadAttibutes() {
+    private void loadAttributes() {
         //set ui to deafulrt
         defaultUI();
+        cmbComponent.removeAllItems();
+        String compo = task != null ? task.getComponent() : null;
+        _loadCombos(cmbComponent, _repo.getComponents(), false, compo);
+
+        String type = task != null ? task.getIssueType() : null;
+        _loadCombos(cmbType, _repo.getIssueType(), false, type);
+
+        String prio = task != null ? task.getPriority() : null;
+        _loadCombos(cmbPriority, _repo.getPriorities(), false, prio);
+
+        _loadCombos(cmbPlatform, _repo.getPlatforms(), false, null);
+
+        _loadCombos(cmbOs, _repo.getSystems(), false, null);
+
 //        JavanetTaskRepository tracRepository = task.getTracRepository();
 //        TracRepositoryAttributes attributes = tracRepository.getRepositoryAttributes();
 //        cmbActions.removeAllItems();
@@ -402,20 +418,34 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
     }
 
     private void loadDates() {
-//        DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();
-//        if (task.getCreatedDate() != 0) {
-//            String message = NbBundle.getMessage(JavanetTaskEditorUI.class,
-//                    "TracTaskEditorUI.lblCreated.text",
-//                    dateFormat.format(new Date(task.getCreatedDate())));
-//            lblCreated.setText(message);
-//        }
-//        if (task.getUpdatedDate() != 0) {
-//            String message = NbBundle.getMessage(JavanetTaskEditorUI.class,
-//                    "TracTaskEditorUI.lblUpdated.text",
-//                    dateFormat.format(new Date(task.getUpdatedDate())));
-//            lblUpdated.setText(message);
-//        }
+        DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();
+        if (task.getCreationDate() != null) {
+            String message = NbBundle.getMessage(JavanetTaskEditorUI.class,
+                    "JavanetTaskEditorUI.lblCreated.text",
+                    dateFormat.format(task.getCreationDate().getTime()));
+            lblCreated.setText(message);
+        }
+        if (task.getLastModified() != null) {
+            String message = NbBundle.getMessage(JavanetTaskEditorUI.class,
+                    "JavanetTaskEditorUI.lblUpdated.text",
+                    dateFormat.format(task.getLastModified().getTime()));
+            lblUpdated.setText(message);;
+        }
 
+    }
+
+    private void loadComponentDependentCombos() {
+        String component = (String) cmbComponent.getSelectedItem();
+        if (component != null) {
+            String subCompo = task != null ? task.getSubComponent() : null;
+            _loadCombos(cmbSubComponent, _repo.getSubComponents(component) , true, subCompo);
+
+            String version = task != null ? task.getVersion() : null;
+            _loadCombos(cmbVersion, _repo.getVersions(component), false, version);
+
+            String milestone = task != null ? task.getMilestone() : null;
+            _loadCombos(cmbMilestone, _repo.getMilestones(component), false, milestone);
+        }
     }
 
     public JavanetTask getTask() {
@@ -489,7 +519,7 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
         lblPlatform = new javax.swing.JLabel();
         cmbPlatform = new javax.swing.JComboBox();
         lblOs = new javax.swing.JLabel();
-        cmOs = new javax.swing.JComboBox();
+        cmbOs = new javax.swing.JComboBox();
         lblVersion = new javax.swing.JLabel();
         cmbVersion = new javax.swing.JComboBox();
         lblMilestone = new javax.swing.JLabel();
@@ -526,7 +556,7 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
         lblDesription.setForeground(new java.awt.Color(51, 51, 51));
         lblDesription.setText(NbBundle.getMessage(JavanetTaskEditorUI.class, "JavanetTaskEditorUI.lblDesription.text")); // NOI18N
 
-        lblAttributes.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        lblAttributes.setFont(new java.awt.Font("Tahoma", 1, 11));
         lblAttributes.setText(NbBundle.getMessage(JavanetTaskEditorUI.class, "JavanetTaskEditorUI.lblAttributes.text")); // NOI18N
 
         jPanel1.setOpaque(false);
@@ -535,6 +565,11 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
         lblComponent.setText(NbBundle.getMessage(JavanetTaskEditorUI.class, "JavanetTaskEditorUI.lblComponent.text")); // NOI18N
         jPanel1.add(lblComponent);
 
+        cmbComponent.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cmbComponentItemStateChanged(evt);
+            }
+        });
         jPanel1.add(cmbComponent);
 
         lblSubComponent.setText(org.openide.util.NbBundle.getMessage(JavanetTaskEditorUI.class, "JavanetTaskEditorUI.lblSubComponent.text")); // NOI18N
@@ -557,7 +592,7 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
 
         jPanel1.add(cmbSeverity);
 
-        lblDesription2.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        lblDesription2.setFont(new java.awt.Font("Tahoma", 1, 11));
         lblDesription2.setForeground(new java.awt.Color(51, 51, 51));
         lblDesription2.setText(NbBundle.getMessage(JavanetTaskEditorUI.class, "JavanetTaskEditorUI.lblDesription2.text")); // NOI18N
 
@@ -580,7 +615,7 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
         lblOs.setText(org.openide.util.NbBundle.getMessage(JavanetTaskEditorUI.class, "JavanetTaskEditorUI.lblOs.text")); // NOI18N
         jPanel2.add(lblOs);
 
-        jPanel2.add(cmOs);
+        jPanel2.add(cmbOs);
 
         lblVersion.setText(NbBundle.getMessage(JavanetTaskEditorUI.class, "JavanetTaskEditorUI.lblVersion.text")); // NOI18N
         jPanel2.add(lblVersion);
@@ -596,7 +631,7 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
         jPanel2.add(lblKeyword);
         jPanel2.add(txtKeyWord);
 
-        lblDesription1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        lblDesription1.setFont(new java.awt.Font("Tahoma", 1, 11));
         lblDesription1.setForeground(new java.awt.Color(51, 51, 51));
         lblDesription1.setText(NbBundle.getMessage(JavanetTaskEditorUI.class, "JavanetTaskEditorUI.lblDesription1.text")); // NOI18N
 
@@ -719,12 +754,16 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void cmbComponentItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbComponentItemStateChanged
+        loadComponentDependentCombos();
+    }//GEN-LAST:event_cmbComponentItemStateChanged
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox cmOs;
     private javax.swing.JComboBox cmbAction;
     private javax.swing.JComboBox cmbActionOption;
     private javax.swing.JComboBox cmbComponent;
     private javax.swing.JComboBox cmbMilestone;
+    private javax.swing.JComboBox cmbOs;
     private javax.swing.JComboBox cmbPlatform;
     private javax.swing.JComboBox cmbPriority;
     private javax.swing.JComboBox cmbSeverity;
