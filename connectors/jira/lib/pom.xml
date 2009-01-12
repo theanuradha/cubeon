@@ -59,7 +59,7 @@
         <repository>
             <id>atlassian-m2-contrib</id>
             <name>Atlassian Maven 2 Contributor Repository</name>
-            <url>http://svn.atlassian.com/svn/public/contrib/repository/maven2</url>
+            <url>https://m2proxy.atlassian.com/repository/public</url>
             <snapshots>
             </snapshots>
         </repository>
