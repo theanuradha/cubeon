@@ -21,9 +21,12 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.Action;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
+import org.netbeans.cubeon.ui.taskfolder.ComparatorAction;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.util.NbBundle;
+import org.openide.util.RequestProcessor;
+import org.openide.util.RequestProcessor.Task;
 import org.openide.util.Utilities;
 
 /**
@@ -33,6 +36,7 @@ import org.openide.util.Utilities;
 public class ResultQueryNode extends AbstractNode {
 
     private TaskQuery query;
+    private volatile Task task;
 
     public ResultQueryNode(Children children, TaskQuery query) {
         super(children);
@@ -61,7 +65,24 @@ public class ResultQueryNode extends AbstractNode {
     public Action[] getActions(boolean arg0) {
         List<Action> actions = new ArrayList<Action>();
         actions.add(new QueryEditAction(query));
+        actions.add(new ComparatorAction(new ComparatorAction.ComparatorSupport() {
 
+            public void doCompare() {
+                if (task != null && !task.isFinished()) {
+                    task.cancel();
+                }
+                task = RequestProcessor.getDefault().create(new Runnable() {
+
+                    public void run() {
+                        getChildren().remove(getChildren().getNodes());
+                        ResultsTopComponent.findInstance().loadQueries(getChildren(),
+                                ResultQueryNode.this);
+                    }
+                });
+                task.run();
+
+            }
+        }));
         actions.add(null);
         actions.add(new SynchronizeWithAction(query));
         actions.add(null);
@@ -84,7 +105,4 @@ public class ResultQueryNode extends AbstractNode {
     public Image getOpenedIcon(int arg0) {
         return getIcon(arg0);
     }
-
-
-
 }

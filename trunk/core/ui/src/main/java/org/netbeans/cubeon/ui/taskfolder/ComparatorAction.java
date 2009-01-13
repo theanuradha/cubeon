@@ -22,10 +22,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import org.netbeans.cubeon.tasks.core.api.TaskFolder;
-import org.netbeans.cubeon.tasks.core.api.TaskFolderRefreshable;
 import org.netbeans.cubeon.tasks.spi.task.TaskElementComparator;
-import org.netbeans.cubeon.ui.TaskExplorerTopComponent;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.actions.Presenter.Menu;
@@ -37,10 +34,10 @@ import org.openide.util.actions.Presenter.Popup;
  */
 public class ComparatorAction extends AbstractAction implements Menu, Popup {
 
-    private TaskFolder folder;
+    private ComparatorSupport comparatorSupport;
 
-    public ComparatorAction(TaskFolder folder) {
-        this.folder = folder;
+    public ComparatorAction(ComparatorSupport comparatorSupport) {
+        this.comparatorSupport = comparatorSupport;
         putValue(NAME, NbBundle.getMessage(ComparatorAction.class, "LBL_Sort_By"));
     }
 
@@ -97,13 +94,12 @@ public class ComparatorAction extends AbstractAction implements Menu, Popup {
             } else {
                 comparator.setAscending(ascending);
             }
-            TaskFolderRefreshable refreshProvider = folder.getLookup().lookup(TaskFolderRefreshable.class);
-            assert refreshProvider != null;
-            refreshProvider.refreshNode();
-            if (folder.getParent() == null) {
-                //folder.getParent() guess as root
-                TaskExplorerTopComponent.findInstance().expand();
-            }
+            comparatorSupport.doCompare();
         }
+    }
+
+    public static interface ComparatorSupport {
+
+        void doCompare();
     }
 }

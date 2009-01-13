@@ -20,7 +20,6 @@ import java.awt.EventQueue;
 import java.awt.Image;
 import java.io.Serializable;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.swing.Action;
@@ -28,11 +27,13 @@ import org.netbeans.cubeon.tasks.spi.Notifier.NotifierReference;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.query.TaskQueryEventAdapter;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
+import org.netbeans.cubeon.tasks.spi.task.TaskElementComparator;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.BeanTreeView;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 import org.openide.util.RequestProcessor.Task;
@@ -219,15 +220,16 @@ final class ResultsTopComponent extends TopComponent implements ExplorerManager.
         }
     }
 
-    private void loadQueries(Children array, final ResultQueryNode queryNode) {
+     void loadQueries(Children array, final ResultQueryNode queryNode) {
 
         List<TaskElement> elements = taskQuery.getTaskElements();
-        Collections.sort(elements, new Comparator<TaskElement>() {
-
-            public int compare(TaskElement o1, TaskElement o2) {
-                return o1.getName().compareTo(o2.getName());
+        
+        for (TaskElementComparator comparator : Lookup.getDefault().
+                lookupAll(TaskElementComparator.class)) {
+            if (comparator.isEnable()) {
+                Collections.sort(elements, comparator.getComparator());
             }
-        });
+        }
 
 
         queryNode.updateNodeTag(elements.size() + " Tasks Found");
