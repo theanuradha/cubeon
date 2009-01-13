@@ -18,8 +18,10 @@ package org.netbeans.cubeon.ui.taskfolder;
 
 import javax.swing.Action;
 import org.netbeans.cubeon.tasks.core.api.TaskFolder;
+import org.netbeans.cubeon.tasks.core.api.TaskFolderRefreshable;
 import org.netbeans.cubeon.tasks.core.api.TasksFileSystem;
 import org.netbeans.cubeon.tasks.core.spi.TaskExplorerViewActionsProvider;
+import org.netbeans.cubeon.ui.TaskExplorerTopComponent;
 import org.netbeans.cubeon.ui.TaskRepositoriesAction;
 import org.netbeans.cubeon.ui.query.NewQueryWizardAction;
 import org.netbeans.cubeon.ui.taskelemet.NewTaskWizardAction;
@@ -39,13 +41,23 @@ public class TaskExplorerViewActions implements TaskExplorerViewActionsProvider 
         taskFolder = fileSystem.getRootTaskFolder();
     }
 
-
     public Action[] getActions() {
 
         return new Action[]{
                     new RefreshTaskFolderAction(taskFolder),
                     null,
-                    new ComparatorAction(taskFolder),
+                    new ComparatorAction(new ComparatorAction.ComparatorSupport() {
+
+                public void doCompare() {
+                    TaskFolderRefreshable refreshProvider = taskFolder.getLookup().lookup(TaskFolderRefreshable.class);
+                    assert refreshProvider != null;
+                    refreshProvider.refreshNode();
+                    if (taskFolder.getParent() == null) {
+                        //folder.getParent() guess as root
+                        TaskExplorerTopComponent.findInstance().expand();
+                    }
+                }
+            }),
                     new FilterByPriorityAction(taskFolder),
                     new FilterCompletedAction(taskFolder),
                     null,
