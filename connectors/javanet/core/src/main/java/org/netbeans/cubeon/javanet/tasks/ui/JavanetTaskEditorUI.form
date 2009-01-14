@@ -66,13 +66,10 @@
                                       <Component id="lblCc" alignment="0" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace min="-2" pref="103" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="1" attributes="0">
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
-                                          <Component id="lblReportedBy" pref="141" max="32767" attributes="2"/>
-                                      </Group>
-                                      <Component id="txtAssignee" alignment="1" pref="150" max="32767" attributes="3"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="txtCc" alignment="1" pref="150" max="32767" attributes="3"/>
+                                      <Component id="lblReportedBy" alignment="1" pref="150" max="32767" attributes="2"/>
+                                      <Component id="lblAssignedTo" alignment="0" pref="150" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
                               <Component id="jPanel2" alignment="0" pref="313" max="32767" attributes="2"/>
@@ -97,7 +94,7 @@
               <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
               <Component id="lblDesription" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Component id="spDescription" pref="180" max="32767" attributes="0"/>
+              <Component id="spDescription" pref="186" max="32767" attributes="0"/>
               <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
               <Component id="lblAttributes" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
@@ -116,10 +113,15 @@
                           <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="lblReportedBy" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="txtAssignee" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
+                              <Component id="lblAssignedTo" min="-2" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -289,20 +291,6 @@
             </Property>
           </Properties>
         </Component>
-        <Component class="javax.swing.JLabel" name="lblSeverity">
-          <Properties>
-            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="org/netbeans/cubeon/javanet/tasks/ui/Bundle.properties" key="JavanetTaskEditorUI.lblSeverity.text" replaceFormat="NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
-            </Property>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JComboBox" name="cmbSeverity">
-          <Properties>
-            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="0"/>
-            </Property>
-          </Properties>
-        </Component>
       </SubComponents>
     </Container>
     <Component class="javax.swing.JLabel" name="lblDesription2">
@@ -331,8 +319,6 @@
           <ResourceString bundle="org/netbeans/cubeon/javanet/tasks/ui/Bundle.properties" key="JavanetTaskEditorUI.jLabel3.text" replaceFormat="NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;,&quot;-&quot;)"/>
         </Property>
       </Properties>
-    </Component>
-    <Component class="javax.swing.JTextField" name="txtAssignee">
     </Component>
     <Component class="javax.swing.JLabel" name="lblReportedBy">
       <Properties>
@@ -502,5 +488,12 @@
         </Container>
       </SubComponents>
     </Container>
+    <Component class="javax.swing.JLabel" name="lblAssignedTo">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="org/netbeans/cubeon/javanet/tasks/ui/Bundle.properties" key="JavanetTaskEditorUI.lblAssignedTo.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+        </Property>
+      </Properties>
+    </Component>
   </SubComponents>
 </Form>
