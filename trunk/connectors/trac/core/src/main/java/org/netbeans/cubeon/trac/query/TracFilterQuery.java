@@ -96,39 +96,26 @@ public class TracFilterQuery extends AbstractTracQuery {
                             final int size = remoteIssues.size() < 5 ? remoteIssues.size() : 5;
                             int[] idarray = new int[size];
                             int current = 0;
+
                             for (int i = 0; i < remoteIssues.size(); i++) {
                                 int ticketId = remoteIssues.get(i);
                                 idarray[current++] = ticketId;
                                 if (current == size) {
-                                    try {
-                                        List<Ticket> tickets = session.getTickets(idarray);
-                                        for (Ticket ticket : tickets) {
-                                            String taskID = TracUtils.ticketToTaskId(ticket);
-                                            handle.progress(taskID + " :" + ticket.getSummary(),
-                                                    remoteIssues.indexOf(ticketId));
-                                            if (ticket != null) {
-                                                TaskElement element = repository.getTaskElementById(taskID);
-                                                if (element != null) {
-                                                    repository.update(ticket, element.getLookup().lookup(TracTask.class));
-                                                } else {
-                                                    TracTask jiraTask = TracUtils.issueToTask(repository, ticket);
-                                                    repository.update(ticket, jiraTask);
-                                                    element = jiraTask;
-                                                }
-                                                extension.fireTaskAdded(element);
-                                                ids.add(element.getId());
-
-                                            }
-
-                                        }
-                                    } catch (TracException tracException) {
-                                        //ignore
-                                    }
+                                    readTickets(session, idarray, handle, remoteIssues);
                                     current = 0;
                                     idarray = new int[size];
                                 }
                             }
-
+                            //Issue 50 
+                            if (current > 0) {
+                                int[] modidarray = new int[current];
+                                for (int i = 0; i < current; i++) {
+                                     modidarray[i]=idarray[i];
+                                }
+                                readTickets(session, modidarray, handle, remoteIssues);
+                                current = 0;
+                                idarray = null;
+                            }
                         } catch (TracException ex) {
                             TracExceptionHandler.notify(ex);
                         } finally {
@@ -138,6 +125,30 @@ public class TracFilterQuery extends AbstractTracQuery {
                         }
                     }
 
+                }
+
+                private void readTickets(TracSession session, int[] idarray, ProgressHandle handle, List<Integer> remoteIssues) {
+                    try {
+                        List<Ticket> tickets = session.getTickets(idarray);
+                        for (Ticket ticket : tickets) {
+                            String taskID = TracUtils.ticketToTaskId(ticket);
+                            handle.progress(taskID + " :" + ticket.getSummary(), remoteIssues.indexOf(ticket.getTicketId()));
+                            if (ticket != null) {
+                                TaskElement element = repository.getTaskElementById(taskID);
+                                if (element != null) {
+                                    repository.update(ticket, element.getLookup().lookup(TracTask.class));
+                                } else {
+                                    TracTask jiraTask = TracUtils.issueToTask(repository, ticket);
+                                    repository.update(ticket, jiraTask);
+                                    element = jiraTask;
+                                }
+                                extension.fireTaskAdded(element);
+                                ids.add(element.getId());
+                            }
+                        }
+                    } catch (TracException tracException) {
+                        //ignore
+                    }
                 }
             });
 
