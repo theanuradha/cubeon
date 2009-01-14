@@ -146,7 +146,6 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
 
     public void refresh() {
         txtSummary.getDocument().removeDocumentListener(documentListener);
-        txtAssignee.getDocument().removeDocumentListener(documentListener);
         txtDescription.getDocument().removeDocumentListener(documentListener);
         txtKeyWord.getDocument().removeDocumentListener(documentListener);
         txtCc.getDocument().removeDocumentListener(documentListener);
@@ -156,8 +155,7 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
         cmbType.removeItemListener(itemListener);
         cmbComponent.removeItemListener(itemListener);
         cmbMilestone.removeItemListener(itemListener);
-        cmbVersion.removeItemListener(itemListener);
-        cmbSeverity.removeItemListener(itemListener);
+        cmbVersion.removeItemListener(itemListener);        
 //        cmbActions.removeItemListener(actionitemListener);
 //        cmbResolution.removeItemListener(itemListener);
 //
@@ -165,11 +163,7 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
 //commentsEditor.refresh();
         txtSummary.setText(task.getName());
         Font boldFont=new Font(txtSummary.getFont().getName(),Font.BOLD,txtSummary.getFont().getSize());
-        txtSummary.setFont(boldFont);
-        txtDescription.setText(task.getDescription());                
-//        lblReportedBy.setText(task.get(REPORTER));
-        txtAssignee.setText(task.getAssignedTo());
-        lblStatus.setText(task.getStatus());
+        txtSummary.setFont(boldFont);       
         boldFont=new Font(lblStatus.getFont().getName(),Font.BOLD,lblStatus.getFont().getSize());
         lblStatus.setFont(boldFont);
 //        txtCc.setText(task.get(TracKeys.CC));
@@ -178,7 +172,6 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
         loadAttributes();
 //
         txtSummary.getDocument().addDocumentListener(documentListener);
-        txtAssignee.getDocument().addDocumentListener(documentListener);
         txtDescription.getDocument().addDocumentListener(documentListener);
         txtKeyWord.getDocument().addDocumentListener(documentListener);
         txtCc.getDocument().addDocumentListener(documentListener);
@@ -188,8 +181,7 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
 //        cmbType.addItemListener(itemListener);
         cmbComponent.addItemListener(itemListener);
         cmbMilestone.addItemListener(itemListener);
-        cmbVersion.addItemListener(itemListener);
-        cmbSeverity.addItemListener(itemListener);
+        cmbVersion.addItemListener(itemListener);       
 //        cmbActions.addItemListener(actionitemListener);
 //        cmbResolution.addItemListener(itemListener);
 //
@@ -262,18 +254,40 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
         //set ui to deafulrt
         defaultUI();
         cmbComponent.removeAllItems();
-        String compo = task != null ? task.getComponent() : null;
-        _loadCombos(cmbComponent, _repo.getComponents(), false, compo);
 
-        String type = task != null ? task.getIssueType() : null;
+        String compo = null;
+        String type = null;
+        String prio = null;
+        String assignedTo = null;
+        String reporter = null;
+        String desc = null;
+        String status = null;
+        String platform = null;
+        String opSys = null;
+
+        if (task != null) {
+            compo = task.getComponent();
+            type = task.getIssueType();
+            prio = task.getPriority();
+            assignedTo = task.getAssignedTo();
+            reporter = task.getReporter();
+            desc = task.getDescription();
+            status = task.getStatus();
+            platform = task.getPlatform();
+            opSys = task.getOpSystem();
+        }
+        
+        _loadCombos(cmbComponent, _repo.getComponents(), false, compo);        
         _loadCombos(cmbType, _repo.getIssueType(), false, type);
-
-        String prio = task != null ? task.getPriority() : null;
         _loadCombos(cmbPriority, _repo.getPriorities(), false, prio);
+        _loadCombos(cmbPlatform, _repo.getPlatforms(), false, platform);
+        _loadCombos(cmbOs, _repo.getSystems(), false, opSys);
 
-        _loadCombos(cmbPlatform, _repo.getPlatforms(), false, null);
+        lblAssignedTo.setText(assignedTo);
+        lblReportedBy.setText(reporter);
 
-        _loadCombos(cmbOs, _repo.getSystems(), false, null);
+        txtDescription.setText(desc);
+        lblStatus.setText(status);
 
 //        JavanetTaskRepository tracRepository = task.getTracRepository();
 //        TracRepositoryAttributes attributes = tracRepository.getRepositoryAttributes();
@@ -452,8 +466,7 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
         return task;
     }
 
-    public void defaultUI() {
-        txtAssignee.setEditable(false);
+    public void defaultUI() {        
 //        cmbResolution.setEnabled(false);
     }
 
@@ -506,12 +519,9 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
         cmbType = new javax.swing.JComboBox();
         lblPriority = new javax.swing.JLabel();
         cmbPriority = new javax.swing.JComboBox();
-        lblSeverity = new javax.swing.JLabel();
-        cmbSeverity = new javax.swing.JComboBox();
         lblDesription2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        txtAssignee = new javax.swing.JTextField();
         lblReportedBy = new javax.swing.JLabel();
         lblCc = new javax.swing.JLabel();
         txtCc = new javax.swing.JTextField();
@@ -532,6 +542,7 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
         jPanel3 = new javax.swing.JPanel();
         cmbActionOption = new javax.swing.JComboBox();
         txtActionOption = new javax.swing.JTextField();
+        lblAssignedTo = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setName("null");
@@ -586,11 +597,6 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
         jPanel1.add(lblPriority);
 
         jPanel1.add(cmbPriority);
-
-        lblSeverity.setText(NbBundle.getMessage(JavanetTaskEditorUI.class, "JavanetTaskEditorUI.lblSeverity.text")); // NOI18N
-        jPanel1.add(lblSeverity);
-
-        jPanel1.add(cmbSeverity);
 
         lblDesription2.setFont(new java.awt.Font("Tahoma", 1, 11));
         lblDesription2.setForeground(new java.awt.Color(51, 51, 51));
@@ -663,6 +669,8 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
+        lblAssignedTo.setText(org.openide.util.NbBundle.getMessage(JavanetTaskEditorUI.class, "JavanetTaskEditorUI.lblAssignedTo.text")); // NOI18N
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -702,12 +710,10 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
                                         .add(jLabel3)
                                         .add(lblCc))
                                     .add(103, 103, 103)
-                                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                                        .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                                            .add(9, 9, 9)
-                                            .add(lblReportedBy, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE))
-                                        .add(txtAssignee, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
-                                        .add(txtCc, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)))
+                                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                        .add(org.jdesktop.layout.GroupLayout.TRAILING, txtCc, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                                        .add(org.jdesktop.layout.GroupLayout.TRAILING, lblReportedBy, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                                        .add(lblAssignedTo, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)))
                                 .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
@@ -723,7 +729,7 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(lblDesription)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(spDescription, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                .add(spDescription, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(lblAttributes)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -739,10 +745,13 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                             .add(jLabel1)
                             .add(lblReportedBy))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                            .add(jLabel3)
-                            .add(txtAssignee, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(layout.createSequentialGroup()
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jLabel3))
+                            .add(layout.createSequentialGroup()
+                                .add(4, 4, 4)
+                                .add(lblAssignedTo)))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                             .add(lblCc)
@@ -766,7 +775,6 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
     private javax.swing.JComboBox cmbOs;
     private javax.swing.JComboBox cmbPlatform;
     private javax.swing.JComboBox cmbPriority;
-    private javax.swing.JComboBox cmbSeverity;
     private javax.swing.JComboBox cmbSubComponent;
     private javax.swing.JComboBox cmbType;
     private javax.swing.JComboBox cmbVersion;
@@ -776,6 +784,7 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JLabel lblAssignedTo;
     private javax.swing.JLabel lblAttributes;
     private javax.swing.JLabel lblCc;
     private javax.swing.JLabel lblComponent;
@@ -789,7 +798,6 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
     private javax.swing.JLabel lblPlatform;
     private javax.swing.JLabel lblPriority;
     private javax.swing.JLabel lblReportedBy;
-    private javax.swing.JLabel lblSeverity;
     private javax.swing.JLabel lblStatus;
     private javax.swing.JLabel lblSubComponent;
     private javax.swing.JLabel lblType;
@@ -797,7 +805,6 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
     private javax.swing.JLabel lblVersion;
     private javax.swing.JScrollPane spDescription;
     private javax.swing.JTextField txtActionOption;
-    private javax.swing.JTextField txtAssignee;
     private javax.swing.JTextField txtCc;
     private javax.swing.JEditorPane txtDescription;
     private javax.swing.JTextField txtKeyWord;

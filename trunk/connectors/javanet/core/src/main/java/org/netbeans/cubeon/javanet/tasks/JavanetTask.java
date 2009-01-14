@@ -122,6 +122,23 @@ public class JavanetTask implements TaskElement {
     }
 
     public String getPlatform() {
+        if (_jnIssue != null) {
+            return _jnIssue._getPlatform();
+        }
+        return null;
+    }
+
+    public String getOpSystem() {
+        if (_jnIssue != null) {
+            return _jnIssue.getOpSystem();
+        }
+        return null;
+    }
+
+    public String getReporter() {
+        if (_jnIssue != null) {
+            return _jnIssue.getReporter().getName();
+        }
         return null;
     }
 

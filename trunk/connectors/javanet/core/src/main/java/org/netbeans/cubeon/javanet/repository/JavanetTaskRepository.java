@@ -266,7 +266,7 @@ public class JavanetTaskRepository implements TaskRepository, Submitable, Revert
     public List<String> getSubComponents(String component) {
         try {
             JNIssueComponent comp = getComponentsMap().get(component);
-            return new ArrayList<String>(comp.getSubcomponents().keySet());
+            return new LinkedList<String>(comp.getSubcomponents().keySet());
         } catch (ProcessingException ex) {
             Exceptions.printStackTrace(ex);
             return null;
