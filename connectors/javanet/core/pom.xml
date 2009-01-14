@@ -38,7 +38,7 @@
         <dependency>
             <groupId>javanettasks</groupId>
             <artifactId>javanettasks</artifactId>
-            <version>1.0.18</version>
+            <version>1.0.19-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>nekohtml</groupId>
