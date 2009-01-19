@@ -110,7 +110,7 @@ public class TaskEditorUI extends javax.swing.JPanel implements TaskEditor {
         pnlDetails = new javax.swing.JPanel();
 
         setBackground(new java.awt.Color(255, 255, 255));
-        setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 10));
+        setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
         lblStatus.setForeground(new java.awt.Color(102, 102, 102));
         lblStatus.setText(NbBundle.getMessage(TaskEditorUI.class, "TaskEditorUI.lblStatus.text","-")); // NOI18N
@@ -133,14 +133,15 @@ public class TaskEditorUI extends javax.swing.JPanel implements TaskEditor {
                 .addContainerGap()
                 .addComponent(lblCreated, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lblUpdated, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
+                .addComponent(lblUpdated, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(lblStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(8, 8, 8))
-            .addComponent(pnlDetails, javax.swing.GroupLayout.DEFAULT_SIZE, 691, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addComponent(pnlDetails, javax.swing.GroupLayout.DEFAULT_SIZE, 701, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(txtSummary, javax.swing.GroupLayout.DEFAULT_SIZE, 681, Short.MAX_VALUE))
+                .addComponent(txtSummary, javax.swing.GroupLayout.DEFAULT_SIZE, 681, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
