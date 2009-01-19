@@ -15,7 +15,7 @@
         <module>tasks-core</module>
         <module>tasks-spi</module>
         <module>ui</module>
-        <module>commun</module>
+        <module>common</module>
     </modules>
     <build>
         <pluginManagement>
