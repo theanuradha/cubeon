@@ -1,12 +1,12 @@
 /*
  *  Copyright 2008 Anuradha.
- * 
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- * 
+ *
  *       http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -51,58 +51,67 @@ public class JiraSession {
 
     public JiraSession(String url, String user, String pass) throws JiraException {
         String defaultSocketSecureFactory = null;
-        if (url.startsWith("https")) {
-            defaultSocketSecureFactory = AxisProperties.getProperty("axis.socketSecureFactory");
-
-            AxisProperties.setProperty("axis.socketSecureFactory", "org.apache.axis.components.net.SunFakeTrustSocketFactory");
-            Logger.getLogger(getClass().getName()).warning("WARNING: SSL CERTIFICATE CONFIGURATION IS TURNED OFF!");
-        }
-
-        //set proxy settings
-        ProxySettings proxySettings = new ProxySettings();
-        if (!proxySettings.isDirect()) {
-            AxisProperties.setProperty("http.proxyHost", proxySettings.getHttpHost());
-            AxisProperties.setProperty("http.proxyPort", String.valueOf(proxySettings.getHttpPort()));
-            AxisProperties.setProperty("http.proxyUser", proxySettings.getUsername());
-            AxisProperties.setProperty("http.proxyPassword", proxySettings.getPassword());
-        }
-
+        ClassLoader moduleClassLoader = Thread.currentThread().getContextClassLoader();
         try {
-            JiraSoapServiceServiceLocator fJiraSoapServiceGetter = new JiraSoapServiceServiceLocator();
+            Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
 
-            String serverURL = url;
-            String endPoint = "/rpc/soap/jirasoapservice-v2";
-            fJiraSoapServiceGetter.setJirasoapserviceV2EndpointAddress(serverURL + endPoint);
-            fJiraSoapServiceGetter.setMaintainSession(true);
-            service = fJiraSoapServiceGetter.getJirasoapserviceV2();
+            if (url.startsWith("https")) {
+                defaultSocketSecureFactory = AxisProperties.getProperty("axis.socketSecureFactory");
+
+                AxisProperties.setProperty("axis.socketSecureFactory", "org.apache.axis.components.net.SunFakeTrustSocketFactory");
+                Logger.getLogger(getClass().getName()).warning("WARNING: SSL CERTIFICATE CONFIGURATION IS TURNED OFF!");
+            }
+
+            //set proxy settings
+            ProxySettings proxySettings = new ProxySettings();
+            if (!proxySettings.isDirect()) {
+                AxisProperties.setProperty("http.proxyHost", proxySettings.getHttpHost());
+                AxisProperties.setProperty("http.proxyPort", String.valueOf(proxySettings.getHttpPort()));
+                AxisProperties.setProperty("http.proxyUser", proxySettings.getUsername());
+                AxisProperties.setProperty("http.proxyPassword", proxySettings.getPassword());
+            }
+
             try {
+                JiraSoapServiceServiceLocator fJiraSoapServiceGetter = new JiraSoapServiceServiceLocator();
 
-                token = service.login(user, pass);
-            } catch (RemoteAuthenticationException ex) {
+                String serverURL = url;
+                String endPoint = "/rpc/soap/jirasoapservice-v2";
+                fJiraSoapServiceGetter.setJirasoapserviceV2EndpointAddress(serverURL + endPoint);
+                fJiraSoapServiceGetter.setMaintainSession(true);
+                service = fJiraSoapServiceGetter.getJirasoapserviceV2();
+                try {
+
+                    token = service.login(user, pass);
+                } catch (RemoteAuthenticationException ex) {
+                    throw new JiraException(ex);
+                } catch (com.dolby.jira.net.soap.jira.RemoteException ex) {
+                    throw new JiraException(ex);
+                } catch (RemoteException ex) {
+                    throw new JiraException(ex);
+                }
+
+            } catch (ServiceException ex) {
                 throw new JiraException(ex);
-            } catch (com.dolby.jira.net.soap.jira.RemoteException ex) {
-                throw new JiraException(ex);
-            } catch (RemoteException ex) {
-                throw new JiraException(ex);
+            } finally {
+                if (defaultSocketSecureFactory != null) {
+                    AxisProperties.setProperty("axis.socketSecureFactory", defaultSocketSecureFactory);
+                }
             }
-
-        } catch (ServiceException ex) {
-            throw new JiraException(ex);
         } finally {
-            if (defaultSocketSecureFactory != null) {
-                AxisProperties.setProperty("axis.socketSecureFactory", defaultSocketSecureFactory);
-            }
+            Thread.currentThread().setContextClassLoader(moduleClassLoader);
         }
+
+
 
     }
 
     public RemoteStatus[] getStatuses() throws JiraException {
         try {
-            return service.getStatuses(token);
-        } catch (Exception ex) {
-            throw new JiraException(ex);
+                return service.getStatuses(token);
+            } catch (Exception ex) {
+                throw new JiraException(ex);
+            }
         }
-    }
 
     public RemoteResolution[] getResolutions() throws JiraException {
         try {
