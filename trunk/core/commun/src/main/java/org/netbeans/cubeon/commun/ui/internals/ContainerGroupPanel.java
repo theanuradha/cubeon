@@ -32,6 +32,7 @@ import org.netbeans.cubeon.commun.ui.Group;
 import org.openide.awt.Mnemonics;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
+import org.openide.util.actions.Presenter;
 import org.openide.util.lookup.Lookups;
 
 /**
@@ -50,7 +51,7 @@ public class ContainerGroupPanel extends javax.swing.JPanel implements GroupPane
     private final Image IMAGE_UNSELECTED = ImageUtilities.loadImage("org/netbeans/cubeon/commun/ui/internals/plus.gif"); // NOI18N
     private final Image IMAGE_SELECTED = ImageUtilities.loadImage("org/netbeans/cubeon/commun/ui/internals/minus.gif"); // NOI18N
 
-    public ContainerGroupPanel(GroupView groupView, ContainerGroup containerGroup) {
+    public ContainerGroupPanel(GroupView groupView, final ContainerGroup containerGroup) {
 
         this.containerGroup = containerGroup;
 
@@ -62,9 +63,32 @@ public class ContainerGroupPanel extends javax.swing.JPanel implements GroupPane
         titleButton.addMouseListener(new org.openide.awt.MouseUtils.PopupMouseAdapter() {
 
             protected void showPopup(java.awt.event.MouseEvent e) {
-                JPopupMenu popup = new JPopupMenu();
-                popup.add("TODO ADD ITEMS");
-                popup.show(titleButton, e.getX(), e.getY());
+                JPopupMenu menu = new JPopupMenu();
+                Action[] haeaderActions = containerGroup.getHaeaderActions();
+                boolean sepetatorAdded = false;
+                for (Action action : haeaderActions) {
+                    //check null and addSeparator
+                    if (action == null) {
+                        //check sepetatorAdd to prevent adding duplicate Separators
+                        if (!sepetatorAdded) {
+                            //mark sepetatorAdd to true
+                            sepetatorAdded = true;
+                            menu.addSeparator();
+
+                        }
+                        continue;
+                    }
+                    //mark sepetatorAdd to false
+                    sepetatorAdded = false;
+                    //check for Presenter.Popup
+                    if (action instanceof Presenter.Popup) {
+                        Presenter.Popup popup = (Presenter.Popup) action;
+                        menu.add(popup.getPopupPresenter());
+                        continue;
+                    }
+
+                    menu.show(titleButton, e.getX(), e.getY());
+                }
             }
         });
 
@@ -85,10 +109,10 @@ public class ContainerGroupPanel extends javax.swing.JPanel implements GroupPane
 
             addSection(groupPanel, group.isOpen());
         }
-
+        setToolbarActions(containerGroup.getToolbarActions());
     }
 
-     void setGroupView(GroupView groupView) {
+    void setGroupView(GroupView groupView) {
         this.groupView = groupView;
         VisualTheme theme = groupView.getTheme();
         setBackground(theme.getDocumentBackgroundColor());
@@ -353,20 +377,17 @@ public class ContainerGroupPanel extends javax.swing.JPanel implements GroupPane
     public int getIndex() {
         return index;
     }
-    private javax.swing.JButton[] headerButtons;
 
-    public void setHeaderActions(Action[] actions) {
-        headerButtons = new javax.swing.JButton[actions.length];
+    void setToolbarActions(Action[] actions) {
+
         for (int i = 0; i < actions.length; i++) {
-            headerButtons[i] = new javax.swing.JButton(actions[i]);
-            headerButtons[i].setMargin(new java.awt.Insets(0, 14, 0, 14));
-            headerButtons[i].setOpaque(false);
-            actionPanel.add(headerButtons[i]);
+            javax.swing.JButton headerButtons = new javax.swing.JButton(actions[i]);
+            headerButtons.setMargin(new java.awt.Insets(0, 14, 0, 14));
+            //remove text from toolbar actions
+            headerButtons.setText(null);
+            headerButtons.setOpaque(false);
+            actionPanel.add(headerButtons);
         }
-    }
-
-    public javax.swing.JButton[] getHeaderButtons() {
-        return headerButtons;
     }
 
     public boolean isFoldable() {
