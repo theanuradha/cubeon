@@ -83,6 +83,7 @@ public class EditorAttributeHandlerImpl implements EditorAttributeHandler {
                 NbBundle.getMessage(EditorAttributeHandlerImpl.class, "LBL_URL"),
                 NbBundle.getMessage(EditorAttributeHandlerImpl.class, "LBL_URL_Dec"));
         urlGroup.setComponent(panels.getURLComponent());
+        urlGroup.setToolbarActions(panels.getURLToolbarActions());
 
         ComponentGroup descriptionGroup = new ComponentGroup(
                 NbBundle.getMessage(EditorAttributeHandlerImpl.class, "LBL_Description"),

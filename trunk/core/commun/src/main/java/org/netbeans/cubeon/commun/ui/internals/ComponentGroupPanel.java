@@ -16,6 +16,8 @@
  */
 package org.netbeans.cubeon.commun.ui.internals;
 
+import java.awt.Cursor;
+import java.awt.event.MouseEvent;
 import org.netbeans.cubeon.commun.ui.GroupPanel;
 import java.awt.Image;
 import java.awt.Rectangle;
@@ -30,6 +32,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
+import javax.swing.event.MouseInputAdapter;
 import org.netbeans.cubeon.commun.ui.ComponentGroup;
 import org.netbeans.cubeon.commun.ui.Group;
 
@@ -85,11 +88,11 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
                 if (!ComponentGroupPanel.this.isActive()) {
                     ComponentGroupPanel.this.setActive(true);
                 }
-                    JPopupMenu menu = new JPopupMenu();
+                JPopupMenu menu = new JPopupMenu();
                 Action[] haeaderActions = componentGroup.getHaeaderActions();
-                 boolean sepetatorAdded = false;
+                boolean sepetatorAdded = false;
                 for (Action action : haeaderActions) {
-                   //check null and addSeparator
+                    //check null and addSeparator
                     if (action == null) {
                         //check sepetatorAdd to prevent adding duplicate Separators
                         if (!sepetatorAdded) {
@@ -285,6 +288,7 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
         add(headerSeparator, gridBagConstraints);
 
         actionPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 2, 0));
+        actionPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 8));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
@@ -374,15 +378,33 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
     public int getIndex() {
         return index;
     }
-      void setToolbarActions(Action[] actions) {
+
+    void setToolbarActions(Action[] actions) {
 
         for (int i = 0; i < actions.length; i++) {
-            javax.swing.JButton headerButtons = new javax.swing.JButton(actions[i]);
-            headerButtons.setMargin(new java.awt.Insets(0, 14, 0, 14));
+            final javax.swing.JButton headerButton = new javax.swing.JButton(actions[i]);
+            headerButton.setBorder(null);
+            headerButton.setBorderPainted(false);
+            headerButton.setContentAreaFilled(false);
+
+            headerButton.setFocusable(false);
             //remove text from toolbar actions
-            headerButtons.setText(null);
-            headerButtons.setOpaque(false);
-            actionPanel.add(headerButtons);
+            headerButton.setToolTipText(headerButton.getText());
+            headerButton.setText(null);
+            headerButton.addMouseListener(new MouseInputAdapter() {
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    headerButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    headerButton.setCursor(Cursor.getDefaultCursor());
+                }
+
+            });
+            actionPanel.add(headerButton);
         }
     }
 
@@ -405,6 +427,4 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
     protected JButton getTitleButton() {
         return titleButton;
     }
-
-    
 }

@@ -23,6 +23,7 @@
 package org.netbeans.cubeon.local.ui;
 
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.net.MalformedURLException;
@@ -32,7 +33,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -50,6 +53,7 @@ import org.netbeans.cubeon.tasks.spi.task.TaskType;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.HtmlBrowser.URLDisplayer;
+import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 
 /**
@@ -110,29 +114,27 @@ class TaskEditorPanels extends javax.swing.JPanel {
         return localTask != null ? localTask.getName() : "Local Task";//NOI18N
     }
 
-     String getDisplayName() {
+    String getDisplayName() {
         return localTask.getId();
     }
 
-     String getShortDescription() {
+    String getShortDescription() {
         return localTask.getName();
     }
 
-     final void addChangeListener(ChangeListener l) {
+    final void addChangeListener(ChangeListener l) {
         synchronized (listeners) {
             listeners.add(l);
         }
     }
 
-     final void removeChangeListener(ChangeListener l) {
+    final void removeChangeListener(ChangeListener l) {
         synchronized (listeners) {
             listeners.remove(l);
         }
     }
 
-    
-
-     TaskElement save() {
+    TaskElement save() {
 
         if (!localTask.getPriority().equals(cmbPriority.getSelectedItem())) {
             localTask.setPriority((TaskPriority) cmbPriority.getSelectedItem());
@@ -168,11 +170,7 @@ class TaskEditorPanels extends javax.swing.JPanel {
             URLDisplayer.getDefault().showURL(new URL(txtUrl.getText()));
 
         } catch (MalformedURLException ex) {
-            NotifyDescriptor d =
-                    new NotifyDescriptor.Message(NbBundle.getMessage(TaskEditorPanels.class,
-                    "LBL_Open_Url_Error",
-                    txtUrl.getText()), NotifyDescriptor.INFORMATION_MESSAGE);
-            DialogDisplayer.getDefault().notify(d);
+            //donothing
         }
     }
 
@@ -315,7 +313,7 @@ class TaskEditorPanels extends javax.swing.JPanel {
         return new ArrayList<Action>(0);
     }
 
-     void refresh() {
+    void refresh() {
 
         txtDescription.getDocument().removeDocumentListener(documentListener);
         txtUrl.getDocument().removeDocumentListener(documentListener);
@@ -373,5 +371,15 @@ class TaskEditorPanels extends javax.swing.JPanel {
 
     JComponent getDescriptionComponent() {
         return pnlDescription;
+    }
+
+    Action[] getURLToolbarActions() {
+        return new Action[]{new AbstractAction(NbBundle.getMessage(TaskEditorPanels.class, "LBL_Open_Url"),
+                new ImageIcon(ImageUtilities.loadImage("org/netbeans/cubeon/local/web.png"))) {
+
+            public void actionPerformed(ActionEvent e) {
+                showURL();
+            }
+        }};
     }
 }
