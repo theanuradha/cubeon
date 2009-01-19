@@ -16,6 +16,7 @@
  */
 package org.netbeans.cubeon.commun.ui;
 
+import javax.swing.Action;
 import org.openide.util.Lookup;
 
 /**
@@ -27,7 +28,8 @@ public abstract  class Group {
     private String name;
     private String description;
     private boolean open = true;
-
+    private Action [] haeaderActions=new Action[0];
+    private Action [] toolbarActions=new Action[0];
     public Group() {
     }
 
@@ -60,4 +62,22 @@ public abstract  class Group {
         this.open = open;
     }
     public abstract GroupPanel createGroupPanel(Lookup lookup);
+
+    public Action[] getHaeaderActions() {
+        return haeaderActions;
+    }
+
+    public void setHaeaderActions(Action[] haeaderActions) {
+        this.haeaderActions = haeaderActions;
+    }
+
+    public Action[] getToolbarActions() {
+        return toolbarActions;
+    }
+
+    public void setToolbarActions(Action[] toolbarActions) {
+        this.toolbarActions = toolbarActions;
+    }
+
+
 }

@@ -25,6 +25,7 @@ import java.awt.event.FocusListener;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.JToggleButton;
@@ -34,6 +35,7 @@ import org.netbeans.cubeon.commun.ui.Group;
 
 
 import org.openide.util.ImageUtilities;
+import org.openide.util.actions.Presenter;
 
 /**
  *
@@ -66,7 +68,7 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
         this(groupView, componentGroup, open, false);
     }
 
-    public ComponentGroupPanel(GroupView groupView, ComponentGroup componentGroup,
+    public ComponentGroupPanel(GroupView groupView, final ComponentGroup componentGroup,
             boolean autoExpand, boolean addFocusListenerToButton) {
 
         this.componentGroup = componentGroup;
@@ -83,9 +85,33 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
                 if (!ComponentGroupPanel.this.isActive()) {
                     ComponentGroupPanel.this.setActive(true);
                 }
-                JPopupMenu popup = new JPopupMenu();
-                popup.add("TODO ADD ITEMS");
-                popup.show(titleButton, e.getX(), e.getY());
+                    JPopupMenu menu = new JPopupMenu();
+                Action[] haeaderActions = componentGroup.getHaeaderActions();
+                 boolean sepetatorAdded = false;
+                for (Action action : haeaderActions) {
+                   //check null and addSeparator
+                    if (action == null) {
+                        //check sepetatorAdd to prevent adding duplicate Separators
+                        if (!sepetatorAdded) {
+                            //mark sepetatorAdd to true
+                            sepetatorAdded = true;
+                            menu.addSeparator();
+
+                        }
+                        continue;
+                    }
+                    //mark sepetatorAdd to false
+                    sepetatorAdded = false;
+                    //check for Presenter.Popup
+                    if (action instanceof Presenter.Popup) {
+                        Presenter.Popup popup = (Presenter.Popup) action;
+                        menu.add(popup.getPopupPresenter());
+                        continue;
+                    }
+
+                    menu.add(new JMenuItem(action));
+                }
+                menu.show(titleButton, e.getX(), e.getY());
             }
         });
         if (autoExpand) {
@@ -94,6 +120,7 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
         if (addFocusListenerToButton) {
             titleButton.addFocusListener(sectionFocusListener);
         }
+        setToolbarActions(componentGroup.getToolbarActions());
     }
 
     void setGroupView(GroupView groupView) {
@@ -347,19 +374,16 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
     public int getIndex() {
         return index;
     }
-    private HeaderButton[] headerButtons;
+      void setToolbarActions(Action[] actions) {
 
-    public void setHeaderActions(Action[] actions) {
-        headerButtons = new HeaderButton[actions.length];
         for (int i = 0; i < actions.length; i++) {
-            headerButtons[i] = new HeaderButton(this, actions[i]);
-            headerButtons[i].setOpaque(false);
-            actionPanel.add(headerButtons[i]);
+            javax.swing.JButton headerButtons = new javax.swing.JButton(actions[i]);
+            headerButtons.setMargin(new java.awt.Insets(0, 14, 0, 14));
+            //remove text from toolbar actions
+            headerButtons.setText(null);
+            headerButtons.setOpaque(false);
+            actionPanel.add(headerButtons);
         }
-    }
-
-    public HeaderButton[] getHeaderButtons() {
-        return headerButtons;
     }
 
     protected JComponent getFillerLine() {
@@ -382,13 +406,5 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
         return titleButton;
     }
 
-    public static class HeaderButton extends javax.swing.JButton {
-
-        public HeaderButton(ComponentGroupPanel panel, Action action) {
-            super(action);
-
-            setMargin(new java.awt.Insets(0, 14, 0, 14));
-
-        }
-    }
+    
 }
