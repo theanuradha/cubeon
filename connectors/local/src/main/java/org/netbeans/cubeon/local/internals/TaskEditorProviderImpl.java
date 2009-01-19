@@ -18,7 +18,7 @@ package org.netbeans.cubeon.local.internals;
 
 import org.netbeans.cubeon.local.LocalTask;
 
-import org.netbeans.cubeon.local.ui.TaskEditorUI;
+import org.netbeans.cubeon.local.ui.EditorAttributeHandlerImpl;
 import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider;
 
 /**
@@ -36,6 +36,6 @@ public class TaskEditorProviderImpl implements TaskEditorProvider {
 
 
     public EditorAttributeHandler createEditorAttributeHandler() {
-        return new TaskEditorUI(localTask);
+        return new EditorAttributeHandlerImpl(localTask);
     }
 }
