@@ -16,20 +16,28 @@
  */
 package org.netbeans.cubeon.common.ui;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 import javax.swing.Action;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.openide.util.Lookup;
 
 /**
  *
  * @author Anuradha
  */
-public abstract  class Group {
+public abstract class Group {
 
     private String name;
     private String description;
+    private String summary;
     private boolean open = true;
-    private Action [] haeaderActions=new Action[0];
-    private Action [] toolbarActions=new Action[0];
+    private Action[] haeaderActions = new Action[0];
+    private Action[] toolbarActions = new Action[0];
+    private final Set<ChangeListener> listeners = new HashSet<ChangeListener>(1);
+
     public Group() {
     }
 
@@ -44,6 +52,7 @@ public abstract  class Group {
 
     public void setDescription(String description) {
         this.description = description;
+        fireChangeEvent();
     }
 
     public String getName() {
@@ -52,6 +61,7 @@ public abstract  class Group {
 
     public void setName(String name) {
         this.name = name;
+        fireChangeEvent();
     }
 
     public boolean isOpen() {
@@ -60,7 +70,9 @@ public abstract  class Group {
 
     public void setOpen(boolean open) {
         this.open = open;
+        fireChangeEvent();
     }
+
     public abstract GroupPanel createGroupPanel(Lookup lookup);
 
     public Action[] getHaeaderActions() {
@@ -69,6 +81,7 @@ public abstract  class Group {
 
     public void setHaeaderActions(Action[] haeaderActions) {
         this.haeaderActions = haeaderActions;
+        fireChangeEvent();
     }
 
     public Action[] getToolbarActions() {
@@ -77,7 +90,38 @@ public abstract  class Group {
 
     public void setToolbarActions(Action[] toolbarActions) {
         this.toolbarActions = toolbarActions;
+        fireChangeEvent();
     }
 
+    public String getSummary() {
+        return summary;
+    }
 
+    public void setSummary(String summary) {
+        this.summary = summary;
+        fireChangeEvent();
+    }
+
+    public final void addChangeListener(ChangeListener l) {
+        synchronized (listeners) {
+            listeners.add(l);
+        }
+    }
+
+    public final void removeChangeListener(ChangeListener l) {
+        synchronized (listeners) {
+            listeners.remove(l);
+        }
+    }
+
+    private void fireChangeEvent() {
+        Iterator<ChangeListener> it;
+        synchronized (listeners) {
+            it = new HashSet<ChangeListener>(listeners).iterator();
+        }
+        ChangeEvent ev = new ChangeEvent(this);
+        while (it.hasNext()) {
+            it.next().stateChanged(ev);
+        }
+    }
 }

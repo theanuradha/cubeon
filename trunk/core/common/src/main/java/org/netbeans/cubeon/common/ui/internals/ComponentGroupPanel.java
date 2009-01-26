@@ -16,8 +16,10 @@
  */
 package org.netbeans.cubeon.common.ui.internals;
 
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.event.MouseEvent;
+import javax.swing.event.ChangeEvent;
 import org.netbeans.cubeon.common.ui.GroupPanel;
 import java.awt.Image;
 import java.awt.Rectangle;
@@ -32,11 +34,13 @@ import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.MouseInputAdapter;
 import org.netbeans.cubeon.common.ui.ComponentGroup;
 import org.netbeans.cubeon.common.ui.Group;
 
 
+import org.openide.awt.Mnemonics;
 import org.openide.util.ImageUtilities;
 import org.openide.util.actions.Presenter;
 
@@ -79,9 +83,13 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
         setGroupView(groupView);
         foldButton.setIcon(new javax.swing.ImageIcon(IMAGE_UNSELECTED));
         foldButton.setSelectedIcon(new javax.swing.ImageIcon(IMAGE_SELECTED));
+        initGroupInfo();
+        componentGroup.addChangeListener(new ChangeListener() {
 
-        titleButton.setText(componentGroup.getName());
-        titleButton.setToolTipText(componentGroup.getDescription());
+            public void stateChanged(ChangeEvent e) {
+                initGroupInfo();
+            }
+        });
         titleButton.addMouseListener(new org.openide.awt.MouseUtils.PopupMouseAdapter() {
 
             protected void showPopup(java.awt.event.MouseEvent e) {
@@ -144,7 +152,7 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
     }
 
     protected void openInnerPanel() {
-
+        summaryLabel.setVisible(false);
         if (innerPanel != null) {
             return;
         }
@@ -176,6 +184,7 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
     }
 
     protected void closeInnerPanel() {
+        summaryLabel.setVisible(true);
         if (innerPanel != null) {
             innerPanel.removeFocusListener(sectionFocusListener);
             remove(innerPanel);
@@ -256,6 +265,8 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
         fillerLine = new javax.swing.JSeparator();
         fillerEnd = new javax.swing.JSeparator();
         titlePanel = new javax.swing.JPanel();
+        summaryLabel = new javax.swing.JLabel();
+        summaryLabel.setForeground(new Color(102, 102, 102));
         titleButton = new javax.swing.JButton();
 
         setLayout(new java.awt.GridBagLayout());
@@ -276,7 +287,7 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 2, 0, 2);
+        gridBagConstraints.insets = new java.awt.Insets(10, 2, 0, 2);
         add(foldButton, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -327,7 +338,8 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
                 titleButtonActionPerformed(evt);
             }
         });
-        titlePanel.add(titleButton, java.awt.BorderLayout.CENTER);
+        titlePanel.add(titleButton, java.awt.BorderLayout.WEST);
+        titlePanel.add(summaryLabel, java.awt.BorderLayout.CENTER);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -337,6 +349,12 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
         gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         add(titlePanel, gridBagConstraints);
     }// </editor-fold>
+
+    private void initGroupInfo() {
+        Mnemonics.setLocalizedText(titleButton, componentGroup.getName());
+        titleButton.setToolTipText(componentGroup.getDescription());
+        summaryLabel.setText(componentGroup.getSummary());
+    }
 
     private void titleButtonActionPerformed(java.awt.event.ActionEvent evt) {
         if (!foldButton.isSelected()) {
@@ -369,6 +387,7 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
     private javax.swing.JSeparator headerSeparator;
     private javax.swing.JButton titleButton;
     private javax.swing.JPanel titlePanel;
+    private javax.swing.JLabel summaryLabel;
     // End of variables declaration
 
     public void setIndex(int index) {
@@ -402,7 +421,6 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
                 public void mouseExited(MouseEvent e) {
                     headerButton.setCursor(Cursor.getDefaultCursor());
                 }
-
             });
             actionPanel.add(headerButton);
         }
