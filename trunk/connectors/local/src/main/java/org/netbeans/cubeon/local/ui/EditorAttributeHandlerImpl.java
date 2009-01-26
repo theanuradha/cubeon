@@ -46,6 +46,9 @@ public class EditorAttributeHandlerImpl implements EditorAttributeHandler {
     private LocalTask localTask;
     private TaskEditor editor;
     private TaskEditorPanels panels;
+    private ComponentGroup attributesGroup;
+    private ComponentGroup urlGroup;
+    private ComponentGroup descriptionGroup;
     final DocumentListener documentListener = new DocumentListener() {
 
         public void insertUpdate(DocumentEvent arg0) {
@@ -74,22 +77,26 @@ public class EditorAttributeHandlerImpl implements EditorAttributeHandler {
     public EditorAttributeHandlerImpl(LocalTask localTask) {
         this.localTask = localTask;
         panels = new TaskEditorPanels(localTask);
-        ComponentGroup attributesGroup = new ComponentGroup(
+        //attributes
+        attributesGroup = new ComponentGroup(
                 NbBundle.getMessage(EditorAttributeHandlerImpl.class, "LBL_Attributes"),
                 NbBundle.getMessage(EditorAttributeHandlerImpl.class, "LBL_Attributes_Dec"));
         attributesGroup.setComponent(panels.getAttributesComponent());
-
-        ComponentGroup urlGroup = new ComponentGroup(
+        attributesGroup.setOpen(false);
+        //url
+        urlGroup = new ComponentGroup(
                 NbBundle.getMessage(EditorAttributeHandlerImpl.class, "LBL_URL"),
                 NbBundle.getMessage(EditorAttributeHandlerImpl.class, "LBL_URL_Dec"));
         urlGroup.setComponent(panels.getURLComponent());
         urlGroup.setToolbarActions(panels.getURLToolbarActions());
+        urlGroup.setOpen(false);
 
-        ComponentGroup descriptionGroup = new ComponentGroup(
+        //group
+        descriptionGroup = new ComponentGroup(
                 NbBundle.getMessage(EditorAttributeHandlerImpl.class, "LBL_Description"),
                 NbBundle.getMessage(EditorAttributeHandlerImpl.class, "LBL_Description_Dec"));
         descriptionGroup.setComponent(panels.getDescriptionComponent());
-        descriptionGroup.setOpen(false);
+
         editor = new TaskEditorSupport().createEditor(attributesGroup, urlGroup, descriptionGroup);
         editor.hideStatusLable(true);
         panels.addChangeListener(new ChangeListener() {
@@ -164,12 +171,23 @@ public class EditorAttributeHandlerImpl implements EditorAttributeHandler {
         loadDates(localTask);
         editor.addSummaryDocumentListener(documentListener);
         panels.refresh();
+        updateGroups();
+
+    }
+
+    private void updateGroups() {
+        //update group summary
+        urlGroup.setSummary(localTask.getUrlString());
+        attributesGroup.setSummary(panels.getAttributesHtmlSummary());
+
     }
 
     public TaskElement save() {
         if (!localTask.getName().equals(editor.getSummaryText())) {
             localTask.setName(editor.getSummaryText());
         }
-        return panels.save();
+        panels.save();
+        updateGroups();
+        return localTask;
     }
 }

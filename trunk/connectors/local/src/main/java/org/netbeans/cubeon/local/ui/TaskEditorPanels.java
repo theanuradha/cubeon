@@ -50,8 +50,6 @@ import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
 import org.netbeans.cubeon.tasks.spi.task.TaskType;
-import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor;
 import org.openide.awt.HtmlBrowser.URLDisplayer;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
@@ -375,11 +373,32 @@ class TaskEditorPanels extends javax.swing.JPanel {
 
     Action[] getURLToolbarActions() {
         return new Action[]{new AbstractAction(NbBundle.getMessage(TaskEditorPanels.class, "LBL_Open_Url"),
-                new ImageIcon(ImageUtilities.loadImage("org/netbeans/cubeon/local/web.png"))) {
+                    new ImageIcon(ImageUtilities.loadImage("org/netbeans/cubeon/local/web.png"))) {
 
-            public void actionPerformed(ActionEvent e) {
-                showURL();
-            }
-        }};
+                public void actionPerformed(ActionEvent e) {
+                    showURL();
+                }
+            }};
+    }
+
+    public String getAttributesHtmlSummary() {
+        StringBuffer buffer = new StringBuffer("<html>");
+
+        buffer.append("<font color=\"#808080\">");
+        buffer.append("  ");
+
+        buffer.append(NbBundle.getMessage(TaskEditorPanels.class, "TaskEditorPanels.lblPriority.text")).append(" ");
+        buffer.append(localTask.getPriority());
+
+
+        buffer.append("   ,   ").append(NbBundle.getMessage(TaskEditorPanels.class, "TaskEditorPanels.lblType.text")).append(" ");
+        buffer.append(localTask.getType());
+
+
+        buffer.append("   ,   ").append(NbBundle.getMessage(TaskEditorPanels.class, "TaskEditorPanels.lblStatus.text")).append(" ");
+        buffer.append(localTask.getStatus());
+
+        buffer.append("</html>");
+        return buffer.toString();
     }
 }
