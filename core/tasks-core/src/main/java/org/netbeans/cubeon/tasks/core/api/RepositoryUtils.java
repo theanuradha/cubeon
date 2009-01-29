@@ -27,7 +27,7 @@ public final class RepositoryUtils {
 
     public static String encodePassword(String username, String password) {
         String encode = "";
-        int key = extractBitValuve(username);
+        int key = extractBitValue(username);
         char[] toCharArray = password.toCharArray();
         for (char c : toCharArray) {
             encode += (char)(key ^ c);
@@ -37,7 +37,7 @@ public final class RepositoryUtils {
 
     public static String decodePassword(String username, String encodedPassword) {
         String decode = "";
-        int key = extractBitValuve(username);
+        int key = extractBitValue(username);
         char[] toCharArray = encodedPassword.toCharArray();
         for (char c : toCharArray) {
             decode += (char)(c ^ key);
@@ -45,7 +45,7 @@ public final class RepositoryUtils {
         return decode;
     }
 
-    private static int extractBitValuve(String username) {
+    private static int extractBitValue(String username) {
         int i = 0;
         char[] toCharArray = username.toCharArray();
         for (char c : toCharArray) {
