@@ -17,6 +17,7 @@
 
 package org.netbeans.cubeon.javanet.tasks;
 
+import org.netbeans.cubeon.javanet.tasks.ui.EditorAttributeHandlerImpl;
 import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider;
 
 /**
@@ -32,7 +33,7 @@ public class JavanetTaskEditorProviderImpl implements TaskEditorProvider{
     }
 
     public EditorAttributeHandler createEditorAttributeHandler() {
-        return new JavanetAttributeHandler(task);
+        return new EditorAttributeHandlerImpl(task);
     }
  
 }
