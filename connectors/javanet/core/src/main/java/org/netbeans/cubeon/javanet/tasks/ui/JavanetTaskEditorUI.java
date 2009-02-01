@@ -38,12 +38,15 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.Action;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import org.netbeans.cubeon.javanet.repository.JavanetTaskAction;
 import org.netbeans.cubeon.javanet.repository.JavanetTaskRepository;
 import org.netbeans.cubeon.javanet.tasks.JavanetTask;
 import org.openide.util.NbBundle;
@@ -89,6 +92,7 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
 
         }
     };
+
     ItemListener itemListener = new ItemListener() {
 
         public void itemStateChanged(ItemEvent e) {
@@ -102,6 +106,7 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
             }
         }
     };
+
     ItemListener actionitemListener = new ItemListener() {
 
         public void itemStateChanged(ItemEvent e) {
@@ -109,7 +114,8 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
                 EventQueue.invokeLater(new Runnable() {
 
                     public void run() {
-//                        loadAction((TicketAction) cmbActions.getSelectedItem());
+                        //loadAction((TicketAction) cmbActions.getSelectedItem());
+                        loadActionCombos();
                     }
                 });
             }
@@ -128,6 +134,21 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
         }
     };
 
+    public JPanel getAttributesPanel() {
+        return pnlAttributes;
+    }
+
+    public JPanel getActionsPanel() {
+        return pnlActions;
+    }
+
+    public JPanel getCommentPanel() {
+        return pnlComment;
+    }
+
+    public JComponent getDescription() {
+        return spDescription;
+    }
 
     public JavanetTaskEditorUI(JavanetTask task) {
         this.task = task;
@@ -145,44 +166,35 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
     }
 
     public void refresh() {
-        txtSummary.getDocument().removeDocumentListener(documentListener);
         txtDescription.getDocument().removeDocumentListener(documentListener);
         txtKeyWord.getDocument().removeDocumentListener(documentListener);
         txtCc.getDocument().removeDocumentListener(documentListener);
 //
         cmbPriority.removeItemListener(itemListener);
-//        cmbActions.removeItemListener(itemListener);
+        cmbAction.removeItemListener(itemListener);
         cmbType.removeItemListener(itemListener);
         cmbComponent.removeItemListener(itemListener);
         cmbMilestone.removeItemListener(itemListener);
         cmbVersion.removeItemListener(itemListener);        
-//        cmbActions.removeItemListener(actionitemListener);
+        cmbAction.removeItemListener(actionitemListener);
 //        cmbResolution.removeItemListener(itemListener);
 //
-        loadDates();
+        
 //commentsEditor.refresh();
-        txtSummary.setText(task.getName());
-        Font boldFont=new Font(txtSummary.getFont().getName(),Font.BOLD,txtSummary.getFont().getSize());
-        txtSummary.setFont(boldFont);       
-        boldFont=new Font(lblStatus.getFont().getName(),Font.BOLD,lblStatus.getFont().getSize());
-        lblStatus.setFont(boldFont);
-//        txtCc.setText(task.get(TracKeys.CC));
-//        txtKeyWord.setText(task.get(TracKeys.KEYWORDS));
 //
         loadAttributes();
 //
-        txtSummary.getDocument().addDocumentListener(documentListener);
         txtDescription.getDocument().addDocumentListener(documentListener);
         txtKeyWord.getDocument().addDocumentListener(documentListener);
         txtCc.getDocument().addDocumentListener(documentListener);
 //
         cmbPriority.addItemListener(itemListener);
-//        cmbActions.addItemListener(itemListener);
+        cmbAction.addItemListener(itemListener);
 //        cmbType.addItemListener(itemListener);
         cmbComponent.addItemListener(itemListener);
         cmbMilestone.addItemListener(itemListener);
         cmbVersion.addItemListener(itemListener);       
-//        cmbActions.addItemListener(actionitemListener);
+        cmbAction.addItemListener(actionitemListener);
 //        cmbResolution.addItemListener(itemListener);
 //
 //
@@ -250,6 +262,25 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
         }
     }
 
+    private void loadActionCombos() {
+        JavanetTaskAction selAction = (JavanetTaskAction) cmbAction.getSelectedItem();
+        switch (selAction) {
+            case CONFIRM_AND_REASSIGN:
+            case REASSIGN:
+                txtActionOption.setVisible(true);
+                cmbActionOption.setVisible(false);
+                break;
+            case RESOLVE:
+                txtActionOption.setVisible(false);
+                cmbActionOption.setVisible(true);
+                break;
+            default:
+                txtActionOption.setVisible(false);
+                cmbActionOption.setVisible(false);
+                break;
+        }
+    }
+
     private void loadAttributes() {
         //set ui to deafulrt
         defaultUI();
@@ -282,12 +313,16 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
         _loadCombos(cmbPriority, _repo.getPriorities(), false, prio);
         _loadCombos(cmbPlatform, _repo.getPlatforms(), false, platform);
         _loadCombos(cmbOs, _repo.getSystems(), false, opSys);
+        _loadCombos(cmbAction, _repo.getActions(task.getStatus()), false, JavanetTaskAction.DO_NOTHING);
+        _loadCombos(cmbActionOption, _repo.getResolutions(), false, null);
+
+        cmbActionOption.setVisible(false);
+        txtActionOption.setVisible(false);
 
         lblAssignedTo.setText(assignedTo);
         lblReportedBy.setText(reporter);
 
         txtDescription.setText(desc);
-        lblStatus.setText(status);
 
 //        JavanetTaskRepository tracRepository = task.getTracRepository();
 //        TracRepositoryAttributes attributes = tracRepository.getRepositoryAttributes();
@@ -405,22 +440,22 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
 
     }
 
-    private void _loadCombos(JComboBox comboBox, List<String> options,
-            boolean optinal, String selected) {
+    private void _loadCombos(JComboBox comboBox, List<? extends Object> options,
+            boolean optional, Object selected) {
         comboBox.removeAllItems();
         if (options.isEmpty()) {
             comboBox.setEnabled(false);
         } else {
             comboBox.setEnabled(true);
-            if (optinal) {
+            if (optional) {
                 //if optional component add EMPTY tag to options
                 comboBox.addItem(EMPTY);
                 //if valuve optional and selected null set selected as EMPTY
-                if (selected == null || selected.trim().length() == 0) {
+                if (selected == null) {
                     selected = EMPTY;
                 }
             }
-            for (String string : options) {
+            for (Object string : options) {
                 comboBox.addItem(string);
             }
             if (selected == null || selected.equals(EMPTY)) {
@@ -431,22 +466,6 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
         }
     }
 
-    private void loadDates() {
-        DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();
-        if (task.getCreationDate() != null) {
-            String message = NbBundle.getMessage(JavanetTaskEditorUI.class,
-                    "JavanetTaskEditorUI.lblCreated.text",
-                    dateFormat.format(task.getCreationDate().getTime()));
-            lblCreated.setText(message);
-        }
-        if (task.getLastModified() != null) {
-            String message = NbBundle.getMessage(JavanetTaskEditorUI.class,
-                    "JavanetTaskEditorUI.lblUpdated.text",
-                    dateFormat.format(task.getLastModified().getTime()));
-            lblUpdated.setText(message);;
-        }
-
-    }
 
     private void loadComponentDependentCombos() {
         String component = (String) cmbComponent.getSelectedItem();
@@ -502,14 +521,9 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        txtSummary = new javax.swing.JTextField();
-        lblCreated = new javax.swing.JLabel();
-        lblUpdated = new javax.swing.JLabel();
-        lblStatus = new javax.swing.JLabel();
         spDescription = new javax.swing.JScrollPane();
         txtDescription = new javax.swing.JEditorPane();
-        lblDesription = new javax.swing.JLabel();
-        lblAttributes = new javax.swing.JLabel();
+        pnlAttributes = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         lblComponent = new javax.swing.JLabel();
         cmbComponent = new javax.swing.JComboBox();
@@ -519,12 +533,6 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
         cmbType = new javax.swing.JComboBox();
         lblPriority = new javax.swing.JLabel();
         cmbPriority = new javax.swing.JComboBox();
-        lblDesription2 = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        lblReportedBy = new javax.swing.JLabel();
-        lblCc = new javax.swing.JLabel();
-        txtCc = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
         lblPlatform = new javax.swing.JLabel();
         cmbPlatform = new javax.swing.JComboBox();
@@ -534,44 +542,40 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
         cmbVersion = new javax.swing.JComboBox();
         lblMilestone = new javax.swing.JLabel();
         cmbMilestone = new javax.swing.JComboBox();
+        jPanel5 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        lblReportedBy = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        lblAssignedTo = new javax.swing.JLabel();
+        lblCc = new javax.swing.JLabel();
+        txtCc = new javax.swing.JTextField();
         lblKeyword = new javax.swing.JLabel();
         txtKeyWord = new javax.swing.JTextField();
-        lblDesription1 = new javax.swing.JLabel();
+        pnlActions = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         cmbAction = new javax.swing.JComboBox();
         jPanel3 = new javax.swing.JPanel();
         cmbActionOption = new javax.swing.JComboBox();
         txtActionOption = new javax.swing.JTextField();
-        lblAssignedTo = new javax.swing.JLabel();
+        pnlComment = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtComment = new javax.swing.JTextArea();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setName("null");
-
-        lblCreated.setForeground(new java.awt.Color(102, 102, 102));
-        lblCreated.setText(NbBundle.getMessage(JavanetTaskEditorUI.class, "JavanetTaskEditorUI.lblCreated.text","-")); // NOI18N
-
-        lblUpdated.setForeground(new java.awt.Color(102, 102, 102));
-        lblUpdated.setText(NbBundle.getMessage(JavanetTaskEditorUI.class, "JavanetTaskEditorUI.lblUpdated.text","-")); // NOI18N
-
-        lblStatus.setForeground(new java.awt.Color(102, 102, 102));
-        lblStatus.setText(NbBundle.getMessage(JavanetTaskEditorUI.class, "JavanetTaskEditorUI.lblStatus.text","-")); // NOI18N
 
         spDescription.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         spDescription.setMinimumSize(new java.awt.Dimension(23, 66));
         spDescription.setPreferredSize(new java.awt.Dimension(108, 88));
 
+        txtDescription.setEditable(false);
         txtDescription.setMinimumSize(new java.awt.Dimension(106, 80));
         spDescription.setViewportView(txtDescription);
 
-        lblDesription.setFont(new java.awt.Font("Tahoma", 1, 11));
-        lblDesription.setForeground(new java.awt.Color(51, 51, 51));
-        lblDesription.setText(NbBundle.getMessage(JavanetTaskEditorUI.class, "JavanetTaskEditorUI.lblDesription.text")); // NOI18N
-
-        lblAttributes.setFont(new java.awt.Font("Tahoma", 1, 11));
-        lblAttributes.setText(NbBundle.getMessage(JavanetTaskEditorUI.class, "JavanetTaskEditorUI.lblAttributes.text")); // NOI18N
+        pnlAttributes.setLayout(new java.awt.GridLayout(1, 3, 3, 0));
 
         jPanel1.setOpaque(false);
-        jPanel1.setLayout(new java.awt.GridLayout(5, 2, 5, 5));
+        jPanel1.setLayout(new java.awt.GridLayout(4, 2, 5, 2));
 
         lblComponent.setText(NbBundle.getMessage(JavanetTaskEditorUI.class, "JavanetTaskEditorUI.lblComponent.text")); // NOI18N
         jPanel1.add(lblComponent);
@@ -598,20 +602,10 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
 
         jPanel1.add(cmbPriority);
 
-        lblDesription2.setFont(new java.awt.Font("Tahoma", 1, 11));
-        lblDesription2.setForeground(new java.awt.Color(51, 51, 51));
-        lblDesription2.setText(NbBundle.getMessage(JavanetTaskEditorUI.class, "JavanetTaskEditorUI.lblDesription2.text")); // NOI18N
-
-        jLabel1.setText(NbBundle.getMessage(JavanetTaskEditorUI.class, "JavanetTaskEditorUI.jLabel1.text","-")); // NOI18N
-
-        jLabel3.setText(NbBundle.getMessage(JavanetTaskEditorUI.class, "JavanetTaskEditorUI.jLabel3.text","-")); // NOI18N
-
-        lblReportedBy.setText(NbBundle.getMessage(JavanetTaskEditorUI.class, "JavanetTaskEditorUI.lblReportedBy.text","-")); // NOI18N
-
-        lblCc.setText(NbBundle.getMessage(JavanetTaskEditorUI.class, "JavanetTaskEditorUI.lblCc.text","-")); // NOI18N
+        pnlAttributes.add(jPanel1);
 
         jPanel2.setOpaque(false);
-        jPanel2.setLayout(new java.awt.GridLayout(5, 2, 5, 5));
+        jPanel2.setLayout(new java.awt.GridLayout(4, 2, 3, 2));
 
         lblPlatform.setText(org.openide.util.NbBundle.getMessage(JavanetTaskEditorUI.class, "JavanetTaskEditorUI.lblPlatform.text")); // NOI18N
         jPanel2.add(lblPlatform);
@@ -633,15 +627,40 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
 
         jPanel2.add(cmbMilestone);
 
-        lblKeyword.setText(NbBundle.getMessage(JavanetTaskEditorUI.class, "JavanetTaskEditorUI.lblKeyword.text","-")); // NOI18N
-        jPanel2.add(lblKeyword);
-        jPanel2.add(txtKeyWord);
+        pnlAttributes.add(jPanel2);
 
-        lblDesription1.setFont(new java.awt.Font("Tahoma", 1, 11));
-        lblDesription1.setForeground(new java.awt.Color(51, 51, 51));
-        lblDesription1.setText(NbBundle.getMessage(JavanetTaskEditorUI.class, "JavanetTaskEditorUI.lblDesription1.text")); // NOI18N
+        jPanel5.setOpaque(false);
+        jPanel5.setLayout(new java.awt.GridLayout(4, 2, 3, 2));
+
+        jLabel1.setText(NbBundle.getMessage(JavanetTaskEditorUI.class, "JavanetTaskEditorUI.jLabel1.text","-")); // NOI18N
+        jPanel5.add(jLabel1);
+
+        lblReportedBy.setText(NbBundle.getMessage(JavanetTaskEditorUI.class, "JavanetTaskEditorUI.lblReportedBy.text","-")); // NOI18N
+        jPanel5.add(lblReportedBy);
+
+        jLabel3.setText(NbBundle.getMessage(JavanetTaskEditorUI.class, "JavanetTaskEditorUI.jLabel3.text","-")); // NOI18N
+        jPanel5.add(jLabel3);
+
+        lblAssignedTo.setText(org.openide.util.NbBundle.getMessage(JavanetTaskEditorUI.class, "JavanetTaskEditorUI.lblAssignedTo.text")); // NOI18N
+        jPanel5.add(lblAssignedTo);
+
+        lblCc.setText(NbBundle.getMessage(JavanetTaskEditorUI.class, "JavanetTaskEditorUI.lblCc.text","-")); // NOI18N
+        jPanel5.add(lblCc);
+        jPanel5.add(txtCc);
+
+        lblKeyword.setText(NbBundle.getMessage(JavanetTaskEditorUI.class, "JavanetTaskEditorUI.lblKeyword.text","-")); // NOI18N
+        jPanel5.add(lblKeyword);
+        jPanel5.add(txtKeyWord);
+
+        pnlAttributes.add(jPanel5);
 
         jPanel4.setOpaque(false);
+
+        cmbAction.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cmbActionItemStateChanged(evt);
+            }
+        });
 
         jPanel3.setOpaque(false);
         jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.LINE_AXIS));
@@ -656,9 +675,9 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel4Layout.createSequentialGroup()
-                .add(cmbAction, 0, 286, Short.MAX_VALUE)
+                .add(cmbAction, 0, 262, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(jPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE))
+                .add(jPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -666,10 +685,40 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
                 .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                     .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(org.jdesktop.layout.GroupLayout.LEADING, cmbAction, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        lblAssignedTo.setText(org.openide.util.NbBundle.getMessage(JavanetTaskEditorUI.class, "JavanetTaskEditorUI.lblAssignedTo.text")); // NOI18N
+        org.jdesktop.layout.GroupLayout pnlActionsLayout = new org.jdesktop.layout.GroupLayout(pnlActions);
+        pnlActions.setLayout(pnlActionsLayout);
+        pnlActionsLayout.setHorizontalGroup(
+            pnlActionsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(pnlActionsLayout.createSequentialGroup()
+                .add(jPanel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(382, Short.MAX_VALUE))
+        );
+        pnlActionsLayout.setVerticalGroup(
+            pnlActionsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(pnlActionsLayout.createSequentialGroup()
+                .add(jPanel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        txtComment.setColumns(20);
+        txtComment.setRows(5);
+        jScrollPane1.setViewportView(txtComment);
+
+        org.jdesktop.layout.GroupLayout pnlCommentLayout = new org.jdesktop.layout.GroupLayout(pnlComment);
+        pnlComment.setLayout(pnlCommentLayout);
+        pnlCommentLayout.setHorizontalGroup(
+            pnlCommentLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 794, Short.MAX_VALUE)
+        );
+        pnlCommentLayout.setVerticalGroup(
+            pnlCommentLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(pnlCommentLayout.createSequentialGroup()
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 80, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(22, Short.MAX_VALUE))
+        );
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -678,94 +727,34 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createSequentialGroup()
-                        .add(10, 10, 10)
-                        .add(lblCreated, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 239, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(lblUpdated, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 215, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(lblStatus, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 196, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(txtSummary, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 779, Short.MAX_VALUE)
-                    .add(spDescription, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 779, Short.MAX_VALUE)
-                    .add(lblDesription, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 779, Short.MAX_VALUE)
-                    .add(lblAttributes, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 684, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                .add(layout.createSequentialGroup()
-                                    .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 460, Short.MAX_VALUE)
-                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED))
-                                .add(layout.createSequentialGroup()
-                                    .add(lblDesription1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 149, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                    .add(317, 317, 317)))
-                            .add(layout.createSequentialGroup()
-                                .add(jPanel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)))
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(lblDesription2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 313, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                .add(layout.createSequentialGroup()
-                                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                        .add(jLabel1)
-                                        .add(jLabel3)
-                                        .add(lblCc))
-                                    .add(103, 103, 103)
-                                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                        .add(org.jdesktop.layout.GroupLayout.TRAILING, txtCc, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
-                                        .add(org.jdesktop.layout.GroupLayout.TRAILING, lblReportedBy, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
-                                        .add(lblAssignedTo, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)))
-                                .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)))))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, pnlActions, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, pnlComment, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(spDescription, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 794, Short.MAX_VALUE)
+                    .add(pnlAttributes, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 794, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .add(txtSummary, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap()
+                .add(spDescription, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(lblUpdated)
-                    .add(lblCreated)
-                    .add(lblStatus))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(lblDesription)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(spDescription, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(lblAttributes)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                    .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(lblDesription1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 20, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(lblDesription2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 14, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createSequentialGroup()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                            .add(jLabel1)
-                            .add(lblReportedBy))
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(layout.createSequentialGroup()
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(jLabel3))
-                            .add(layout.createSequentialGroup()
-                                .add(4, 4, 4)
-                                .add(lblAssignedTo)))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                            .add(lblCc)
-                            .add(txtCc, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                    .add(layout.createSequentialGroup()
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jPanel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                .add(pnlAttributes, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .add(29, 29, 29)
+                .add(pnlActions, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(44, 44, 44)
+                .add(pnlComment, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(38, 38, 38))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void cmbComponentItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbComponentItemStateChanged
         loadComponentDependentCombos();
     }//GEN-LAST:event_cmbComponentItemStateChanged
+
+    private void cmbActionItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbActionItemStateChanged
+ 
+    }//GEN-LAST:event_cmbActionItemStateChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox cmbAction;
@@ -784,30 +773,28 @@ public class JavanetTaskEditorUI extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblAssignedTo;
-    private javax.swing.JLabel lblAttributes;
     private javax.swing.JLabel lblCc;
     private javax.swing.JLabel lblComponent;
-    private javax.swing.JLabel lblCreated;
-    private javax.swing.JLabel lblDesription;
-    private javax.swing.JLabel lblDesription1;
-    private javax.swing.JLabel lblDesription2;
     private javax.swing.JLabel lblKeyword;
     private javax.swing.JLabel lblMilestone;
     private javax.swing.JLabel lblOs;
     private javax.swing.JLabel lblPlatform;
     private javax.swing.JLabel lblPriority;
     private javax.swing.JLabel lblReportedBy;
-    private javax.swing.JLabel lblStatus;
     private javax.swing.JLabel lblSubComponent;
     private javax.swing.JLabel lblType;
-    private javax.swing.JLabel lblUpdated;
     private javax.swing.JLabel lblVersion;
+    private javax.swing.JPanel pnlActions;
+    private javax.swing.JPanel pnlAttributes;
+    private javax.swing.JPanel pnlComment;
     private javax.swing.JScrollPane spDescription;
     private javax.swing.JTextField txtActionOption;
     private javax.swing.JTextField txtCc;
+    private javax.swing.JTextArea txtComment;
     private javax.swing.JEditorPane txtDescription;
     private javax.swing.JTextField txtKeyWord;
-    private javax.swing.JTextField txtSummary;
     // End of variables declaration//GEN-END:variables
 }

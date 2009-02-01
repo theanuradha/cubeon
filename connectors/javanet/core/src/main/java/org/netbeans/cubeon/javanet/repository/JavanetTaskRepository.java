@@ -247,6 +247,15 @@ public class JavanetTaskRepository implements TaskRepository, Submitable, Revert
         _taskRepoProvider = provider;
     }
 
+    public List<String> getResolutions() {
+        try {
+            return _jnIssueTracker.getResolutions();
+        } catch (ProcessingException ex) {
+            Exceptions.printStackTrace(ex);
+            return null;
+        }
+    }
+
     private Map<String, JNIssueComponent> getComponentsMap() throws ProcessingException {
         if (_components == null) {
             _components = _jnIssueTracker.getComponents();
@@ -277,6 +286,26 @@ public class JavanetTaskRepository implements TaskRepository, Submitable, Revert
         try {
             JNIssueComponent comp = getComponentsMap().get(component);
             return comp.getVersions();
+        } catch (ProcessingException ex) {
+            Exceptions.printStackTrace(ex);
+            return null;
+        }
+    }
+
+    public List<JavanetTaskAction> getActions(String fromState) {
+        try {
+            List<JNIssueTracker.Action> actions = _jnIssueTracker.getActions(fromState);
+            List<JavanetTaskAction> actionsLocal = new ArrayList<JavanetTaskAction>();
+            for (JNIssueTracker.Action action : actions) {
+                JavanetTaskAction ac = JavanetTaskAction.getByLabel(action.getLabel());                
+                if (ac == null) {
+                    ac = JavanetTaskAction.getByValue(action.getValue());
+                }
+                if (ac != null) {
+                    actionsLocal.add(ac);
+                }
+            }
+            return actionsLocal;
         } catch (ProcessingException ex) {
             Exceptions.printStackTrace(ex);
             return null;

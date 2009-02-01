@@ -60,26 +60,45 @@ public class JavanetTask implements TaskElement {
 
     public String getName() {
         if (_jnIssue != null) {
-            return _jnIssue.getShortDescription();
+            StringBuilder sb = new StringBuilder(getId());
+            sb.append(" ");
+            String shortDesc = _jnIssue.getShortDescription();
+            sb.append(shortDesc.substring(0, 10));
+            if (shortDesc.length() > 10) {
+                sb.append("...");
+            }
+            return sb.toString();
         } else {
             return null;
         }
+        
     }
 
     public String getDisplayName() {
         if (_jnIssue != null) {
-            return _jnIssue.getShortDescription();
+            return getId() + " " + _jnIssue.getShortDescription();
         } else {
             return null;
         }
     }
 
     public String getDescription() {
-
         if (_jnIssue != null) {
             List<JNIssue.Description> descs =_jnIssue.getDescriptions();
-            JNIssue.Description desc = descs.get(0);
-            return desc.getText();
+            StringBuilder sbDesc = new StringBuilder();
+            for (JNIssue.Description description : descs) {
+                sbDesc.append(description.getText());
+                sbDesc.append("\n");
+            }            
+            return sbDesc.toString();
+        } else {
+            return null;
+        }
+    }
+
+    public String getSummary() {
+        if (_jnIssue != null) {
+            return _jnIssue.getShortDescription();
         } else {
             return null;
         }
