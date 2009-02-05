@@ -10,7 +10,7 @@
     <packaging>nbm</packaging>
     <name>Cube°n Jira Repository</name>
     <description>Jira Repository Connecter</description>
-    <version>1.0.3.2</version>
+    <version>${cubeon.release}</version>
     <build>
         <plugins>
             <plugin>
