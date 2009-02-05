@@ -16,7 +16,7 @@
  */
 
 /*
- * TracTaskEditorUI.java
+ * TracTaskEditorPanels.java
  *
  * Created on Sep 7, 2008, 8:58:15 PM
  */
@@ -25,10 +25,7 @@ package org.netbeans.cubeon.trac.tasks.ui;
 import java.awt.EventQueue;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -36,6 +33,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.Action;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
@@ -60,7 +58,7 @@ import static org.netbeans.cubeon.trac.api.TracKeys.*;
  *
  * @author Anuradha
  */
-public class TracTaskEditorUI extends javax.swing.JPanel {
+public class TracTaskEditorPanels extends javax.swing.JPanel {
 
     private static final long serialVersionUID = -7550167448688050066L;
     private static final String LEAVE = "leave";//NOI18N
@@ -134,14 +132,18 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
         }
     };
 
-    /** Creates new form TracTaskEditorUI */
-    public TracTaskEditorUI(TracTask task) {
+    /** Creates new form TracTaskEditorPanels */
+    public TracTaskEditorPanels(TracTask task) {
         this.task = task;
         initComponents();
         commentsEditor = new TracCommentsEditor(this);
         openInBrowserTaskAction = new OpenInBrowserTaskAction(task);
         submitTaskAction = new SubmitTaskAction(task);
-        refresh();
+
+    }
+
+    public DocumentListener getDocumentListener() {
+        return documentListener;
     }
 
     public List<Action> getActions() {
@@ -151,9 +153,9 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
     }
 
     public void refresh() {
-        txtSummary.getDocument().removeDocumentListener(documentListener);
+
         txtAssignee.getDocument().removeDocumentListener(documentListener);
-        txtDescription.getDocument().removeDocumentListener(documentListener);
+
         txtKeyWord.getDocument().removeDocumentListener(documentListener);
         txtCc.getDocument().removeDocumentListener(documentListener);
 
@@ -167,25 +169,20 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
         cmbActions.removeItemListener(actionitemListener);
         cmbResolution.removeItemListener(itemListener);
 
-        loadDates();
+
         commentsEditor.refresh();
-        txtSummary.setText(task.getSummary());
-        txtDescription.setText(task.getDescription());
+
         lblReportedBy.setText(task.get(REPORTER));
         txtAssignee.setText(task.get(OWNER));
-        lblStatus.setText(NbBundle.getMessage(TracTaskEditorUI.class,
-                "TracTaskEditorUI.lblStatus.text",
-                task.isLocal()
-                ? NbBundle.getMessage(TracTaskEditorUI.class, "LBL_Local")
-                : task.get(STATUS))); // NOI18N
+
         txtCc.setText(task.get(TracKeys.CC));
         txtKeyWord.setText(task.get(TracKeys.KEYWORDS));
 
         loadAttibutes();
 
-        txtSummary.getDocument().addDocumentListener(documentListener);
+
         txtAssignee.getDocument().addDocumentListener(documentListener);
-        txtDescription.getDocument().addDocumentListener(documentListener);
+
         txtKeyWord.getDocument().addDocumentListener(documentListener);
         txtCc.getDocument().addDocumentListener(documentListener);
 
@@ -211,8 +208,7 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
     }
 
     public TracTask save() {
-        task.setSummary(txtSummary.getText().trim());
-        task.setDescription(txtDescription.getText().trim());
+
         task.put(CC, txtCc.getText().trim());
         task.put(KEYWORDS, txtKeyWord.getText().trim());
         task.put(TYPE, getSelectedValve(cmbType));
@@ -408,23 +404,6 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
         }
     }
 
-    private void loadDates() {
-        DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();
-        if (task.getCreatedDate() != 0) {
-            String message = NbBundle.getMessage(TracTaskEditorUI.class,
-                    "TracTaskEditorUI.lblCreated.text",
-                    dateFormat.format(new Date(task.getCreatedDate())));
-            lblCreated.setText(message);
-        }
-        if (task.getUpdatedDate() != 0) {
-            String message = NbBundle.getMessage(TracTaskEditorUI.class,
-                    "TracTaskEditorUI.lblUpdated.text",
-                    dateFormat.format(new Date(task.getUpdatedDate())));
-            lblUpdated.setText(message);
-        }
-
-    }
-
     public TracTask getTask() {
         return task;
     }
@@ -460,6 +439,14 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
         }
     }
 
+    public JComponent getActionAndPeoplePanel() {
+        return this;
+    }
+
+    public JComponent getAttributesPanel() {
+        return pnlAttributes;
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -469,14 +456,7 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        txtSummary = new javax.swing.JTextField();
-        lblCreated = new javax.swing.JLabel();
-        lblUpdated = new javax.swing.JLabel();
-        lblStatus = new javax.swing.JLabel();
-        spDescription = new javax.swing.JScrollPane();
-        txtDescription = new javax.swing.JEditorPane();
-        lblDesription = new javax.swing.JLabel();
-        lblAttributes = new javax.swing.JLabel();
+        pnlAttributes = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         lblComponent = new javax.swing.JLabel();
         cmbComponent = new javax.swing.JComboBox();
@@ -486,18 +466,6 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
         cmbPriority = new javax.swing.JComboBox();
         lblSeverity = new javax.swing.JLabel();
         cmbSeverity = new javax.swing.JComboBox();
-        lblDesription1 = new javax.swing.JLabel();
-        lblAction = new javax.swing.JLabel();
-        cmbActions = new javax.swing.JComboBox();
-        lblResolution = new javax.swing.JLabel();
-        cmbResolution = new javax.swing.JComboBox();
-        lblDesription2 = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        txtAssignee = new javax.swing.JTextField();
-        lblReportedBy = new javax.swing.JLabel();
-        lblCc = new javax.swing.JLabel();
-        txtCc = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
         lblMilestone = new javax.swing.JLabel();
         cmbMilestone = new javax.swing.JComboBox();
@@ -505,92 +473,95 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
         cmbVersion = new javax.swing.JComboBox();
         lblKeyword = new javax.swing.JLabel();
         txtKeyWord = new javax.swing.JTextField();
+        lblAction = new javax.swing.JLabel();
+        cmbActions = new javax.swing.JComboBox();
+        lblResolution = new javax.swing.JLabel();
+        cmbResolution = new javax.swing.JComboBox();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        txtAssignee = new javax.swing.JTextField();
+        lblReportedBy = new javax.swing.JLabel();
+        lblCc = new javax.swing.JLabel();
+        txtCc = new javax.swing.JTextField();
 
-        setBackground(new java.awt.Color(255, 255, 255));
-        setName(NbBundle.getMessage(TracTaskEditorUI.class, "LBL_Name")); // NOI18N
-
-        lblCreated.setForeground(new java.awt.Color(102, 102, 102));
-        lblCreated.setText(NbBundle.getMessage(TracTaskEditorUI.class, "TracTaskEditorUI.lblCreated.text","-")); // NOI18N
-
-        lblUpdated.setForeground(new java.awt.Color(102, 102, 102));
-        lblUpdated.setText(NbBundle.getMessage(TracTaskEditorUI.class, "TracTaskEditorUI.lblUpdated.text","-")); // NOI18N
-
-        lblStatus.setForeground(new java.awt.Color(102, 102, 102));
-        lblStatus.setText(NbBundle.getMessage(TracTaskEditorUI.class, "TracTaskEditorUI.lblStatus.text","-")); // NOI18N
-
-        spDescription.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        spDescription.setMinimumSize(new java.awt.Dimension(23, 66));
-        spDescription.setPreferredSize(new java.awt.Dimension(108, 88));
-
-        txtDescription.setMinimumSize(new java.awt.Dimension(106, 80));
-        spDescription.setViewportView(txtDescription);
-
-        lblDesription.setFont(new java.awt.Font("Tahoma", 1, 11));
-        lblDesription.setForeground(new java.awt.Color(51, 51, 51));
-        lblDesription.setText(NbBundle.getMessage(TracTaskEditorUI.class, "TracTaskEditorUI.lblDesription.text")); // NOI18N
-
-        lblAttributes.setFont(new java.awt.Font("Tahoma", 1, 11));
-        lblAttributes.setText(NbBundle.getMessage(TracTaskEditorUI.class, "TracTaskEditorUI.lblAttributes.text")); // NOI18N
+        pnlAttributes.setOpaque(false);
 
         jPanel1.setOpaque(false);
         jPanel1.setLayout(new java.awt.GridLayout(4, 2, 5, 5));
 
-        lblComponent.setText(NbBundle.getMessage(TracTaskEditorUI.class, "TracTaskEditorUI.lblComponent.text")); // NOI18N
+        lblComponent.setText(NbBundle.getMessage(TracTaskEditorPanels.class, "TracTaskEditorPanels.lblComponent.text")); // NOI18N
         jPanel1.add(lblComponent);
 
         jPanel1.add(cmbComponent);
 
-        lblType.setText(NbBundle.getMessage(TracTaskEditorUI.class, "TracTaskEditorUI.lblType.text")); // NOI18N
+        lblType.setText(NbBundle.getMessage(TracTaskEditorPanels.class, "TracTaskEditorPanels.lblType.text")); // NOI18N
         jPanel1.add(lblType);
 
         jPanel1.add(cmbType);
 
-        lblPriority.setText(NbBundle.getMessage(TracTaskEditorUI.class, "TracTaskEditorUI.lblPriority.text")); // NOI18N
+        lblPriority.setText(NbBundle.getMessage(TracTaskEditorPanels.class, "TracTaskEditorPanels.lblPriority.text")); // NOI18N
         jPanel1.add(lblPriority);
 
         jPanel1.add(cmbPriority);
 
-        lblSeverity.setText(NbBundle.getMessage(TracTaskEditorUI.class, "TracTaskEditorUI.lblSeverity.text")); // NOI18N
+        lblSeverity.setText(NbBundle.getMessage(TracTaskEditorPanels.class, "TracTaskEditorPanels.lblSeverity.text")); // NOI18N
         jPanel1.add(lblSeverity);
 
         jPanel1.add(cmbSeverity);
 
-        lblDesription1.setFont(new java.awt.Font("Tahoma", 1, 11));
-        lblDesription1.setForeground(new java.awt.Color(51, 51, 51));
-        lblDesription1.setText(NbBundle.getMessage(TracTaskEditorUI.class, "TracTaskEditorUI.lblDesription1.text")); // NOI18N
-
-        lblAction.setText(NbBundle.getMessage(TracTaskEditorUI.class, "TracTaskEditorUI.lblAction.text")); // NOI18N
-
-        lblResolution.setText(NbBundle.getMessage(TracTaskEditorUI.class, "TracTaskEditorUI.lblResolution.text")); // NOI18N
-
-        lblDesription2.setFont(new java.awt.Font("Tahoma", 1, 11));
-        lblDesription2.setForeground(new java.awt.Color(51, 51, 51));
-        lblDesription2.setText(NbBundle.getMessage(TracTaskEditorUI.class, "TracTaskEditorUI.lblDesription2.text")); // NOI18N
-
-        jLabel1.setText(NbBundle.getMessage(TracTaskEditorUI.class, "TracTaskEditorUI.jLabel1.text","-")); // NOI18N
-
-        jLabel3.setText(NbBundle.getMessage(TracTaskEditorUI.class, "TracTaskEditorUI.jLabel3.text","-")); // NOI18N
-
-        lblReportedBy.setText(NbBundle.getMessage(TracTaskEditorUI.class, "TracTaskEditorUI.lblReportedBy.text","-")); // NOI18N
-
-        lblCc.setText(NbBundle.getMessage(TracTaskEditorUI.class, "TracTaskEditorUI.lblCc.text","-")); // NOI18N
-
         jPanel2.setOpaque(false);
         jPanel2.setLayout(new java.awt.GridLayout(4, 2, 5, 5));
 
-        lblMilestone.setText(NbBundle.getMessage(TracTaskEditorUI.class, "TracTaskEditorUI.lblMilestone.text")); // NOI18N
+        lblMilestone.setText(NbBundle.getMessage(TracTaskEditorPanels.class, "TracTaskEditorPanels.lblMilestone.text")); // NOI18N
         jPanel2.add(lblMilestone);
 
         jPanel2.add(cmbMilestone);
 
-        lblVersion.setText(NbBundle.getMessage(TracTaskEditorUI.class, "TracTaskEditorUI.lblVersion.text")); // NOI18N
+        lblVersion.setText(NbBundle.getMessage(TracTaskEditorPanels.class, "TracTaskEditorPanels.lblVersion.text")); // NOI18N
         jPanel2.add(lblVersion);
 
         jPanel2.add(cmbVersion);
 
-        lblKeyword.setText(NbBundle.getMessage(TracTaskEditorUI.class, "TracTaskEditorUI.lblKeyword.text","-")); // NOI18N
+        lblKeyword.setText(NbBundle.getMessage(TracTaskEditorPanels.class, "TracTaskEditorPanels.lblKeyword.text","-")); // NOI18N
         jPanel2.add(lblKeyword);
         jPanel2.add(txtKeyWord);
+
+        org.jdesktop.layout.GroupLayout pnlAttributesLayout = new org.jdesktop.layout.GroupLayout(pnlAttributes);
+        pnlAttributes.setLayout(pnlAttributesLayout);
+        pnlAttributesLayout.setHorizontalGroup(
+            pnlAttributesLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(pnlAttributesLayout.createSequentialGroup()
+                .addContainerGap()
+                .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 270, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(18, 18, 18)
+                .add(jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 271, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        pnlAttributesLayout.setVerticalGroup(
+            pnlAttributesLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(pnlAttributesLayout.createSequentialGroup()
+                .add(pnlAttributesLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        pnlAttributesLayout.linkSize(new java.awt.Component[] {jPanel1, jPanel2}, org.jdesktop.layout.GroupLayout.VERTICAL);
+
+        setName(NbBundle.getMessage(TracTaskEditorPanels.class, "LBL_Name")); // NOI18N
+        setOpaque(false);
+
+        lblAction.setText(NbBundle.getMessage(TracTaskEditorPanels.class, "TracTaskEditorPanels.lblAction.text")); // NOI18N
+
+        lblResolution.setText(NbBundle.getMessage(TracTaskEditorPanels.class, "TracTaskEditorPanels.lblResolution.text")); // NOI18N
+
+        jLabel1.setText(NbBundle.getMessage(TracTaskEditorPanels.class, "TracTaskEditorPanels.jLabel1.text","-")); // NOI18N
+
+        jLabel3.setText(NbBundle.getMessage(TracTaskEditorPanels.class, "TracTaskEditorPanels.jLabel3.text","-")); // NOI18N
+
+        lblReportedBy.setText(NbBundle.getMessage(TracTaskEditorPanels.class, "TracTaskEditorPanels.lblReportedBy.text","-")); // NOI18N
+
+        lblCc.setText(NbBundle.getMessage(TracTaskEditorPanels.class, "TracTaskEditorPanels.lblCc.text","-")); // NOI18N
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -598,73 +569,38 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                    .add(lblResolution, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(lblAction, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 71, Short.MAX_VALUE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
+                    .add(cmbActions, 0, 136, Short.MAX_VALUE)
+                    .add(cmbResolution, 0, 136, Short.MAX_VALUE))
+                .add(18, 18, 18)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createSequentialGroup()
-                        .add(10, 10, 10)
-                        .add(lblCreated, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 239, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(lblUpdated, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 215, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(lblStatus, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 196, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(txtSummary, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 684, Short.MAX_VALUE)
-                    .add(spDescription, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 684, Short.MAX_VALUE)
-                    .add(lblDesription, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 684, Short.MAX_VALUE)
-                    .add(lblAttributes, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 684, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(layout.createSequentialGroup()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(layout.createSequentialGroup()
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                                    .add(lblAction, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .add(lblResolution, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 26, Short.MAX_VALUE)
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
-                                    .add(cmbResolution, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .add(cmbActions, 0, 250, Short.MAX_VALUE))
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED))
-                            .add(lblDesription1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE)
-                            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE))
-                        .add(36, 36, 36)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(layout.createSequentialGroup()
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(jLabel1)
-                                    .add(jLabel3)
-                                    .add(lblCc))
-                                .add(25, 25, 25)
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                                    .add(lblReportedBy, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)
-                                    .add(txtAssignee, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)
-                                    .add(txtCc, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)))
-                            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 315, Short.MAX_VALUE)
-                            .add(org.jdesktop.layout.GroupLayout.TRAILING, lblDesription2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 315, Short.MAX_VALUE))))
-                .addContainerGap())
+                    .add(jLabel1)
+                    .add(jLabel3)
+                    .add(lblCc))
+                .add(25, 25, 25)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
+                    .add(lblReportedBy, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
+                    .add(txtAssignee, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
+                    .add(txtCc, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE))
+                .addContainerGap(10, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .add(txtSummary, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(lblUpdated)
-                    .add(lblCreated)
-                    .add(lblStatus))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(lblDesription)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(spDescription, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(lblAttributes)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                    .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 9, Short.MAX_VALUE)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(lblDesription1)
-                    .add(lblDesription2))
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
-                        .add(12, 12, 12)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                            .add(lblAction)
+                            .add(cmbActions, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                            .add(lblResolution)
+                            .add(cmbResolution, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                    .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                             .add(jLabel1)
                             .add(lblReportedBy))
@@ -675,17 +611,8 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                             .add(lblCc)
-                            .add(txtCc, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                    .add(layout.createSequentialGroup()
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                            .add(lblAction)
-                            .add(cmbActions, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                            .add(lblResolution)
-                            .add(cmbResolution, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap())
+                            .add(txtCc, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -702,28 +629,19 @@ public class TracTaskEditorUI extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JLabel lblAction;
-    private javax.swing.JLabel lblAttributes;
     private javax.swing.JLabel lblCc;
     private javax.swing.JLabel lblComponent;
-    private javax.swing.JLabel lblCreated;
-    private javax.swing.JLabel lblDesription;
-    private javax.swing.JLabel lblDesription1;
-    private javax.swing.JLabel lblDesription2;
     private javax.swing.JLabel lblKeyword;
     private javax.swing.JLabel lblMilestone;
     private javax.swing.JLabel lblPriority;
     private javax.swing.JLabel lblReportedBy;
     private javax.swing.JLabel lblResolution;
     private javax.swing.JLabel lblSeverity;
-    private javax.swing.JLabel lblStatus;
     private javax.swing.JLabel lblType;
-    private javax.swing.JLabel lblUpdated;
     private javax.swing.JLabel lblVersion;
-    private javax.swing.JScrollPane spDescription;
+    private javax.swing.JPanel pnlAttributes;
     private javax.swing.JTextField txtAssignee;
     private javax.swing.JTextField txtCc;
-    private javax.swing.JEditorPane txtDescription;
     private javax.swing.JTextField txtKeyWord;
-    private javax.swing.JTextField txtSummary;
     // End of variables declaration//GEN-END:variables
 }
