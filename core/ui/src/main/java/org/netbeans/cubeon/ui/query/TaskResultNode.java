@@ -28,7 +28,9 @@ import org.netbeans.cubeon.tasks.spi.repository.TaskStatusProvider;
 import org.netbeans.cubeon.tasks.spi.repository.TaskTypeProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskElementActionsProvider;
+import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
+import org.netbeans.cubeon.tasks.spi.task.TaskType;
 import org.netbeans.cubeon.ui.taskelemet.CopyDetailsAction;
 import org.netbeans.cubeon.ui.taskelemet.MoveToAction;
 import org.netbeans.cubeon.ui.taskelemet.OpenAction;
@@ -107,26 +109,33 @@ public class TaskResultNode extends AbstractNode {
 
     @Override
     public String getHtmlDisplayName() {
-        StringBuffer buffer = new StringBuffer("<html>");
+       StringBuffer buffer = new StringBuffer("<html>");
         buffer.append("<xmp>").append(element.getDisplayName()).append("</xmp>");
         buffer.append("<font color=\"#808080\">");
         buffer.append("  ");
         TaskRepository repository = element.getTaskRepository();
         TaskPriorityProvider tpp = repository.getLookup().lookup(TaskPriorityProvider.class);
         if (tpp != null) {
-            buffer.append(NbBundle.getMessage(TaskResultNode.class, "LBL_Priority")).append(":");
-            buffer.append(tpp.getTaskPriority(element).toString());
+            TaskPriority taskPriority = tpp.getTaskPriority(element);
+            //see Issue 53
+            if (taskPriority != null) {
+                buffer.append(NbBundle.getMessage(TaskResultNode.class, "LBL_Priority")).append(":");
+                buffer.append(taskPriority).append(",");
+            }
         }
         TaskTypeProvider ttp = repository.getLookup().lookup(TaskTypeProvider.class);
         if (ttp != null) {
-            buffer.append(",").append(NbBundle.getMessage(TaskResultNode.class, "LBL_Type")).append(":");
-            buffer.append(ttp.getTaskType(element).toString());
+            TaskType taskType = ttp.getTaskType(element);
+            if (taskType != null) {
+                buffer.append(NbBundle.getMessage(TaskResultNode.class, "LBL_Type")).append(":");
+                buffer.append(taskType).append(",");
+            }
         }
         TaskStatusProvider tsp = repository.getLookup().lookup(TaskStatusProvider.class);
         if (tsp != null) {
             TaskStatus taskStatus = tsp.getTaskStatus(element);
             if (taskStatus != null) {
-                buffer.append(",").append(NbBundle.getMessage(TaskResultNode.class, "LBL_Status")).append(":");
+                buffer.append(NbBundle.getMessage(TaskResultNode.class, "LBL_Status")).append(":");
                 buffer.append(taskStatus);
             }
         }
