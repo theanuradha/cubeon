@@ -23,6 +23,7 @@ import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
+import javax.swing.ScrollPaneConstants;
 import org.netbeans.cubeon.common.ui.Group;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.Lookups;
@@ -58,6 +59,7 @@ public class GroupView extends JPanel {
         scrollPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         scrollPane.setViewportView(scrollPanel);
         scrollPane.getVerticalScrollBar().setUnitIncrement(15);
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         filler = new JPanel();
         filler.setBackground(theme.getDocumentBackgroundColor());
         add(scrollPane, BorderLayout.CENTER);

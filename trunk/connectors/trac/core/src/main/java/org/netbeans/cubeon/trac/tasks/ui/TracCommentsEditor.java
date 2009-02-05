@@ -53,13 +53,13 @@ import org.openide.util.lookup.Lookups;
 public class TracCommentsEditor extends javax.swing.JPanel implements ExplorerManager.Provider {
 
     private static final long serialVersionUID = 1L;
-    private TracTaskEditorUI editorUI;
+    private TracTaskEditorPanels editorUI;
     private ExplorerManager explorerManager = new ExplorerManager();
     private BeanTreeView treeView = new BeanTreeView();
     private final DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();
 
     /** Creates new form TracCommentsEditor */
-    public TracCommentsEditor(TracTaskEditorUI editorUI) {
+    public TracCommentsEditor(TracTaskEditorPanels editorUI) {
         this.editorUI = editorUI;
         initComponents();
 
