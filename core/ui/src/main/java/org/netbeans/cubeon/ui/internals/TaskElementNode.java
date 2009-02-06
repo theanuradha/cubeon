@@ -57,6 +57,7 @@ import org.openide.nodes.Children;
 import org.openide.nodes.NodeTransfer;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
+import org.openide.util.actions.SystemAction;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
 
@@ -228,19 +229,19 @@ public class TaskElementNode extends AbstractNode {
 
     @Override
     public Action getPreferredAction() {
-        return new OpenAction(element);
+        return SystemAction.get(OpenAction.class);
     }
 
     @Override
     public Action[] getActions(boolean arg0) {
         List<Action> actions = new ArrayList<Action>();
-        actions.add(new OpenAction(element));
-        actions.add(new OpenInBrowserAction(element));
+        actions.add(SystemAction.get(OpenAction.class));
+        actions.add(SystemAction.get(OpenInBrowserAction.class));
         actions.add(new TaskActiveAction(element));
         actions.add(null);
         actions.add(new CopyDetailsAction(element));
         if (container != null) {
-            actions.add(new MoveToDefault(container, element));
+            actions.add(SystemAction.get(MoveToDefault.class));
         }
 
         boolean sepetatorAdded = false;
@@ -276,7 +277,7 @@ public class TaskElementNode extends AbstractNode {
         if (!sepetatorAdded) {
             actions.add(null);
         }
-        actions.add(new SynchronizeTaskAction(element));
+        actions.add(SystemAction.get(SynchronizeTaskAction.class));
         return actions.toArray(new Action[0]);
     }
 

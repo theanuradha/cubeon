@@ -16,29 +16,65 @@
  */
 package org.netbeans.cubeon.ui.taskelemet;
 
-import java.awt.event.ActionEvent;
-import javax.swing.AbstractAction;
+import java.awt.EventQueue;
 import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
+import org.openide.nodes.Node;
+import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.util.actions.NodeAction;
 
 /**
  *
  * @author Anuradha
  */
-public class OpenAction extends AbstractAction {
+public class OpenAction extends NodeAction {
+
     private static final long serialVersionUID = 8170584779537197106L;
-
-    private TaskElement element;
-
-    public OpenAction(TaskElement element) {
-        this.element = element;
+    
+    private OpenAction() {
         putValue(NAME, NbBundle.getMessage(OpenAction.class, "LBL_Open"));
+
+    }
+    
+    
+
+    @Override
+    protected void performAction(Node[] activatedNodes) {
+        final TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
+
+         for (Node node : activatedNodes) {
+            final TaskElement element = node.getLookup().lookup(TaskElement.class);
+            if (element != null) {
+               EventQueue.invokeLater(new Runnable() {
+
+                    public void run() {
+                        factory.openTask(element);
+                    }
+                });
+            }
+        }
     }
 
-    public void actionPerformed(ActionEvent e) {
-        TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
-        factory.openTask(element);
+    @Override
+    protected boolean enable(Node[] activatedNodes) {
+        for (Node node : activatedNodes) {
+            TaskElement element = node.getLookup().lookup(TaskElement.class);
+            if (element == null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public String getName() {
+        return (String) getValue(NAME);
+    }
+
+    @Override
+    public HelpCtx getHelpCtx() {
+        return new HelpCtx(OpenAction.class);
     }
 }

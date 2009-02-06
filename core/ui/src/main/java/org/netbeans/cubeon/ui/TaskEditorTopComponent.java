@@ -65,7 +65,7 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
         this.context = Lookup.getDefault().lookup(CubeonContext.class);
         contextManager = Lookup.getDefault().lookup(TaskContextManager.class);
         initComponents();
-        jButton1.setAction(new SynchronizeTaskAction(element));
+        jButton1.setAction(SynchronizeTaskAction.createSynchronizeTaskAction(element));
         jButton1.setText(null);
         jToolBar1.setLayout(new FlowLayout(FlowLayout.RIGHT, 0, 0));
         Lookup lookup = element.getLookup();
@@ -227,7 +227,6 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
             TaskExplorerTopComponent.findInstance().selectView(contextManager.getContextView());
         }
     }//GEN-LAST:event_focusActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel base;
     private javax.swing.JButton focus;
