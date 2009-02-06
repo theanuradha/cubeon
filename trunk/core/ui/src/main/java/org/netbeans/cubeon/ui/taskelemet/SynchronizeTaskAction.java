@@ -18,44 +18,110 @@ package org.netbeans.cubeon.ui.taskelemet;
 
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.ImageIcon;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
+import org.openide.nodes.Node;
+import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
+import org.openide.util.actions.NodeAction;
 
 /**
  *
  * @author Anuradha
  */
-public class SynchronizeTaskAction extends AbstractAction {
+public class SynchronizeTaskAction extends NodeAction {
 
-    private TaskElement task;
+    private SynchronizeTaskAction() {
 
-    public SynchronizeTaskAction(TaskElement task) {
-
-        this.task = task;
         putValue(NAME, NbBundle.getMessage(SynchronizeTaskAction.class, "LBL_Synchronize"));
         putValue(SHORT_DESCRIPTION, NbBundle.getMessage(SynchronizeTaskAction.class, "LBL_Synchronize"));
         putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/ui/refresh.png")));
     }
 
-    public void actionPerformed(ActionEvent e) {
+    public static Action createSynchronizeTaskAction(final TaskElement element) {
+        AbstractAction action = new AbstractAction() {
 
+            public void actionPerformed(ActionEvent e) {
+                RequestProcessor.getDefault().post(new Runnable() {
+
+                    public void run() {
+
+                        setEnabled(false);
+                        ProgressHandle handle = ProgressHandleFactory.createHandle("Synchronizing Tasks ");
+                        handle.start();
+                        handle.switchToIndeterminate();
+
+
+                        if (element != null) {
+                            sync(handle, element);
+                        }
+
+                        handle.finish();
+                        setEnabled(true);
+                    }
+                });
+            }
+        };
+        action.putValue(NAME, NbBundle.getMessage(SynchronizeTaskAction.class, "LBL_Synchronize"));
+        action.putValue(SHORT_DESCRIPTION, NbBundle.getMessage(SynchronizeTaskAction.class, "LBL_Synchronize"));
+        action.putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/ui/refresh.png")));
+        return action;
+    }
+
+    @Override
+    protected void performAction(final Node[] activatedNodes) {
         RequestProcessor.getDefault().post(new Runnable() {
 
             public void run() {
-                setEnabled(false);
 
-                ProgressHandle handle = ProgressHandleFactory.createHandle("Synchronizing : " + task.getId());
+
+                ProgressHandle handle = ProgressHandleFactory.createHandle("Synchronizing Tasks ");
                 handle.start();
                 handle.switchToIndeterminate();
-                task.synchronize();
+                for (Node node : activatedNodes) {
+                    TaskElement task = node.getLookup().lookup(TaskElement.class);
+                    if (task != null) {
+                        sync(handle, task);
+                    }
+                }
                 handle.finish();
-                setEnabled(true);
+
             }
         });
+
+
+
+    }
+
+    private static void sync(ProgressHandle handle, TaskElement task) {
+        handle.setDisplayName("Synchronizing : " + task.getId());
+        handle.progress(task.getDisplayName());
+        task.synchronize();
+    }
+
+    @Override
+    protected boolean enable(Node[] activatedNodes) {
+        for (Node node : activatedNodes) {
+            TaskElement element = node.getLookup().lookup(TaskElement.class);
+            if (element == null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public String getName() {
+        return (String) getValue(NAME);
+    }
+
+    @Override
+    public HelpCtx getHelpCtx() {
+        return new HelpCtx(SynchronizeTaskAction.class);
     }
 }
