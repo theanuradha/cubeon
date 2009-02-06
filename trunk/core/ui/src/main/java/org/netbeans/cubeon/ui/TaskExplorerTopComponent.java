@@ -18,13 +18,17 @@ package org.netbeans.cubeon.ui;
 
 import java.awt.Image;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.beans.PropertyVetoException;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JPopupMenu;
@@ -33,9 +37,12 @@ import javax.swing.event.PopupMenuListener;
 import org.netbeans.cubeon.context.api.TaskContextManager;
 import org.netbeans.cubeon.tasks.core.api.NodeUtils;
 import org.netbeans.cubeon.tasks.core.api.TaskFolder;
+import org.netbeans.cubeon.tasks.core.api.TaskFolderRefreshable;
 import org.netbeans.cubeon.tasks.core.api.TasksFileSystem;
 import org.netbeans.cubeon.tasks.core.spi.TaskNodeView;
+import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.ui.taskelemet.NewTaskWizardAction;
+import org.netbeans.cubeon.ui.taskfolder.DeleteTaskFolderAction;
 import org.netbeans.cubeon.ui.taskfolder.RefreshTaskFolderAction;
 import org.openide.awt.DropDownButtonFactory;
 import org.openide.explorer.ExplorerManager;
@@ -76,7 +83,11 @@ public final class TaskExplorerTopComponent extends TopComponent implements Expl
         setIcon(Utilities.loadImage(ICON_PATH, true));
         taskTreeView.setRootVisible(false);
         unloadViewMenu();
-        associateLookup(ExplorerUtils.createLookup(explorerManager, getActionMap()));
+        //Task Explorer - remove task keyboard shortcu
+        ActionMap actionMap = getActionMap();
+
+        actionMap.put("delete", new RemoveAction());//NOi18N
+        associateLookup(ExplorerUtils.createLookup(explorerManager, actionMap));
 
         viewMenu.addPopupMenuListener(new PopupMenuListener() {
 
@@ -92,6 +103,8 @@ public final class TaskExplorerTopComponent extends TopComponent implements Expl
                 unloadViewMenu();
             }
         });
+
+
 
     }
 
@@ -297,9 +310,8 @@ private void downMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 }//GEN-LAST:event_downMenuActionPerformed
 
 private void taskViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_taskViewActionPerformed
-     viewMenu.show(taskView, 0, taskView.getHeight());
+    viewMenu.show(taskView, 0, taskView.getHeight());
 }//GEN-LAST:event_taskViewActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton downMenu;
     private javax.swing.JButton focas;
@@ -406,8 +418,8 @@ private void taskViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     }
 
     private class Context extends AbstractAction {
-        private static final long serialVersionUID = 5527829264450966761L;
 
+        private static final long serialVersionUID = 5527829264450966761L;
         private final TaskContextManager contextManager;
 
         private Context() {
@@ -437,6 +449,7 @@ private void taskViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     }
 
     private class GoBack extends AbstractAction {
+
         private static final long serialVersionUID = 4293205969173010442L;
 
         public GoBack() {
@@ -450,6 +463,50 @@ private void taskViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         public void actionPerformed(ActionEvent e) {
 
             goToRoot();
+        }
+    }
+
+    private class RemoveAction extends AbstractAction {
+
+        public void actionPerformed(ActionEvent e) {
+            Node[] selectedNodes = explorerManager.getSelectedNodes();
+            TasksFileSystem fileSystem = Lookup.getDefault().lookup(TasksFileSystem.class);
+            Set<TaskFolder> deletedFolders = new HashSet<TaskFolder>();
+            Set<TaskFolder> refreshFolders = new HashSet<TaskFolder>();
+            for (Node node : selectedNodes) {
+                TaskFolder container = node.getLookup().lookup(TaskFolder.class);
+                TaskElement element = node.getLookup().lookup(TaskElement.class);
+                //if element null and folder not null delete folder
+                if (container != null && element == null &&
+                        !container.equals(fileSystem.getDefaultFolder())) {
+                    new DeleteTaskFolderAction(container).actionPerformed(e);
+                    deletedFolders.add(container);
+                    //if both not null remove task element from task folder
+                } else if (container != null && element != null) {
+
+                    if (element != null && !deletedFolders.contains(container)) {
+
+                        fileSystem.removeTaskElement(container, element);
+                        refreshFolders.add(container);
+
+                        //if Shift down move task to Default Folder
+                        if (e.getModifiers() == KeyEvent.SHIFT_DOWN_MASK &&
+                                !container.equals(fileSystem.getDefaultFolder())) {
+                            fileSystem.addTaskElement(fileSystem.getDefaultFolder(), element);
+                            refreshFolders.add(fileSystem.getDefaultFolder());
+
+                        }
+                    }
+
+                }
+            }
+            refreshFolders.removeAll(deletedFolders);
+            for (TaskFolder taskFolder : refreshFolders) {
+                TaskFolderRefreshable oldTfr = taskFolder.getLookup().lookup(TaskFolderRefreshable.class);
+                if (oldTfr != null) {
+                    oldTfr.refreshNode();
+                }
+            }
         }
     }
 }
