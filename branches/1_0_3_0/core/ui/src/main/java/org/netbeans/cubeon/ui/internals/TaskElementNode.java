@@ -37,7 +37,9 @@ import org.netbeans.cubeon.tasks.spi.repository.TaskStatusProvider;
 import org.netbeans.cubeon.tasks.spi.repository.TaskTypeProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElementActionsProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElementChangeAdapter;
+import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
+import org.netbeans.cubeon.tasks.spi.task.TaskType;
 import org.netbeans.cubeon.ui.taskelemet.CopyDetailsAction;
 import org.netbeans.cubeon.ui.taskelemet.MoveToAction;
 import org.netbeans.cubeon.ui.taskelemet.MoveToDefault;
@@ -166,7 +168,7 @@ public class TaskElementNode extends AbstractNode {
 
             @Override
             public void resolutionChenged() {
-                 fireDisplayNameChange(getDisplayName() + "_#", element.getName());//NOI18N
+                fireDisplayNameChange(getDisplayName() + "_#", element.getName());//NOI18N
                 setShortDescription(extractTaskDescription(element));
             }
 
@@ -185,11 +187,17 @@ public class TaskElementNode extends AbstractNode {
         TaskRepository repository = element.getTaskRepository();
         TaskPriorityProvider tpp = repository.getLookup().lookup(TaskPriorityProvider.class);
         if (tpp != null) {
-            buffer.append(tpp.getTaskPriority(element).toString()).append(", ");//NOI18N
+            TaskPriority taskPriority = tpp.getTaskPriority(element);
+            if (taskPriority != null) {
+                buffer.append(taskPriority).append(", ");//NOI18N
+            }
         }
         TaskTypeProvider ttp = repository.getLookup().lookup(TaskTypeProvider.class);
         if (ttp != null) {
-            buffer.append(ttp.getTaskType(element).toString());
+            TaskType taskType = ttp.getTaskType(element);
+            if (taskType != null) {
+                buffer.append(ttp.getTaskType(element));
+            }
         }
         TaskStatusProvider tsp = repository.getLookup().lookup(TaskStatusProvider.class);
         if (tsp != null) {
@@ -341,9 +349,6 @@ public class TaskElementNode extends AbstractNode {
         return NodeTransfer.transferable(this, NodeTransfer.DND_MOVE);
     }
 
-    
-
-    
     @Override
     public boolean canCut() {
         return true;
