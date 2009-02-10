@@ -84,7 +84,10 @@ public class TaskElementNode extends AbstractNode {
 
         InstanceContent content = new InstanceContent();
         content.add(element);
-        content.add(container);
+        //check container is null to prevent NPE
+        if (container != null) {
+            content.add(container);
+        }
         final TaskElementNode node = new TaskElementNode(children, container, element, content);
 
         node.content = content;

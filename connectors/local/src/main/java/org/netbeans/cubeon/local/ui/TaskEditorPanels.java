@@ -112,13 +112,6 @@ class TaskEditorPanels extends javax.swing.JPanel {
         return localTask != null ? localTask.getName() : "Local Task";//NOI18N
     }
 
-    String getDisplayName() {
-        return localTask.getId();
-    }
-
-    String getShortDescription() {
-        return localTask.getName();
-    }
 
     final void addChangeListener(ChangeListener l) {
         synchronized (listeners) {
@@ -323,6 +316,7 @@ class TaskEditorPanels extends javax.swing.JPanel {
 
 
         txtDescription.setText(localTask.getDescription());
+        txtDescription.setCaretPosition(0);
         txtUrl.setText(localTask.getUrlString());
 
         cmbPriority.removeAllItems();

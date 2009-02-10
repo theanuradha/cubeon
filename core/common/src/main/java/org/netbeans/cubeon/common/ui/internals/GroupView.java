@@ -18,8 +18,6 @@ package org.netbeans.cubeon.common.ui.internals;
 
 import org.netbeans.cubeon.common.ui.GroupPanel;
 import java.awt.BorderLayout;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
@@ -37,21 +35,34 @@ public class GroupView extends JPanel {
 
     private JPanel scrollPanel, filler;
     private javax.swing.JScrollPane scrollPane;
-    private int sectionCount = 0;
+    private int sectionCount;
     private GroupPanel activePanel;
     private Group[] groups;
     private List<GroupPanel> groupPanels = new ArrayList<GroupPanel>();
     private VisualTheme theme = new VisualTheme();
 
     public GroupView(Group... groups) {
-        this.groups = groups;
+
         setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
         initialize();
+        refreshGroups(groups);
+    }
+
+    public void refreshGroups(Group... groups) {
+        this.groups = groups;
+        groupPanels.clear();
+        sectionCount = 0;
+        filler.removeAll();
+        Lookup lookup = Lookups.fixed(this);
+        for (Group group : groups) {
+            GroupPanel groupPanel = group.createGroupPanel(lookup);
+            addSection(groupPanel, group.isOpen());
+        }
     }
 
     void initialize() {
-
+        sectionCount = 0;
         setLayout(new java.awt.BorderLayout());
         scrollPanel = new JPanel();
         scrollPanel.setLayout(new java.awt.GridBagLayout());
@@ -63,28 +74,7 @@ public class GroupView extends JPanel {
         filler = new JPanel();
         filler.setBackground(theme.getDocumentBackgroundColor());
         add(scrollPane, BorderLayout.CENTER);
-        groupPanels.clear();
 
-        GroupPanel first = null;
-Lookup lookup=Lookups.fixed(this);
-        for (Group group : groups) {
-            GroupPanel groupPanel = group.createGroupPanel(lookup);
-            
-            if(first==null){
-              first=groupPanel;
-            }
-            addSection(groupPanel, group.isOpen());
-        }
-        setActiveGroupPanel(first);
-        addComponentListener(new ComponentAdapter() {
-
-            @Override
-            public void componentShown(ComponentEvent e) {
-                setActiveGroupPanel(activePanel);
-            }
-
-
-        });
     }
 
     /**
@@ -161,8 +151,6 @@ Lookup lookup=Lookups.fixed(this);
         addSection(section);
         if (open) {
             section.open();
-            section.scroll();
-            section.setActive(true);
         }
     }
 
@@ -224,7 +212,8 @@ Lookup lookup=Lookups.fixed(this);
             this.activePanel.setActive(false);
         }
         this.activePanel = activePanel;
-
+        activePanel.scroll();
+        activePanel.setActive(true);
     }
 
     public GroupPanel getActiveGroupPanel() {

@@ -44,6 +44,7 @@ public class EditorAttributeHandlerImpl implements EditorAttributeHandler {
 
     private final Set<ChangeListener> listeners = new HashSet<ChangeListener>(1);
     private LocalTask localTask;
+    private TaskEditorSupport editorSupport;
     private TaskEditor editor;
     private TaskEditorPanels panels;
     private ComponentGroup attributesGroup;
@@ -96,8 +97,9 @@ public class EditorAttributeHandlerImpl implements EditorAttributeHandler {
                 NbBundle.getMessage(EditorAttributeHandlerImpl.class, "LBL_Description"),
                 NbBundle.getMessage(EditorAttributeHandlerImpl.class, "LBL_Description_Dec"));
         descriptionGroup.setComponent(panels.getDescriptionComponent());
-
-        editor = new TaskEditorSupport().createEditor(attributesGroup, urlGroup, descriptionGroup);
+        editorSupport = new TaskEditorSupport(attributesGroup, urlGroup, descriptionGroup);
+        editor = editorSupport.createEditor();
+        editorSupport.setActive(attributesGroup);
         editor.hideStatusLable(true);
         panels.addChangeListener(new ChangeListener() {
 
