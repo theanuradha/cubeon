@@ -27,8 +27,9 @@ import org.netbeans.cubeon.common.ui.TaskEditorSupport;
 import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider.EditorAttributeHandler;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.trac.api.TracKeys;
-import org.netbeans.cubeon.trac.tasks.ui.DescriptionUI;
+import org.netbeans.cubeon.trac.tasks.ui.TextEditorUI;
 import org.netbeans.cubeon.trac.tasks.ui.TracTaskEditorPanels;
+import org.openide.util.NbBundle;
 import static org.openide.util.NbBundle.*;
 
 /**
@@ -38,12 +39,15 @@ import static org.openide.util.NbBundle.*;
 public class TracAttributeHandler implements EditorAttributeHandler {
 
     private TracTask task;
+    private final TaskEditorSupport editorSupport;
     private TaskEditor editor;
     private ComponentGroup descriptionGroup;
     private ComponentGroup attributesGroup;
     private ComponentGroup actionsGroup;
+    private ComponentGroup newCommentGroup;
     private final TracTaskEditorPanels panels;
-    private final DescriptionUI descriptionUI = new DescriptionUI();
+    private final TextEditorUI descriptionUI = new TextEditorUI();
+    private final TextEditorUI newCommentUI = new TextEditorUI();
 
     public TracAttributeHandler(TracTask task) {
         this.task = task;
@@ -62,11 +66,17 @@ public class TracAttributeHandler implements EditorAttributeHandler {
         attributesGroup.setComponent(panels.getAttributesPanel());
 
         actionsGroup = new ComponentGroup(getMessage(TracAttributeHandler.class, "LBL_Actions"),
-                getMessage(TracAttributeHandler.class, "LBL_Actions_Dec"));
+                NbBundle.getMessage(TracAttributeHandler.class, "LBL_Actions_Dec"));
         actionsGroup.setOpen(false);
         actionsGroup.setComponent(panels.getActionAndPeoplePanel());
-
-        editor = new TaskEditorSupport().createEditor(descriptionGroup, attributesGroup, actionsGroup);
+        //new comment group
+        newCommentGroup = new ComponentGroup(getMessage(TracAttributeHandler.class, "LBL_New_Comment"),
+                getMessage(TracAttributeHandler.class, "LBL_New_Comment_Dec"), newCommentUI);
+        //open new comment depende on user alrady have comment
+        newCommentGroup.setOpen(task.getNewComment() != null && task.getNewComment().length() != 0);
+        editorSupport = new TaskEditorSupport(descriptionGroup, attributesGroup, actionsGroup, newCommentGroup);
+        editor = editorSupport.createEditor();
+        editorSupport.setActive(descriptionGroup);
         refresh();
 
 
@@ -116,6 +126,10 @@ public class TracAttributeHandler implements EditorAttributeHandler {
         descriptionUI.getDocument().removeDocumentListener(panels.getDocumentListener());
         descriptionUI.setText(task.getDescription());
         descriptionUI.getDocument().addDocumentListener(panels.getDocumentListener());
+        newCommentUI.getDocument().removeDocumentListener(panels.getDocumentListener());
+        newCommentUI.setText(task.getNewComment());
+        descriptionUI.setEditable(!task.isLocal());
+        newCommentUI.getDocument().addDocumentListener(panels.getDocumentListener());
         panels.refresh();
     }
 
@@ -137,6 +151,7 @@ public class TracAttributeHandler implements EditorAttributeHandler {
             task.setSummary(editor.getSummaryText());
         }
         task.setDescription(descriptionUI.getText().trim());
+        task.setNewComment(newCommentUI.getText().trim());
         task.getExtension().fireStateChenged();
         return task;
     }

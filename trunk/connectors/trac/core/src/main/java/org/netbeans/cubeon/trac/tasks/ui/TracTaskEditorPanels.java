@@ -230,7 +230,7 @@ public class TracTaskEditorPanels extends javax.swing.JPanel {
         }
         submitTaskAction.setEnabled(task.isModifiedFlag());
         task.getTaskRepository().persist(task);
-        task.setNewComment(commentsEditor.getNewComment());
+        
         return task;
     }
 

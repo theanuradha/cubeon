@@ -16,7 +16,7 @@
  */
 
 /*
- * DescriptionUI.java
+ * TextEditorUI.java
  *
  * Created on Jan 31, 2009, 3:40:29 PM
  */
@@ -29,10 +29,10 @@ import javax.swing.text.Document;
  *
  * @author Anuradha
  */
-public class DescriptionUI extends javax.swing.JPanel {
+public class TextEditorUI extends javax.swing.JPanel {
 
-    /** Creates new form DescriptionUI */
-    public DescriptionUI() {
+    /** Creates new form TextEditorUI */
+    public TextEditorUI() {
         initComponents();
     }
 
@@ -42,10 +42,15 @@ public class DescriptionUI extends javax.swing.JPanel {
 
     public void setText(String t) {
         txtDescription.setText(t);
+        txtDescription.setCaretPosition(0);
     }
 
     public String getText() {
         return txtDescription.getText();
+    }
+
+    public void setEditable(boolean b) {
+        txtDescription.setEditable(b);
     }
 
     /** This method is called from within the constructor to

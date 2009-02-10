@@ -107,11 +107,10 @@ public class TracCommentsEditor extends javax.swing.JPanel implements ExplorerMa
     }
 
     void refresh() {
-        txtComment.getDocument().removeDocumentListener(editorUI.documentListener);
+       
         loadComments();
-        txtComment.setText(editorUI.getTask().getNewComment());
-        txtComment.getDocument().addDocumentListener(editorUI.documentListener);
-        txtComment.setEditable(!editorUI.getTask().isLocal());
+      
+
 
     }
 
@@ -236,9 +235,7 @@ public class TracCommentsEditor extends javax.swing.JPanel implements ExplorerMa
         return buffer.append("\n").toString();//move to next line
     }
 
-    String getNewComment() {
-        return txtComment.getText().trim();
-    }
+  
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -249,9 +246,6 @@ public class TracCommentsEditor extends javax.swing.JPanel implements ExplorerMa
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        lblCommemt = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        txtComment = new javax.swing.JEditorPane();
         pnlComments = new javax.swing.JPanel();
         javax.swing.JScrollPane jScrollPane1 = treeView;
         pnlComment = new javax.swing.JPanel();
@@ -263,13 +257,6 @@ public class TracCommentsEditor extends javax.swing.JPanel implements ExplorerMa
 
         setBackground(new java.awt.Color(255, 255, 255));
         setName(NbBundle.getMessage(TracCommentsEditor.class, "LBL_Comments","-")); // NOI18N
-
-        lblCommemt.setFont(new java.awt.Font("Tahoma", 1, 11));
-        lblCommemt.setForeground(new java.awt.Color(102, 102, 102));
-        lblCommemt.setText(NbBundle.getMessage(TracCommentsEditor.class, "TracCommentsEditor.lblCommemt.text","-")); // NOI18N
-
-        jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        jScrollPane2.setViewportView(txtComment);
 
         pnlComments.setBackground(new java.awt.Color(255, 255, 255));
         pnlComments.setBorder(javax.swing.BorderFactory.createEtchedBorder(null, javax.swing.UIManager.getDefaults().getColor("CheckBoxMenuItem.selectionBackground")));
@@ -290,7 +277,7 @@ public class TracCommentsEditor extends javax.swing.JPanel implements ExplorerMa
         txtDisplayComment.setWrapStyleWord(true);
         jsDisplay.setViewportView(txtDisplayComment);
 
-        lblAuthor.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        lblAuthor.setFont(new java.awt.Font("Tahoma", 1, 11));
         lblAuthor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/cubeon/trac/comment.png"))); // NOI18N
         lblAuthor.setText(NbBundle.getMessage(TracCommentsEditor.class, "TracCommentsEditor.lblAuthor.text", new Object[] {})); // NOI18N
 
@@ -330,33 +317,23 @@ public class TracCommentsEditor extends javax.swing.JPanel implements ExplorerMa
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jScrollPane2)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, lblCommemt, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 715, Short.MAX_VALUE)
-                    .add(pnlComments, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 715, Short.MAX_VALUE))
+                .add(pnlComments, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 715, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .add(pnlComments, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 218, Short.MAX_VALUE)
-                .add(11, 11, 11)
-                .add(lblCommemt)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
-                .addContainerGap())
+                .add(189, 189, 189))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JScrollPane jsDisplay;
     private javax.swing.JLabel lblAuthor;
-    private javax.swing.JLabel lblCommemt;
     private javax.swing.JPanel pnlComment;
     private javax.swing.JPanel pnlComments;
-    private javax.swing.JEditorPane txtComment;
     private javax.swing.JTextArea txtDisplayComment;
     // End of variables declaration//GEN-END:variables
 }

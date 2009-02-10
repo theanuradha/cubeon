@@ -29,9 +29,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.event.DocumentListener;
-import org.netbeans.cubeon.common.ui.ComponentGroup;
-import org.netbeans.cubeon.common.ui.ContainerGroup;
-import org.netbeans.cubeon.common.ui.Group;
 import org.openide.util.NbBundle;
 
 /**
@@ -41,9 +38,9 @@ import org.openide.util.NbBundle;
 public class TaskEditorUI extends javax.swing.JPanel implements TaskEditor {
 
     /** Creates new form TaskEditorUI */
-    public TaskEditorUI(Group[] groups) {
+    public TaskEditorUI(GroupView groupView) {
         initComponents();
-        GroupView groupView = new GroupView(groups);
+       
         pnlDetails.add(groupView, BorderLayout.CENTER);
     }
 

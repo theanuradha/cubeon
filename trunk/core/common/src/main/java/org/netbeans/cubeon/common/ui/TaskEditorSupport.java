@@ -16,6 +16,7 @@
  */
 package org.netbeans.cubeon.common.ui;
 
+import org.netbeans.cubeon.common.ui.internals.GroupView;
 import org.netbeans.cubeon.common.ui.internals.TaskEditorUI;
 
 /**
@@ -24,8 +25,20 @@ import org.netbeans.cubeon.common.ui.internals.TaskEditorUI;
  */
 public class TaskEditorSupport {
 
-    public TaskEditor createEditor(Group... groups) {
+    private GroupView groupView;
 
-        return new TaskEditorUI(groups);
+    public TaskEditorSupport(Group... groups) {
+        groupView = new GroupView(groups);
+    }
+
+    public void setActive(Group group) {
+        GroupPanel groupPanel = groupView.findGroupPanel(group);
+        if (groupPanel != null) {
+            groupView.setActiveGroupPanel(groupPanel);
+        }
+    }
+
+    public TaskEditor createEditor() {
+        return new TaskEditorUI(groupView);
     }
 }
