@@ -85,6 +85,7 @@ public class DefaultFileSystem implements TasksFileSystem {
                             assert folderImpl != null;
                             folderImpl.removeTaskElement(element);
                             handler.removeTaskElement(folderImpl, element);
+                            folderImpl.refreshContent();
                         }
                     }
                 }
