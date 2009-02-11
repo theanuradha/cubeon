@@ -104,7 +104,7 @@ public class LocalTask implements TaskElement {
         extension.fireDescriptionChenged();
     }
 
-    public TaskRepository getTaskRepository() {
+    public LocalTaskRepository getTaskRepository() {
         return taskRepository;
     }
 

@@ -134,6 +134,15 @@ public class LocalTaskRepository implements TaskRepository {
         }
     }
 
+    public void deleteTask(TaskElement element) {
+        LocalTask localTask = element.getLookup().lookup(LocalTask.class);
+        assert localTask != null;
+        persistenceHandler.removeTaskElement(localTask);
+
+        localTasks.remove(localTask);
+        extension.fireTaskRemoved(element);
+    }
+
     public void synchronize() {
 
         List<TaskQuery> taskQuerys = querySupport.getTaskQuerys();

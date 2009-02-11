@@ -22,6 +22,7 @@ import javax.swing.Action;
 import org.netbeans.cubeon.local.LocalTask;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskElementActionsProvider;
+import org.openide.util.actions.SystemAction;
 
 /**
  *
@@ -35,6 +36,7 @@ public class LocalTaskActions implements TaskElementActionsProvider {
         LocalTask localTask = element.getLookup().lookup(LocalTask.class);
         if (localTask != null) {
             actions.add(new MarkAsAction(localTask));
+            actions.add(SystemAction.get(DeleteTaskAction.class));
         }
         return actions.toArray(new Action[actions.size()]);
     }

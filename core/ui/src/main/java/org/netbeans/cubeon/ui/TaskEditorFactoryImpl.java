@@ -16,12 +16,20 @@
  */
 package org.netbeans.cubeon.ui;
 
+import java.awt.EventQueue;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.netbeans.cubeon.tasks.core.api.CubeonContext;
 import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
+import org.netbeans.cubeon.tasks.core.api.TaskRepositoryHandler;
+import org.netbeans.cubeon.tasks.spi.Notifier;
+import org.netbeans.cubeon.tasks.spi.Notifier.NotifierReference;
+import org.netbeans.cubeon.tasks.spi.repository.RepositoryEventAdapter;
+import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -31,6 +39,31 @@ public class TaskEditorFactoryImpl implements TaskEditorFactory {
 
     private final List<TaskEditorTopComponent> editorTopComponents =
             new ArrayList<TaskEditorTopComponent>();
+    private final List<NotifierReference<RepositoryEventAdapter>> notifierReferences = new ArrayList<NotifierReference<RepositoryEventAdapter>>();
+
+    public TaskEditorFactoryImpl() {
+        final CubeonContext context = Lookup.getDefault().lookup(CubeonContext.class);
+
+
+        final TaskRepositoryHandler repositoryHandler = context.getLookup().lookup(TaskRepositoryHandler.class);
+        for (TaskRepository repository : repositoryHandler.getTaskRepositorys()) {
+            final Notifier<RepositoryEventAdapter> extension = repository.getNotifier();
+            NotifierReference<RepositoryEventAdapter> reference = extension.add(new RepositoryEventAdapter() {
+
+                
+                @Override
+                public void taskElementRemoved(final TaskElement element) {
+                    EventQueue.invokeLater(new Runnable() {
+
+                        public void run() {
+                           closeTask(element);
+                        }
+                    });
+                }
+            });
+            notifierReferences.add(reference);
+        }
+    }
 
     private TaskEditorTopComponent createTaskEditor(TaskElement element) {
         TaskEditorTopComponent topComponent = new TaskEditorTopComponent(this, element);
