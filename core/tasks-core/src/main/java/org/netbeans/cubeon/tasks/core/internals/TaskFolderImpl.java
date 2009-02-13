@@ -167,10 +167,12 @@ class TaskFolderImpl implements TaskFolder, TaskFolderRefreshable {
         return taskElements.contains(element);
     }
 
-    void setTaskQuery(TaskQuery query) {
+    void setAssociateTaskQuery(TaskQuery query, boolean sync) {
         deregisterEventAdapter();
         this.taskQuery = query;
-
+        if (sync) {
+            syncWithQuery();
+        }
         if (query != null) {
             registerEventAdapter();
         }
@@ -190,28 +192,41 @@ class TaskFolderImpl implements TaskFolder, TaskFolderRefreshable {
 
                 @Override
                 public void querySynchronized() {
-                    RequestProcessor.getDefault().post(new Runnable() {
-
-                        public void run() {
-                            assert taskQuery != null;
-                            TasksFileSystem fileSystem = Lookup.getDefault().lookup(TasksFileSystem.class);
-                            List<TaskElement> taskElements = taskQuery.getTaskElements();
-                            for (TaskElement taskElement : taskElements) {
-                                if (!contains(taskElement)) {
-                                    //add task
-                                    fileSystem.addTaskElement(TaskFolderImpl.this, taskElement);
-                                }
-                            }
-                            refreshNode();
-                        }
-                    });
+                    syncWithQuery();
                 }
 
                 @Override
                 public void removed() {
                     TasksFileSystem fileSystem = Lookup.getDefault().lookup(TasksFileSystem.class);
                     //remove query
-                    fileSystem.setTaskQuery(TaskFolderImpl.this, null);
+                    fileSystem.associateWithQuery(TaskFolderImpl.this, null);
+                }
+            });
+        }
+    }
+
+    private void syncWithQuery() {
+        if (taskQuery != null) {
+
+            RequestProcessor.getDefault().post(new Runnable() {
+
+                public void run() {
+                    assert taskQuery != null;
+                    TasksFileSystem fileSystem = Lookup.getDefault().lookup(TasksFileSystem.class);
+                    List<TaskElement> taskElements = taskQuery.getTaskElements();
+                    for (TaskElement taskElement : taskElements) {
+                        if (!contains(taskElement)) {
+                            //add task
+                            fileSystem.addTaskElement(TaskFolderImpl.this, taskElement);
+                        }
+                    }
+                    //remove task that not coming from query
+                    List<TaskElement> current = getTaskElements();
+                    current.removeAll(taskElements);
+                    for (TaskElement taskElement : current) {
+                        fileSystem.removeTaskElement(TaskFolderImpl.this, taskElement);
+                    }
+                    refreshNode();
                 }
             });
         }

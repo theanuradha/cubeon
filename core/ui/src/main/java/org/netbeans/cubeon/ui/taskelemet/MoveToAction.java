@@ -40,8 +40,8 @@ import org.openide.util.actions.Presenter.Popup;
  * @author Anuradha
  */
 public class MoveToAction extends AbstractAction implements Menu, Popup {
-    private static final long serialVersionUID = -4539038845128066210L;
 
+    private static final long serialVersionUID = -4539038845128066210L;
     private TaskElement element;
     private TaskFolder container;
 
@@ -64,7 +64,7 @@ public class MoveToAction extends AbstractAction implements Menu, Popup {
         List<TaskFolder> folders = fileSystem.getRootTaskFolder().getSubFolders();
         boolean folderAdded = false;
         for (TaskFolder taskFolder : folders) {
-            if (!taskFolder.contains(element)) {
+            if (taskFolder.getTaskQuery() == null && !taskFolder.contains(element)) {
                 folderAdded = true;
                 menuItem.add(new MoveAction(taskFolder));
             }
@@ -81,8 +81,8 @@ public class MoveToAction extends AbstractAction implements Menu, Popup {
     }
 
     private class MoveAction extends AbstractAction {
-        private static final long serialVersionUID = 8669114019093984604L;
 
+        private static final long serialVersionUID = 8669114019093984604L;
         private TaskFolder folder;
 
         public MoveAction(TaskFolder folder) {
@@ -110,8 +110,8 @@ public class MoveToAction extends AbstractAction implements Menu, Popup {
     }
 
     public class CreateNewFolder extends AbstractAction {
-        private static final long serialVersionUID = -7751046015275647440L;
 
+        private static final long serialVersionUID = -7751046015275647440L;
         private TaskFolder folder;
 
         public CreateNewFolder() {

@@ -315,7 +315,7 @@ class PersistenceHandler {
                 }
                 rootfTaskFolder.addNewFolder(folderImpl);
                 List<TaskElement> taskElements = new ArrayList<TaskElement>();
-                folderImpl.setTaskQuery(getTaskQuery(document, element));
+                folderImpl.setAssociateTaskQuery(getTaskQuery(document, element),false);
                 Element tasksElement = findElement(element, TAG_TASKS);
 
                 if (tasksElement != null) {

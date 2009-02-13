@@ -41,6 +41,6 @@ public class RemoveTaskQueryAction extends AbstractAction {
     public void actionPerformed(ActionEvent e) {
         TasksFileSystem fileSystem = Lookup.getDefault().lookup(TasksFileSystem.class);
 
-        fileSystem.setTaskQuery(folder, null);
+        fileSystem.associateWithQuery(folder, null);
     }
 }

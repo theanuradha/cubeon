@@ -155,11 +155,11 @@ public class DefaultFileSystem implements TasksFileSystem {
         return perantImpl.rename(name);
     }
 
-    public void setTaskQuery(TaskFolder folder, TaskQuery query) {
+    public void associateWithQuery(TaskFolder folder, TaskQuery query) {
         final TaskFolderImpl perantImpl = folder.getLookup().lookup(TaskFolderImpl.class);
         assert perantImpl != null;
         handler.setTaskQuery(perantImpl, query);
-        perantImpl.setTaskQuery(query);
+        perantImpl.setAssociateTaskQuery(query,true);
     }
 
     public TaskFolder newFolder(String folderName, String folderDescription) {
