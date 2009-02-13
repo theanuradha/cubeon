@@ -124,4 +124,9 @@ public class SynchronizeTaskAction extends NodeAction {
     public HelpCtx getHelpCtx() {
         return new HelpCtx(SynchronizeTaskAction.class);
     }
+
+    @Override
+    protected boolean asynchronous() {
+        return false;
+    }
 }

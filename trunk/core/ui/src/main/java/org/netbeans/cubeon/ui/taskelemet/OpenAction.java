@@ -43,9 +43,10 @@ public class OpenAction extends NodeAction {
     @Override
     protected void performAction(Node[] activatedNodes) {
         final TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
-
+        System.out.println("activatedNodes :"+activatedNodes);
          for (Node node : activatedNodes) {
             final TaskElement element = node.getLookup().lookup(TaskElement.class);
+             System.out.println("element:"+element);
             if (element != null) {
                EventQueue.invokeLater(new Runnable() {
 
@@ -77,4 +78,10 @@ public class OpenAction extends NodeAction {
     public HelpCtx getHelpCtx() {
         return new HelpCtx(OpenAction.class);
     }
+
+    @Override
+    protected boolean asynchronous() {
+        return false;
+    }
+
 }

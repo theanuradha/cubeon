@@ -23,12 +23,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.swing.Action;
+import javax.swing.ActionMap;
 import org.netbeans.cubeon.tasks.spi.Notifier.NotifierReference;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.query.TaskQueryEventAdapter;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskElementComparator;
 import org.openide.explorer.ExplorerManager;
+import org.openide.explorer.ExplorerUtils;
 import org.openide.explorer.view.BeanTreeView;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
@@ -59,7 +61,10 @@ final class ResultsTopComponent extends TopComponent implements ExplorerManager.
         setName(NbBundle.getMessage(ResultsTopComponent.class, "CTL_ResultsTopComponent"));
         setToolTipText(NbBundle.getMessage(ResultsTopComponent.class, "HINT_ResultsTopComponent"));
         setIcon(Utilities.loadImage(ICON_PATH, true));
+        ActionMap actionMap = getActionMap();
 
+
+        associateLookup(ExplorerUtils.createLookup(explorerManager, actionMap));
     }
 
     /** This method is called from within the constructor to
@@ -220,10 +225,10 @@ final class ResultsTopComponent extends TopComponent implements ExplorerManager.
         }
     }
 
-     void loadQueries(Children array, final ResultQueryNode queryNode) {
+    void loadQueries(Children array, final ResultQueryNode queryNode) {
 
         List<TaskElement> elements = taskQuery.getTaskElements();
-        
+
         for (TaskElementComparator comparator : Lookup.getDefault().
                 lookupAll(TaskElementComparator.class)) {
             if (comparator.isEnable()) {
