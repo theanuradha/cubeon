@@ -43,7 +43,7 @@ public interface TasksFileSystem {
 
     boolean rename(TaskFolder folder, String name, String description);
 
-    void setTaskQuery(TaskFolder folder, TaskQuery query);
+    void associateWithQuery(TaskFolder folder, TaskQuery query);
 
     public TaskFolder newFolder(String folderName, String folderDescription);
 

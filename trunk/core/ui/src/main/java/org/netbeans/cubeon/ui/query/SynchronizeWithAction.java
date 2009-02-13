@@ -51,6 +51,8 @@ public class SynchronizeWithAction extends AbstractAction implements Menu, Popup
         JMenu menuItem = new JMenu(this);
         TasksFileSystem fileSystem = Lookup.getDefault().lookup(TasksFileSystem.class);
         List<TaskFolder> folders = fileSystem.getRootTaskFolder().getSubFolders();
+        //remove system folder
+        folders.remove(fileSystem.getDefaultFolder());
         for (TaskFolder taskFolder : folders) {
             if (!query.equals(taskFolder.getTaskQuery())) {
                 menuItem.add(new Link(taskFolder));
@@ -76,16 +78,7 @@ public class SynchronizeWithAction extends AbstractAction implements Menu, Popup
 
         public void actionPerformed(ActionEvent e) {
             TasksFileSystem fileSystem = Lookup.getDefault().lookup(TasksFileSystem.class);
-            fileSystem.setTaskQuery(folder, query);
-            List<TaskElement> taskElements = query.getTaskElements();
-            for (TaskElement taskElement : taskElements) {
-                if (!folder.contains(taskElement)) {
-                    fileSystem.addTaskElement(folder, taskElement);
-
-                }
-            }
-            TaskFolderRefreshable newTfr = folder.getLookup().lookup(TaskFolderRefreshable.class);
-            newTfr.refreshNode();
+            fileSystem.associateWithQuery(folder, query);
         }
     }
 }
