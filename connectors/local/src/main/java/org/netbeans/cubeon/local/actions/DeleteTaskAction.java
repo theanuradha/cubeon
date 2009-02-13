@@ -19,12 +19,10 @@ package org.netbeans.cubeon.local.actions;
 import java.awt.EventQueue;
 import org.netbeans.cubeon.local.LocalTask;
 import org.netbeans.cubeon.local.repository.LocalTaskRepository;
-import org.netbeans.cubeon.tasks.core.api.TasksFileSystem;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.nodes.Node;
 import org.openide.util.HelpCtx;
-import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.actions.NodeAction;
 
@@ -47,7 +45,7 @@ public class DeleteTaskAction extends NodeAction {
                 new NotifyDescriptor.Confirmation(
                 NbBundle.getMessage(DeleteTaskAction.class,
                 "LBL_Delete_From_Repository_Dec",
-                activatedNodes.length>1?"s":""),
+                activatedNodes.length > 1 ? "s" : ""),
                 NotifyDescriptor.YES_NO_OPTION);
         Object notify = DialogDisplayer.getDefault().notify(d);
 
@@ -86,5 +84,10 @@ public class DeleteTaskAction extends NodeAction {
     @Override
     public HelpCtx getHelpCtx() {
         return new HelpCtx(DeleteTaskAction.class);
+    }
+
+    @Override
+    protected boolean asynchronous() {
+        return false;
     }
 }

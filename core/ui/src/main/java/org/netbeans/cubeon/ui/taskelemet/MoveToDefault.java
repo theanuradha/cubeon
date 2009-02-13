@@ -81,4 +81,9 @@ public class MoveToDefault extends NodeAction {
     public HelpCtx getHelpCtx() {
         return new HelpCtx(MoveToDefault.class);
     }
+
+    @Override
+    protected boolean asynchronous() {
+        return false;
+    }
 }

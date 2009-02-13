@@ -31,20 +31,17 @@ import org.openide.util.actions.NodeAction;
  */
 public class OpenInBrowserAction extends NodeAction {
 
-   
     private OpenInBrowserAction() {
-      
+
         putValue(NAME, NbBundle.getMessage(OpenInBrowserAction.class, "LBL_Open_with_Browser"));
     }
 
-  
-
     @Override
     protected void performAction(Node[] activatedNodes) {
-         for (Node node : activatedNodes) {
+        for (Node node : activatedNodes) {
             TaskElement element = node.getLookup().lookup(TaskElement.class);
             if (element != null && element.getUrl() != null) {
-                 URLDisplayer.getDefault().showURL(element.getUrl());
+                URLDisplayer.getDefault().showURL(element.getUrl());
             }
         }
     }
@@ -68,5 +65,10 @@ public class OpenInBrowserAction extends NodeAction {
     @Override
     public HelpCtx getHelpCtx() {
         return new HelpCtx(OpenInBrowserAction.class);
+    }
+
+    @Override
+    protected boolean asynchronous() {
+        return false;
     }
 }
