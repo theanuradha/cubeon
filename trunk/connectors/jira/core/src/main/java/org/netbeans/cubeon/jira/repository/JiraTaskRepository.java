@@ -237,8 +237,13 @@ public class JiraTaskRepository implements TaskRepository {
 
     public void remove(JiraTask jiraTask) {
         handler.removeTaskElement(jiraTask);
-        cache.removeTaskElement(jiraTask);
+        //issue-26 check if loacl as local task not on cache
+        if (!jiraTask.isLocal()) {
+            cache.removeTaskElement(jiraTask);
+        }
         extension.fireTaskRemoved(jiraTask);
+        //make sure to remove from outgoing resultset
+        querySupport.getOutgoingQuery().removeTaskId(jiraTask.getId());
     }
 
     public void cache(JiraRemoteTask remoteTask) {
