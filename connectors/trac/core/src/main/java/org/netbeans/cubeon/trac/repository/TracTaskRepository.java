@@ -183,6 +183,8 @@ public class TracTaskRepository implements TaskRepository {
         if (!tracTask.isLocal()) {
             cache.removeTaskElement(tracTask);
         }
+        //make sure to remove from outgoing resultset
+        querySupport.getOutgoingQuery().removeTaskId(tracTask.getId());
         extension.fireTaskRemoved(tracTask);
     }
 
