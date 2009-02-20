@@ -81,8 +81,6 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
         this.componentGroup = componentGroup;
         initComponents();
         setGroupView(groupView);
-        foldButton.setIcon(new javax.swing.ImageIcon(IMAGE_UNSELECTED));
-        foldButton.setSelectedIcon(new javax.swing.ImageIcon(IMAGE_SELECTED));
         initGroupInfo();
         componentGroup.addChangeListener(new ChangeListener() {
 
@@ -142,6 +140,7 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
         fillerEnd.setForeground(theme.getFoldLineColor());
         fillerLine.setVisible(false);
         fillerEnd.setVisible(false);
+        foldButton.setVisible(componentGroup.isFoldable());
         setBackground(theme.getDocumentBackgroundColor());
         titlePanel.setBackground(theme.getSectionHeaderColor());
         actionPanel.setBackground(theme.getDocumentBackgroundColor());
@@ -164,13 +163,14 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(2, 0, 0, 0);
-        fillerLine.setVisible(true);
-        fillerEnd.setVisible(true);
+        fillerLine.setVisible(componentGroup.isFoldable());
+        fillerEnd.setVisible(componentGroup.isFoldable());
         innerPanel.addFocusListener(sectionFocusListener);
         add(innerPanel, gridBagConstraints);
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
+                if(componentGroup.isFoldable())
                 ComponentGroupPanel.this.scrollRectToVisible(new Rectangle(10, ComponentGroupPanel.this.getHeight()));
             }
         });
@@ -184,14 +184,16 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
     }
 
     protected void closeInnerPanel() {
-        summaryLabel.setVisible(true);
-        if (innerPanel != null) {
-            innerPanel.removeFocusListener(sectionFocusListener);
-            remove(innerPanel);
-            innerPanel = null;
+        if (componentGroup.isFoldable()) {
+            summaryLabel.setVisible(true);
+            if (innerPanel != null) {
+                innerPanel.removeFocusListener(sectionFocusListener);
+                remove(innerPanel);
+                innerPanel = null;
+            }
+            fillerLine.setVisible(false);
+            fillerEnd.setVisible(false);
         }
-        fillerLine.setVisible(false);
-        fillerEnd.setVisible(false);
     }
 
     public String getTitle() {
@@ -354,6 +356,11 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
         Mnemonics.setLocalizedText(titleButton, componentGroup.getName());
         titleButton.setToolTipText(componentGroup.getDescription());
         summaryLabel.setText(componentGroup.getSummary());
+        if (componentGroup.isFoldable()) {
+            foldButton.setIcon(new javax.swing.ImageIcon(IMAGE_UNSELECTED));
+            foldButton.setSelectedIcon(new javax.swing.ImageIcon(IMAGE_SELECTED));
+        }
+        
     }
 
     private void titleButtonActionPerformed(java.awt.event.ActionEvent evt) {

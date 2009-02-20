@@ -30,7 +30,7 @@ import org.openide.util.Lookup;
 public class ContainerGroup extends Group {
 
     private List<Group> groups = new ArrayList<Group>();
-    boolean foldable = true;
+    
 
     public ContainerGroup(String name, String description) {
         super(name, description);
@@ -62,13 +62,7 @@ public class ContainerGroup extends Group {
         return new ArrayList<Group>(groups);
     }
 
-    public boolean isFoldable() {
-        return foldable;
-    }
 
-    public void setFoldable(boolean foldable) {
-        this.foldable = foldable;
-    }
 
     @Override
     public GroupPanel createGroupPanel(Lookup lookup) {

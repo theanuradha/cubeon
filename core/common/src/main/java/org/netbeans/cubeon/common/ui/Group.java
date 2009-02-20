@@ -33,6 +33,7 @@ public abstract class Group {
     private String name;
     private String description;
     private String summary;
+    private boolean foldable = true;
     private boolean open = true;
     private Action[] haeaderActions = new Action[0];
     private Action[] toolbarActions = new Action[0];
@@ -114,6 +115,14 @@ public abstract class Group {
         }
     }
 
+    public boolean isFoldable() {
+        return foldable;
+    }
+
+    public void setFoldable(boolean foldable) {
+        this.foldable = foldable;
+    }
+
     private void fireChangeEvent() {
         Iterator<ChangeListener> it;
         synchronized (listeners) {
@@ -124,4 +133,6 @@ public abstract class Group {
             it.next().stateChanged(ev);
         }
     }
+
+    
 }
