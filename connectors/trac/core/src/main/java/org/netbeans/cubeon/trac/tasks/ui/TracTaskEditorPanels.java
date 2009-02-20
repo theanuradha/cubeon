@@ -68,7 +68,7 @@ public class TracTaskEditorPanels extends javax.swing.JPanel {
     private static final String EMPTY = "";
     private final OpenInBrowserTaskAction openInBrowserTaskAction;
     private final SubmitTaskAction submitTaskAction;
-    private final TracCommentsEditor commentsEditor;
+   
     final DocumentListener documentListener = new DocumentListener() {
 
         public void insertUpdate(DocumentEvent arg0) {
@@ -136,7 +136,7 @@ public class TracTaskEditorPanels extends javax.swing.JPanel {
     public TracTaskEditorPanels(TracTask task) {
         this.task = task;
         initComponents();
-        commentsEditor = new TracCommentsEditor(this);
+       
         openInBrowserTaskAction = new OpenInBrowserTaskAction(task);
         submitTaskAction = new SubmitTaskAction(task);
 
@@ -169,8 +169,6 @@ public class TracTaskEditorPanels extends javax.swing.JPanel {
         cmbActions.removeItemListener(actionitemListener);
         cmbResolution.removeItemListener(itemListener);
 
-
-        commentsEditor.refresh();
 
         lblReportedBy.setText(task.get(REPORTER));
         txtAssignee.setText(task.get(OWNER));
@@ -422,9 +420,7 @@ public class TracTaskEditorPanels extends javax.swing.JPanel {
         }
     }
 
-    public TracCommentsEditor getCommentsEditor() {
-        return commentsEditor;
-    }
+
 
     private void processOperation(Operation operation) {
         //TODO Extranlze process Operations to support any operation

@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 import javax.swing.Action;
 import javax.swing.JComponent;
+import javax.swing.JEditorPane;
 import javax.swing.event.ChangeListener;
 import org.netbeans.cubeon.common.ui.ComponentGroup;
 import org.netbeans.cubeon.common.ui.ContainerGroup;
@@ -33,7 +34,7 @@ import org.netbeans.cubeon.trac.api.TicketChange;
 import org.netbeans.cubeon.trac.api.TicketChange.FieldChange;
 import org.netbeans.cubeon.trac.api.TracKeys;
 import org.netbeans.cubeon.trac.tasks.ui.TextEditorUI;
-import org.netbeans.cubeon.trac.tasks.ui.TracCommentsEditor;
+
 import org.netbeans.cubeon.trac.tasks.ui.TracTaskEditorPanels;
 import org.openide.util.NbBundle;
 import static org.openide.util.NbBundle.*;
@@ -77,7 +78,7 @@ public class TracAttributeHandler implements EditorAttributeHandler {
         actionsGroup.setOpen(false);
         actionsGroup.setComponent(panels.getActionAndPeoplePanel());
         //comments
-        commentsGroup=new ContainerGroup(getMessage(TracAttributeHandler.class, "LBL_Comments"),
+        commentsGroup = new ContainerGroup(getMessage(TracAttributeHandler.class, "LBL_Comments"),
                 NbBundle.getMessage(TracAttributeHandler.class, "LBL_Comments_Dec"));
         commentsGroup.setOpen(false);
         refreshComments(commentsGroup);
@@ -86,7 +87,7 @@ public class TracAttributeHandler implements EditorAttributeHandler {
                 getMessage(TracAttributeHandler.class, "LBL_New_Comment_Dec"), newCommentUI);
         //open new comment depende on user alrady have comment
         newCommentGroup.setOpen(task.getNewComment() != null && task.getNewComment().length() != 0);
-        editorSupport = new TaskEditorSupport(descriptionGroup, attributesGroup, actionsGroup,commentsGroup, newCommentGroup);
+        editorSupport = new TaskEditorSupport(descriptionGroup, attributesGroup, actionsGroup, commentsGroup, newCommentGroup);
         editor = editorSupport.createEditor();
         editorSupport.setActive(descriptionGroup);
         refresh();
@@ -123,7 +124,7 @@ public class TracAttributeHandler implements EditorAttributeHandler {
     public JComponent[] getComponent() {
         JComponent component = editor.getComponent();
         component.setName(getMessage(TracAttributeHandler.class, "LBL_Primary_Details"));
-        return new JComponent[]{component, panels.getCommentsEditor()};
+        return new JComponent[]{component};
     }
 
     public void refresh() {
@@ -172,29 +173,36 @@ public class TracAttributeHandler implements EditorAttributeHandler {
         commentsGroup.clearGroups();
         final DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();
         List<TicketChange> ticketChanges = task.getTicketChanges();
-        commentsGroup.setSummary("("+ticketChanges.size()+")");
+        commentsGroup.setSummary("(" + ticketChanges.size() + ")");
         for (TicketChange ticketChange : ticketChanges) {
             StringBuffer buffer = new StringBuffer();
-             buffer.append(dateFormat.format(new Date(ticketChange.getTime()))).append(" By ");
+            buffer.append(dateFormat.format(new Date(ticketChange.getTime()))).append(" By ");
             buffer.append(ticketChange.getAuthor());
 
-            
-            ComponentGroup cg=new ComponentGroup(buffer.toString(),buffer.toString());
-            TextEditorUI editorUI=new TextEditorUI();
-            editorUI.setEditable(false);
-            editorUI.setText(buildChangesSet(ticketChange));
-            cg.setComponent(editorUI);
+
+            ComponentGroup cg = new ComponentGroup(buffer.toString(), buffer.toString());
+            JEditorPane editorPane = new JEditorPane() {
+
+                @Override
+                public void setText(String t) {
+                    super.setText(t);
+                    setCaretPosition(0);
+                }
+            };
+            editorPane.setEditable(false);
+            editorPane.setText(buildChangesSet(ticketChange));
+            cg.setComponent(editorPane);
             cg.setOpen(false);
             commentsGroup.addGroup(cg);
         }
         commentsGroup.refresh();
     }
 
-       private String buildChangesSet(TicketChange comment) {
+    private String buildChangesSet(TicketChange comment) {
         StringBuffer buffer = new StringBuffer();
         buffer.append(comment.getComment()).append("\n");
         if (!comment.getFieldChanges().isEmpty()) {
-            buffer.append(NbBundle.getMessage(TracCommentsEditor.class, "LBL_Field_Changes"));
+            buffer.append(NbBundle.getMessage(TracTaskEditorPanels.class, "LBL_Field_Changes"));
             List<FieldChange> fieldChanges = comment.getFieldChanges();
             for (FieldChange fieldChange : fieldChanges) {
                 buffer.append("\n").append(fieldChange.getField()).append(" : ");
