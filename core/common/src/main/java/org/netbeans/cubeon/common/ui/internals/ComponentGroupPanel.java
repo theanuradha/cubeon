@@ -55,7 +55,7 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
     private GroupView groupView;
     private boolean active;
     private JComponent innerPanel;
-    private ComponentGroup componentGroup;
+    private Group componentGroup;
     private int index;
     private final Image IMAGE_UNSELECTED = ImageUtilities.loadImage("org/netbeans/cubeon/common/ui/internals/plus.gif"); // NOI18N
     private final Image IMAGE_SELECTED = ImageUtilities.loadImage("org/netbeans/cubeon/common/ui/internals/minus.gif"); // NOI18N
@@ -67,15 +67,15 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
         }
     };
 
-    public ComponentGroupPanel(GroupView groupView, ComponentGroup componentGroup) {
+    public ComponentGroupPanel(GroupView groupView, Group componentGroup) {
         this(groupView, componentGroup, false, false);
     }
 
-    public ComponentGroupPanel(GroupView groupView, ComponentGroup componentGroup, boolean open) {
+    public ComponentGroupPanel(GroupView groupView, Group componentGroup, boolean open) {
         this(groupView, componentGroup, open, false);
     }
 
-    public ComponentGroupPanel(GroupView groupView, final ComponentGroup componentGroup,
+    public ComponentGroupPanel(GroupView groupView, final Group componentGroup,
             boolean autoExpand, boolean addFocusListenerToButton) {
 
         this.componentGroup = componentGroup;

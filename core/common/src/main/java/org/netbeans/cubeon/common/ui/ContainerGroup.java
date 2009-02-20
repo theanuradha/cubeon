@@ -19,7 +19,8 @@ package org.netbeans.cubeon.common.ui;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.netbeans.cubeon.common.ui.internals.ContainerGroupPanel;
+import javax.swing.JComponent;
+import org.netbeans.cubeon.common.ui.internals.ComponentGroupPanel;
 import org.netbeans.cubeon.common.ui.internals.GroupView;
 import org.openide.util.Lookup;
 
@@ -30,7 +31,6 @@ import org.openide.util.Lookup;
 public class ContainerGroup extends Group {
 
     private List<Group> groups = new ArrayList<Group>();
-    
 
     public ContainerGroup(String name, String description) {
         super(name, description);
@@ -62,15 +62,22 @@ public class ContainerGroup extends Group {
         return new ArrayList<Group>(groups);
     }
 
-
+    public void clearGroups() {
+        groups.clear();
+    }
 
     @Override
     public GroupPanel createGroupPanel(Lookup lookup) {
-        
+
         GroupView groupView = lookup.lookup(GroupView.class);
         assert groupView != null;
-        ContainerGroupPanel containerGroupPanel = new ContainerGroupPanel(groupView,this);
-        
-        return containerGroupPanel;
+        ComponentGroupPanel componentGroupPanel = new ComponentGroupPanel(groupView, this);
+
+        return componentGroupPanel;
+    }
+
+    @Override
+    public JComponent getComponent() {
+        return  new GroupView(false,groups.toArray(new Group [groups.size()]));
     }
 }

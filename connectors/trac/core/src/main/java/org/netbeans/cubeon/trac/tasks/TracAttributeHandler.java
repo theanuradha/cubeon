@@ -16,18 +16,24 @@
  */
 package org.netbeans.cubeon.trac.tasks;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.event.ChangeListener;
 import org.netbeans.cubeon.common.ui.ComponentGroup;
+import org.netbeans.cubeon.common.ui.ContainerGroup;
 import org.netbeans.cubeon.common.ui.TaskEditor;
 import org.netbeans.cubeon.common.ui.TaskEditorSupport;
 import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider.EditorAttributeHandler;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
+import org.netbeans.cubeon.trac.api.TicketChange;
+import org.netbeans.cubeon.trac.api.TicketChange.FieldChange;
 import org.netbeans.cubeon.trac.api.TracKeys;
 import org.netbeans.cubeon.trac.tasks.ui.TextEditorUI;
+import org.netbeans.cubeon.trac.tasks.ui.TracCommentsEditor;
 import org.netbeans.cubeon.trac.tasks.ui.TracTaskEditorPanels;
 import org.openide.util.NbBundle;
 import static org.openide.util.NbBundle.*;
@@ -45,6 +51,7 @@ public class TracAttributeHandler implements EditorAttributeHandler {
     private ComponentGroup attributesGroup;
     private ComponentGroup actionsGroup;
     private ComponentGroup newCommentGroup;
+    private ContainerGroup commentsGroup;
     private final TracTaskEditorPanels panels;
     private final TextEditorUI descriptionUI = new TextEditorUI();
     private final TextEditorUI newCommentUI = new TextEditorUI();
@@ -69,12 +76,17 @@ public class TracAttributeHandler implements EditorAttributeHandler {
                 NbBundle.getMessage(TracAttributeHandler.class, "LBL_Actions_Dec"));
         actionsGroup.setOpen(false);
         actionsGroup.setComponent(panels.getActionAndPeoplePanel());
+        //comments
+        commentsGroup=new ContainerGroup(getMessage(TracAttributeHandler.class, "LBL_Comments"),
+                NbBundle.getMessage(TracAttributeHandler.class, "LBL_Comments_Dec"));
+        commentsGroup.setOpen(false);
+        refreshComments(commentsGroup);
         //new comment group
         newCommentGroup = new ComponentGroup(getMessage(TracAttributeHandler.class, "LBL_New_Comment"),
                 getMessage(TracAttributeHandler.class, "LBL_New_Comment_Dec"), newCommentUI);
         //open new comment depende on user alrady have comment
         newCommentGroup.setOpen(task.getNewComment() != null && task.getNewComment().length() != 0);
-        editorSupport = new TaskEditorSupport(descriptionGroup, attributesGroup, actionsGroup, newCommentGroup);
+        editorSupport = new TaskEditorSupport(descriptionGroup, attributesGroup, actionsGroup,commentsGroup, newCommentGroup);
         editor = editorSupport.createEditor();
         editorSupport.setActive(descriptionGroup);
         refresh();
@@ -154,5 +166,42 @@ public class TracAttributeHandler implements EditorAttributeHandler {
         task.setNewComment(newCommentUI.getText().trim());
         task.getExtension().fireStateChenged();
         return task;
+    }
+
+    private void refreshComments(ContainerGroup commentsGroup) {
+        commentsGroup.clearGroups();
+        final DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();
+        List<TicketChange> ticketChanges = task.getTicketChanges();
+        commentsGroup.setSummary("("+ticketChanges.size()+")");
+        for (TicketChange ticketChange : ticketChanges) {
+            StringBuffer buffer = new StringBuffer();
+             buffer.append(dateFormat.format(new Date(ticketChange.getTime()))).append(" By ");
+            buffer.append(ticketChange.getAuthor());
+
+            
+            ComponentGroup cg=new ComponentGroup(buffer.toString(),buffer.toString());
+            TextEditorUI editorUI=new TextEditorUI();
+            editorUI.setEditable(false);
+            editorUI.setText(buildChangesSet(ticketChange));
+            cg.setComponent(editorUI);
+            cg.setOpen(false);
+            commentsGroup.addGroup(cg);
+        }
+        commentsGroup.refresh();
+    }
+
+       private String buildChangesSet(TicketChange comment) {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(comment.getComment()).append("\n");
+        if (!comment.getFieldChanges().isEmpty()) {
+            buffer.append(NbBundle.getMessage(TracCommentsEditor.class, "LBL_Field_Changes"));
+            List<FieldChange> fieldChanges = comment.getFieldChanges();
+            for (FieldChange fieldChange : fieldChanges) {
+                buffer.append("\n").append(fieldChange.getField()).append(" : ");
+                buffer.append(fieldChange.getOldValue()).append(" => ");
+                buffer.append(fieldChange.getNewValuve());
+            }
+        }
+        return buffer.toString();
     }
 }

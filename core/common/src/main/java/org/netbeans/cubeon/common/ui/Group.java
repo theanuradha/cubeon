@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import javax.swing.Action;
+import javax.swing.JComponent;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.openide.util.Lookup;
@@ -46,6 +47,8 @@ public abstract class Group {
         this.name = name;
         this.description = description;
     }
+
+    public abstract JComponent getComponent() ;
 
     public String getDescription() {
         return description;
@@ -133,6 +136,6 @@ public abstract class Group {
             it.next().stateChanged(ev);
         }
     }
-
+   public void refresh(){}
     
 }

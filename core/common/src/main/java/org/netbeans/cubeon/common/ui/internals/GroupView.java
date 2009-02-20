@@ -21,6 +21,7 @@ import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import org.netbeans.cubeon.common.ui.Group;
 import org.openide.util.Lookup;
@@ -34,7 +35,6 @@ import org.openide.util.lookup.Lookups;
 public class GroupView extends JPanel {
 
     private JPanel scrollPanel, filler;
-    private javax.swing.JScrollPane scrollPane;
     private int sectionCount;
     private GroupPanel activePanel;
     private Group[] groups;
@@ -43,9 +43,14 @@ public class GroupView extends JPanel {
 
     public GroupView(Group... groups) {
 
+        this(true, groups);
+    }
+
+    public GroupView(boolean addscroll, Group... groups) {
+
         setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
-        initialize();
+        initialize(addscroll);
         refreshGroups(groups);
     }
 
@@ -61,19 +66,24 @@ public class GroupView extends JPanel {
         }
     }
 
-    void initialize() {
+    void initialize(boolean addscroll) {
         sectionCount = 0;
         setLayout(new java.awt.BorderLayout());
         scrollPanel = new JPanel();
         scrollPanel.setLayout(new java.awt.GridBagLayout());
-        scrollPane = new javax.swing.JScrollPane();
-        scrollPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        scrollPane.setViewportView(scrollPanel);
-        scrollPane.getVerticalScrollBar().setUnitIncrement(15);
-        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        if (addscroll) {
+            JScrollPane scrollPane = new javax.swing.JScrollPane();
+            scrollPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+            scrollPane.setViewportView(scrollPanel);
+            scrollPane.getVerticalScrollBar().setUnitIncrement(15);
+            scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+            add(scrollPane, BorderLayout.CENTER);
+        } else {
+            add(scrollPanel, BorderLayout.CENTER);
+        }
         filler = new JPanel();
         filler.setBackground(theme.getDocumentBackgroundColor());
-        add(scrollPane, BorderLayout.CENTER);
+
 
     }
 
