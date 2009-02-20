@@ -48,7 +48,7 @@ public abstract class Group {
         this.description = description;
     }
 
-    public abstract JComponent getComponent() ;
+    public abstract JComponent getComponent();
 
     public String getDescription() {
         return description;
@@ -56,7 +56,7 @@ public abstract class Group {
 
     public void setDescription(String description) {
         this.description = description;
-        fireChangeEvent();
+        fireChangeEvent("DESCRIPTION");
     }
 
     public String getName() {
@@ -65,7 +65,7 @@ public abstract class Group {
 
     public void setName(String name) {
         this.name = name;
-        fireChangeEvent();
+        fireChangeEvent("NAME");
     }
 
     public boolean isOpen() {
@@ -74,7 +74,7 @@ public abstract class Group {
 
     public void setOpen(boolean open) {
         this.open = open;
-        fireChangeEvent();
+        fireChangeEvent("OPEN");
     }
 
     public abstract GroupPanel createGroupPanel(Lookup lookup);
@@ -85,7 +85,7 @@ public abstract class Group {
 
     public void setHaeaderActions(Action[] haeaderActions) {
         this.haeaderActions = haeaderActions;
-        fireChangeEvent();
+        fireChangeEvent("HEADER_ACTIONS");
     }
 
     public Action[] getToolbarActions() {
@@ -94,7 +94,7 @@ public abstract class Group {
 
     public void setToolbarActions(Action[] toolbarActions) {
         this.toolbarActions = toolbarActions;
-        fireChangeEvent();
+        fireChangeEvent("TOOLBAR_ACTION");
     }
 
     public String getSummary() {
@@ -103,7 +103,7 @@ public abstract class Group {
 
     public void setSummary(String summary) {
         this.summary = summary;
-        fireChangeEvent();
+        fireChangeEvent("SUMMARY");
     }
 
     public final void addChangeListener(ChangeListener l) {
@@ -126,16 +126,19 @@ public abstract class Group {
         this.foldable = foldable;
     }
 
-    private void fireChangeEvent() {
+    private void fireChangeEvent(String change) {
         Iterator<ChangeListener> it;
         synchronized (listeners) {
             it = new HashSet<ChangeListener>(listeners).iterator();
         }
-        ChangeEvent ev = new ChangeEvent(this);
+        ChangeEvent ev = new ChangeEvent(change);
+
         while (it.hasNext()) {
             it.next().stateChanged(ev);
         }
     }
-   public void refresh(){}
-    
+
+    public void refresh() {
+        fireChangeEvent("REFRESH");
+    }
 }

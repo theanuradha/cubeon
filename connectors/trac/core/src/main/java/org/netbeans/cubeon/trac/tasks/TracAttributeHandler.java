@@ -81,7 +81,6 @@ public class TracAttributeHandler implements EditorAttributeHandler {
         commentsGroup = new ContainerGroup(getMessage(TracAttributeHandler.class, "LBL_Comments"),
                 NbBundle.getMessage(TracAttributeHandler.class, "LBL_Comments_Dec"));
         commentsGroup.setOpen(false);
-        refreshComments(commentsGroup);
         //new comment group
         newCommentGroup = new ComponentGroup(getMessage(TracAttributeHandler.class, "LBL_New_Comment"),
                 getMessage(TracAttributeHandler.class, "LBL_New_Comment_Dec"), newCommentUI);
@@ -144,6 +143,7 @@ public class TracAttributeHandler implements EditorAttributeHandler {
         descriptionUI.setEditable(!task.isLocal());
         newCommentUI.getDocument().addDocumentListener(panels.getDocumentListener());
         panels.refresh();
+        refreshComments(commentsGroup);
     }
 
     private void loadDates() {

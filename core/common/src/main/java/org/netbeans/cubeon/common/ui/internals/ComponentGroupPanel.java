@@ -36,7 +36,6 @@ import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.MouseInputAdapter;
-import org.netbeans.cubeon.common.ui.ComponentGroup;
 import org.netbeans.cubeon.common.ui.Group;
 
 
@@ -55,7 +54,7 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
     private GroupView groupView;
     private boolean active;
     private JComponent innerPanel;
-    private Group componentGroup;
+    private Group group;
     private int index;
     private final Image IMAGE_UNSELECTED = ImageUtilities.loadImage("org/netbeans/cubeon/common/ui/internals/plus.gif"); // NOI18N
     private final Image IMAGE_SELECTED = ImageUtilities.loadImage("org/netbeans/cubeon/common/ui/internals/minus.gif"); // NOI18N
@@ -78,14 +77,14 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
     public ComponentGroupPanel(GroupView groupView, final Group componentGroup,
             boolean autoExpand, boolean addFocusListenerToButton) {
 
-        this.componentGroup = componentGroup;
+        this.group = componentGroup;
         initComponents();
         setGroupView(groupView);
         initGroupInfo();
         componentGroup.addChangeListener(new ChangeListener() {
 
             public void stateChanged(ChangeEvent e) {
-                initGroupInfo();
+                refreshGroupInfo(e);
             }
         });
         titleButton.addMouseListener(new org.openide.awt.MouseUtils.PopupMouseAdapter() {
@@ -140,7 +139,7 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
         fillerEnd.setForeground(theme.getFoldLineColor());
         fillerLine.setVisible(false);
         fillerEnd.setVisible(false);
-        foldButton.setVisible(componentGroup.isFoldable());
+        foldButton.setVisible(group.isFoldable());
         setBackground(theme.getDocumentBackgroundColor());
         titlePanel.setBackground(theme.getSectionHeaderColor());
         actionPanel.setBackground(theme.getDocumentBackgroundColor());
@@ -152,10 +151,9 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
 
     protected void openInnerPanel() {
         summaryLabel.setVisible(false);
-        if (innerPanel != null) {
-            return;
+        if (innerPanel == null) {
+            innerPanel = createInnerpanel();
         }
-        innerPanel = createInnerpanel();
         java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
@@ -163,15 +161,16 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(2, 0, 0, 0);
-        fillerLine.setVisible(componentGroup.isFoldable());
-        fillerEnd.setVisible(componentGroup.isFoldable());
+        fillerLine.setVisible(group.isFoldable());
+        fillerEnd.setVisible(group.isFoldable());
         innerPanel.addFocusListener(sectionFocusListener);
         add(innerPanel, gridBagConstraints);
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
-                if(componentGroup.isFoldable())
-                ComponentGroupPanel.this.scrollRectToVisible(new Rectangle(10, ComponentGroupPanel.this.getHeight()));
+                if (group.isFoldable()) {
+                    ComponentGroupPanel.this.scrollRectToVisible(new Rectangle(10, ComponentGroupPanel.this.getHeight()));
+                }
             }
         });
         assert groupView != null : "to active ContainerGroupPanel must be added to GroupView";
@@ -180,11 +179,11 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
     }
 
     protected JComponent createInnerpanel() {
-        return componentGroup.getComponent();
+        return group.getComponent();
     }
 
     protected void closeInnerPanel() {
-        if (componentGroup.isFoldable()) {
+        if (group.isFoldable()) {
             summaryLabel.setVisible(true);
             if (innerPanel != null) {
                 innerPanel.removeFocusListener(sectionFocusListener);
@@ -197,11 +196,11 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
     }
 
     public String getTitle() {
-        return componentGroup.getName();
+        return group.getName();
     }
 
     public Group getGroup() {
-        return componentGroup;
+        return group;
     }
 
     /**
@@ -252,12 +251,6 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
         return active;
     }
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
-     */
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
@@ -337,7 +330,7 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
         titleButton.addActionListener(new java.awt.event.ActionListener() {
 
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                titleButtonActionPerformed(evt);
+               changeState();
             }
         });
         titlePanel.add(titleButton, java.awt.BorderLayout.WEST);
@@ -350,20 +343,40 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         add(titlePanel, gridBagConstraints);
-    }// </editor-fold>
+    }
 
     private void initGroupInfo() {
-        Mnemonics.setLocalizedText(titleButton, componentGroup.getName());
-        titleButton.setToolTipText(componentGroup.getDescription());
-        summaryLabel.setText(componentGroup.getSummary());
-        if (componentGroup.isFoldable()) {
+        Mnemonics.setLocalizedText(titleButton, group.getName());
+        titleButton.setToolTipText(group.getDescription());
+        summaryLabel.setText(group.getSummary());
+        if (group.isFoldable()) {
             foldButton.setIcon(new javax.swing.ImageIcon(IMAGE_UNSELECTED));
             foldButton.setSelectedIcon(new javax.swing.ImageIcon(IMAGE_SELECTED));
         }
-        
+
     }
 
-    private void titleButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    void refreshGroupInfo(ChangeEvent e) {
+        if ("NAME".equals(e.getSource())) {
+            Mnemonics.setLocalizedText(titleButton, group.getName());
+        } else if ("DESCRIPTION".equals(e.getSource())) {
+            titleButton.setToolTipText(group.getDescription());
+        } else if ("SUMMARY".equals(e.getSource())) {
+            summaryLabel.setText(group.getSummary());
+        } else if ("REFRESH".equals(e.getSource())) {
+            if (innerPanel != null) {
+                remove(innerPanel);
+                innerPanel = null;
+                validateState();
+            }
+        }
+        if (group.isFoldable()) {
+            foldButton.setIcon(new javax.swing.ImageIcon(IMAGE_UNSELECTED));
+            foldButton.setSelectedIcon(new javax.swing.ImageIcon(IMAGE_SELECTED));
+        }
+    }
+
+    private void changeState() {
         if (!foldButton.isSelected()) {
             openInnerPanel();
             foldButton.setSelected(true);
@@ -374,6 +387,22 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
             }
         }
         if (!isActive()) {
+            setActive(true);
+        }
+
+    }
+
+    private void validateState() {
+        if (foldButton.isSelected()) {
+            openInnerPanel();
+            foldButton.setSelected(true);
+        } else {
+
+            closeInnerPanel();
+            foldButton.setSelected(false);
+
+        }
+        if (isActive()) {
             setActive(true);
         }
 
