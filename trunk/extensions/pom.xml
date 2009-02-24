@@ -15,6 +15,7 @@
         <module>context-task-link</module>
         <module>java-bridge</module>
         <module>analyzer-spi</module>
+        <module>debugger-bridge</module>
     </modules>
     <build>
         <pluginManagement>

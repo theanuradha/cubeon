@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module-Install: org/netbeans/cubeon/debugger/bridge/Installer.class
+OpenIDE-Module-Localizing-Bundle: org/netbeans/cubeon/debugger/bridge/Bundle.properties
+
+
