@@ -327,7 +327,6 @@ public class JiraTaskRepository implements TaskRepository {
 
     public synchronized void loadAttributes() {
         repositoryAttributes.loadAttributes();
-        querySupport.refresh();
         setState(State.ACTIVE);
     }
 
