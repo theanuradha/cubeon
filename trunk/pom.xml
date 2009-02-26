@@ -157,7 +157,7 @@
         <repository>
             <id>netbeans</id>
             <name>repository hosting netbeans.org api artifacts</name>
-            <url>http://deadlock.netbeans.org/maven2</url>
+            <url>http://bits.netbeans.org/maven2/</url>
             <releases>
                 <updatePolicy>never</updatePolicy>
             </releases>
@@ -179,7 +179,7 @@
       <!--a fallback to make it work everywhere -->
         <java15.home>${java.home}/..</java15.home>
       <!-- the version of netbeans we depend on-->
-        <netbeans.release>RELEASE65BETA</netbeans.release>
+        <netbeans.release>RELEASE65</netbeans.release>
         <cubeon.release>1.1.0.0</cubeon.release>
     </properties>
   <!--reporting>
