@@ -2,3 +2,5 @@ Manifest-Version: 1.0
 OpenIDE-Module-Localizing-Bundle: org/netbeans/cubeon/tasks/core/Bundle.properties
 OpenIDE-Module-Layer: org/netbeans/cubeon/tasks/core/layer.xml
 AutoUpdate-Show-In-Client: false
+OpenIDE-Module-Recommends: CubeonKit
+OpenIDE-Module-Public-Packages: org.netbeans.cubeon.tasks.core.api.**,org.netbeans.cubeon.tasks.core.spi.**

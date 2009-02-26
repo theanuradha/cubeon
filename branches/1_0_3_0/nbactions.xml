@@ -4,8 +4,8 @@
             <actionName>CUSTOM-Create Cluster</actionName>
             <displayName>Create Cluster</displayName>
             <goals>
-                <goal>nbm:directory</goal>
                 <goal>nbm:cluster</goal>
+                
             </goals>
         </action>
         <action>
