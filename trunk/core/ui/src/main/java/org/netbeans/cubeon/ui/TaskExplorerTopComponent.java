@@ -103,7 +103,8 @@ public final class TaskExplorerTopComponent extends TopComponent implements Expl
                 unloadViewMenu();
             }
         });
-
+        //issue 78
+        goBackToRoot.setVisible(false);
 
 
     }
