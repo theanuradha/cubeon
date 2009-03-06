@@ -285,7 +285,7 @@ class PersistenceHandler {
     }
 
     void refresh() {
-        CubeonContext context = Lookup.getDefault().lookup(CubeonContext.class);
+        final CubeonContext context = Lookup.getDefault().lookup(CubeonContext.class);
         TaskRepositoryHandler repositoryHandler = context.getLookup().
                 lookup(TaskRepositoryHandler.class);
 
@@ -343,6 +343,9 @@ class PersistenceHandler {
 
                 }
                 folderImpl.setTaskElements(taskElements);
+                if(context.getActive()!=null&& folderImpl.contains(context.getActive())){
+                    folderImpl.setHighlight(true);
+                }
             }
         }
     }

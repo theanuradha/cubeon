@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.netbeans.cubeon.tasks.core.api.CubeonContext;
+import org.netbeans.cubeon.tasks.core.api.CubeonContextListener;
 import org.netbeans.cubeon.tasks.core.api.TaskFolder;
 import org.netbeans.cubeon.tasks.core.api.TaskRepositoryHandler;
 import org.netbeans.cubeon.tasks.core.api.TasksFileSystem;
@@ -92,6 +93,29 @@ public class DefaultFileSystem implements TasksFileSystem {
             });
             notifierReferences.add(reference);
         }
+        //mark active task associate Folder
+        context.addContextListener(new CubeonContextListener() {
+
+            public void taskActivated(TaskElement element) {
+                markFolder(element, true);
+            }
+
+            public void taskDeactivated(TaskElement element) {
+                markFolder(element, false);
+            }
+
+            private void markFolder(TaskElement element, boolean mark) {
+                List<TaskFolder> subFolders = getRootTaskFolder().getSubFolders();
+                for (TaskFolder taskFolder : subFolders) {
+                    if (taskFolder.contains(element)) {
+                        TaskFolderImpl folderImpl = taskFolder.getLookup().lookup(TaskFolderImpl.class);
+                        assert folderImpl != null;
+
+                        folderImpl.setHighlight(mark);
+                    }
+                }
+            }
+        });
     }
 
     public TaskFolder getDefaultFolder() {
@@ -159,7 +183,7 @@ public class DefaultFileSystem implements TasksFileSystem {
         final TaskFolderImpl perantImpl = folder.getLookup().lookup(TaskFolderImpl.class);
         assert perantImpl != null;
         handler.setTaskQuery(perantImpl, query);
-        perantImpl.setAssociateTaskQuery(query,true);
+        perantImpl.setAssociateTaskQuery(query, true);
     }
 
     public TaskFolder newFolder(String folderName, String folderDescription) {
