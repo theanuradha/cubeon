@@ -31,7 +31,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import org.netbeans.cubeon.tasks.core.api.NodeUtils;
 import org.netbeans.cubeon.tasks.core.api.TaskFolder;
-import org.netbeans.cubeon.tasks.core.api.TaskNodeFactory;
 import org.netbeans.cubeon.tasks.core.api.TasksFileSystem;
 import org.netbeans.cubeon.tasks.core.spi.TaskFolderActionsProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
@@ -54,7 +53,7 @@ import org.openide.util.lookup.Lookups;
 public class TaskFolderNode extends AbstractNode {
 
     private TaskFolder folder;
-    TaskNodeFactory factory = Lookup.getDefault().lookup(TaskNodeFactory.class);
+    
 
     public TaskFolderNode(TaskFolder folder, Children children) {
         super(children, Lookups.fixed(folder));
@@ -218,6 +217,11 @@ public class TaskFolderNode extends AbstractNode {
             }
             return menu;
         }
+    }
+
+    @Override
+    public String getHtmlDisplayName() {
+        return getDisplayName();
     }
 
     void refreshIcon() {

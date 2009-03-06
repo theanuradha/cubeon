@@ -47,6 +47,7 @@ class TaskFolderImpl implements TaskFolder, TaskFolderRefreshable {
     protected final List<TaskElement> taskElements = new ArrayList<TaskElement>();
     private TaskQuery taskQuery;
     private NotifierReference<TaskQueryEventAdapter> notifierReference;
+    private boolean highlight;
 
     protected TaskFolderImpl(TaskFolderImpl parent, String name,
             String description, boolean basic) {
@@ -86,7 +87,7 @@ class TaskFolderImpl implements TaskFolder, TaskFolderRefreshable {
 
     public boolean rename(String name) {
         this.name = name;
-        folderNode.setDisplayName(name);
+        folderNode.setDisplayName(highlight ? "<html><b>" + name+ "</b></html>" : name);
         return false;
     }
 
@@ -237,6 +238,17 @@ class TaskFolderImpl implements TaskFolder, TaskFolderRefreshable {
 
             taskQuery.getNotifier().remove(notifierReference);
 
+        }
+    }
+
+    public boolean isHighlight() {
+        return highlight;
+    }
+
+    public void setHighlight(boolean highlight) {
+        this.highlight = highlight;
+        if (folderNode != null) {
+            folderNode.setDisplayName(highlight ? "<html><b>" + name+"</b></html>" : name);
         }
     }
 }
