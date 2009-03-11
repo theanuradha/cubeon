@@ -22,6 +22,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import org.netbeans.cubeon.analyzer.spi.StackTraceProvider;
+import org.netbeans.cubeon.common.ui.TaskTypeBadge;
 import org.netbeans.cubeon.jira.remote.JiraException;
 import org.netbeans.cubeon.jira.repository.JiraTaskRepository;
 import org.netbeans.cubeon.jira.repository.attributes.JiraAction;
@@ -37,9 +38,9 @@ import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.task.TaskResolution;
 import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
 import org.netbeans.cubeon.tasks.spi.task.TaskType;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
-import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 
 /**
@@ -132,7 +133,7 @@ public class JiraTask extends JiraRemoteTask implements TaskElement {
     }
 
     public Image getImage() {
-        Image image = Utilities.loadImage("org/netbeans/cubeon/local/nodes/task.png");
+        Image image = TaskTypeBadge.getTaskImage();
         //FIXME
         if (getProject() != null) {
             List<String> taskTypes = getProject().getTypes();
@@ -141,16 +142,17 @@ public class JiraTask extends JiraRemoteTask implements TaskElement {
 
             switch (indexOf) {
                 case 0:
-                    image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_defact.png"), 0, 0);
+                    
+                    image = ImageUtilities.mergeImages(image, TaskTypeBadge.getBadge(TaskTypeBadge.DEFACT), 0, 0);
                     break;
                 case 1:
-                    image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_enhancement.png"), 0, 0);
+                    image = ImageUtilities.mergeImages(image, TaskTypeBadge.getBadge(TaskTypeBadge.ENHANCEMENT), 0, 0);
                     break;
                 case 2:
-                    image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_feature.png"), 0, 0);
+                    image = ImageUtilities.mergeImages(image,TaskTypeBadge.getBadge(TaskTypeBadge.FEATURE), 0, 0);
                     break;
                 case 3:
-                    image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_task.png"), 0, 0);
+                    image = ImageUtilities.mergeImages(image, TaskTypeBadge.getBadge(TaskTypeBadge.TASK), 0, 0);
                     break;
 
             }
@@ -160,7 +162,7 @@ public class JiraTask extends JiraRemoteTask implements TaskElement {
     }
 
     public String getUrlString() {
-        return taskRepository.getURL() + "/browse/" + getId();
+        return taskRepository.getURL() + "/browse/" + getId();//NOI18n
     }
 
   

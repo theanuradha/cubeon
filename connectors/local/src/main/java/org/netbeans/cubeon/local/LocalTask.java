@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import org.netbeans.cubeon.analyzer.spi.StackTraceProvider;
+import org.netbeans.cubeon.common.ui.TaskTypeBadge;
 import org.netbeans.cubeon.local.internals.TaskEditorProviderImpl;
 import org.netbeans.cubeon.local.repository.*;
 import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
@@ -31,11 +32,10 @@ import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskElementChangeAdapter;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
-import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
 import org.netbeans.cubeon.tasks.spi.task.TaskType;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
-import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 
 /**
@@ -144,15 +144,15 @@ public class LocalTask implements TaskElement {
     }
 
     public Image getImage() {
-        Image image = Utilities.loadImage("org/netbeans/cubeon/local/nodes/task.png");
+        Image image = TaskTypeBadge.getTaskImage();
         if (taskRepository.getLocalTaskTypeProvider().BUG.equals(getType())) {
-            image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_defact.png"), 0, 0);
+            image = ImageUtilities.mergeImages(image, TaskTypeBadge.getBadge(TaskTypeBadge.DEFACT), 0, 0);
         } else if (taskRepository.getLocalTaskTypeProvider().ENHANCEMENT.equals(getType())) {
-            image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_enhancement.png"), 0, 0);
+            image = ImageUtilities.mergeImages(image, TaskTypeBadge.getBadge(TaskTypeBadge.ENHANCEMENT), 0, 0);
         } else if (taskRepository.getLocalTaskTypeProvider().FEATURE.equals(getType())) {
-            image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_feature.png"), 0, 0);
+            image = ImageUtilities.mergeImages(image, TaskTypeBadge.getBadge(TaskTypeBadge.FEATURE), 0, 0);
         } else {
-            image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_task.png"), 0, 0);
+            image = ImageUtilities.mergeImages(image, TaskTypeBadge.getBadge(TaskTypeBadge.TASK), 0, 0);
         }
 
         return image;

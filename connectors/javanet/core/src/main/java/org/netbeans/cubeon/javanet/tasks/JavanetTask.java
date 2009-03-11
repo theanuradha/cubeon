@@ -30,7 +30,7 @@ import org.netbeans.cubeon.tasks.spi.task.TaskElementChangeAdapter;
 import org.openide.util.Lookup;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
-
+import org.netbeans.cubeon.common.ui.TaskTypeBadge;
 /**
  *
  * @author Tomas Knappek
@@ -179,23 +179,23 @@ public class JavanetTask implements TaskElement {
     }
 
     public Image getImage() {
-        Image image = Utilities.loadImage("org/netbeans/cubeon/local/nodes/task.png");
+        Image image = TaskTypeBadge.getTaskImage();
         //FIXME
         if (_jnIssue != null) {
             IssueType type = _jnIssue.getType();
 
             switch (type) {
                 case DEFECT:
-                    image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_defact.png"), 0, 0);
+                    image = Utilities.mergeImages(image,  TaskTypeBadge.getBadge(TaskTypeBadge.DEFACT), 0, 0);
                     break;
                 case ENHANCEMENT:
-                    image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_enhancement.png"), 0, 0);
+                    image = Utilities.mergeImages(image,  TaskTypeBadge.getBadge(TaskTypeBadge.ENHANCEMENT), 0, 0);
                     break;
                 case FEATURE:
-                    image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_feature.png"), 0, 0);
+                    image = Utilities.mergeImages(image,  TaskTypeBadge.getBadge(TaskTypeBadge.FEATURE), 0, 0);
                     break;
                 case TASK:
-                    image = Utilities.mergeImages(image, Utilities.loadImage("org/netbeans/cubeon/local/bullet_task.png"), 0, 0);
+                    image = Utilities.mergeImages(image,  TaskTypeBadge.getBadge(TaskTypeBadge.TASK), 0, 0);
                     break;
             }
 

@@ -22,6 +22,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import org.netbeans.cubeon.analyzer.spi.StackTraceProvider;
+import org.netbeans.cubeon.common.ui.TaskTypeBadge;
 import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
 import org.netbeans.cubeon.tasks.spi.Notifier;
 import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider;
@@ -40,9 +41,9 @@ import org.netbeans.cubeon.trac.api.TracException;
 import org.netbeans.cubeon.trac.api.TracKeys;
 import org.netbeans.cubeon.trac.repository.TracTaskRepository;
 import org.netbeans.cubeon.trac.utils.TracExceptionHandler;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
-import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 
 /**
@@ -158,7 +159,7 @@ public class TracTask extends Ticket implements TaskElement {
     }
 
     public Image getImage() {
-        Image image = Utilities.loadImage("org/netbeans/cubeon/trac/task.png");
+        Image image = TaskTypeBadge.getTaskImage();
         //FIXME
         TicketField type = taskRepository.getRepositoryAttributes().
                 getTicketFiledByName(TracKeys.TYPE);
@@ -166,20 +167,20 @@ public class TracTask extends Ticket implements TaskElement {
 
         switch (indexOf) {
             case 0:
-                image = Utilities.mergeImages(image,
-                        Utilities.loadImage("org/netbeans/cubeon/local/bullet_defact.png"), 0, 0);
+                image = ImageUtilities.mergeImages(image,
+                         TaskTypeBadge.getBadge(TaskTypeBadge.DEFACT), 0, 0);
                 break;
             case 1:
-                image = Utilities.mergeImages(image,
-                        Utilities.loadImage("org/netbeans/cubeon/local/bullet_enhancement.png"), 0, 0);
+                image = ImageUtilities.mergeImages(image,
+                         TaskTypeBadge.getBadge(TaskTypeBadge.ENHANCEMENT), 0, 0);
                 break;
             case 2:
-                image = Utilities.mergeImages(image,
-                        Utilities.loadImage("org/netbeans/cubeon/local/bullet_feature.png"), 0, 0);
+                image = ImageUtilities.mergeImages(image,
+                        TaskTypeBadge.getBadge(TaskTypeBadge.FEATURE), 0, 0);
                 break;
             case 3:
-                image = Utilities.mergeImages(image,
-                        Utilities.loadImage("org/netbeans/cubeon/local/bullet_task.png"), 0, 0);
+                image = ImageUtilities.mergeImages(image,
+                         TaskTypeBadge.getBadge(TaskTypeBadge.TASK), 0, 0);
                 break;
 
         }
