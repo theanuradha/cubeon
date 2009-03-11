@@ -28,7 +28,10 @@ public class TaskEditorSupport {
     private GroupView groupView;
 
     public TaskEditorSupport(Group... groups) {
-        groupView = new GroupView(groups);
+        groupView = new GroupView();
+        for (Group group : groups) {
+            groupView.addGroup(group);
+        }
     }
 
     public void setActive(Group group) {

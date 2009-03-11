@@ -16,13 +16,20 @@
  */
 package org.netbeans.cubeon.common.ui;
 
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import org.netbeans.cubeon.common.ui.internals.ComponentGroupPanel;
 import org.netbeans.cubeon.common.ui.internals.GroupView;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -31,6 +38,7 @@ import org.openide.util.Lookup;
 public class ContainerGroup extends Group {
 
     private List<Group> groups = new ArrayList<Group>();
+    private final GroupView groupView = new GroupView(false);
 
     public ContainerGroup(String name, String description) {
         super(name, description);
@@ -40,22 +48,28 @@ public class ContainerGroup extends Group {
         super(name, description);
         for (Group group : groups) {
             this.groups.add(group);
+            groupView.addGroup(group);
         }
     }
 
     public ContainerGroup() {
     }
 
-    public boolean removeGroup(Group o) {
-        return groups.remove(o);
+    public void removeGroup(Group o) {
+        groups.remove(o);
+        groupView.remove(o);
     }
 
-    public boolean addAllGroups(Collection<? extends Group> c) {
-        return groups.addAll(c);
+    public void addAllGroups(Collection<? extends Group> c) {
+        groups.addAll(c);
+        for (Group group : c) {
+            groupView.remove(group);
+        }
     }
 
-    public boolean addGroup(Group e) {
-        return groups.add(e);
+    public void addGroup(Group e) {
+         groups.add(e);
+         groupView.addGroup(e);
     }
 
     public List<Group> getGroups() {
@@ -64,20 +78,53 @@ public class ContainerGroup extends Group {
 
     public void clearGroups() {
         groups.clear();
+        groupView.clear();
     }
+
+    @Override
+    public Action[] getToolbarActions() {
+        Action[] toolbarActions = super.getToolbarActions();
+        toolbarActions = Arrays.copyOf(toolbarActions, toolbarActions.length + 2);
+        Action expand=new AbstractAction() {
+
+            public void actionPerformed(ActionEvent e) {
+               groupView.expandAll();
+            }
+        };
+        expand.putValue(AbstractAction.NAME,
+                NbBundle.getMessage(GroupView.class, "LBL_Expand_All"));
+        expand.putValue(AbstractAction.SMALL_ICON,
+                new ImageIcon(ImageUtilities.loadImage("org/netbeans/cubeon/common/ui/internals/expandTree.png")));
+        toolbarActions[toolbarActions.length-2]=expand;
+        Action collapse=new AbstractAction() {
+
+            public void actionPerformed(ActionEvent e) {
+               groupView.collapseAll();
+            }
+        };
+        collapse.putValue(AbstractAction.NAME,
+                NbBundle.getMessage(GroupView.class, "LBL_Collapse_All"));
+        collapse.putValue(AbstractAction.SMALL_ICON,
+                new ImageIcon(ImageUtilities.loadImage("org/netbeans/cubeon/common/ui/internals/colapseTree.png")));
+        toolbarActions[toolbarActions.length-1]=collapse;
+
+        return toolbarActions;
+    }
+
+
 
     @Override
     public GroupPanel createGroupPanel(Lookup lookup) {
 
-        GroupView groupView = lookup.lookup(GroupView.class);
+        GroupView gv = lookup.lookup(GroupView.class);
         assert groupView != null;
-        ComponentGroupPanel componentGroupPanel = new ComponentGroupPanel(groupView, this);
+        ComponentGroupPanel componentGroupPanel = new ComponentGroupPanel(gv, this);
 
         return componentGroupPanel;
     }
 
     @Override
     public JComponent getComponent() {
-        return  new GroupView(false,groups.toArray(new Group [groups.size()]));
+        return groupView;
     }
 }

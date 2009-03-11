@@ -37,32 +37,56 @@ public class GroupView extends JPanel {
     private JPanel scrollPanel, filler;
     private int sectionCount;
     private GroupPanel activePanel;
-    private Group[] groups;
+    private List<Group> groups = new ArrayList<Group>();
     private List<GroupPanel> groupPanels = new ArrayList<GroupPanel>();
     private VisualTheme theme = new VisualTheme();
 
-    public GroupView(Group... groups) {
+    public GroupView() {
 
-        this(true, groups);
+        this(true);
     }
 
-    public GroupView(boolean addscroll, Group... groups) {
+    public GroupView(boolean addscroll) {
 
         setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
         initialize(addscroll);
-        refreshGroups(groups);
+
     }
 
-    public void refreshGroups(Group... groups) {
-        this.groups = groups;
+    public void clear() {
+        this.groups.clear();
         groupPanels.clear();
         sectionCount = 0;
         filler.removeAll();
+        activePanel = null;
+
+    }
+
+    public void addGroup(Group group) {
+        groups.add(group);
         Lookup lookup = Lookups.fixed(this);
-        for (Group group : groups) {
-            GroupPanel groupPanel = group.createGroupPanel(lookup);
-            addSection(groupPanel, group.isOpen());
+        GroupPanel groupPanel = group.createGroupPanel(lookup);
+        addSection(groupPanel, group.isOpen());
+    }
+
+    public void collapseAll() {
+        for (GroupPanel groupPanel : groupPanels) {
+            groupPanel.close();
+        }
+    }
+
+    public void expandAll() {
+        for (GroupPanel groupPanel : groupPanels) {
+            groupPanel.open();
+        }
+    }
+
+    public void remove(Group group) {
+        groups.remove(group);
+        GroupPanel findGroupPanel = findGroupPanel(group);
+        if (findGroupPanel != null) {
+            removeSection(findGroupPanel);
         }
     }
 

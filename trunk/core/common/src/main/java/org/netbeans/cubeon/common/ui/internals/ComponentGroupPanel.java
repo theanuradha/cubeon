@@ -211,6 +211,11 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
         openInnerPanel();
     }
 
+    public void close() {
+        foldButton.setSelected(false);
+        closeInnerPanel();
+    }
+
     /**
      * Method from NodeSectionPanel interface
      */
