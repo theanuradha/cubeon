@@ -32,6 +32,11 @@
         </dependency>
         <dependency>
             <groupId>org.netbeans.cubeon</groupId>
+            <artifactId>cubeon-common</artifactId>
+            <version>${cubeon.release}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.cubeon</groupId>
             <artifactId>cubeon-tasks-core</artifactId>
             <version>${cubeon.release}</version>
         </dependency>

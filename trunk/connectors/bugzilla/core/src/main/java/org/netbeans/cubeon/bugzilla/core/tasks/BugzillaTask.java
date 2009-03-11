@@ -23,12 +23,13 @@ import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskElementChangeAdapter;
 import org.netbeans.cubeon.tasks.spi.Notifier;
 import org.openide.util.Lookup;
-import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 
 import java.awt.*;
 import java.net.URL;
 import java.net.MalformedURLException;
+import org.netbeans.cubeon.common.ui.TaskTypeBadge;
+import org.openide.util.ImageUtilities;
 
 /**
  * Cubeon-friendly representation of Bugzilla bug, it implements necessary interfaces which give
@@ -123,13 +124,13 @@ public class BugzillaTask implements TaskElement {
      * {@inheritDoc}
      */
     public Image getImage() {
-        Image image = Utilities.loadImage("org/netbeans/cubeon/bugzilla/core/task.png");
+        Image image = TaskTypeBadge.getTaskImage();
         if (bugSummary.isEnhancment()) {
-            image = Utilities.mergeImages(image,
-                    Utilities.loadImage("org/netbeans/cubeon/local/bullet_enhancement.png"), 0, 0);
+            image = ImageUtilities.mergeImages(image,
+                   TaskTypeBadge.getBadge(TaskTypeBadge.ENHANCEMENT), 0, 0);
         } else {
-            image = Utilities.mergeImages(image,
-                    Utilities.loadImage("org/netbeans/cubeon/local/bullet_defact.png"), 0, 0);
+            image = ImageUtilities.mergeImages(image,
+                     TaskTypeBadge.getBadge(TaskTypeBadge.DEFACT), 0, 0);
         }
         return image;
     }
