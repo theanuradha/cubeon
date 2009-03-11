@@ -182,6 +182,7 @@ class JiraRepositoryPersistence {
                         jiraTaskRepository.setProjectKey(project);
                     }
                     jiraTaskRepository.loadAttributes();
+                    jiraTaskRepository.loadFilters();
                     repositorys.add(jiraTaskRepository);
                 }
             }

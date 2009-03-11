@@ -33,7 +33,7 @@ import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.trac.api.TicketChange;
 import org.netbeans.cubeon.trac.api.TicketChange.FieldChange;
 import org.netbeans.cubeon.trac.api.TracKeys;
-import org.netbeans.cubeon.trac.tasks.ui.TextEditorUI;
+import org.netbeans.cubeon.common.ui.components.TextEditorUI;
 
 import org.netbeans.cubeon.trac.tasks.ui.TracTaskEditorPanels;
 import org.openide.util.NbBundle;
@@ -66,7 +66,7 @@ public class TracAttributeHandler implements EditorAttributeHandler {
                 getMessage(TracAttributeHandler.class, "LBL_Description"),
                 getMessage(TracAttributeHandler.class, "LBL_Description_Dec"));
         descriptionGroup.setComponent(descriptionUI);
-        //Attributes Group
+        //Attributes Group 
         attributesGroup = new ComponentGroup(getMessage(TracAttributeHandler.class, "LBL_Attributes"),
                 getMessage(TracAttributeHandler.class, "LBL_Attributes_Dec"));
         //if task still local  open Attributes panel by default

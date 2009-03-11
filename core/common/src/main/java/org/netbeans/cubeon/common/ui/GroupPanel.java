@@ -37,6 +37,10 @@ public interface GroupPanel {
      */
     public void open();
 
+    /** Close  panel
+     */
+    public void close();
+
     /** Scrolls the panel to be visibel in scrollPane.
      */
     public void scroll();
@@ -50,5 +54,4 @@ public interface GroupPanel {
     int getIndex();
 
     Group getGroup();
-
 }

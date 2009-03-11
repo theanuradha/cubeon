@@ -21,7 +21,7 @@
  * Created on Jan 31, 2009, 3:40:29 PM
  */
 
-package org.netbeans.cubeon.trac.tasks.ui;
+package org.netbeans.cubeon.common.ui.components;
 
 import javax.swing.text.Document;
 

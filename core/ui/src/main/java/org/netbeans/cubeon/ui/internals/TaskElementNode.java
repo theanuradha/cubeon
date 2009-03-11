@@ -184,7 +184,7 @@ public class TaskElementNode extends AbstractNode {
         });
     }
 
-    private static String extractTaskDescription(TaskElement element) {
+    public  static String extractTaskDescription(TaskElement element) {
         StringBuffer buffer = new StringBuffer("<html>");//NOI18N
         buffer.append("<b>").append(element.getId()).append(" :</b> ");//NOI18N
         buffer.append(element.getName()).append("<p>");//NOI18N

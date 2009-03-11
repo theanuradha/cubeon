@@ -42,7 +42,6 @@ public class JiraQuerySupport implements TaskQuerySupportProvider {
         this.extension = extension;
         outgoingQuery = new JiraOGChangesQuery(repository);
         handler = new PersistenceHandler(this, repository.getBaseDir());
-        handler.refresh();
 
     }
 

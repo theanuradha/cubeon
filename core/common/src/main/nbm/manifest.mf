@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
 OpenIDE-Module-Localizing-Bundle: org/netbeans/cubeon/common/Bundle.properties
-OpenIDE-Module-Public-Packages: org.netbeans.cubeon.common.ui.*
+OpenIDE-Module-Public-Packages: org.netbeans.cubeon.common.ui.*,org.netbeans.cubeon.common.ui.components.*
 AutoUpdate-Show-In-Client: false
