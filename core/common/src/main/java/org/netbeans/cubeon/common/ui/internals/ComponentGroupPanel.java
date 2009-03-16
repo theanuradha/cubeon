@@ -31,7 +31,6 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
-import javax.swing.JSeparator;
 import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeListener;
@@ -56,8 +55,9 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
     private JComponent innerPanel;
     private Group group;
     private int index;
-    private final Image IMAGE_UNSELECTED = ImageUtilities.loadImage("org/netbeans/cubeon/common/ui/internals/plus.gif"); // NOI18N
-    private final Image IMAGE_SELECTED = ImageUtilities.loadImage("org/netbeans/cubeon/common/ui/internals/minus.gif"); // NOI18N
+    private static final Image IMAGE_UNSELECTED = ImageUtilities.loadImage("org/netbeans/cubeon/common/ui/internals/plus.gif"); // NOI18N
+    private static final Image IMAGE_SELECTED = ImageUtilities.loadImage("org/netbeans/cubeon/common/ui/internals/minus.gif"); // NOI18N
+    private static final Image IMAGE_DEFAULT = ImageUtilities.loadImage("org/netbeans/cubeon/common/ui/internals/default.gif"); // NOI18N
     private FocusListener sectionFocusListener = new FocusAdapter() {
 
         @Override
@@ -134,12 +134,11 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
     void setGroupView(GroupView groupView) {
         this.groupView = groupView;
         VisualTheme theme = groupView.getTheme();
-        headerSeparator.setForeground(theme.getSectionHeaderLineColor());
         fillerLine.setForeground(theme.getFoldLineColor());
         fillerEnd.setForeground(theme.getFoldLineColor());
         fillerLine.setVisible(false);
         fillerEnd.setVisible(false);
-        foldButton.setVisible(group.isFoldable());
+        foldButton.setVisible(true);
         setBackground(theme.getDocumentBackgroundColor());
         titlePanel.setBackground(theme.getSectionHeaderColor());
         actionPanel.setBackground(theme.getDocumentBackgroundColor());
@@ -161,8 +160,8 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(2, 0, 0, 0);
-        fillerLine.setVisible(group.isFoldable());
-        fillerEnd.setVisible(group.isFoldable());
+        fillerLine.setVisible(true);
+        fillerEnd.setVisible(true);
         innerPanel.addFocusListener(sectionFocusListener);
         add(innerPanel, gridBagConstraints);
         SwingUtilities.invokeLater(new Runnable() {
@@ -223,7 +222,9 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
-                ComponentGroupPanel.this.scrollRectToVisible(new Rectangle(10, ComponentGroupPanel.this.getHeight()));
+                if (group.isFoldable()) {
+                    ComponentGroupPanel.this.scrollRectToVisible(new Rectangle(10, ComponentGroupPanel.this.getHeight()));
+                }
             }
         });
     }
@@ -260,7 +261,6 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
         java.awt.GridBagConstraints gridBagConstraints;
 
         foldButton = new javax.swing.JToggleButton();
-        headerSeparator = new javax.swing.JSeparator();
         actionPanel = new javax.swing.JPanel();
         fillerLine = new javax.swing.JSeparator();
         fillerEnd = new javax.swing.JSeparator();
@@ -289,15 +289,6 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
         gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(10, 2, 0, 2);
         add(foldButton, gridBagConstraints);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(2, 0, 0, 0);
-        add(headerSeparator, gridBagConstraints);
-
         actionPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 2, 0));
         actionPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 8));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -335,7 +326,7 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
         titleButton.addActionListener(new java.awt.event.ActionListener() {
 
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-               changeState();
+                changeState();
             }
         });
         titlePanel.add(titleButton, java.awt.BorderLayout.WEST);
@@ -357,6 +348,9 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
         if (group.isFoldable()) {
             foldButton.setIcon(new javax.swing.ImageIcon(IMAGE_UNSELECTED));
             foldButton.setSelectedIcon(new javax.swing.ImageIcon(IMAGE_SELECTED));
+        } else {
+            foldButton.setIcon(new javax.swing.ImageIcon(IMAGE_DEFAULT));
+            foldButton.setSelectedIcon(new javax.swing.ImageIcon(IMAGE_DEFAULT));
         }
 
     }
@@ -378,6 +372,9 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
         if (group.isFoldable()) {
             foldButton.setIcon(new javax.swing.ImageIcon(IMAGE_UNSELECTED));
             foldButton.setSelectedIcon(new javax.swing.ImageIcon(IMAGE_SELECTED));
+        } else {
+            foldButton.setIcon(new javax.swing.ImageIcon(IMAGE_DEFAULT));
+            foldButton.setSelectedIcon(new javax.swing.ImageIcon(IMAGE_DEFAULT));
         }
     }
 
@@ -425,7 +422,6 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
     private javax.swing.JSeparator fillerEnd;
     private javax.swing.JSeparator fillerLine;
     private javax.swing.JToggleButton foldButton;
-    private javax.swing.JSeparator headerSeparator;
     private javax.swing.JButton titleButton;
     private javax.swing.JPanel titlePanel;
     private javax.swing.JLabel summaryLabel;
@@ -477,10 +473,6 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
 
     protected JToggleButton getFoldButton() {
         return foldButton;
-    }
-
-    protected JSeparator getHeaderSeparator() {
-        return headerSeparator;
     }
 
     protected JButton getTitleButton() {

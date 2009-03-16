@@ -37,7 +37,7 @@ public class VisualTheme {
     private Color fillerColor = javax.swing.UIManager.getDefaults().getColor("Button.background"); //NOI18N
     private Color tableHeaderColor = Color.WHITE;
     private Color tableGridColor = Color.WHITE;
-    private Color sectionHeaderLineColor = Color.WHITE;
+  
     private Color textColor = new java.awt.Color(0, 0, 0);
     private Color foldLineColor = new java.awt.Color(102, 102, 102);
 
@@ -73,9 +73,7 @@ public class VisualTheme {
         return tableGridColor;
     }
 
-    public Color getSectionHeaderLineColor() {
-        return sectionHeaderLineColor;
-    }
+
 
     public Color getTextColor() {
         return textColor;
@@ -121,9 +119,6 @@ public class VisualTheme {
         this.sectionHeaderColor = sectionHeaderColor;
     }
 
-    public void setSectionHeaderLineColor(Color sectionHeaderLineColor) {
-        this.sectionHeaderLineColor = sectionHeaderLineColor;
-    }
 
     public void setTableGridColor(Color tableGridColor) {
         this.tableGridColor = tableGridColor;
