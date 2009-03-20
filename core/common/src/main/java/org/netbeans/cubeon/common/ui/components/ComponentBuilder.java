@@ -79,21 +79,48 @@ public abstract class ComponentBuilder {
         textField.getDocument().addDocumentListener(documentListener);
         return textField;
     }
+
     public JEditorPane createEditorField() {
 
         JEditorPane textField = new JEditorPane();
-        textField.setPreferredSize(new Dimension(componentPreferredWidth, textField.getPreferredSize().height*3));
+        textField.setPreferredSize(new Dimension(componentPreferredWidth, textField.getPreferredSize().height * 3));
         textField.getDocument().addDocumentListener(documentListener);
         return textField;
     }
 
-    public JScrollPane addToScrollPane(JComponent component){
-      JScrollPane scrollPane=new JScrollPane(component);
-      scrollPane.setPreferredSize(new Dimension(componentPreferredWidth, component.getPreferredSize().height));
-      return scrollPane;
+    public JScrollPane addToScrollPane(JComponent component) {
+        JScrollPane scrollPane = new JScrollPane(component);
+        scrollPane.setPreferredSize(new Dimension(componentPreferredWidth, component.getPreferredSize().height));
+        return scrollPane;
     }
+
     public JComponent createCheckbox() {
-        JCheckBox checkBox = new JCheckBox();
+        JCheckBox checkBox = new JCheckBox() {
+            //http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4618607
+
+            private boolean layingOut = false;
+
+            @Override
+            public void doLayout() {
+                try {
+                    layingOut = true;
+                    super.doLayout();
+                } finally {
+                    layingOut = false;
+
+                }
+            }
+
+            @Override
+            public Dimension getSize() {
+
+                Dimension sz = super.getSize();
+                if (!layingOut) {
+                    sz.width = Math.max(sz.width, getPreferredSize().width);
+                }
+                return sz;
+            }
+        };
         checkBox.setPreferredSize(new Dimension(componentPreferredWidth, checkBox.getPreferredSize().height));
         checkBox.addActionListener(actionListener);
         checkBox.setOpaque(false);
@@ -205,6 +232,6 @@ public abstract class ComponentBuilder {
     public ActionListener getActionListener() {
         return actionListener;
     }
-  
+
     public abstract void valueChanged();
 }
