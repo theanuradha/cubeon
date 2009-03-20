@@ -153,28 +153,30 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
         if (innerPanel == null) {
             innerPanel = createInnerpanel();
         }
-        java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(2, 0, 0, 0);
-        fillerLine.setVisible(true);
-        fillerEnd.setVisible(true);
-        innerPanel.addFocusListener(sectionFocusListener);
-        add(innerPanel, gridBagConstraints);
-        SwingUtilities.invokeLater(new Runnable() {
+        if (innerPanel != null) {
+            java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
+            gridBagConstraints.gridx = 1;
+            gridBagConstraints.gridy = 2;
+            gridBagConstraints.gridwidth = 2;
+            gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+            gridBagConstraints.weightx = 1.0;
+            gridBagConstraints.insets = new java.awt.Insets(2, 0, 0, 0);
+            fillerLine.setVisible(true);
+            fillerEnd.setVisible(true);
+            innerPanel.addFocusListener(sectionFocusListener);
+            add(innerPanel, gridBagConstraints);
+            SwingUtilities.invokeLater(new Runnable() {
 
-            public void run() {
-                if (group.isFoldable()) {
-                    ComponentGroupPanel.this.scrollRectToVisible(new Rectangle(10, ComponentGroupPanel.this.getHeight()));
+                public void run() {
+                    if (group.isFoldable()) {
+                        ComponentGroupPanel.this.scrollRectToVisible(new Rectangle(10, ComponentGroupPanel.this.getHeight()));
+                    }
                 }
-            }
-        });
-        assert groupView != null : "to active ContainerGroupPanel must be added to GroupView";
-        innerPanel.setBackground(
-                active ? groupView.getTheme().getSectionActiveBackgroundColor() : groupView.getTheme().getDocumentBackgroundColor());
+            });
+            assert groupView != null : "to active ContainerGroupPanel must be added to GroupView";
+            innerPanel.setBackground(
+                    active ? groupView.getTheme().getSectionActiveBackgroundColor() : groupView.getTheme().getDocumentBackgroundColor());
+        }
     }
 
     protected JComponent createInnerpanel() {
@@ -368,6 +370,10 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
                 innerPanel = null;
                 validateState();
             }
+        }else if("COMPONENT".equals(e.getSource())){
+           if(group.isOpen()){
+            open();
+           }
         }
         if (group.isFoldable()) {
             foldButton.setIcon(new javax.swing.ImageIcon(IMAGE_UNSELECTED));

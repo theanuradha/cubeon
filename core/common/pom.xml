@@ -107,6 +107,25 @@
             <artifactId>org-openide-dialogs</artifactId>
             <version>${netbeans.release}</version>
         </dependency>
-
+        <dependency>
+            <groupId>net.java.dev.designgridlayout</groupId>
+            <artifactId>designgridlayout</artifactId>
+            <version>1.1p1</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
+    <repositories>
+        <repository>
+            <id>java.net</id>
+            <name>repository hosted on java.net</name>
+            <url>http://download.java.net/maven/2</url>
+            <releases>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
 </project>
