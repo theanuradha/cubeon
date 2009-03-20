@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.Action;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -174,6 +175,8 @@ public class TracTaskEditor {
                 customEditor = builder.createTextField();
             } else if (ticketField.getType().equals("select") || ticketField.getType().equals("radio")) {
                 customEditor = builder.createComboBox();
+            } else if (ticketField.getType().equals("checkbox")) {
+                customEditor = builder.createCheckbox();
             }
 
             if (customEditor != null) {
@@ -190,12 +193,12 @@ public class TracTaskEditor {
                             builder.createLabel(ticketField.getLabel()),
                             customEditor);
                 }
-                
+
                 index++;
                 //move to next row
                 if (index > 1) {
                     container.nextSection();
-                    index=0;
+                    index = 0;
                 }
             }
         }
@@ -503,7 +506,7 @@ public class TracTaskEditor {
         List<String> defaultList = Arrays.asList(
                 COMPONENT, CC, TYPE, PRIORITY,
                 VERSION, RESOLUTION,
-                SUMMARY,  STATUS,
+                SUMMARY, STATUS,
                 DESCRIPTION, OWNER, REPORTER,
                 SEVERITY, MILESTONE, KEYWORDS);
         TracTaskRepository tracRepository = task.getTracRepository();
@@ -534,6 +537,9 @@ public class TracTaskEditor {
             } else if (field.getType().equals("select") || field.getType().equals("radio")) {
                 JComboBox comboBox = (JComboBox) component;
                 task.put(field.getName(), getSelectedValve(comboBox));
+            } else if (field.getType().equals("checkbox")) {
+                JCheckBox checkBox = (JCheckBox) component;
+                task.put(field.getName(), checkBox.isSelected() ? "1" : "0");
             }
         }
 
@@ -546,6 +552,10 @@ public class TracTaskEditor {
                 String ticketComponent = task.get(field.getName());
                 _loadCombos(comboBox, field.getOptions(),
                         field.isOptional(), ticketComponent);
+
+            } else if (field.getType().equals("checkbox")) {
+                JCheckBox checkBox = (JCheckBox) component;
+                checkBox.setSelected("1".equals(task.get(field.getName())));
             }
         }
     }

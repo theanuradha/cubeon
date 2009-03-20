@@ -18,9 +18,13 @@ package org.netbeans.cubeon.common.ui.components;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
@@ -63,15 +67,25 @@ public abstract class ComponentBuilder {
     public JLabel createLabelField(String text) {
         JLabel labelField = new JLabel(text);
         labelField.setPreferredSize(new Dimension(componentPreferredWidth, labelField.getPreferredSize().height));
-        
+
         return labelField;
     }
+
     public JTextField createTextField() {
         JTextField textField = new JTextField();
         textField.setPreferredSize(new Dimension(componentPreferredWidth, textField.getPreferredSize().height));
         textField.getDocument().addDocumentListener(documentListener);
         return textField;
     }
+
+    public JComponent createCheckbox() {
+        JCheckBox checkBox = new JCheckBox();
+        checkBox.setPreferredSize(new Dimension(componentPreferredWidth, checkBox.getPreferredSize().height));
+        checkBox.addActionListener(actionListener);
+        checkBox.setOpaque(false);
+        return checkBox;
+    }
+
     public JTextField createEmptyField() {
         JTextField textField = new JTextField();
         textField.setPreferredSize(new Dimension(componentPreferredWidth, textField.getPreferredSize().height));
@@ -148,6 +162,19 @@ public abstract class ComponentBuilder {
 
         }
     };
+    private final ActionListener actionListener = new ActionListener() {
+
+        public void actionPerformed(ActionEvent e) {
+            if (isNotifyMode()) {
+                EventQueue.invokeLater(new Runnable() {
+
+                    public void run() {
+                        ComponentBuilder.this.valueChanged();
+                    }
+                });
+            }
+        }
+    };
 
     public DocumentListener getDocumentListener() {
         return documentListener;
@@ -161,5 +188,9 @@ public abstract class ComponentBuilder {
         return listSelectionListener;
     }
 
+    public ActionListener getActionListener() {
+        return actionListener;
+    }
+  
     public abstract void valueChanged();
 }
