@@ -126,6 +126,19 @@ public abstract class ComponentBuilder {
                 super.firePopupMenuWillBecomeVisible();
             }
 
+            @Override
+            public void setSelectedItem(Object anObject) {
+                super.setSelectedItem(anObject);
+                setToolTipText( anObject!=null ? anObject.toString():null);
+            }
+
+            @Override
+            public void setSelectedIndex(int anIndex) {
+                super.setSelectedIndex(anIndex);
+                Object selectedItem = getSelectedItem();
+                setToolTipText(selectedItem!=null?selectedItem.toString():null);
+            }
+
             private void resizePopup() {
                 BasicComboPopup popup = (BasicComboPopup) getUI().getAccessibleChild(this, 0); //Popup
 
