@@ -32,10 +32,6 @@ import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider.EditorAttributeHand
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.trac.api.TicketChange;
 import org.netbeans.cubeon.trac.api.TicketChange.FieldChange;
-import org.netbeans.cubeon.trac.api.TracKeys;
-import org.netbeans.cubeon.common.ui.components.TextEditorUI;
-
-import org.netbeans.cubeon.trac.tasks.ui.TracTaskEditorPanels;
 import org.openide.util.NbBundle;
 import static org.openide.util.NbBundle.*;
 
@@ -53,41 +49,46 @@ public class TracAttributeHandler implements EditorAttributeHandler {
     private ComponentGroup actionsGroup;
     private ComponentGroup newCommentGroup;
     private ContainerGroup commentsGroup;
-    private final TracTaskEditorPanels panels;
-    private final TextEditorUI descriptionUI = new TextEditorUI();
-    private final TextEditorUI newCommentUI = new TextEditorUI();
+    private final TracTaskEditor tracTaskEditor;
 
     public TracAttributeHandler(TracTask task) {
         this.task = task;
-        panels = new TracTaskEditorPanels(task);
+
 
         //Description group
         descriptionGroup = new ComponentGroup(
                 getMessage(TracAttributeHandler.class, "LBL_Description"),
                 getMessage(TracAttributeHandler.class, "LBL_Description_Dec"));
-        descriptionGroup.setComponent(descriptionUI);
+
         //Attributes Group 
         attributesGroup = new ComponentGroup(getMessage(TracAttributeHandler.class, "LBL_Attributes"),
                 getMessage(TracAttributeHandler.class, "LBL_Attributes_Dec"));
         //if task still local  open Attributes panel by default
-        // attributesGroup.setOpen(task.isLocal());
-        attributesGroup.setComponent(panels.getAttributesPanel());
+
 
         actionsGroup = new ComponentGroup(getMessage(TracAttributeHandler.class, "LBL_Actions"),
                 NbBundle.getMessage(TracAttributeHandler.class, "LBL_Actions_Dec"));
         actionsGroup.setOpen(false);
-        actionsGroup.setComponent(panels.getActionAndPeoplePanel());
+
         //comments
         commentsGroup = new ContainerGroup(getMessage(TracAttributeHandler.class, "LBL_Comments"),
                 NbBundle.getMessage(TracAttributeHandler.class, "LBL_Comments_Dec"));
         commentsGroup.setOpen(false);
         //new comment group
         newCommentGroup = new ComponentGroup(getMessage(TracAttributeHandler.class, "LBL_New_Comment"),
-                getMessage(TracAttributeHandler.class, "LBL_New_Comment_Dec"), newCommentUI);
+                getMessage(TracAttributeHandler.class, "LBL_New_Comment_Dec"));
         //open new comment depende on user alrady have comment
         newCommentGroup.setOpen(task.getNewComment() != null && task.getNewComment().length() != 0);
+
         editorSupport = new TaskEditorSupport(descriptionGroup, attributesGroup, actionsGroup, commentsGroup, newCommentGroup);
         editor = editorSupport.createEditor();
+
+        tracTaskEditor = new TracTaskEditor(editor, task);
+        // attributesGroup.setOpen(task.isLocal());
+        attributesGroup.setComponent(tracTaskEditor.getAttributesPanel());
+        actionsGroup.setComponent(tracTaskEditor.getActionAndPeoplePanel());
+        newCommentGroup.setComponent(tracTaskEditor.getNewCommentComponent());
+        descriptionGroup.setComponent(tracTaskEditor.getDescriptionComponent());
         editorSupport.setActive(descriptionGroup);
         refresh();
 
@@ -108,16 +109,16 @@ public class TracAttributeHandler implements EditorAttributeHandler {
 
     public final void addChangeListener(ChangeListener l) {
 
-        panels.addChangeListener(l);
+        tracTaskEditor.addChangeListener(l);
     }
 
     public final void removeChangeListener(ChangeListener l) {
 
-        panels.removeChangeListener(l);
+        tracTaskEditor.removeChangeListener(l);
     }
 
     public List<Action> getActions() {
-        return panels.getActions();
+        return tracTaskEditor.getActions();
     }
 
     public JComponent[] getComponent() {
@@ -127,44 +128,15 @@ public class TracAttributeHandler implements EditorAttributeHandler {
     }
 
     public void refresh() {
-        loadDates();
-        editor.setStatus(
-                task.isLocal()
-                ? getMessage(TracAttributeHandler.class, "LBL_Local")
-                : task.get(TracKeys.STATUS));
-        editor.removeSummaryDocumentListener(panels.getDocumentListener());
-        editor.setSummaryText(task.getName());
-        editor.addSummaryDocumentListener(panels.getDocumentListener());
-        descriptionUI.getDocument().removeDocumentListener(panels.getDocumentListener());
-        descriptionUI.setText(task.getDescription());
-        descriptionUI.getDocument().addDocumentListener(panels.getDocumentListener());
-        newCommentUI.getDocument().removeDocumentListener(panels.getDocumentListener());
-        newCommentUI.setText(task.getNewComment());
-        descriptionUI.setEditable(!task.isLocal());
-        newCommentUI.getDocument().addDocumentListener(panels.getDocumentListener());
-        panels.refresh();
+
+        tracTaskEditor.refresh();
         refreshComments(commentsGroup);
-    }
-
-    private void loadDates() {
-
-        if (task.getCreatedDate() != 0) {
-            editor.setCreatedDate(new Date(task.getCreatedDate()));
-        }
-        if (task.getUpdatedDate() != 0) {
-            editor.setUpdatedDate(new Date(task.getUpdatedDate()));
-        }
-
     }
 
     public TaskElement save() {
 
-        task = panels.save();
-        if (!task.getName().equals(editor.getSummaryText())) {
-            task.setSummary(editor.getSummaryText());
-        }
-        task.setDescription(descriptionUI.getText().trim());
-        task.setNewComment(newCommentUI.getText().trim());
+        task = tracTaskEditor.read();
+
         task.getExtension().fireStateChenged();
         return task;
     }
@@ -202,7 +174,7 @@ public class TracAttributeHandler implements EditorAttributeHandler {
         StringBuffer buffer = new StringBuffer();
         buffer.append(comment.getComment()).append("\n");
         if (!comment.getFieldChanges().isEmpty()) {
-            buffer.append(NbBundle.getMessage(TracTaskEditorPanels.class, "LBL_Field_Changes"));
+            buffer.append(NbBundle.getMessage(TracTaskEditor.class, "LBL_Field_Changes"));
             List<FieldChange> fieldChanges = comment.getFieldChanges();
             for (FieldChange fieldChange : fieldChanges) {
                 buffer.append("\n").append(fieldChange.getField()).append(" : ");
