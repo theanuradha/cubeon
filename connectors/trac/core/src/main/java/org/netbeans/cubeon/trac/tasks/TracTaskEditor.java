@@ -28,6 +28,7 @@ import javax.swing.Action;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
@@ -177,11 +178,25 @@ public class TracTaskEditor {
                 customEditor = builder.createComboBox();
             } else if (ticketField.getType().equals("checkbox")) {
                 customEditor = builder.createCheckbox();
+            } else if (ticketField.getType().equals("textarea")) {
+                customEditor = builder.createEditorField();
             }
 
             if (customEditor != null) {
                 CustomFieldSupport cfs = new CustomFieldSupport(ticketField, customEditor);
                 customFieldSupports.add(cfs);
+                if (ticketField.getType().equals("textarea")) {
+                    if(index>0){
+                     container.nextSection();
+                    }
+                    container.addComponentGroup(
+                            builder.createLabel(ticketField.getLabel()),
+                            builder.addToScrollPane(customEditor));
+                    container.fillSection();
+                    index = 0;
+                    container.nextSection();
+                    continue;
+                }
                 if (index == 0) {
                     container.addComponentGroup(
                             builder.createLabel(ticketField.getLabel()),
@@ -540,6 +555,9 @@ public class TracTaskEditor {
             } else if (field.getType().equals("checkbox")) {
                 JCheckBox checkBox = (JCheckBox) component;
                 task.put(field.getName(), checkBox.isSelected() ? "1" : "0");
+            } else if (field.getType().equals("textarea")) {
+                JEditorPane editorPane = (JEditorPane) component;
+                task.put(field.getName(), editorPane.getText().trim());
             }
         }
 
@@ -556,6 +574,9 @@ public class TracTaskEditor {
             } else if (field.getType().equals("checkbox")) {
                 JCheckBox checkBox = (JCheckBox) component;
                 checkBox.setSelected("1".equals(task.get(field.getName())));
+            } else if (field.getType().equals("textarea")) {
+                JEditorPane editorPane = (JEditorPane) component;
+                editorPane.setText(task.get(field.getName()));
             }
         }
     }
