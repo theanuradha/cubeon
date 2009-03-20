@@ -47,6 +47,7 @@ public class ComponentGroup extends Group {
 
     public void setComponent(JComponent component) {
         this.component = component;
+        fireChangeEvent("COMPONENT");
     }
 
     @Override

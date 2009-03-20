@@ -126,7 +126,7 @@ public abstract class Group {
         this.foldable = foldable;
     }
 
-    private void fireChangeEvent(String change) {
+    protected  void fireChangeEvent(String change) {
         Iterator<ChangeListener> it;
         synchronized (listeners) {
             it = new HashSet<ChangeListener>(listeners).iterator();
