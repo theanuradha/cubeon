@@ -25,7 +25,9 @@ import java.awt.event.ItemListener;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JEditorPane;
 import javax.swing.JLabel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -77,7 +79,19 @@ public abstract class ComponentBuilder {
         textField.getDocument().addDocumentListener(documentListener);
         return textField;
     }
+    public JEditorPane createEditorField() {
 
+        JEditorPane textField = new JEditorPane();
+        textField.setPreferredSize(new Dimension(componentPreferredWidth, textField.getPreferredSize().height*3));
+        textField.getDocument().addDocumentListener(documentListener);
+        return textField;
+    }
+
+    public JScrollPane addToScrollPane(JComponent component){
+      JScrollPane scrollPane=new JScrollPane(component);
+      scrollPane.setPreferredSize(new Dimension(componentPreferredWidth, component.getPreferredSize().height));
+      return scrollPane;
+    }
     public JComponent createCheckbox() {
         JCheckBox checkBox = new JCheckBox();
         checkBox.setPreferredSize(new Dimension(componentPreferredWidth, checkBox.getPreferredSize().height));

@@ -89,7 +89,8 @@ public class ComponentContainer extends JPanel {
     }
 
     public void fillSection() {
-        activeRowCreator.left().fill();
+        assert activeNonGridRow != null : "no active NonGridRow ";
+        activeNonGridRow.fill();
     }
 
 
