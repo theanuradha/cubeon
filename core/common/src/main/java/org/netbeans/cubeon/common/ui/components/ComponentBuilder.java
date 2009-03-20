@@ -16,6 +16,8 @@
  */
 package org.netbeans.cubeon.common.ui.components;
 
+import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
@@ -33,6 +35,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.plaf.basic.BasicComboPopup;
 
 /**
  *
@@ -95,32 +98,7 @@ public abstract class ComponentBuilder {
     }
 
     public JComponent createCheckbox() {
-        JCheckBox checkBox = new JCheckBox() {
-            //http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4618607
-
-            private boolean layingOut = false;
-
-            @Override
-            public void doLayout() {
-                try {
-                    layingOut = true;
-                    super.doLayout();
-                } finally {
-                    layingOut = false;
-
-                }
-            }
-
-            @Override
-            public Dimension getSize() {
-
-                Dimension sz = super.getSize();
-                if (!layingOut) {
-                    sz.width = Math.max(sz.width, getPreferredSize().width);
-                }
-                return sz;
-            }
-        };
+        JCheckBox checkBox = new JCheckBox();
         checkBox.setPreferredSize(new Dimension(componentPreferredWidth, checkBox.getPreferredSize().height));
         checkBox.addActionListener(actionListener);
         checkBox.setOpaque(false);
@@ -137,7 +115,56 @@ public abstract class ComponentBuilder {
     }
 
     public JComboBox createComboBox() {
-        JComboBox comboBox = new JComboBox();
+        JComboBox comboBox = new JComboBox() {
+
+            private static final int PADDING_RIGHT = 7;
+            private static final int PADDING_HEIGHT = 2;
+
+            @Override
+            public void firePopupMenuWillBecomeVisible() {
+                resizePopup();
+                super.firePopupMenuWillBecomeVisible();
+            }
+
+            private void resizePopup() {
+                BasicComboPopup popup = (BasicComboPopup) getUI().getAccessibleChild(this, 0); //Popup
+
+                if (popup == null) {
+                    return;
+                }
+
+                final Component comp = popup.getComponent(0); //JScrollPane
+                JScrollPane scrollpane = null;
+                int offset = 0;
+
+                if (comp instanceof JScrollPane) {
+                    scrollpane = (JScrollPane) comp;
+
+                    if (scrollpane.getVerticalScrollBar().isVisible()) {
+                        offset += scrollpane.getVerticalScrollBar().getPreferredSize().width;
+                    }
+                }
+
+                int width = (int) getSize().getWidth() - offset;
+                int height = 0;
+
+                for (int i = 0; i < getItemCount(); i++) {
+                    width = Math.max(width,
+                            getRenderer().getListCellRendererComponent(popup.getList(), getItemAt(i), i, false, false).getPreferredSize().width + PADDING_RIGHT);
+
+                    if (i < getMaximumRowCount()) {
+                        height += getRenderer().getListCellRendererComponent(popup.getList(), getItemAt(i), i, false, false).getPreferredSize().height;
+                    }
+                }
+
+                // add Offset if needed
+                width += ((getMaximumRowCount() >= getItemCount()) ? 0 : offset);
+
+                popup.setPreferredSize(new Dimension(width, height + PADDING_HEIGHT));
+                popup.setLayout(new BorderLayout());
+                popup.add(comp, BorderLayout.CENTER);
+            }
+        };
         comboBox.setPreferredSize(new Dimension(componentPreferredWidth, comboBox.getPreferredSize().height));
         comboBox.addItemListener(itemListener);
         return comboBox;
