@@ -16,10 +16,13 @@
  */
 package org.netbeans.cubeon.trac.tasks;
 
+import java.awt.Image;
+import java.awt.event.ActionEvent;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
@@ -32,6 +35,7 @@ import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider.EditorAttributeHand
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.trac.api.TicketChange;
 import org.netbeans.cubeon.trac.api.TicketChange.FieldChange;
+import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 import static org.openide.util.NbBundle.*;
 
@@ -43,7 +47,7 @@ public class TracAttributeHandler implements EditorAttributeHandler {
 
     private TracTask task;
     private final TaskEditorSupport editorSupport;
-    private TaskEditor editor;
+    private final TaskEditor editor;
     private ComponentGroup descriptionGroup;
     private ComponentGroup attributesGroup;
     private ComponentGroup actionsGroup;
@@ -80,9 +84,11 @@ public class TracAttributeHandler implements EditorAttributeHandler {
         //open new comment depende on user alrady have comment
         newCommentGroup.setOpen(task.getNewComment() != null && task.getNewComment().length() != 0);
 
-        editorSupport = new TaskEditorSupport(descriptionGroup, attributesGroup, actionsGroup, commentsGroup, newCommentGroup);
-        editor = editorSupport.createEditor();
+        CommentSectionDockAction commentSectionDockAction = new CommentSectionDockAction();
 
+        commentsGroup.setToolbarActions(new Action[]{commentSectionDockAction});
+        editorSupport = new TaskEditorSupport(descriptionGroup, attributesGroup, actionsGroup,commentsGroup, newCommentGroup);
+        editor = editorSupport.createEditor();
         tracTaskEditor = new TracTaskEditor(editor, task);
         // attributesGroup.setOpen(task.isLocal());
         attributesGroup.setComponent(tracTaskEditor.getAttributesPanel());
@@ -161,6 +167,7 @@ public class TracAttributeHandler implements EditorAttributeHandler {
                     setCaretPosition(0);
                 }
             };
+
             editorPane.setEditable(false);
             editorPane.setText(buildChangesSet(ticketChange));
             cg.setComponent(editorPane);
@@ -183,5 +190,45 @@ public class TracAttributeHandler implements EditorAttributeHandler {
             }
         }
         return buffer.toString();
+    }
+
+    private class CommentSectionDockAction extends AbstractAction {
+
+        public CommentSectionDockAction() {
+            validate();
+        }
+        private boolean docked=true;
+
+        public void validate() {
+            if (docked) {
+                putValue(NAME, "Undock");
+                Image undock = ImageUtilities.loadImage("org/netbeans/cubeon/trac/undock.png");
+                putValue(SMALL_ICON, ImageUtilities.image2Icon(undock));
+            } else {
+                putValue(NAME, "Dock");
+                Image dock = ImageUtilities.loadImage("org/netbeans/cubeon/trac/dock.png");
+                putValue(SMALL_ICON, ImageUtilities.image2Icon(dock));
+            }
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            if (docked) {
+                docked = false;
+                validate();
+                editor.setMasterGroups(descriptionGroup, attributesGroup, actionsGroup, newCommentGroup);
+                commentsGroup.setOpen(true);
+                editor.setDetailGroups(commentsGroup);
+                
+            } else {
+                docked = true;
+                validate();
+                editor.setMasterGroups(descriptionGroup, attributesGroup, actionsGroup, commentsGroup, newCommentGroup);
+
+                editor.setDetailGroups();
+                
+            }
+
+            editorSupport.setActive(descriptionGroup);
+        }
     }
 }

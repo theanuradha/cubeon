@@ -159,12 +159,14 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
             gridBagConstraints.gridy = 2;
             gridBagConstraints.gridwidth = 2;
             gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+            gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
             gridBagConstraints.weightx = 1.0;
             gridBagConstraints.insets = new java.awt.Insets(2, 0, 0, 0);
             fillerLine.setVisible(true);
             fillerEnd.setVisible(true);
             innerPanel.addFocusListener(sectionFocusListener);
             add(innerPanel, gridBagConstraints);
+            innerPanel.revalidate();
             SwingUtilities.invokeLater(new Runnable() {
 
                 public void run() {
