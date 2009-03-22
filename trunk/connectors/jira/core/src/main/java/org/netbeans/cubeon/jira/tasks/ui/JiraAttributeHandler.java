@@ -16,9 +16,12 @@
  */
 package org.netbeans.cubeon.jira.tasks.ui;
 
+import java.awt.Image;
+import java.awt.event.ActionEvent;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
@@ -32,6 +35,7 @@ import org.netbeans.cubeon.jira.repository.attributes.JiraComment;
 import org.netbeans.cubeon.jira.tasks.JiraTask;
 import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider.EditorAttributeHandler;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
+import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 import static org.openide.util.NbBundle.*;
 
@@ -41,7 +45,7 @@ import static org.openide.util.NbBundle.*;
  */
 public class JiraAttributeHandler implements EditorAttributeHandler {
 
-    private  JiraTask task;
+    private JiraTask task;
     private final TaskEditorSupport editorSupport;
     private TaskEditor editor;
     private final JiraTaskEditorPanels panels;
@@ -56,7 +60,7 @@ public class JiraAttributeHandler implements EditorAttributeHandler {
     public JiraAttributeHandler(JiraTask task) {
         this.task = task;
         panels = new JiraTaskEditorPanels(task);
-        
+
         //Description group
         descriptionGroup = new ComponentGroup(
                 getMessage(JiraAttributeHandler.class, "LBL_Description"),
@@ -77,12 +81,15 @@ public class JiraAttributeHandler implements EditorAttributeHandler {
         commentsGroup = new ContainerGroup(getMessage(JiraAttributeHandler.class, "LBL_Comments"),
                 NbBundle.getMessage(JiraAttributeHandler.class, "LBL_Comments_Dec"));
         commentsGroup.setOpen(false);
+        CommentSectionDockAction commentSectionDockAction = new CommentSectionDockAction();
+
+        commentsGroup.setToolbarActions(new Action[]{commentSectionDockAction});
         //new comment group
         newCommentGroup = new ComponentGroup(getMessage(JiraAttributeHandler.class, "LBL_New_Comment"),
                 getMessage(JiraAttributeHandler.class, "LBL_New_Comment_Dec"), newCommentUI);
         //open new comment depende on user alrady have comment
         newCommentGroup.setOpen(task.getNewComment() != null && task.getNewComment().length() != 0);
-        editorSupport = new TaskEditorSupport(attributesGroup,descriptionGroup , actionsGroup, commentsGroup, newCommentGroup);
+        editorSupport = new TaskEditorSupport(attributesGroup, descriptionGroup, actionsGroup, commentsGroup, newCommentGroup);
         editor = editorSupport.createEditor();
         editorSupport.setActive(descriptionGroup);
         refresh();
@@ -116,12 +123,12 @@ public class JiraAttributeHandler implements EditorAttributeHandler {
         return new JComponent[]{editor.getComponent()};
     }
 
-       public void refresh() {
+    public void refresh() {
         loadDates();
         editor.setStatus(
                 task.isLocal()
                 ? getMessage(JiraAttributeHandler.class, "LBL_Local")
-                : task.getStatus().getText()); 
+                : task.getStatus().getText());
         editor.removeSummaryDocumentListener(panels.getDocumentListener());
         editor.setSummaryText(task.getName());
         editor.addSummaryDocumentListener(panels.getDocumentListener());
@@ -189,4 +196,43 @@ public class JiraAttributeHandler implements EditorAttributeHandler {
         commentsGroup.refresh();
     }
 
+    private class CommentSectionDockAction extends AbstractAction {
+
+        public CommentSectionDockAction() {
+            validate();
+        }
+        private boolean docked = true;
+
+        public void validate() {
+            if (docked) {
+                putValue(NAME, "Undock");
+                Image undock = ImageUtilities.loadImage("org/netbeans/cubeon/jira/undock.png");
+                putValue(SMALL_ICON, ImageUtilities.image2Icon(undock));
+            } else {
+                putValue(NAME, "Dock");
+                Image dock = ImageUtilities.loadImage("org/netbeans/cubeon/jira/dock.png");
+                putValue(SMALL_ICON, ImageUtilities.image2Icon(dock));
+            }
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            if (docked) {
+                docked = false;
+                validate();
+                editor.setMasterGroups(descriptionGroup, attributesGroup, actionsGroup, newCommentGroup);
+                commentsGroup.setOpen(true);
+                editor.setDetailGroups(commentsGroup);
+
+            } else {
+                docked = true;
+                validate();
+                editor.setMasterGroups(descriptionGroup, attributesGroup, actionsGroup, commentsGroup, newCommentGroup);
+
+                editor.setDetailGroups();
+
+            }
+
+            editorSupport.setActive(descriptionGroup);
+        }
+    }
 }

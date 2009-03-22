@@ -47,4 +47,12 @@ public interface TaskEditor {
     void setUpdatedDate(Date date);
 
     JComponent getComponent();
+
+    void setMasterGroups(Group... groups);
+
+   
+
+    void setDetailGroups(Group... groups);
+
+    
 }

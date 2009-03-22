@@ -24,6 +24,7 @@ package org.netbeans.cubeon.common.ui.internals;
 
 import java.awt.BorderLayout;
 import javax.swing.JComponent;
+import org.netbeans.cubeon.common.ui.Group;
 import org.netbeans.cubeon.common.ui.TaskEditor;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -37,11 +38,14 @@ import org.openide.util.NbBundle;
  */
 public class TaskEditorUI extends javax.swing.JPanel implements TaskEditor {
 
+    private final GroupView masterView;
+    private GroupView detailView;
+
     /** Creates new form TaskEditorUI */
     public TaskEditorUI(GroupView groupView) {
         initComponents();
-       
-        pnlDetails.add(groupView, BorderLayout.CENTER);
+        pnlDetails.setVisible(false);
+        pnlMaster.add(masterView = groupView, BorderLayout.CENTER);
     }
 
     public String getSummaryText() {
@@ -104,6 +108,8 @@ public class TaskEditorUI extends javax.swing.JPanel implements TaskEditor {
         lblStatus = new javax.swing.JLabel();
         lblCreated = new javax.swing.JLabel();
         lblUpdated = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        pnlMaster = new javax.swing.JPanel();
         pnlDetails = new javax.swing.JPanel();
 
         setBackground(new java.awt.Color(255, 255, 255));
@@ -118,27 +124,48 @@ public class TaskEditorUI extends javax.swing.JPanel implements TaskEditor {
         lblUpdated.setForeground(new java.awt.Color(102, 102, 102));
         lblUpdated.setText(NbBundle.getMessage(TaskEditorUI.class, "TaskEditorUI.lblUpdated.text","-")); // NOI18N
 
-        pnlDetails.setBackground(new java.awt.Color(255, 255, 255));
-        pnlDetails.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        jPanel1.setOpaque(false);
+
+        pnlMaster.setOpaque(false);
+        pnlMaster.setLayout(new java.awt.BorderLayout());
+
+        pnlDetails.setOpaque(false);
         pnlDetails.setLayout(new java.awt.BorderLayout());
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(pnlMaster, javax.swing.GroupLayout.DEFAULT_SIZE, 485, Short.MAX_VALUE)
+                .addGap(0, 0, 0)
+                .addComponent(pnlDetails, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(pnlMaster, javax.swing.GroupLayout.DEFAULT_SIZE, 371, Short.MAX_VALUE)
+            .addComponent(pnlDetails, javax.swing.GroupLayout.DEFAULT_SIZE, 371, Short.MAX_VALUE)
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lblCreated, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lblUpdated, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lblStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(8, 8, 8))
-            .addComponent(pnlDetails, javax.swing.GroupLayout.DEFAULT_SIZE, 701, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(txtSummary, javax.swing.GroupLayout.DEFAULT_SIZE, 681, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(txtSummary, javax.swing.GroupLayout.DEFAULT_SIZE, 681, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(lblCreated, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(lblUpdated, javax.swing.GroupLayout.DEFAULT_SIZE, 236, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
+                        .addComponent(lblStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(8, 8, 8))))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -149,20 +176,51 @@ public class TaskEditorUI extends javax.swing.JPanel implements TaskEditor {
                     .addComponent(lblUpdated)
                     .addComponent(lblCreated)
                     .addComponent(lblStatus))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnlDetails, javax.swing.GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE)
-                .addContainerGap())
+                .addContainerGap(377, Short.MAX_VALUE))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(46, 46, 46)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lblCreated;
     private javax.swing.JLabel lblStatus;
     private javax.swing.JLabel lblUpdated;
     private javax.swing.JPanel pnlDetails;
+    private javax.swing.JPanel pnlMaster;
     private javax.swing.JTextField txtSummary;
     // End of variables declaration//GEN-END:variables
 
     public void setSummaryText(String summary) {
         txtSummary.setText(summary);
+    }
+
+    public void setMasterGroups(Group... groups) {
+        masterView.clear();
+        if (groups.length > 0) {
+            for (Group group : groups) {
+                masterView.addGroup(group);
+            }
+        }
+    }
+
+    public void setDetailGroups(Group... groups) {
+        if (detailView != null) {
+            detailView.clear();
+        }
+        if (groups.length > 0) {
+            if (detailView == null) {
+                detailView = new GroupView();
+            }
+            for (Group group : groups) {
+                detailView.addGroup(group);
+            }
+            pnlDetails.add(detailView, BorderLayout.CENTER);
+            pnlDetails.setVisible(true);
+        } else {
+            pnlDetails.setVisible(false);
+        }
     }
 }

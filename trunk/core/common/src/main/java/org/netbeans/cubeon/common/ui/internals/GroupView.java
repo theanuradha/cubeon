@@ -55,8 +55,10 @@ public class GroupView extends JPanel {
     }
 
     public void clear() {
-        this.groups.clear();
-        groupPanels.clear();
+        for (Group group : new ArrayList<Group>(groups)) {
+            remove(group);
+        }
+        
         sectionCount = 0;
         filler.removeAll();
         activePanel = null;
