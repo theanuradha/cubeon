@@ -225,7 +225,7 @@ public class JiraUtils {
             remoteToTask(repository, remoteTask, jiraTask);
         }
 
-        if (!remoteTask.getName().equals(issue.getSummary())) {
+        if (remoteTask.getName()==null || !remoteTask.getName().equals(issue.getSummary())) {
             jiraTask.setName(issue.getSummary());
         }
         if (!(issue.getDescription() == null ? "" : issue.getDescription()).equals(remoteTask.getDescription())) {
@@ -234,13 +234,13 @@ public class JiraUtils {
         if (!(issue.getEnvironment() == null ? "" : issue.getEnvironment()).equals(remoteTask.getEnvironment())) {
             jiraTask.setEnvironment(issue.getEnvironment());
         }
-        if (!remoteTask.getProject().getId().equals(issue.getProject())) {
+        if (remoteTask.getProject()==null || !remoteTask.getProject().getId().equals(issue.getProject())) {
             jiraTask.setProject(repository.getRepositoryAttributes().getProjectById(issue.getProject()));
         }
-        if (!remoteTask.getType().getId().equals(issue.getType())) {
+        if (remoteTask.getType()==null || !remoteTask.getType().getId().equals(issue.getType())) {
             jiraTask.setType(repository.getJiraTaskTypeProvider().getTaskTypeById(issue.getType()));
         }
-        if (!remoteTask.getPriority().getId().equals(issue.getPriority())) {
+        if (remoteTask.getPriority()==null || !remoteTask.getPriority().getId().equals(issue.getPriority())) {
             jiraTask.setPriority(repository.getJiraTaskPriorityProvider().getTaskPriorityById(issue.getPriority()));
         }
 
@@ -251,7 +251,7 @@ public class JiraUtils {
 
             jiraTask.setStatus(repository.getJiraTaskStatusProvider().getTaskStatusById(issue.getStatus()));
         }
-        if (!remoteTask.getReporter().equals(issue.getReporter())) {
+        if (remoteTask.getReporter()==null || !remoteTask.getReporter().equals(issue.getReporter())) {
             jiraTask.setReporter(issue.getReporter());
         }
         if (!(issue.getAssignee() == null ? "" : issue.getAssignee()).equals(remoteTask.getAssignee())) {
