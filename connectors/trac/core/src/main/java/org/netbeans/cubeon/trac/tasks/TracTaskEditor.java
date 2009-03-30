@@ -16,6 +16,9 @@
  */
 package org.netbeans.cubeon.trac.tasks;
 
+import java.awt.EventQueue;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -56,10 +59,10 @@ import static org.netbeans.cubeon.trac.api.TracKeys.*;
 public class TracTaskEditor {
 
     private static final String LEAVE = "leave";//NOI18N
+    private static final String EMPTY = "";
     private final TracTask task;
     private final TaskEditor editor;
-    private AtomicBoolean modifiedFlag = new AtomicBoolean(false);
-    private static final String EMPTY = "";
+    private AtomicBoolean modifiedFlag = new AtomicBoolean(false);  
     private final OpenInBrowserTaskAction openInBrowserTaskAction;
     private final SubmitTaskAction submitTaskAction;
     private ComponentBuilder builder = new ComponentBuilder() {
@@ -69,6 +72,21 @@ public class TracTaskEditor {
             fireChangeEvent();
         }
     };
+    //ItemListener for processOperation in action changes
+    private final  ItemListener actionitemListener = new ItemListener() {
+
+        public void itemStateChanged(ItemEvent e) {
+            if (e.getStateChange() == ItemEvent.SELECTED && builder.isNotifyMode()) {
+                EventQueue.invokeLater(new Runnable() {
+
+                    public void run() {
+                        loadAction((TicketAction) actions.getSelectedItem());
+                    }
+                });
+            }
+        }
+    };
+
     private ComponentContainer arrributesContainer = new ComponentContainer();
     private ComponentContainer actionsContainer = new ComponentContainer();
     private final TextEditorUI descriptionComponent = new TextEditorUI();
@@ -141,7 +159,7 @@ public class TracTaskEditor {
         actionsContainer.addComponentGroup(
                 builder.createLabel(NbBundle.getMessage(TracTaskEditor.class,
                 "LBL_Action")), actions = builder.createComboBox(), new JLabel());
-
+        actions.addItemListener(actionitemListener);
         actionsContainer.addComponentGroup(
                 builder.createLabel(NbBundle.getMessage(TracTaskEditor.class,
                 "LBL_Reported_By")), reportedBy = builder.createLabelField(" - "));
