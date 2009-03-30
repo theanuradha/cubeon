@@ -30,7 +30,6 @@ import org.netbeans.cubeon.common.ui.ComponentGroup;
 import org.netbeans.cubeon.common.ui.ContainerGroup;
 import org.netbeans.cubeon.common.ui.TaskEditor;
 import org.netbeans.cubeon.common.ui.TaskEditorSupport;
-import org.netbeans.cubeon.common.ui.components.TextEditorUI;
 import org.netbeans.cubeon.jira.repository.attributes.JiraComment;
 import org.netbeans.cubeon.jira.tasks.JiraTask;
 import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider.EditorAttributeHandler;
@@ -48,35 +47,33 @@ public class JiraAttributeHandler implements EditorAttributeHandler {
     private JiraTask task;
     private final TaskEditorSupport editorSupport;
     private TaskEditor editor;
-    private final JiraTaskEditorPanels panels;
     private ComponentGroup descriptionGroup;
     private ComponentGroup attributesGroup;
     private ComponentGroup actionsGroup;
     private ComponentGroup newCommentGroup;
     private ContainerGroup commentsGroup;
-    private final TextEditorUI descriptionUI = new TextEditorUI();
-    private final TextEditorUI newCommentUI = new TextEditorUI();
+    private final JiraTaskEditor jiraTaskEditor;
 
     public JiraAttributeHandler(JiraTask task) {
         this.task = task;
-        panels = new JiraTaskEditorPanels(task);
+
 
         //Description group
         descriptionGroup = new ComponentGroup(
                 getMessage(JiraAttributeHandler.class, "LBL_Description"),
                 getMessage(JiraAttributeHandler.class, "LBL_Description_Dec"));
-        descriptionGroup.setComponent(descriptionUI);
+
         //Attributes Group
         attributesGroup = new ComponentGroup(getMessage(JiraAttributeHandler.class, "LBL_Attributes"),
                 getMessage(JiraAttributeHandler.class, "LBL_Attributes_Dec"));
         //if task still local  open Attributes panel by default
         // attributesGroup.setOpen(task.isLocal());
-        attributesGroup.setComponent(panels.getAttributesPanel());
+
         attributesGroup.setOpen(task.isLocal());
         actionsGroup = new ComponentGroup(getMessage(JiraAttributeHandler.class, "LBL_Actions"),
                 NbBundle.getMessage(JiraAttributeHandler.class, "LBL_Actions_Dec"));
         actionsGroup.setOpen(false);
-        actionsGroup.setComponent(panels.getActionAndPeoplePanel());
+
         //comments
         commentsGroup = new ContainerGroup(getMessage(JiraAttributeHandler.class, "LBL_Comments"),
                 NbBundle.getMessage(JiraAttributeHandler.class, "LBL_Comments_Dec"));
@@ -86,11 +83,16 @@ public class JiraAttributeHandler implements EditorAttributeHandler {
         commentsGroup.setToolbarActions(new Action[]{commentSectionDockAction});
         //new comment group
         newCommentGroup = new ComponentGroup(getMessage(JiraAttributeHandler.class, "LBL_New_Comment"),
-                getMessage(JiraAttributeHandler.class, "LBL_New_Comment_Dec"), newCommentUI);
+                getMessage(JiraAttributeHandler.class, "LBL_New_Comment_Dec"));
         //open new comment depende on user alrady have comment
         newCommentGroup.setOpen(task.getNewComment() != null && task.getNewComment().length() != 0);
         editorSupport = new TaskEditorSupport(attributesGroup, descriptionGroup, actionsGroup, commentsGroup, newCommentGroup);
         editor = editorSupport.createEditor();
+        jiraTaskEditor = new JiraTaskEditor(task, editor);
+        actionsGroup.setComponent(jiraTaskEditor.getActionAndPeoplePanel());
+        attributesGroup.setComponent(jiraTaskEditor.getAttributesPanel());
+        descriptionGroup.setComponent(jiraTaskEditor.getDescriptionComponent());
+        newCommentGroup.setComponent(jiraTaskEditor.getNewCommentComponent());
         editorSupport.setActive(descriptionGroup);
         refresh();
     }
@@ -108,15 +110,15 @@ public class JiraAttributeHandler implements EditorAttributeHandler {
     }
 
     public void addChangeListener(ChangeListener changeListener) {
-        panels.addChangeListener(changeListener);
+        jiraTaskEditor.addChangeListener(changeListener);
     }
 
     public void removeChangeListener(ChangeListener changeListener) {
-        panels.removeChangeListener(changeListener);
+        jiraTaskEditor.removeChangeListener(changeListener);
     }
 
     public List<Action> getActions() {
-        return panels.getActions();
+        return jiraTaskEditor.getActions();
     }
 
     public JComponent[] getComponent() {
@@ -124,44 +126,13 @@ public class JiraAttributeHandler implements EditorAttributeHandler {
     }
 
     public void refresh() {
-        loadDates();
-        editor.setStatus(
-                task.isLocal()
-                ? getMessage(JiraAttributeHandler.class, "LBL_Local")
-                : task.getStatus().getText());
-        editor.removeSummaryDocumentListener(panels.getDocumentListener());
-        editor.setSummaryText(task.getName());
-        editor.addSummaryDocumentListener(panels.getDocumentListener());
-        descriptionUI.getDocument().removeDocumentListener(panels.getDocumentListener());
-        descriptionUI.setText(task.getDescription());
-        descriptionUI.getDocument().addDocumentListener(panels.getDocumentListener());
-        newCommentUI.getDocument().removeDocumentListener(panels.getDocumentListener());
-        newCommentUI.setText(task.getNewComment());
-        descriptionUI.setEditable(!task.isLocal());
-        newCommentUI.getDocument().addDocumentListener(panels.getDocumentListener());
-        panels.refresh();
+        jiraTaskEditor.refresh();
         refreshComments(commentsGroup);
-    }
-
-    private void loadDates() {
-
-        if (task.getCreated() != null) {
-            editor.setCreatedDate((task.getCreated()));
-        }
-        if (task.getUpdated() != null) {
-            editor.setUpdatedDate((task.getUpdated()));
-        }
-
     }
 
     public TaskElement save() {
 
-        task = panels.save();
-        if (!task.getName().equals(editor.getSummaryText())) {
-            task.setName(editor.getSummaryText());
-        }
-        task.setDescription(descriptionUI.getText().trim());
-        task.setNewComment(newCommentUI.getText().trim());
+        task = jiraTaskEditor.read();
         task.getExtension().fireStateChenged();
         return task;
     }

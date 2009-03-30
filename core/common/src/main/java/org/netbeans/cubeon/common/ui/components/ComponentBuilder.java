@@ -29,6 +29,8 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
@@ -45,6 +47,7 @@ public abstract class ComponentBuilder {
 
     private int componentPreferredWidth = 160;
     private int lablePreferredWidth = 75;
+    private int componentHight = 20;
     private boolean notifyMode;
 
     public int getLablePreferredWidth() {
@@ -63,22 +66,33 @@ public abstract class ComponentBuilder {
         this.componentPreferredWidth = componentPreferredWidth;
     }
 
+    public int getComponentHight() {
+        return componentHight;
+    }
+
+    public void setComponentHight(int componentHight) {
+        this.componentHight = componentHight;
+    }
+
     public JLabel createLabel(String text) {
         JLabel label = new JLabel(text);
-        label.setPreferredSize(new Dimension(lablePreferredWidth, label.getPreferredSize().height));
+        label.setToolTipText(text);
+
+        label.setPreferredSize(new Dimension(lablePreferredWidth,
+                componentHight));
         return label;
     }
 
     public JLabel createLabelField(String text) {
         JLabel labelField = new JLabel(text);
-        labelField.setPreferredSize(new Dimension(componentPreferredWidth, labelField.getPreferredSize().height));
+        labelField.setPreferredSize(new Dimension(componentPreferredWidth, componentHight));
 
         return labelField;
     }
 
     public JTextField createTextField() {
         JTextField textField = new JTextField();
-        textField.setPreferredSize(new Dimension(componentPreferredWidth, textField.getPreferredSize().height));
+        textField.setPreferredSize(new Dimension(componentPreferredWidth, componentHight));
         textField.getDocument().addDocumentListener(documentListener);
         return textField;
     }
@@ -86,20 +100,22 @@ public abstract class ComponentBuilder {
     public JEditorPane createEditorField() {
 
         JEditorPane textField = new JEditorPane();
-        textField.setPreferredSize(new Dimension(componentPreferredWidth, textField.getPreferredSize().height * 3));
+        textField.setPreferredSize(new Dimension(componentPreferredWidth, componentHight * 3));
         textField.getDocument().addDocumentListener(documentListener);
         return textField;
     }
 
     public JScrollPane addToScrollPane(JComponent component) {
+    
         JScrollPane scrollPane = new JScrollPane(component);
-        scrollPane.setPreferredSize(new Dimension(componentPreferredWidth, component.getPreferredSize().height));
+        //scrollPane.setPreferredSize(component.getPreferredSize());
+        //scrollPane.getViewport().setViewSize(component.getPreferredSize());
         return scrollPane;
     }
 
     public JComponent createCheckbox() {
         JCheckBox checkBox = new JCheckBox();
-        checkBox.setPreferredSize(new Dimension(componentPreferredWidth, checkBox.getPreferredSize().height));
+        checkBox.setPreferredSize(new Dimension(componentPreferredWidth, componentHight));
         checkBox.addActionListener(actionListener);
         checkBox.setOpaque(false);
         return checkBox;
@@ -107,7 +123,7 @@ public abstract class ComponentBuilder {
 
     public JTextField createEmptyField() {
         JTextField textField = new JTextField();
-        textField.setPreferredSize(new Dimension(componentPreferredWidth, textField.getPreferredSize().height));
+        textField.setPreferredSize(new Dimension(componentPreferredWidth, componentHight));
         textField.setEditable(false);
         textField.setBorder(null);
         textField.setOpaque(false);
@@ -129,14 +145,14 @@ public abstract class ComponentBuilder {
             @Override
             public void setSelectedItem(Object anObject) {
                 super.setSelectedItem(anObject);
-                setToolTipText( anObject!=null ? anObject.toString():null);
+                setToolTipText(anObject != null ? anObject.toString() : null);
             }
 
             @Override
             public void setSelectedIndex(int anIndex) {
                 super.setSelectedIndex(anIndex);
                 Object selectedItem = getSelectedItem();
-                setToolTipText(selectedItem!=null?selectedItem.toString():null);
+                setToolTipText(selectedItem != null ? selectedItem.toString() : null);
             }
 
             private void resizePopup() {
@@ -178,9 +194,18 @@ public abstract class ComponentBuilder {
                 popup.add(comp, BorderLayout.CENTER);
             }
         };
-        comboBox.setPreferredSize(new Dimension(componentPreferredWidth, comboBox.getPreferredSize().height));
+        comboBox.setPreferredSize(new Dimension(componentPreferredWidth, componentHight));
         comboBox.addItemListener(itemListener);
         return comboBox;
+    }
+
+    public JList createListBox() {
+        JList listbox = new JList();
+        listbox.setPreferredSize(new Dimension(componentPreferredWidth,
+                (componentHight)));
+        listbox.addListSelectionListener(listSelectionListener);
+        listbox.setPreferredSize(new Dimension(componentPreferredWidth, componentHight * 4));
+        return listbox;
     }
 
     public boolean isNotifyMode() {
