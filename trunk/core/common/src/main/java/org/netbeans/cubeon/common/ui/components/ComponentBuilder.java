@@ -107,12 +107,19 @@ public abstract class ComponentBuilder {
     }
 
     public JScrollPane addToScrollPane(JComponent component) {
-    
+        //workaround to fix Jlist layout issue
+        if(component instanceof JList){
+          return _addToScrollPane((JList) component);
+        }
         JScrollPane scrollPane = new JScrollPane(component);
      
         return scrollPane;
     }
-    public JScrollPane addToScrollPane(JList component) {
+    /**
+     *
+     * workaround to fix Jlist layout issue
+     */
+    private JScrollPane _addToScrollPane(JList component) {
         JPanel container =new JPanel(new BorderLayout());
         container.add(component,BorderLayout.CENTER);
         JScrollPane scrollPane = new JScrollPane(container);
