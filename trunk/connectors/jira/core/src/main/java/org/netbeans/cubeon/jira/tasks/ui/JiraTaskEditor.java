@@ -16,7 +16,6 @@
  */
 package org.netbeans.cubeon.jira.tasks.ui;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -35,8 +34,6 @@ import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
@@ -323,6 +320,7 @@ public class JiraTaskEditor {
         arrributesContainer.addComponentGroup(
                 builder.createLabel(NbBundle.getMessage(JiraTaskEditor.class,
                 "LBL_Project")), project = builder.createComboBox(), new JLabel());
+        project.addItemListener(projectitemListener);
         arrributesContainer.nextSection();
         arrributesContainer.addComponentGroup(
                 builder.createLabel(NbBundle.getMessage(JiraTaskEditor.class,
