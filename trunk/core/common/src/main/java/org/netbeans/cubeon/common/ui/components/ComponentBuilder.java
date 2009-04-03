@@ -30,6 +30,7 @@ import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -108,8 +109,14 @@ public abstract class ComponentBuilder {
     public JScrollPane addToScrollPane(JComponent component) {
     
         JScrollPane scrollPane = new JScrollPane(component);
-        //scrollPane.setPreferredSize(component.getPreferredSize());
-        //scrollPane.getViewport().setViewSize(component.getPreferredSize());
+     
+        return scrollPane;
+    }
+    public JScrollPane addToScrollPane(JList component) {
+        JPanel container =new JPanel(new BorderLayout());
+        container.add(component,BorderLayout.CENTER);
+        JScrollPane scrollPane = new JScrollPane(container);
+        scrollPane.setPreferredSize(new Dimension(componentPreferredWidth, componentHight * 4));
         return scrollPane;
     }
 
@@ -201,10 +208,8 @@ public abstract class ComponentBuilder {
 
     public JList createListBox() {
         JList listbox = new JList();
-        listbox.setPreferredSize(new Dimension(componentPreferredWidth,
-                (componentHight)));
         listbox.addListSelectionListener(listSelectionListener);
-        listbox.setPreferredSize(new Dimension(componentPreferredWidth, componentHight * 4));
+
         return listbox;
     }
 
