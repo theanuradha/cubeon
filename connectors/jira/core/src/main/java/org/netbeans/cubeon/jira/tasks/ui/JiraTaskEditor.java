@@ -156,7 +156,7 @@ public class JiraTaskEditor {
         editor.setSummaryText(task.getName());
 
         descriptionComponent.setText(task.getDescription());
-        descriptionComponent.setEditable(!task.isLocal());
+        newCommentComponent.setEditable(!task.isLocal());
 
         newCommentComponent.setText(task.getNewComment());
         environment.setText(task.getEnvironment());
