@@ -176,7 +176,8 @@ public class JiraUtils {
         issue.setAffectsVersions(versions);
         issue = js.createTask(issue);
 
-        repository.remove(jiraTask);
+        repository.getTaskPersistenceHandler().removeTaskElement(jiraTask);
+
 
         jiraTask.setId(issue.getKey());
         jiraTask.setLocal(false);
