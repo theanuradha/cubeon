@@ -324,7 +324,6 @@ public class BugzillaTaskRepository implements TaskRepository {
      * @return - tasks file manager
      */
     private BugzillaTasksFileManager createTasksFileManager(FileObject baseConfigDir) {
-
         BugzillaTasksFileManager fileManager = new BugzillaTasksFileManagerImpl(baseConfigDir);
         return fileManager;
     }

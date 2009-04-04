@@ -34,6 +34,11 @@ import java.util.Locale;
 public class SaxBugDetailsHandler extends BaseSaxHandler {
 
     /**
+     * Name of "name" property.
+     */
+    public static final String NAME = "name";
+
+    /**
      * QName of processed element.
      */
     private String actualElementName;
@@ -103,7 +108,7 @@ public class SaxBugDetailsHandler extends BaseSaxHandler {
                 switch (elementEnum) {
                     case WHO:
                         User who = new User();
-                        who.setName(attributes.getValue("name"));
+                        who.setName(attributes.getValue(NAME));
                         longDescription.setWho(who);
                         break;
                 }
@@ -198,13 +203,13 @@ public class SaxBugDetailsHandler extends BaseSaxHandler {
                     case REPORTER:
                         User reporter = new User();
                         reporter.setEmail(value);
-                        reporter.setName(attributes.getValue("name"));
+                        reporter.setName(attributes.getValue(NAME));
                         bugDetails.setReporter(reporter);
                         break;
                     case ASSIGNED_TO:
                         User assignedTo = new User();
                         assignedTo.setEmail(value);
-                        assignedTo.setName(attributes.getValue("name"));
+                        assignedTo.setName(attributes.getValue(NAME));
                         bugDetails.setAssignedTo(assignedTo);
                         break;
                     case CC:
@@ -250,7 +255,6 @@ public class SaxBugDetailsHandler extends BaseSaxHandler {
      * Enum of XML response elements names.
      */
     private enum BugDetailsElements {
-
         BUG_ID,
         CREATION_TS,
         SHORT_DESC,
