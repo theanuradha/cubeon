@@ -35,7 +35,6 @@ import org.netbeans.cubeon.jira.repository.attributes.JiraProject;
 import org.netbeans.cubeon.jira.tasks.JiraRemoteTask;
 import org.netbeans.cubeon.jira.tasks.JiraTask;
 import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
-import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.filesystems.FileObject;
@@ -53,6 +52,7 @@ import org.openide.util.lookup.Lookups;
 public class JiraTaskRepository implements TaskRepository {
 
     private final JiraTaskRepositoryProvider provider;
+    private final TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
     private final String id;
     private String name;
     private String description;
@@ -171,11 +171,6 @@ public class JiraTaskRepository implements TaskRepository {
                                     handle.progress(jiraTask.getId() + " : " + jiraTask.getName(), taskIds.indexOf(id));
                                     update(session, jiraTask);
                                 }
-                            }
-
-                            List<TaskQuery> taskQuerys = querySupport.getTaskQuerys();
-                            for (TaskQuery taskQuery : taskQuerys) {
-                                taskQuery.synchronize();
                             }
                         }
                     } catch (JiraException ex) {
@@ -408,7 +403,8 @@ public class JiraTaskRepository implements TaskRepository {
                     Logger.getLogger(getClass().getName()).info("Up to date : " + issue.getKey());//NOI18N
 
                 } else {
-
+                    //issue - 85 we need to save any changes before task marege
+                    factory.save(task);
 
                     JiraUtils.maregeToTask(this, issue, jiraRemoteTask, task);
                     persist(task);
@@ -416,7 +412,7 @@ public class JiraTaskRepository implements TaskRepository {
                     //make cache up to date
                     cache(JiraUtils.issueToTask(this, issue));
 
-                    TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
+
                     factory.refresh(task);
 
                     task.getExtension().fireStateChenged();
