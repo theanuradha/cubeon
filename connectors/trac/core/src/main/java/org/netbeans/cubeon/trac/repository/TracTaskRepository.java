@@ -48,7 +48,7 @@ import org.openide.util.lookup.Lookups;
  *
  * @author Anuradha G
  */
-public class TracTaskRepository implements TaskRepository, Runnable {
+public class TracTaskRepository implements TaskRepository {
 
     private final TracTaskRepositoryProvider provider;
     private final TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
@@ -79,11 +79,6 @@ public class TracTaskRepository implements TaskRepository, Runnable {
     private final Object SYNCHRONIZE_LOCK = new Object();
     public final Object SYNCHRONIZE_QUERY_LOCK = new Object();
 
-    private static final RequestProcessor THREAD_POOL = new RequestProcessor("TracTaskRepository processor", 1);
-    private final RequestProcessor.Task task = THREAD_POOL.create(this);
-    private int refreshDelay = 60*10*1000; // every ten minutes
-    private boolean autoRefresh = false;
-
     public TracTaskRepository(TracTaskRepositoryProvider provider,
             String id, String name, String description) {
         this.provider = provider;
@@ -108,7 +103,6 @@ public class TracTaskRepository implements TaskRepository, Runnable {
         handler = new TaskPersistenceHandler(this, baseDir, "tasks");//NOI18N
         cache = new TaskPersistenceHandler(this, baseDir, "cache");//NOI18N
         querySupport = new TracQuerySupport(this, extension);
-        task.schedule(refreshDelay);
     }
 
     public String getId() {
@@ -298,9 +292,6 @@ public class TracTaskRepository implements TaskRepository, Runnable {
     }
 
     public void synchronize() {
-        if ( autoRefresh){
-            task.schedule(refreshDelay);
-        }
         RequestProcessor.getDefault().post(new Runnable() {
 
             public void run() {
@@ -463,35 +454,7 @@ public class TracTaskRepository implements TaskRepository, Runnable {
         return repositoryAttributes;
     }
 
-    public boolean isAutoRefresh() {
-        return autoRefresh;
-    }
-
-    public void setAutoRefresh(boolean autoRefresh) {
-        this.autoRefresh = autoRefresh;
-        if ( this.autoRefresh){
-            task.schedule(refreshDelay);
-        }
-    }
-
-
-    public int getRefreshDelay() {
-        return refreshDelay/60000;
-    }
-
-    public void setRefreshDelay(int refreshDelay) {
-        if (refreshDelay == 0 )
-            refreshDelay = 1;
-        this.refreshDelay = refreshDelay*60000;
-    }
-
     public TracQuerySupport getQuerySupport() {
         return querySupport;
-    }
-
-    public void run() {
-        if ( autoRefresh ){
-            synchronize();
-}
     }
 }

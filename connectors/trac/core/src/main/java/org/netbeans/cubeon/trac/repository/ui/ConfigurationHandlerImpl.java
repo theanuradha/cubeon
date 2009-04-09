@@ -56,8 +56,7 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
             txtName.setText(taskRepository.getName());
             txtUiserId.setText(repository.getUserName());
             txtPassword.setText(repository.getPassword());
-            blAutoRefresh.setSelected(repository.isAutoRefresh());
-            intRefreshInterval.setValue(new Integer(repository.getRefreshDelay()));
+
         } else {
             txtName.requestFocus();
         }
@@ -76,9 +75,6 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
 
 
         repository.setURL(url);
-        repository.setAutoRefresh(blAutoRefresh.isSelected());
-        Integer num = (Integer)intRefreshInterval.getValue();
-        repository.setRefreshDelay(num.intValue());
         return repository;
     }
 
@@ -143,9 +139,6 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
         btnValidate = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        blAutoRefresh = new javax.swing.JCheckBox();
-        intRefreshInterval = new javax.swing.JSpinner();
-        jLabel4 = new javax.swing.JLabel();
 
         lblName.setText(NbBundle.getMessage(ConfigurationHandlerImpl.class, "ConfigurationHandlerImpl.lblName.text")); // NOI18N
 
@@ -183,29 +176,11 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
             }
         });
 
-        blAutoRefresh.setText(org.openide.util.NbBundle.getMessage(ConfigurationHandlerImpl.class, "ConfigurationHandlerImpl.blAutoRefresh.text")); // NOI18N
-        blAutoRefresh.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                blAutoRefreshStateChanged(evt);
-            }
-        });
-
-        intRefreshInterval.setEditor(new javax.swing.JSpinner.NumberEditor(intRefreshInterval, ""));
-        intRefreshInterval.setEnabled(false);
-        intRefreshInterval.setOpaque(false);
-        intRefreshInterval.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                intRefreshIntervalPropertyChange(evt);
-            }
-        });
-
-        jLabel4.setText(org.openide.util.NbBundle.getMessage(ConfigurationHandlerImpl.class, "ConfigurationHandlerImpl.jLabel4.text")); // NOI18N
-
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                     .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
                         .addContainerGap()
@@ -218,23 +193,7 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
                             .add(txtName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE)
                             .add(lblName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE)
                             .add(btnValidate)
-                            .add(txtId, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE)))
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                        .add(20, 20, 20)
-                        .add(jLabel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE)))
-                .addContainerGap())
-                            .add(layout.createSequentialGroup()
-                .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createSequentialGroup()
-                        .add(blAutoRefresh)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 89, Short.MAX_VALUE)
-                        .add(jLabel4)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(intRefreshInterval, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 43, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(31, 31, 31))
-                    .add(layout.createSequentialGroup()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(txtId, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE)
                             .add(layout.createSequentialGroup()
                                 .add(10, 10, 10)
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -244,8 +203,11 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                                     .add(txtPassword)
                                     .add(txtUiserId, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 143, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                            .add(jLabel1))
-                        .addContainerGap(198, Short.MAX_VALUE))))
+                            .add(jLabel1)))
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+                        .add(20, 20, 20)
+                        .add(jLabel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -260,12 +222,7 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
                 .add(txtId, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jLabel2)
-                .add(6, 6, 6)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(blAutoRefresh)
-                    .add(intRefreshInterval, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jLabel4))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                .add(22, 22, 22)
                 .add(jLabel1)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -277,8 +234,8 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                             .add(txtPassword, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                             .add(lblPassword))))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jLabel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                .add(jLabel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 47, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 36, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -332,28 +289,11 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
         }
     }//GEN-LAST:event_jLabel3MouseClicked
 
-    private void blAutoRefreshStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_blAutoRefreshStateChanged
-        boolean val = true;
-        if ( ! blAutoRefresh.isSelected() ){
-            val = false;
-        }
-        intRefreshInterval.setEnabled(val);
-        if ( repository != null )
-            repository.setAutoRefresh(val);
-    }//GEN-LAST:event_blAutoRefreshStateChanged
-
-    private void intRefreshIntervalPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_intRefreshIntervalPropertyChange
-
-    }//GEN-LAST:event_intRefreshIntervalPropertyChange
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBox blAutoRefresh;
     private javax.swing.JButton btnValidate;
-    private javax.swing.JSpinner intRefreshInterval;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JLabel lblName;
