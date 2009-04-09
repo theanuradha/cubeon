@@ -46,8 +46,6 @@ class TracRepositoryPersistence {
     private static final String TAG_ID = "id";//NOI18N
     private static final String TAG_USERID = "user";//NOI18N
     private static final String TAG_VERSION = "version";//NOI18N
-    private static final String TAG_REFRESH = "refresh";//NOI18N
-    private static final String TAG_REFRESHINTERVAL = "refreshdelay";//NOI18N
     private static final String VERSION_ID = "1.0";//NOI18N
     private static final String TAG_URL = "url";//NOI18N
     private static final String TAG_PROJECT = "project";//NOI18N
@@ -98,8 +96,6 @@ class TracRepositoryPersistence {
         repositoryElement.setAttribute(TAG_DESCRIPTION, repository.getDescription());
         repositoryElement.setAttribute(TAG_USERID, repository.getUserName());
         repositoryElement.setAttribute(TAG_URL, repository.getURL());
-        repositoryElement.setAttribute(TAG_REFRESH, repository.isAutoRefresh()?"True":"False");
-        repositoryElement.setAttribute(TAG_REFRESHINTERVAL, ""+repository.getRefreshDelay());
 
         repositoryElement.setAttribute(TAG_PASSWORD_HASH,
                 RepositoryUtils.encodePassword(repository.getUserName(),
@@ -160,8 +156,6 @@ class TracRepositoryPersistence {
                     String description = element.getAttribute(TAG_DESCRIPTION);
                     String url = element.getAttribute(TAG_URL);
                     String user = element.getAttribute(TAG_USERID);
-                    String autoRefresh = element.getAttribute(TAG_REFRESH);
-                    String refreshInterval = element.getAttribute(TAG_REFRESHINTERVAL);
 
                     TracTaskRepository tracTaskRepository;
                     String password = element.getAttribute(TAG_PASSWORD_HASH);
@@ -172,12 +166,7 @@ class TracRepositoryPersistence {
                     tracTaskRepository.setUserName(user);
                     tracTaskRepository.setPassword(password);
                     tracTaskRepository.setURL(url);
-                    try {
-                        tracTaskRepository.setRefreshDelay(Integer.parseInt(refreshInterval));
-                    } catch ( NumberFormatException nfe ){
-                        tracTaskRepository.setRefreshDelay(10);
-                    }
-                    tracTaskRepository.setAutoRefresh(autoRefresh.matches("[YyTt].*"));
+
                     tracTaskRepository.loadAttributes();
                     repositorys.add(tracTaskRepository);
                 }
