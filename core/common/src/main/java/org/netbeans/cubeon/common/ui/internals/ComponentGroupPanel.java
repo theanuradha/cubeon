@@ -50,7 +50,7 @@ import org.openide.util.actions.Presenter;
  */
 public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPanel {
 
-    private GroupView groupView;
+    private AbstractGroupView groupView;
     private boolean active;
     private JComponent innerPanel;
     private Group group;
@@ -66,15 +66,15 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
         }
     };
 
-    public ComponentGroupPanel(GroupView groupView, Group componentGroup) {
+    public ComponentGroupPanel(AbstractGroupView groupView, Group componentGroup) {
         this(groupView, componentGroup, false, false);
     }
 
-    public ComponentGroupPanel(GroupView groupView, Group componentGroup, boolean open) {
+    public ComponentGroupPanel(AbstractGroupView groupView, Group componentGroup, boolean open) {
         this(groupView, componentGroup, open, false);
     }
 
-    public ComponentGroupPanel(GroupView groupView, final Group componentGroup,
+    public ComponentGroupPanel(AbstractGroupView groupView, final Group componentGroup,
             boolean autoExpand, boolean addFocusListenerToButton) {
 
         this.group = componentGroup;
@@ -131,7 +131,7 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
         setToolbarActions(componentGroup.getToolbarActions());
     }
 
-    void setGroupView(GroupView groupView) {
+    void setGroupView(AbstractGroupView groupView) {
         this.groupView = groupView;
         VisualTheme theme = groupView.getTheme();
         fillerLine.setForeground(theme.getFoldLineColor());
@@ -144,7 +144,7 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
         actionPanel.setBackground(theme.getDocumentBackgroundColor());
     }
 
-    public GroupView getGroupView() {
+    public AbstractGroupView getGroupView() {
         return groupView;
     }
 
@@ -160,7 +160,8 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
             gridBagConstraints.gridwidth = 2;
             gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
             gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-            gridBagConstraints.weightx = 1.0;
+            gridBagConstraints.weightx = 0.5;
+            gridBagConstraints.weighty = 0.5;
             gridBagConstraints.insets = new java.awt.Insets(2, 0, 0, 0);
             fillerLine.setVisible(true);
             fillerEnd.setVisible(true);
@@ -170,8 +171,10 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
             SwingUtilities.invokeLater(new Runnable() {
 
                 public void run() {
-                    if (group.isFoldable()) {
-                        ComponentGroupPanel.this.scrollRectToVisible(new Rectangle(10, ComponentGroupPanel.this.getHeight()));
+                    if (groupView.isFoldable()) {
+                        if (group.isFoldable()) {
+                            ComponentGroupPanel.this.scrollRectToVisible(new Rectangle(10, ComponentGroupPanel.this.getHeight()));
+                        }
                     }
                 }
             });
@@ -186,15 +189,17 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
     }
 
     protected void closeInnerPanel() {
-        if (group.isFoldable()) {
-            summaryLabel.setVisible(true);
-            if (innerPanel != null) {
-                innerPanel.removeFocusListener(sectionFocusListener);
-                remove(innerPanel);
-                innerPanel = null;
+        if (groupView.isFoldable()) {
+            if (group.isFoldable()) {
+                summaryLabel.setVisible(true);
+                if (innerPanel != null) {
+                    innerPanel.removeFocusListener(sectionFocusListener);
+                    remove(innerPanel);
+                    innerPanel = null;
+                }
+                fillerLine.setVisible(false);
+                fillerEnd.setVisible(false);
             }
-            fillerLine.setVisible(false);
-            fillerEnd.setVisible(false);
         }
     }
 
@@ -226,8 +231,10 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
-                if (group.isFoldable()) {
-                    ComponentGroupPanel.this.scrollRectToVisible(new Rectangle(10, ComponentGroupPanel.this.getHeight()));
+                if (groupView.isFoldable()) {
+                    if (group.isFoldable()) {
+                        ComponentGroupPanel.this.scrollRectToVisible(new Rectangle(10, ComponentGroupPanel.this.getHeight()));
+                    }
                 }
             }
         });
@@ -349,9 +356,14 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
         Mnemonics.setLocalizedText(titleButton, group.getName());
         titleButton.setToolTipText(group.getDescription());
         summaryLabel.setText(group.getSummary());
-        if (group.isFoldable()) {
-            foldButton.setIcon(new javax.swing.ImageIcon(IMAGE_UNSELECTED));
-            foldButton.setSelectedIcon(new javax.swing.ImageIcon(IMAGE_SELECTED));
+        if (groupView.isFoldable()) {
+            if (group.isFoldable()) {
+                foldButton.setIcon(new javax.swing.ImageIcon(IMAGE_UNSELECTED));
+                foldButton.setSelectedIcon(new javax.swing.ImageIcon(IMAGE_SELECTED));
+            } else {
+                foldButton.setIcon(new javax.swing.ImageIcon(IMAGE_DEFAULT));
+                foldButton.setSelectedIcon(new javax.swing.ImageIcon(IMAGE_DEFAULT));
+            }
         } else {
             foldButton.setIcon(new javax.swing.ImageIcon(IMAGE_DEFAULT));
             foldButton.setSelectedIcon(new javax.swing.ImageIcon(IMAGE_DEFAULT));
@@ -372,14 +384,19 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
                 innerPanel = null;
                 validateState();
             }
-        }else if("COMPONENT".equals(e.getSource())){
-           if(group.isOpen()){
-            open();
-           }
+        } else if ("COMPONENT".equals(e.getSource())) {
+            if (!groupView.isFoldable() || group.isOpen()) {
+                open();
+            }
         }
-        if (group.isFoldable()) {
-            foldButton.setIcon(new javax.swing.ImageIcon(IMAGE_UNSELECTED));
-            foldButton.setSelectedIcon(new javax.swing.ImageIcon(IMAGE_SELECTED));
+        if (groupView.isFoldable()) {
+            if (group.isFoldable()) {
+                foldButton.setIcon(new javax.swing.ImageIcon(IMAGE_UNSELECTED));
+                foldButton.setSelectedIcon(new javax.swing.ImageIcon(IMAGE_SELECTED));
+            } else {
+                foldButton.setIcon(new javax.swing.ImageIcon(IMAGE_DEFAULT));
+                foldButton.setSelectedIcon(new javax.swing.ImageIcon(IMAGE_DEFAULT));
+            }
         } else {
             foldButton.setIcon(new javax.swing.ImageIcon(IMAGE_DEFAULT));
             foldButton.setSelectedIcon(new javax.swing.ImageIcon(IMAGE_DEFAULT));
@@ -485,5 +502,9 @@ public class ComponentGroupPanel extends javax.swing.JPanel implements GroupPane
 
     protected JButton getTitleButton() {
         return titleButton;
+    }
+
+    public JComponent getComponent() {
+        return this;
     }
 }

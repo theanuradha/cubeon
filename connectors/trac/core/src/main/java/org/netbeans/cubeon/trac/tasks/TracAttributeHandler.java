@@ -87,15 +87,16 @@ public class TracAttributeHandler implements EditorAttributeHandler {
         CommentSectionDockAction commentSectionDockAction = new CommentSectionDockAction();
 
         commentsGroup.setToolbarActions(new Action[]{commentSectionDockAction});
-        editorSupport = new TaskEditorSupport(descriptionGroup, attributesGroup, actionsGroup,commentsGroup, newCommentGroup);
+        editorSupport = new TaskEditorSupport();
         editor = editorSupport.createEditor();
+        editor.setLeftSideGroups(descriptionGroup, attributesGroup, actionsGroup,commentsGroup, newCommentGroup);
         tracTaskEditor = new TracTaskEditor(editor, task);
         // attributesGroup.setOpen(task.isLocal());
         attributesGroup.setComponent(tracTaskEditor.getAttributesPanel());
         actionsGroup.setComponent(tracTaskEditor.getActionAndPeoplePanel());
         newCommentGroup.setComponent(tracTaskEditor.getNewCommentComponent());
         descriptionGroup.setComponent(tracTaskEditor.getDescriptionComponent());
-        editorSupport.setActive(descriptionGroup);
+        editor.setLeftActiveGroup(descriptionGroup);
         refresh();
 
 
@@ -215,20 +216,20 @@ public class TracAttributeHandler implements EditorAttributeHandler {
             if (docked) {
                 docked = false;
                 validate();
-                editor.setMasterGroups(descriptionGroup, attributesGroup, actionsGroup, newCommentGroup);
+                editor.setLeftSideGroups(descriptionGroup, attributesGroup, actionsGroup, newCommentGroup);
                 commentsGroup.setOpen(true);
-                editor.setDetailGroups(commentsGroup);
+                editor.setRightSideGroups(commentsGroup);
                 
             } else {
                 docked = true;
                 validate();
-                editor.setMasterGroups(descriptionGroup, attributesGroup, actionsGroup, commentsGroup, newCommentGroup);
-
-                editor.setDetailGroups();
+                editor.setLeftSideGroups(descriptionGroup, attributesGroup, actionsGroup, commentsGroup, newCommentGroup);
+                //remove rigrt side groups 
+                editor.setRightSideGroups();
                 
             }
 
-            editorSupport.setActive(descriptionGroup);
+             editor.setLeftActiveGroup(descriptionGroup);
         }
     }
 }

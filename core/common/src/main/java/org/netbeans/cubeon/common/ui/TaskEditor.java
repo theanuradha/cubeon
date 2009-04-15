@@ -48,11 +48,11 @@ public interface TaskEditor {
 
     JComponent getComponent();
 
-    void setMasterGroups(Group... groups);
+    void setLeftSideGroups(Group... groups);
 
-   
+    void setRightSideGroups(Group... groups);
 
-    void setDetailGroups(Group... groups);
+    void setLeftActiveGroup(Group group);
 
-    
+    void setRightActiveGroup(Group group);
 }

@@ -98,10 +98,11 @@ public class EditorAttributeHandlerImpl implements EditorAttributeHandler {
                 NbBundle.getMessage(EditorAttributeHandlerImpl.class, "LBL_Description_Dec"));
         descriptionGroup.setComponent(panels.getDescriptionComponent());
         descriptionGroup.setFoldable(false);
-        editorSupport = new TaskEditorSupport(attributesGroup, urlGroup, descriptionGroup);
+        editorSupport = new TaskEditorSupport();
         
         editor = editorSupport.createEditor();
-        editorSupport.setActive(attributesGroup);
+        editor.setLeftSideGroups(attributesGroup, urlGroup, descriptionGroup);
+        editor.setLeftActiveGroup(attributesGroup);
         editor.hideStatusLable(true);
         panels.addChangeListener(new ChangeListener() {
 

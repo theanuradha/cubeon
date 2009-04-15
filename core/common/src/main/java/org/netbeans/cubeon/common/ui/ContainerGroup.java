@@ -25,8 +25,9 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+import org.netbeans.cubeon.common.ui.internals.AbstractGroupView;
 import org.netbeans.cubeon.common.ui.internals.ComponentGroupPanel;
-import org.netbeans.cubeon.common.ui.internals.GroupView;
+import org.netbeans.cubeon.common.ui.internals.TreeGroupView;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -38,7 +39,7 @@ import org.openide.util.NbBundle;
 public class ContainerGroup extends Group {
 
     private List<Group> groups = new ArrayList<Group>();
-    private final GroupView groupView = new GroupView(false);
+    private final TreeGroupView groupView = new TreeGroupView(false);
 
     public ContainerGroup(String name, String description) {
         super(name, description);
@@ -92,7 +93,7 @@ public class ContainerGroup extends Group {
             }
         };
         expand.putValue(AbstractAction.NAME,
-                NbBundle.getMessage(GroupView.class, "LBL_Expand_All"));
+                NbBundle.getMessage(TreeGroupView.class, "LBL_Expand_All"));
         expand.putValue(AbstractAction.SMALL_ICON,
                 new ImageIcon(ImageUtilities.loadImage("org/netbeans/cubeon/common/ui/internals/expandTree.png")));
         toolbarActions[toolbarActions.length-2]=expand;
@@ -103,7 +104,7 @@ public class ContainerGroup extends Group {
             }
         };
         collapse.putValue(AbstractAction.NAME,
-                NbBundle.getMessage(GroupView.class, "LBL_Collapse_All"));
+                NbBundle.getMessage(TreeGroupView.class, "LBL_Collapse_All"));
         collapse.putValue(AbstractAction.SMALL_ICON,
                 new ImageIcon(ImageUtilities.loadImage("org/netbeans/cubeon/common/ui/internals/colapseTree.png")));
         toolbarActions[toolbarActions.length-1]=collapse;
@@ -116,8 +117,8 @@ public class ContainerGroup extends Group {
     @Override
     public GroupPanel createGroupPanel(Lookup lookup) {
 
-        GroupView gv = lookup.lookup(GroupView.class);
-        assert groupView != null;
+        AbstractGroupView gv = lookup.lookup(AbstractGroupView.class);
+        assert gv != null;
         ComponentGroupPanel componentGroupPanel = new ComponentGroupPanel(gv, this);
 
         return componentGroupPanel;
@@ -125,6 +126,6 @@ public class ContainerGroup extends Group {
 
     @Override
     public JComponent getComponent() {
-        return groupView;
+        return groupView.getComponent();
     }
 }

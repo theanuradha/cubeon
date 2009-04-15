@@ -16,85 +16,65 @@
  */
 package org.netbeans.cubeon.common.ui.internals;
 
+import javax.swing.JComponent;
 import org.netbeans.cubeon.common.ui.GroupPanel;
 import java.awt.BorderLayout;
-import java.util.ArrayList;
-import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import org.netbeans.cubeon.common.ui.Group;
-import org.openide.util.Lookup;
-import org.openide.util.lookup.Lookups;
 
 /**
  *
  * @author Anuradha
  * this class is base on org.netbeans.modules.xml.multiview.ui.SectionView
  */
-public class GroupView extends JPanel {
+public class TreeGroupView extends AbstractGroupView {
 
     private JPanel scrollPanel, filler;
     private int sectionCount;
-    private GroupPanel activePanel;
-    private List<Group> groups = new ArrayList<Group>();
-    private List<GroupPanel> groupPanels = new ArrayList<GroupPanel>();
-    private VisualTheme theme = new VisualTheme();
+    private final JPanel container = new JPanel();
 
-    public GroupView() {
+    public TreeGroupView() {
 
         this(true);
     }
 
-    public GroupView(boolean addscroll) {
+    public TreeGroupView(boolean addscroll) {
 
-        setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        container.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
         initialize(addscroll);
 
     }
 
+    @Override
     public void clear() {
-        for (Group group : new ArrayList<Group>(groups)) {
-            remove(group);
-        }
-        
+        super.clear();
         sectionCount = 0;
         filler.removeAll();
-        activePanel = null;
+
 
     }
 
-    public void addGroup(Group group) {
-        groups.add(group);
-        Lookup lookup = Lookups.fixed(this);
-        GroupPanel groupPanel = group.createGroupPanel(lookup);
-        addSection(groupPanel, group.isOpen());
-    }
-
-    public void collapseAll() {
-        for (GroupPanel groupPanel : groupPanels) {
-            groupPanel.close();
-        }
-    }
-
-    public void expandAll() {
-        for (GroupPanel groupPanel : groupPanels) {
-            groupPanel.open();
-        }
-    }
-
-    public void remove(Group group) {
-        groups.remove(group);
-        GroupPanel findGroupPanel = findGroupPanel(group);
-        if (findGroupPanel != null) {
-            removeSection(findGroupPanel);
+    /**
+     * Opens the panel identified by given <code>key</code>.
+     */
+    public void openPanel(Group key) {
+        if (key != null) {
+            GroupPanel panel = findGroupPanel(key);
+            if (panel != null) {
+                //TODO add open notify
+                openParents((JPanel) panel);
+                panel.scroll();
+                panel.setActive(true);
+            }
         }
     }
 
     void initialize(boolean addscroll) {
         sectionCount = 0;
-        setLayout(new java.awt.BorderLayout());
+        container.setLayout(new java.awt.BorderLayout());
         scrollPanel = new JPanel();
         scrollPanel.setLayout(new java.awt.GridBagLayout());
         if (addscroll) {
@@ -103,12 +83,12 @@ public class GroupView extends JPanel {
             scrollPane.setViewportView(scrollPanel);
             scrollPane.getVerticalScrollBar().setUnitIncrement(15);
             scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-            add(scrollPane, BorderLayout.CENTER);
+            container.add(scrollPane, BorderLayout.CENTER);
         } else {
-            add(scrollPanel, BorderLayout.CENTER);
+            container.add(scrollPanel, BorderLayout.CENTER);
         }
         filler = new JPanel();
-        filler.setBackground(theme.getDocumentBackgroundColor());
+        filler.setBackground(getTheme().getDocumentBackgroundColor());
 
 
     }
@@ -117,8 +97,9 @@ public class GroupView extends JPanel {
      * Adds a section for this.
      * @param section the section to be added.
      */
+    @Override
     public void addSection(GroupPanel section) {
-        groupPanels.add(section);
+        super.addSection(section);
         scrollPanel.remove(filler);
         java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -139,11 +120,16 @@ public class GroupView extends JPanel {
 
 
         sectionCount++;
+
+        if (section.getGroup().isOpen()) {
+            section.open();
+        }
     }
 
     /**
      * Removes given <code>panel</code> and moves up remaining panels.
      */
+    @Override
     public void removeSection(GroupPanel panel) {
         int panelIndex = panel.getIndex();
         scrollPanel.remove((JPanel) panel);
@@ -173,51 +159,8 @@ public class GroupView extends JPanel {
             //gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 6);
             scrollPanel.add((JPanel) pan, gridBagConstraints);
         }
-        groupPanels.remove(panel);
+        super.removeSection(panel);
         sectionCount--;
-    }
-
-    /**
-     * Adds a section for this.
-     * @param section the section to be added.
-     * @param open indicates whether given <code>section</code>
-     * should be opened.
-     */
-    public void addSection(GroupPanel section, boolean open) {
-        addSection(section);
-        if (open) {
-            section.open();
-        }
-    }
-
-    /**
-     * Opens the panel identified by given <code>key</code>.
-     */
-    public void openPanel(Group key) {
-        if (key != null) {
-            GroupPanel panel = findGroupPanel(key);
-            if (panel != null) {
-                //TODO add open notify
-                openParents((JPanel) panel);
-                panel.scroll();
-                panel.setActive(true);
-            }
-        }
-    }
-
-    /**
-     * @return panel with the given <code>key</code> or null
-     * if no matching panel was found.
-     */
-    public GroupPanel findGroupPanel(Group key) {
-
-        for (GroupPanel groupPanel : groupPanels) {
-            if (groupPanel.getGroup().equals(key)) {
-                return groupPanel;
-            }
-        }
-
-        return null;
     }
 
     private void openParents(JPanel panel) {
@@ -236,23 +179,13 @@ public class GroupView extends JPanel {
         }
     }
 
-    VisualTheme getTheme() {
-        return theme;
+    @Override
+    public boolean isFoldable() {
+        return true;
     }
 
-    /**
-     * Sets given <code>activePanel</code> as the currently active panel.
-     */
-    public void setActiveGroupPanel(GroupPanel activePanel) {
-        if (this.activePanel != null && this.activePanel != activePanel) {
-            this.activePanel.setActive(false);
-        }
-        this.activePanel = activePanel;
-        activePanel.scroll();
-        activePanel.setActive(true);
-    }
-
-    public GroupPanel getActiveGroupPanel() {
-        return activePanel;
+    @Override
+    public JComponent getComponent() {
+        return container;
     }
 }
