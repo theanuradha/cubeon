@@ -86,14 +86,15 @@ public class JiraAttributeHandler implements EditorAttributeHandler {
                 getMessage(JiraAttributeHandler.class, "LBL_New_Comment_Dec"));
         //open new comment depende on user alrady have comment
         newCommentGroup.setOpen(task.getNewComment() != null && task.getNewComment().length() != 0);
-        editorSupport = new TaskEditorSupport(attributesGroup, descriptionGroup, actionsGroup, commentsGroup, newCommentGroup);
+        editorSupport = new TaskEditorSupport();
         editor = editorSupport.createEditor();
+        editor.setLeftSideGroups(attributesGroup, descriptionGroup, actionsGroup, commentsGroup, newCommentGroup);
         jiraTaskEditor = new JiraTaskEditor(task, editor);
         actionsGroup.setComponent(jiraTaskEditor.getActionAndPeoplePanel());
         attributesGroup.setComponent(jiraTaskEditor.getAttributesPanel());
         descriptionGroup.setComponent(jiraTaskEditor.getDescriptionComponent());
         newCommentGroup.setComponent(jiraTaskEditor.getNewCommentComponent());
-        editorSupport.setActive(descriptionGroup);
+        editor.setLeftActiveGroup(descriptionGroup);
         refresh();
     }
 
@@ -190,20 +191,20 @@ public class JiraAttributeHandler implements EditorAttributeHandler {
             if (docked) {
                 docked = false;
                 validate();
-                editor.setMasterGroups(descriptionGroup, attributesGroup, actionsGroup, newCommentGroup);
+                editor.setLeftSideGroups(descriptionGroup, attributesGroup, actionsGroup, newCommentGroup);
                 commentsGroup.setOpen(true);
-                editor.setDetailGroups(commentsGroup);
+                editor.setRightSideGroups(commentsGroup);
 
             } else {
                 docked = true;
                 validate();
-                editor.setMasterGroups(descriptionGroup, attributesGroup, actionsGroup, commentsGroup, newCommentGroup);
+                editor.setLeftSideGroups(descriptionGroup, attributesGroup, actionsGroup, commentsGroup, newCommentGroup);
 
-                editor.setDetailGroups();
+                editor.setRightSideGroups();
 
             }
 
-            editorSupport.setActive(descriptionGroup);
+            editor.setLeftActiveGroup(descriptionGroup);
         }
     }
 }

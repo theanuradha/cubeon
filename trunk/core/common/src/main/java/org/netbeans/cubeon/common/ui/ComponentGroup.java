@@ -17,8 +17,9 @@
 package org.netbeans.cubeon.common.ui;
 
 import javax.swing.JComponent;
+import org.netbeans.cubeon.common.ui.internals.AbstractGroupView;
 import org.netbeans.cubeon.common.ui.internals.ComponentGroupPanel;
-import org.netbeans.cubeon.common.ui.internals.GroupView;
+import org.netbeans.cubeon.common.ui.internals.TreeGroupView;
 import org.openide.util.Lookup;
 
 /**
@@ -53,7 +54,7 @@ public class ComponentGroup extends Group {
     @Override
     public GroupPanel createGroupPanel(Lookup lookup) {
 
-        GroupView groupView = lookup.lookup(GroupView.class);
+        AbstractGroupView groupView = lookup.lookup(AbstractGroupView.class);
         assert groupView != null;
         ComponentGroupPanel componentGroupPanel = new ComponentGroupPanel(groupView, this);
 

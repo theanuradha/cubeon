@@ -16,6 +16,8 @@
  */
 package org.netbeans.cubeon.common.ui;
 
+import javax.swing.JComponent;
+
 /**
  *
  * @author Anuradha
@@ -54,4 +56,6 @@ public interface GroupPanel {
     int getIndex();
 
     Group getGroup();
+
+    JComponent getComponent();
 }
