@@ -42,7 +42,11 @@ public class TaskEditorUI extends javax.swing.JPanel implements TaskEditor {
     /** Creates new form TaskEditorUI */
     public TaskEditorUI() {
         initComponents();
-        editorLayout = new TreeBaseGroupLayout();
+        if (Boolean.getBoolean("org.netbeans.cubeon.task.editor.tablayout")) {
+            editorLayout = new TabBaseGroupLayout();
+        } else {
+            editorLayout = new TreeBaseGroupLayout();
+        }
         pnlRightSide.setVisible(false);
         pnlLeftSide.setVisible(false);
     }
@@ -212,6 +216,4 @@ public class TaskEditorUI extends javax.swing.JPanel implements TaskEditor {
     public void setLeftActiveGroup(Group group) {
         editorLayout.setLeftActiveGroup(group);
     }
-    
-
 }
