@@ -520,7 +520,7 @@ public class XmlRpcTracSession implements TracSession {
     public List<TicketAction> getTicketActions(int id) throws TracException {
         List<TicketAction> actions = new ArrayList<TicketAction>();
         try {
-            HashMap result = (HashMap) client.execute("ticket.getAvailableActions",//NOI18N
+            HashMap result = (HashMap) client.execute("ticket.getAvailableCustomActions",//NOI18N
                     new Object[]{id});
             Collection maps = result.values();
             for (Object object : maps) {
