@@ -52,6 +52,9 @@ public class XmlRpcTracSession implements TracSession {
 
     private final XmlRpcClient client;
     private XmlRpcClientConfigImpl config;
+    private final int epochVersion;
+    private final int majorVersion;
+    private final int minorVersion;
 
     /**
      * Create XmlRpcTracSession for trac 
@@ -85,7 +88,18 @@ public class XmlRpcTracSession implements TracSession {
              */
             Object[] versionInfo = (Object[]) client.execute("system.getAPIVersion",//NOI18N
                     new Object[0]);
-        //TODO validate trac version using versionInfo
+             epochVersion = (Integer) versionInfo[0];
+             majorVersion = (Integer) versionInfo[1];
+             minorVersion = (Integer) versionInfo[2];
+          
+           
+            //validate xmlrpc version
+            if(majorVersion<5){
+              throw  new TracException("xmlrpc plug-in version not supported:" +
+                      " Please Use  cube'n patched XmlRpcPlugin." +
+                      "For more information refer tp " +
+                      "http://code.google.com/p/cubeon/wiki/GSTracRepository");
+            }
         } catch (XmlRpcException ex) {
             throw new TracException(ex);
         } catch (MalformedURLException ex) {
@@ -520,7 +534,14 @@ public class XmlRpcTracSession implements TracSession {
     public List<TicketAction> getTicketActions(int id) throws TracException {
         List<TicketAction> actions = new ArrayList<TicketAction>();
         try {
-            HashMap result = (HashMap) client.execute("ticket.getAvailableCustomActions",//NOI18N
+            final String methodID;
+            //check version id
+            if(majorVersion<6){
+               methodID="ticket.getAvailableActions";//NOI18N
+            }else {
+               methodID="ticket.getAvailableCustomActions";//NOI18N
+            }
+            HashMap result = (HashMap) client.execute(methodID,
                     new Object[]{id});
             Collection maps = result.values();
             for (Object object : maps) {
