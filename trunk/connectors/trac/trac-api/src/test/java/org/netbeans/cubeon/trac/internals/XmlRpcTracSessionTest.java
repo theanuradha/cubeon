@@ -19,6 +19,11 @@ package org.netbeans.cubeon.trac.internals;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import junit.framework.TestCase;
 import org.netbeans.cubeon.trac.api.Ticket;
 import org.netbeans.cubeon.trac.api.TicketAction;
@@ -42,6 +47,7 @@ public class XmlRpcTracSessionTest extends TestCase {
 
     private XmlRpcTracSession tracSession;
     private String user;
+    private SSLSocketFactory defaultSocketFactory = null;
 
     public XmlRpcTracSessionTest(String testName) {
         super(testName);
@@ -50,16 +56,49 @@ public class XmlRpcTracSessionTest extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+        defaultSocketFactory = HttpsURLConnection.getDefaultSSLSocketFactory();
+        TrustManager[] trustAllCerts = new TrustManager[]{
+            new X509TrustManager() {
+
+                public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                    return null;
+                }
+
+                public void checkClientTrusted(
+                        java.security.cert.X509Certificate[] certs, String authType) {
+                }
+
+                public void checkServerTrusted(
+                        java.security.cert.X509Certificate[] certs, String authType) {
+                }
+            }
+        };
+
+        // Install the all-trusting trust manager
         try {
-            user = "anuradha";
-            tracSession = new XmlRpcTracSession("http://192.168.1.100:8000/argos-dev",
-                    user, "a123");
+            SSLContext sc = SSLContext.getInstance("SSL");
+            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        try {
+            user = "cubeon-dev@googlegroups.com";
+            tracSession = new XmlRpcTracSession("https://free2.projectlocker.com/Cubeon/cubeon/trac",
+                    user, "testing");
         } catch (TracException tracException) {
             System.out.println(tracException.getMessage());
             System.out.println("XmlRpcTracSession : Connection Not found. " +
                     "Check you Test trac repo url,username,password");
             System.out.println("IGNORING XmlRpcTracSessionTest !!!");
         }
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+        HttpsURLConnection.setDefaultSSLSocketFactory(defaultSocketFactory);
     }
 
     /**
@@ -201,7 +240,7 @@ public class XmlRpcTracSessionTest extends TestCase {
         String description = "Test Description";
         Map<String, Object> attributes = new HashMap<String, Object>();
         attributes.put(TracKeys.PRIORITY, "major");
-        attributes.put(TracKeys.COMPONENT, "Test");
+        attributes.put(TracKeys.COMPONENT, "test");
         attributes.put(TracKeys.TYPE, "task");
         //attributes.put(TracKeys.REPORTER, "");
         attributes.put(TracKeys.KEYWORDS, "test");
@@ -228,7 +267,7 @@ public class XmlRpcTracSessionTest extends TestCase {
         assertEquals("enhancement", ticket.get(TracKeys.TYPE));
         assertFalse(ticket.getTicketChanges().isEmpty());
 
-        System.out.println("ticket.getTicketChanges() : "+ticket.getTicketChanges());
+        System.out.println("ticket.getTicketChanges() : " + ticket.getTicketChanges());
         //test getTickets
         System.out.println("getTickets");
         List<Ticket> tickets = tracSession.getTickets(ticket.getTicketId());
