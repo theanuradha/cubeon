@@ -82,7 +82,6 @@ public class TreeGroupView extends AbstractGroupView {
             scrollPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
             scrollPane.setViewportView(scrollPanel);
             scrollPane.getVerticalScrollBar().setUnitIncrement(15);
-            scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
             container.add(scrollPane, BorderLayout.CENTER);
         } else {
             container.add(scrollPanel, BorderLayout.CENTER);
