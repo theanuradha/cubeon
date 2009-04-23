@@ -410,6 +410,9 @@ public class XmlRpcTracSession implements TracSession {
             Date cdate = (Date) result[1];
             Date udate = (Date) result[2];
             HashMap<String, Object> vaules = (HashMap<String, Object>) result[3];
+            //trac 0.12 remove time and changetime from vaules
+            vaules.remove("time");
+            vaules.remove("changetime");
             Set<Entry<String, Object>> entrySet = vaules.entrySet();
             for (Entry<String, Object> entry : entrySet) {
                 Object value = entry.getValue();
