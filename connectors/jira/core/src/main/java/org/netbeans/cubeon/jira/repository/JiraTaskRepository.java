@@ -75,6 +75,7 @@ public class JiraTaskRepository implements TaskRepository {
     private final JiraTaskTypeProvider jttp = new JiraTaskTypeProvider();
     private final JiraTaskStatusProvider jtsp = new JiraTaskStatusProvider();
     private final JiraTaskResolutionProvider jtrp = new JiraTaskResolutionProvider();
+    private final JiraOfflineTaskSupport offlineTaskSupport;
     private final JiraRepositoryAttributes repositoryAttributes;
     private final JiraQuerySupport querySupport;
     private final TaskPersistenceHandler handler;
@@ -87,6 +88,7 @@ public class JiraTaskRepository implements TaskRepository {
     private final Object SYNCHRONIZE_LOCK = new Object();
     public final Object SYNCHRONIZE_QUERY_LOCK = new Object();
     private final Object FILTER_UPDATE_LOCK = new Object();
+    private final Lookup lookup;
     //----
 
     public JiraTaskRepository(JiraTaskRepositoryProvider provider,
@@ -109,6 +111,9 @@ public class JiraTaskRepository implements TaskRepository {
         handler = new TaskPersistenceHandler(this, baseDir, "tasks");//NOI18N
         cache = new TaskPersistenceHandler(this, baseDir, "cache");//NOI18N
         querySupport = new JiraQuerySupport(this, extension);
+        offlineTaskSupport = new JiraOfflineTaskSupport(this);
+        lookup = Lookups.fixed(this,
+                provider, extension, jtpp, jtrp, jtsp, jttp, querySupport, offlineTaskSupport);
     }
 
     public FileObject getBaseDir() {
@@ -136,8 +141,7 @@ public class JiraTaskRepository implements TaskRepository {
     }
 
     public Lookup getLookup() {
-        return Lookups.fixed(this,
-                provider, extension, jtpp, jtrp, jtsp, jttp, querySupport);
+        return lookup;
     }
 
     public Image getImage() {

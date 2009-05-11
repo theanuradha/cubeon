@@ -16,6 +16,7 @@
  */
 package org.netbeans.cubeon.ui.filters;
 
+import org.netbeans.cubeon.tasks.spi.repository.OfflineTaskSupport;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskElementFilter;
 import org.netbeans.cubeon.ui.UIPreferences;
@@ -52,6 +53,12 @@ public class TaskCompletedFilter implements TaskElementFilter {
     }
 
     public boolean isFiltered(TaskElement element) {
+        //Do not filter completed task with outgoing changes
+        OfflineTaskSupport offlineTaskSupport = element.getTaskRepository().getLookup().lookup(OfflineTaskSupport.class);
+        if (offlineTaskSupport != null && offlineTaskSupport.hasOutgoingChanges(element)) {
+            return false;
+        }
+        
         return element.isCompleted();
     }
 }
