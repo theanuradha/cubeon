@@ -57,7 +57,6 @@ public class TracTaskRepository implements TaskRepository {
     private String description;
     //Url of the Repository
     private String url;
-
     //----------------------------
     private String userName;
     private String password;
@@ -74,10 +73,12 @@ public class TracTaskRepository implements TaskRepository {
     private final TaskPersistenceHandler handler;
     private final TaskPersistenceHandler cache;
     private final TracQuerySupport querySupport;
+    private final TracOfflineTaskSupport offlineTaskSupport;
     private Map<String, TracTask> map = new HashMap<String, TracTask>();
     //locks
     private final Object SYNCHRONIZE_LOCK = new Object();
     public final Object SYNCHRONIZE_QUERY_LOCK = new Object();
+    private final Lookup lookup;
 
     public TracTaskRepository(TracTaskRepositoryProvider provider,
             String id, String name, String description) {
@@ -100,9 +101,11 @@ public class TracTaskRepository implements TaskRepository {
         severityProvider = new TracTaskSeverityProvider();
         resolutionProvider = new TracTaskResolutionProvider();
         repositoryAttributes = new TracRepositoryAttributes(this);
+        offlineTaskSupport = new TracOfflineTaskSupport(this);
         handler = new TaskPersistenceHandler(this, baseDir, "tasks");//NOI18N
         cache = new TaskPersistenceHandler(this, baseDir, "cache");//NOI18N
         querySupport = new TracQuerySupport(this, extension);
+        lookup = Lookups.fixed(this, extension, provider, priorityProvider, statusProvider, resolutionProvider, typeProvider, severityProvider, querySupport, offlineTaskSupport);
     }
 
     public String getId() {
@@ -118,8 +121,7 @@ public class TracTaskRepository implements TaskRepository {
     }
 
     public Lookup getLookup() {
-        return Lookups.fixed(this, extension, provider, priorityProvider,
-                statusProvider, resolutionProvider, typeProvider, severityProvider, querySupport);
+        return lookup;
     }
 
     public Image getImage() {
@@ -213,7 +215,7 @@ public class TracTaskRepository implements TaskRepository {
         synchronized (task) {
             //ignore if local task
             if (!task.isLocal()) {
-                
+
                 TracTask cachedTask = cache.getTaskElementById(task.getId());
                 //if remote ticket not modified ignore and log 
                 if (cachedTask != null && cachedTask.getUpdatedDate() == issue.getUpdatedDate()) {
