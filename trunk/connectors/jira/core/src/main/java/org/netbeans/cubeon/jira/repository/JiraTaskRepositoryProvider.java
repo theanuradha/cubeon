@@ -121,7 +121,7 @@ public class JiraTaskRepositoryProvider implements TaskRepositoryType {
                 repository.getLookup().lookup(JiraTaskRepository.class);
         if (jiraTaskRepository != null) {
             persistence.removeRepository(jiraTaskRepository);
-            taskRepositorys.remove(repository);
+            taskRepositorys.remove(jiraTaskRepository);
             List<String> taskIds = jiraTaskRepository.getTaskIds();
             TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
             for (String id : taskIds) {
