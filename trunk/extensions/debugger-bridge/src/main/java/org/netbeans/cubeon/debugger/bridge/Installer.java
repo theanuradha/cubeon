@@ -39,19 +39,19 @@ public class Installer extends ModuleInstall {
 
         context.addContextListener(new CubeonContextListener() {
 
-            public void taskActivated(TaskElement element) {
+            public void taskActivated(TaskElement task) {
                 Breakpoint[] breakpoints = debuggerManager.getBreakpoints();
                 for (Breakpoint breakpoint : breakpoints) {
-                    if (element.getDisplayName().equals(breakpoint.getGroupName())) {
+                    if (isAssosoateBreakPoint(task, breakpoint)) {
                         breakpoint.enable();
                     }
                 }
             }
 
-            public void taskDeactivated(TaskElement element) {
+            public void taskDeactivated(TaskElement task) {
                 Breakpoint[] breakpoints = debuggerManager.getBreakpoints();
                 for (Breakpoint breakpoint : breakpoints) {
-                    if (element.getDisplayName().equals(breakpoint.getGroupName())) {
+                    if (isAssosoateBreakPoint(task, breakpoint)) {
                         breakpoint.disable();
                     }
                 }
@@ -63,11 +63,33 @@ public class Installer extends ModuleInstall {
             @Override
             public void breakpointAdded(Breakpoint breakpoint) {
                 if (context.getActive() != null) {
-                    breakpoint.setGroupName(context.getActive().getDisplayName());
+
+                    breakpoint.setGroupName(encodeGroupName(context.getActive()));
                 }
             }
         });
 
 
+    }
+
+    private boolean isAssosoateBreakPoint(TaskElement task, Breakpoint breakpoint) {
+        String displayName = task.getDisplayName();
+        String decodeGroupName = decodeGroupName(task);
+        //check for both decode group name and display name to backward compatibility
+        return breakpoint.getGroupName().startsWith(decodeGroupName) || displayName.equals(breakpoint.getGroupName());
+    }
+
+    private String encodeGroupName(TaskElement task) {
+
+        String groupName = decodeGroupName(task) +
+                " - " + task.getDescription();
+
+        return groupName.trim();
+
+    }
+
+    private String decodeGroupName(TaskElement task) {
+        String repoId = task.getTaskRepository().getId();
+        return repoId + ":" + task.getId();
     }
 }
