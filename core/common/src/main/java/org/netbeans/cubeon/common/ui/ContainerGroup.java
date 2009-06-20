@@ -18,7 +18,6 @@ package org.netbeans.cubeon.common.ui;
 
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import javax.swing.AbstractAction;
@@ -84,8 +83,11 @@ public class ContainerGroup extends Group {
 
     @Override
     public Action[] getToolbarActions() {
-        Action[] toolbarActions = super.getToolbarActions();
-        toolbarActions = Arrays.copyOf(toolbarActions, toolbarActions.length + 2);
+        List<Action> toolbarActionList = new ArrayList();
+        for (Action action : super.getToolbarActions()) {
+            toolbarActionList.add(action);
+        }
+        
         Action expand=new AbstractAction() {
 
             public void actionPerformed(ActionEvent e) {
@@ -96,7 +98,7 @@ public class ContainerGroup extends Group {
                 NbBundle.getMessage(TreeGroupView.class, "LBL_Expand_All"));
         expand.putValue(AbstractAction.SMALL_ICON,
                 new ImageIcon(ImageUtilities.loadImage("org/netbeans/cubeon/common/ui/internals/expandTree.png")));
-        toolbarActions[toolbarActions.length-2]=expand;
+        toolbarActionList.add(expand);
         Action collapse=new AbstractAction() {
 
             public void actionPerformed(ActionEvent e) {
@@ -107,9 +109,9 @@ public class ContainerGroup extends Group {
                 NbBundle.getMessage(TreeGroupView.class, "LBL_Collapse_All"));
         collapse.putValue(AbstractAction.SMALL_ICON,
                 new ImageIcon(ImageUtilities.loadImage("org/netbeans/cubeon/common/ui/internals/colapseTree.png")));
-        toolbarActions[toolbarActions.length-1]=collapse;
+        toolbarActionList.add(collapse);
 
-        return toolbarActions;
+        return toolbarActionList.toArray(new Action[toolbarActionList.size()]);
     }
 
 

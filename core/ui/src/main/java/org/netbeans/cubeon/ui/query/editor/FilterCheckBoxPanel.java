@@ -55,8 +55,11 @@ public class FilterCheckBoxPanel extends AbstractFilterValuePanel {
             yes.setSelected(true);
         else if ("0".equals(value)) // NOI18N
             no.setSelected(true);
-        else
-            group.clearSelection();
+        else{
+            //issue - 97 : group.clearSelection() can use as it is 1.6 api
+           yes.setSelected(false);
+           no.setSelected(false);
+        }
     }
 
     @Override
