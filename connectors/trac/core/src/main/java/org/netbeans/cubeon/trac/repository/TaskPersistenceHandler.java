@@ -54,9 +54,15 @@ class TaskPersistenceHandler {
     private static final String FILESYSTEM_FILE_TAG = "repository.xml"; //NOI18N
     private static final String TAG_OPERATIONS = "operations";
     private static final String TAG_OPERATION = "operation";
+    private static final String TAG_INPUT_OPTIONS = "input_options";
+    private static final String TAG_INPUT_OPTION = "input_option";
+    private static final String TAG_OPTION = "option";
+    private static final String TAG_DEFAULT = "default";
     private static final String TAG_ROOT = "tasks";//NOI18N
     private static final String TAG_REPOSITORY = "repository";//NOI18N
     private static final String TAG_ID = "id";//NOI18N
+    private static final String TAG_LABEL = "lable";//NOI18N
+    private static final String TAG_HINT = "hint";//NOI18N
     private static final String TAG_TICKET_ID = "tag_ticket_id";//NOI18N
     private static final String TAG_TASKS = "tasks";//NOI18N
     private static final String TAG_NEXT_ID = "next";//NOI18N
@@ -181,7 +187,8 @@ class TaskPersistenceHandler {
                     Element actionElement = (Element) actionNode;
                     String aId = actionElement.getAttribute(TAG_ID);
                     TicketAction action = new TicketAction(aId);
-
+                    action.setLabel(actionElement.getAttribute(TAG_LABEL));
+                    action.setHint(actionElement.getAttribute(TAG_HINT));
                     Element operationsElement = findElement(actionElement, TAG_OPERATIONS);
                     if (operationsElement != null) {
                         NodeList operationsNodeList = operationsElement.getElementsByTagName(TAG_OPERATION);
@@ -195,8 +202,28 @@ class TaskPersistenceHandler {
                             }
                         }
                     }
-
-
+                    Element inputOptionsElement = findElement(actionElement, TAG_INPUT_OPTIONS);
+                    if (inputOptionsElement !=null) {
+                        NodeList inputOptionsNodeList = inputOptionsElement.getElementsByTagName(TAG_INPUT_OPTION);
+                        for (int j = 0; j < inputOptionsNodeList.getLength(); j++) {
+                            Node inputOptionNode = inputOptionsNodeList.item(j);
+                            if (inputOptionNode.getNodeType() == Node.ELEMENT_NODE) {
+                                Element inputOptionElement = (Element) inputOptionNode;
+                                String oId = inputOptionElement.getAttribute(TAG_ID);
+                                TicketAction.InputOption inputOption =new TicketAction.InputOption(oId);
+                                inputOption.setDefaultValue(inputOptionElement.getAttribute(TAG_DEFAULT));
+                                NodeList optionsNodeList = inputOptionElement.getElementsByTagName(TAG_OPTION);
+                                for (int k = 0; k < optionsNodeList.getLength(); k++) {
+                                    Node optionNode = inputOptionsNodeList.item(k);
+                                    if (optionNode.getNodeType() == Node.ELEMENT_NODE) {
+                                        Element optionElement = (Element) optionNode;
+                                        inputOption.addOption(optionElement.getAttribute(TAG_ID));
+                                    }
+                                }
+                                action.addInputOption(inputOption);
+                            }
+                        }
+                    }
                     actions.add(action);
                 }
             }
@@ -390,6 +417,12 @@ class TaskPersistenceHandler {
                 Element actionElement = document.createElement(TAG_ACTION);
                 actionsElement.appendChild(actionElement);
                 actionElement.setAttribute(TAG_ID, action.getName());
+                if (action.getLabel() != null) {
+                    actionElement.setAttribute(TAG_LABEL, action.getLabel());
+                }
+                if (action.getHint() != null) {
+                    actionElement.setAttribute(TAG_HINT, action.getHint());
+                }
                 List<Operation> operations = action.getOperations();
                 Element operationsElement = getEmptyElement(document, actionElement,
                         TAG_OPERATIONS);
@@ -397,6 +430,19 @@ class TaskPersistenceHandler {
                     Element operationElement = document.createElement(TAG_OPERATION);
                     operationsElement.appendChild(operationElement);
                     operationElement.setAttribute(TAG_ID, operation.getName());
+                }
+                Element inputOptionsElement = getEmptyElement(document, actionElement,
+                        TAG_INPUT_OPTIONS);
+                for (TicketAction.InputOption inputOption : action.getInputOptions()) {
+                    Element inputOptionElement = document.createElement(TAG_INPUT_OPTION);
+                    inputOptionsElement.appendChild(inputOptionElement);
+                    inputOptionElement.setAttribute(TAG_ID, inputOption.getField());
+                    inputOptionElement.setAttribute(TAG_DEFAULT, inputOption.getDefaultValue());
+                    for (String option : inputOption.getOptions()) {
+                        Element optionElement = document.createElement(TAG_OPTION);
+                        inputOptionElement.appendChild(optionElement);
+                        optionElement.setAttribute(TAG_ID, option);
+                    }
                 }
             }
 
