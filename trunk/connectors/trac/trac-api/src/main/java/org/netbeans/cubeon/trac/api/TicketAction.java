@@ -17,6 +17,7 @@
 package org.netbeans.cubeon.trac.api;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -26,7 +27,10 @@ import java.util.List;
 public class TicketAction {
 
     private final String name;
+    private String label;
+    private String hint;
     private List<Operation> operations = new ArrayList<Operation>();
+    private List<InputOption> inputOptions = new ArrayList<InputOption>();
     private boolean supportOperations = false;
 
     public TicketAction(String name) {
@@ -45,8 +49,36 @@ public class TicketAction {
         return operations.remove(o);
     }
 
-    public void addOperation( Operation element) {
-        operations.add( element);
+    public void addOperation(Operation element) {
+        operations.add(element);
+    }
+
+    public List<InputOption> getInputOptions() {
+        return new ArrayList<InputOption>(inputOptions);
+    }
+
+    public boolean removeInputOption(InputOption o) {
+        return inputOptions.remove(o);
+    }
+
+    public void addInputOption(InputOption element) {
+        inputOptions.add(element);
+    }
+
+    public String getHint() {
+        return hint;
+    }
+
+    public void setHint(String hint) {
+        this.hint = hint;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     @Override
@@ -96,12 +128,57 @@ public class TicketAction {
             return name;
         }
 
-
         @Override
         public String toString() {
             return getName();
         }
+    }
 
+    public static class InputOption {
 
+        private final String field;
+        private String defaultValue;
+        private List<String> options = new ArrayList<String>();
+
+        public InputOption(String field) {
+            this.field = field;
+        }
+
+        public String getField() {
+            return field;
+        }
+
+        public String getDefaultValue() {
+            return defaultValue;
+        }
+
+        public void setDefaultValue(String defaultValue) {
+            this.defaultValue = defaultValue;
+        }
+
+        public boolean removeOption(String o) {
+            return options.remove(o);
+        }
+
+        public void clearOptions() {
+            options.clear();
+        }
+
+        public boolean addOption(String e) {
+            return options.add(e);
+        }
+
+        public boolean addAllOptions(Collection<? extends String> c) {
+            return options.addAll(c);
+        }
+
+        public List<String> getOptions() {
+            return options;
+        }
+
+        @Override
+        public String toString() {
+            return field;
+        }
     }
 }

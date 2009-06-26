@@ -31,6 +31,7 @@ import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 import org.netbeans.cubeon.trac.api.Ticket;
 import org.netbeans.cubeon.trac.api.TicketAction;
+import org.netbeans.cubeon.trac.api.TicketAction.InputOption;
 import org.netbeans.cubeon.trac.api.TicketChange;
 import org.netbeans.cubeon.trac.api.TicketComponent;
 import org.netbeans.cubeon.trac.api.TicketField;
@@ -572,7 +573,21 @@ public class XmlRpcTracSession implements TracSession {
                     Object[] action = (Object[]) object;
                     String name = (String) action[0];
                     TicketAction ticketAction = new TicketAction(name);
-
+                    ticketAction.setLabel((String) action[1]);
+                    ticketAction.setHint((String) action[2]);
+                    Object[] inputs = (Object[]) action[3];
+                    //action associated with fields
+                    for (Object inputArray : inputs) {
+                        Object[] inputEntry = (Object[]) inputArray;
+                        String field = (String) inputEntry[0];
+                        InputOption inputOption = new TicketAction.InputOption(field);
+                        inputOption.setDefaultValue((String) inputEntry[1]);
+                        Object[] optionEntry = (Object[]) inputEntry[2];
+                        for (Object opObject : optionEntry) {
+                            inputOption.addOption((String) opObject);
+                        }
+                        ticketAction.addInputOption(inputOption);
+                    }
                     actions.add(ticketAction);
                 }
             }
