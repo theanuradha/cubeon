@@ -27,6 +27,7 @@ public class TicketAction {
 
     private final String name;
     private List<Operation> operations = new ArrayList<Operation>();
+    private boolean supportOperations = false;
 
     public TicketAction(String name) {
         this.name = name;
@@ -40,7 +41,7 @@ public class TicketAction {
         return new ArrayList<Operation>(operations);
     }
 
-    public boolean removeOperation(Object o) {
+    public boolean removeOperation(Operation o) {
         return operations.remove(o);
     }
 
@@ -73,6 +74,14 @@ public class TicketAction {
         int hash = 5;
         hash = 37 * hash + (this.name != null ? this.name.hashCode() : 0);
         return hash;
+    }
+
+    public boolean isSupportOperations() {
+        return supportOperations;
+    }
+
+    public void setSupportOperations(boolean supportOperations) {
+        this.supportOperations = supportOperations;
     }
 
     public static class Operation {

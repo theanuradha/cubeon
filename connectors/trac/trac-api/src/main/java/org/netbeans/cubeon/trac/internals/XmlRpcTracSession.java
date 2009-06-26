@@ -88,18 +88,12 @@ public class XmlRpcTracSession implements TracSession {
              */
             Object[] versionInfo = (Object[]) client.execute("system.getAPIVersion",//NOI18N
                     new Object[0]);
-             epochVersion = (Integer) versionInfo[0];
-             majorVersion = (Integer) versionInfo[1];
-             minorVersion = (Integer) versionInfo[2];
-          
-           
-            //validate xmlrpc version
-            if(majorVersion<5){
-              throw  new TracException("xmlrpc plug-in version not supported:" +
-                      " Please Use  cube'n patched XmlRpcPlugin." +
-                      "For more information refer tp " +
-                      "http://code.google.com/p/cubeon/wiki/GSTracRepository");
-            }
+            epochVersion = (Integer) versionInfo[0];
+            majorVersion = (Integer) versionInfo[1];
+            minorVersion = (Integer) versionInfo[2];
+
+
+
         } catch (XmlRpcException ex) {
             throw new TracException(ex);
         } catch (MalformedURLException ex) {
@@ -413,6 +407,7 @@ public class XmlRpcTracSession implements TracSession {
             //trac 0.12 remove time and changetime from vaules
             values.remove("time");
             values.remove("changetime");
+            values.remove("action");
             Set<Entry<String, Object>> entrySet = values.entrySet();
             for (Entry<String, Object> entry : entrySet) {
                 Object value = entry.getValue();
@@ -511,10 +506,20 @@ public class XmlRpcTracSession implements TracSession {
     public Ticket updateTicket(String comment, Ticket ticket, boolean notify) throws TracException {
 
         try {
-            client.execute("ticket.update",//NOI18N
-                    new Object[]{ticket.getTicketId(), comment, ticket.getAttributes(), notify});
-
-
+            //backward compatibility on cubeon pathed xmlrpc plug-in
+            if (majorVersion == 5 || majorVersion == 6) {
+                ticket.remove("action");
+                client.execute("ticket.update",//NOI18N
+                        new Object[]{ticket.getTicketId(), comment, ticket.getAttributes(), notify});
+            } else {
+                Map<String, String> attributes = ticket.getAttributes();
+                //make sure to pass action attribute
+                if (!attributes.containsKey("action")) {
+                    attributes.put("action", "leave");
+                }
+                client.execute("ticket.update",//NOI18N
+                        new Object[]{ticket.getTicketId(), comment, attributes, notify});
+            }
             return getTicket(ticket.getTicketId());
 
 
@@ -538,25 +543,41 @@ public class XmlRpcTracSession implements TracSession {
         List<TicketAction> actions = new ArrayList<TicketAction>();
         try {
             final String methodID;
-            //check version id
-            if(majorVersion<6){
-               methodID="ticket.getAvailableActions";//NOI18N
-            }else {
-               methodID="ticket.getAvailableCustomActions";//NOI18N
-            }
-            HashMap result = (HashMap) client.execute(methodID,
-                    new Object[]{id});
-            Collection maps = result.values();
-            for (Object object : maps) {
-                HashMap hashMap = (HashMap) object;
-                String name = (String) hashMap.get("name");//NOI18N
-                TicketAction action = new TicketAction(name);
-                Object[] operations = (Object[]) hashMap.get("operations");//NOI18N
-                for (Object operation : operations) {
-                    action.addOperation(new TicketAction.Operation((String) operation));
+            //backward compatibility on cubeon pathed xmlrpc plug-in
+            if (majorVersion == 5 || majorVersion == 6) {
+                if (majorVersion == 5) {
+                    methodID = "ticket.getAvailableActions";
+                } else {
+                    methodID = "ticket.getAvailableCustomActions";
                 }
-                actions.add(action);
+                HashMap result = (HashMap) client.execute(methodID,
+                        new Object[]{id});
+                Collection maps = result.values();
+                for (Object object : maps) {
+                    HashMap hashMap = (HashMap) object;
+                    String name = (String) hashMap.get("name");//NOI18N
+                    TicketAction action = new TicketAction(name);
+                    action.setSupportOperations(true);
+                    Object[] operations = (Object[]) hashMap.get("operations");//NOI18N
+                    for (Object operation : operations) {
+                        action.addOperation(new TicketAction.Operation((String) operation));
+                    }
+                    actions.add(action);
+                }
+            } else {
+                methodID = "ticket.getActions";//NOI18N
+                Object[] actionObjects = (Object[]) client.execute(methodID,
+                        new Object[]{id});
+                for (Object object : actionObjects) {
+                    Object[] action = (Object[]) object;
+                    String name = (String) action[0];
+                    TicketAction ticketAction = new TicketAction(name);
+
+                    actions.add(ticketAction);
+                }
             }
+
+
 
         } catch (XmlRpcException ex) {
             throw new TracException(ex);
@@ -581,14 +602,20 @@ public class XmlRpcTracSession implements TracSession {
     }
 
     public Ticket executeAction(TicketAction action, String comment, Ticket ticket, boolean notify) throws TracException {
-        try {
-            client.execute("ticket.executeAction",
-                    new Object[]{ticket.getTicketId(), action.getName(),
-                        comment, ticket.getAttributes(), notify});
+        //backward compatibility on cubeon pathed xmlrpc plug-in
+        if (majorVersion == 5 || majorVersion == 6) {
+            try {
+                ticket.remove("action");
+                client.execute("ticket.executeAction",
+                        new Object[]{ticket.getTicketId(), action.getName(),
+                            comment, ticket.getAttributes(), notify});
 
-        } catch (XmlRpcException ex) {
-            throw new TracException(ex);
+            } catch (XmlRpcException ex) {
+                throw new TracException(ex);
+            }
+            return getTicket(ticket.getTicketId());
         }
-        return getTicket(ticket.getTicketId());
+        ticket.put("action", action.getName());
+        return updateTicket(comment, ticket, notify);
     }
 }

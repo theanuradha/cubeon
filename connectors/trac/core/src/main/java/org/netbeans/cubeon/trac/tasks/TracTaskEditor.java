@@ -62,7 +62,7 @@ public class TracTaskEditor {
     private static final String EMPTY = "";
     private final TracTask task;
     private final TaskEditor editor;
-    private AtomicBoolean modifiedFlag = new AtomicBoolean(false);  
+    private AtomicBoolean modifiedFlag = new AtomicBoolean(false);
     private final OpenInBrowserTaskAction openInBrowserTaskAction;
     private final SubmitTaskAction submitTaskAction;
     private ComponentBuilder builder = new ComponentBuilder() {
@@ -73,7 +73,7 @@ public class TracTaskEditor {
         }
     };
     //ItemListener for processOperation in action changes
-    private final  ItemListener actionitemListener = new ItemListener() {
+    private final ItemListener actionitemListener = new ItemListener() {
 
         public void itemStateChanged(ItemEvent e) {
             if (e.getStateChange() == ItemEvent.SELECTED && builder.isNotifyMode()) {
@@ -86,7 +86,6 @@ public class TracTaskEditor {
             }
         }
     };
-
     private ComponentContainer arrributesContainer = new ComponentContainer();
     private ComponentContainer actionsContainer = new ComponentContainer();
     private final TextEditorUI descriptionComponent = new TextEditorUI();
@@ -204,8 +203,8 @@ public class TracTaskEditor {
                 CustomFieldSupport cfs = new CustomFieldSupport(ticketField, customEditor);
                 customFieldSupports.add(cfs);
                 if (ticketField.getType().equals("textarea")) {
-                    if(index>0){
-                     container.nextSection();
+                    if (index > 0) {
+                        container.nextSection();
                     }
                     container.addComponentGroup(
                             builder.createLabel(ticketField.getLabel()),
@@ -252,7 +251,7 @@ public class TracTaskEditor {
 
 
         descriptionComponent.setText(task.getDescription());
-        descriptionComponent.setEditable(!task.isLocal());
+        newCommentComponent.setEditable(!task.isLocal());
 
         newCommentComponent.setText(task.getNewComment());
 
@@ -417,9 +416,15 @@ public class TracTaskEditor {
 
     private void loadAction(TicketAction ticketAction) {
         if (ticketAction != null) {
-            List<Operation> operations = ticketAction.getOperations();
-            for (Operation operation : operations) {
-                processOperation(operation);
+            if (ticketAction.isSupportOperations()) {
+                List<Operation> operations = ticketAction.getOperations();
+
+                for (Operation operation : operations) {
+                    processOperation(operation);
+                }
+            } else {
+                assignee.setEditable(true);
+                resolution.setEnabled(true);
             }
         }
     }
