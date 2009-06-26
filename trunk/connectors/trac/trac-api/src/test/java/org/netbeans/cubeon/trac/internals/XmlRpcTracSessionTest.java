@@ -88,6 +88,9 @@ public class XmlRpcTracSessionTest extends TestCase {
             user = "cubeon-dev@googlegroups.com";
             tracSession = new XmlRpcTracSession("https://free2.projectlocker.com/Cubeon/cubeon/trac",
                     user, "testing");
+//            user = "anuradha";
+//            tracSession = new XmlRpcTracSession("http://192.168.1.100:8000/argos",
+//                    user, "a123");
         } catch (TracException tracException) {
             System.out.println(tracException.getMessage());
             System.out.println("XmlRpcTracSession : Connection Not found. " +
@@ -289,7 +292,7 @@ public class XmlRpcTracSessionTest extends TestCase {
         assertEquals(ticket.get(TracKeys.STATUS), "accepted");
 
         Thread.sleep(1000);//workaround to prevent http://trac-hacks.org/ticket/1863
-        //create dumy TicketAction
+        //create dumy TicketAction                  "resolve"
         TicketAction dumyAction2 = new TicketAction("resolve");//NOI18N
         ticket.put(TracKeys.RESOLUTION, "fixed");
         ticket = tracSession.executeAction(dumyAction2, "close Ticket", ticket, false);
