@@ -35,6 +35,7 @@ import com.dolby.jira.net.soap.jira.RemoteProjectRoleActors;
 import com.dolby.jira.net.soap.jira.RemoteResolution;
 import com.dolby.jira.net.soap.jira.RemoteStatus;
 import com.dolby.jira.net.soap.jira.RemoteVersion;
+import com.dolby.jira.net.soap.jira.RemoteWorklog;
 import java.rmi.RemoteException;
 import java.util.logging.Logger;
 import javax.xml.rpc.ServiceException;
@@ -107,11 +108,11 @@ public class JiraSession {
 
     public RemoteStatus[] getStatuses() throws JiraException {
         try {
-                return service.getStatuses(token);
-            } catch (Exception ex) {
-                throw new JiraException(ex);
-            }
+            return service.getStatuses(token);
+        } catch (Exception ex) {
+            throw new JiraException(ex);
         }
+    }
 
     public RemoteResolution[] getResolutions() throws JiraException {
         try {
@@ -193,6 +194,14 @@ public class JiraSession {
     public RemoteIssue getIssue(String id) throws JiraException {
         try {
             return service.getIssue(token, id);
+        } catch (Exception ex) {
+            throw new JiraException(ex);
+        }
+    }
+
+    public RemoteField[] getCustomFields(String id) throws JiraException {
+        try {
+            return service.getCustomFields(id);
         } catch (Exception ex) {
             throw new JiraException(ex);
         }
@@ -313,6 +322,37 @@ public class JiraSession {
     public RemoteProjectRoleActors getProjectRoleActors(RemoteProjectRole rpr, RemoteProject project) throws JiraException {
         try {
             return service.getProjectRoleActors(token, rpr, project);
+        } catch (Exception ex) {
+            throw new JiraException(ex);
+        }
+    }
+
+    public RemoteWorklog[] getWorklogs(String id) throws JiraException {
+        try {
+            return service.getWorklogs(token, id);
+        } catch (Exception ex) {
+            throw new JiraException(ex);
+        }
+    }
+
+    public void addWorkLogAndAutoAdjustRemainingEstimate(String id, RemoteWorklog worklog) throws JiraException {
+        try {
+            service.addWorklogAndAutoAdjustRemainingEstimate(token, id, worklog);
+        } catch (Exception ex) {
+            throw new JiraException(ex);
+        }
+    }
+
+    public void addWorklogAndRetainRemainingEstimate(String id, RemoteWorklog worklog) throws JiraException {
+        try {
+            service.addWorklogAndRetainRemainingEstimate(token, id, worklog);
+        } catch (Exception ex) {
+            throw new JiraException(ex);
+        }
+    }
+    public void addWorklogWithNewRemainingEstimate(String id, RemoteWorklog worklog,String estimate) throws JiraException {
+        try {
+            service.addWorklogWithNewRemainingEstimate(token, id, worklog,estimate);
         } catch (Exception ex) {
             throw new JiraException(ex);
         }
