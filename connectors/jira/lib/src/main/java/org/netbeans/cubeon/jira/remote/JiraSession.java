@@ -357,4 +357,27 @@ public class JiraSession {
             throw new JiraException(ex);
         }
     }
+    public void updateWorkLogAndAutoAdjustRemainingEstimate(RemoteWorklog worklog) throws JiraException {
+        try {
+            service.updateWorklogAndAutoAdjustRemainingEstimate(token,worklog);
+        } catch (Exception ex) {
+            throw new JiraException(ex);
+        }
+    }
+
+    public void updateWorklogAndRetainRemainingEstimate( RemoteWorklog worklog) throws JiraException {
+        try {
+            service.updateWorklogAndRetainRemainingEstimate(token, worklog);
+        } catch (Exception ex) {
+            throw new JiraException(ex);
+        }
+    }
+    public void updateWorklogWithNewRemainingEstimate(RemoteWorklog worklog,String estimate) throws JiraException {
+        try {
+            service.updateWorklogWithNewRemainingEstimate(token, worklog,estimate);
+        } catch (Exception ex) {
+            throw new JiraException(ex);
+        }
+    }
+
 }
