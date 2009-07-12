@@ -214,7 +214,7 @@ class TaskPersistenceHandler {
                                 inputOption.setDefaultValue(inputOptionElement.getAttribute(TAG_DEFAULT));
                                 NodeList optionsNodeList = inputOptionElement.getElementsByTagName(TAG_OPTION);
                                 for (int k = 0; k < optionsNodeList.getLength(); k++) {
-                                    Node optionNode = inputOptionsNodeList.item(k);
+                                    Node optionNode = optionsNodeList.item(k);
                                     if (optionNode.getNodeType() == Node.ELEMENT_NODE) {
                                         Element optionElement = (Element) optionNode;
                                         inputOption.addOption(optionElement.getAttribute(TAG_ID));
