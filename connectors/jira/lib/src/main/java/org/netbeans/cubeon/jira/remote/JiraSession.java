@@ -199,9 +199,9 @@ public class JiraSession {
         }
     }
 
-    public RemoteField[] getCustomFields(String id) throws JiraException {
+    public RemoteField[] getCustomFields() throws JiraException {
         try {
-            return service.getCustomFields(id);
+            return service.getCustomFields(token);
         } catch (Exception ex) {
             throw new JiraException(ex);
         }
@@ -255,11 +255,21 @@ public class JiraSession {
         }
     }
 
+    @Deprecated
     public RemoteFilter[] getSavedFilters() throws JiraException {
         try {
             return service.getSavedFilters(token);
         } catch (Exception ex) {
             throw new JiraException(ex);
+        }
+    }
+
+    public RemoteFilter[] getFavouriteFilters() throws JiraException {
+        try {
+            return service.getFavouriteFilters(token);
+        } catch (Exception ex) {
+            //if user jira server has older version of sorp api
+            return getSavedFilters();
         }
     }
 
@@ -350,34 +360,36 @@ public class JiraSession {
             throw new JiraException(ex);
         }
     }
-    public void addWorklogWithNewRemainingEstimate(String id, RemoteWorklog worklog,String estimate) throws JiraException {
+
+    public void addWorklogWithNewRemainingEstimate(String id, RemoteWorklog worklog, String estimate) throws JiraException {
         try {
-            service.addWorklogWithNewRemainingEstimate(token, id, worklog,estimate);
-        } catch (Exception ex) {
-            throw new JiraException(ex);
-        }
-    }
-    public void updateWorkLogAndAutoAdjustRemainingEstimate(RemoteWorklog worklog) throws JiraException {
-        try {
-            service.updateWorklogAndAutoAdjustRemainingEstimate(token,worklog);
+            service.addWorklogWithNewRemainingEstimate(token, id, worklog, estimate);
         } catch (Exception ex) {
             throw new JiraException(ex);
         }
     }
 
-    public void updateWorklogAndRetainRemainingEstimate( RemoteWorklog worklog) throws JiraException {
+    public void updateWorkLogAndAutoAdjustRemainingEstimate(RemoteWorklog worklog) throws JiraException {
+        try {
+            service.updateWorklogAndAutoAdjustRemainingEstimate(token, worklog);
+        } catch (Exception ex) {
+            throw new JiraException(ex);
+        }
+    }
+
+    public void updateWorklogAndRetainRemainingEstimate(RemoteWorklog worklog) throws JiraException {
         try {
             service.updateWorklogAndRetainRemainingEstimate(token, worklog);
         } catch (Exception ex) {
             throw new JiraException(ex);
         }
     }
-    public void updateWorklogWithNewRemainingEstimate(RemoteWorklog worklog,String estimate) throws JiraException {
+
+    public void updateWorklogWithNewRemainingEstimate(RemoteWorklog worklog, String estimate) throws JiraException {
         try {
-            service.updateWorklogWithNewRemainingEstimate(token, worklog,estimate);
+            service.updateWorklogWithNewRemainingEstimate(token, worklog, estimate);
         } catch (Exception ex) {
             throw new JiraException(ex);
         }
     }
-
 }

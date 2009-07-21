@@ -18,6 +18,7 @@ package org.netbeans.cubeon.jira.repository;
 
 import com.dolby.jira.net.soap.jira.RemoteComponent;
 import com.dolby.jira.net.soap.jira.RemoteConfiguration;
+import com.dolby.jira.net.soap.jira.RemoteField;
 import com.dolby.jira.net.soap.jira.RemoteFilter;
 import com.dolby.jira.net.soap.jira.RemoteIssueType;
 import com.dolby.jira.net.soap.jira.RemotePriority;
@@ -153,7 +154,7 @@ class JiraAttributesPersistence {
                     LOG.log(Level.INFO, "requsting project : " + jiraProject.getId());//NOI18N
                     progressHandle.progress(NbBundle.getMessage(JiraAttributesPersistence.class,
                             "LBL_Requsting_Project_Information", jiraProject.getId()));
-                    RemoteProject rp = session.getProjectByKey(jiraProject.getId());
+                    RemoteProject rp = session.getProjectByKey(jiraProject.getId());                   
                     Element project = document.createElement(TAG_PROJECT);
                     projectsElement.appendChild(project);
                     _refreshProject(document, project, progressHandle, session, rp);
@@ -219,6 +220,7 @@ class JiraAttributesPersistence {
             }
             //-----------------------------------------------------------------
             _refreshFilters(session, document, attributesElement);
+            _refreshCustomFileds(session, document, attributesElement);
             //-----------------------------------------------------------------
             Element configurationsElement = getEmptyElement(document, attributesElement, TAG_CONFIGURATIONS);
             try {
@@ -538,7 +540,7 @@ class JiraAttributesPersistence {
     }
 
     private void _refreshFilters(JiraSession session, Document document, Element attributes) throws JiraException {
-        RemoteFilter[] savedFilters = session.getSavedFilters();
+        RemoteFilter[] savedFilters = session.getFavouriteFilters();
         Element filtersElement = getEmptyElement(document, attributes, TAG_FILTERS);
         for (RemoteFilter remoteFilter : savedFilters) {
             Element filter = document.createElement(TAG_FILTER);
@@ -548,6 +550,12 @@ class JiraAttributesPersistence {
             filter.setAttribute(TAG_DESCRIPTION, remoteFilter.getDescription());
             filter.setAttribute(TAG_AUTHOR, remoteFilter.getAuthor());
         }
+
+    }
+    private void _refreshCustomFileds(JiraSession session, Document document, Element attributes) throws JiraException {
+        //this  getCustomFields not usable as only admin can invoke 
+        //RemoteField[] customFields = session.getCustomFields();
+         
 
     }
 

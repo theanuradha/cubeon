@@ -18,6 +18,7 @@ package org.netbeans.cubeon.jira.repository;
 
 import com.dolby.jira.net.soap.jira.RemoteComment;
 import com.dolby.jira.net.soap.jira.RemoteComponent;
+import com.dolby.jira.net.soap.jira.RemoteCustomFieldValue;
 import com.dolby.jira.net.soap.jira.RemoteField;
 import com.dolby.jira.net.soap.jira.RemoteFieldValue;
 import com.dolby.jira.net.soap.jira.RemoteIssue;
@@ -435,9 +436,6 @@ public class JiraUtils {
             jiraComments.add(jiraComment);
         }
         remoteTask.setComments(jiraComments);
-
-
-
         return remoteTask;
     }
 
