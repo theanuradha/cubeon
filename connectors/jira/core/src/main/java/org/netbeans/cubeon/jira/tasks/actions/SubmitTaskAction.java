@@ -16,6 +16,7 @@
  */
 package org.netbeans.cubeon.jira.tasks.actions;
 
+import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
@@ -49,10 +50,11 @@ public class SubmitTaskAction extends AbstractAction {
     }
 
     public void actionPerformed(ActionEvent e) {
+        setEnabled(false);
         RequestProcessor.getDefault().post(new Runnable() {
 
             public void run() {
-                setEnabled(false);
+                
 
                 ProgressHandle handle = ProgressHandleFactory.createHandle(
                         NbBundle.getMessage(SubmitTaskAction.class, "LBL_Submiting",
@@ -70,7 +72,12 @@ public class SubmitTaskAction extends AbstractAction {
                 factory.refresh(task);
 
                 handle.finish();
-                setEnabled(true);
+                EventQueue.invokeLater(new Runnable() {
+
+                    public void run() {
+                        setEnabled(true);
+                    }
+                });
             }
         });
     }
