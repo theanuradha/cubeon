@@ -38,7 +38,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
-import javax.swing.plaf.synth.SynthGraphicsUtils;
 
 /**
  *
@@ -162,11 +161,9 @@ public abstract class ComponentBuilder {
             }
         };
         comboBox.addPopupMenuListener(new PopupMenuListener() {
-            private static final int PADDING_RIGHT = 7;
             //Popup state to prevent feedback
             private boolean stateCmb = false;
             private int defaultWidth = 0;
-            private   SynthGraphicsUtils utils =new SynthGraphicsUtils();
             //Extend JComboBox's length and reset it
             public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
                 JComboBox cmb = (JComboBox) e.getSource();
