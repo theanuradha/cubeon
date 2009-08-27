@@ -17,7 +17,6 @@
 package org.netbeans.cubeon.common.ui.components;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
@@ -31,14 +30,15 @@ import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.plaf.basic.BasicComboPopup;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
+import javax.swing.plaf.synth.SynthGraphicsUtils;
 
 /**
  *
@@ -108,20 +108,21 @@ public abstract class ComponentBuilder {
 
     public JScrollPane addToScrollPane(JComponent component) {
         //workaround to fix Jlist layout issue
-        if(component instanceof JList){
-          return _addToScrollPane((JList) component);
+        if (component instanceof JList) {
+            return _addToScrollPane((JList) component);
         }
         JScrollPane scrollPane = new JScrollPane(component);
-     
+
         return scrollPane;
     }
+
     /**
      *
      * workaround to fix Jlist layout issue
      */
     private JScrollPane _addToScrollPane(JList component) {
-        JPanel container =new JPanel(new BorderLayout());
-        container.add(component,BorderLayout.CENTER);
+        JPanel container = new JPanel(new BorderLayout());
+        container.add(component, BorderLayout.CENTER);
         JScrollPane scrollPane = new JScrollPane(container);
         scrollPane.setPreferredSize(new Dimension(componentPreferredWidth, componentHight * 4));
         return scrollPane;
@@ -147,15 +148,6 @@ public abstract class ComponentBuilder {
     public JComboBox createComboBox() {
         JComboBox comboBox = new JComboBox() {
 
-            private static final int PADDING_RIGHT = 7;
-            private static final int PADDING_HEIGHT = 2;
-
-            @Override
-            public void firePopupMenuWillBecomeVisible() {
-                resizePopup();
-                super.firePopupMenuWillBecomeVisible();
-            }
-
             @Override
             public void setSelectedItem(Object anObject) {
                 super.setSelectedItem(anObject);
@@ -168,46 +160,61 @@ public abstract class ComponentBuilder {
                 Object selectedItem = getSelectedItem();
                 setToolTipText(selectedItem != null ? selectedItem.toString() : null);
             }
-
-            private void resizePopup() {
-                BasicComboPopup popup = (BasicComboPopup) getUI().getAccessibleChild(this, 0); //Popup
-
-                if (popup == null) {
-                    return;
-                }
-
-                final Component comp = popup.getComponent(0); //JScrollPane
-                JScrollPane scrollpane = null;
-                int offset = 0;
-
-                if (comp instanceof JScrollPane) {
-                    scrollpane = (JScrollPane) comp;
-
-                    if (scrollpane.getVerticalScrollBar().isVisible()) {
-                        offset += scrollpane.getVerticalScrollBar().getPreferredSize().width;
-                    }
-                }
-
-                int width = (int) getSize().getWidth() - offset;
-                int height = 0;
-
-                for (int i = 0; i < getItemCount(); i++) {
-                    width = Math.max(width,
-                            getRenderer().getListCellRendererComponent(popup.getList(), getItemAt(i), i, false, false).getPreferredSize().width + PADDING_RIGHT);
-
-                    if (i < getMaximumRowCount()) {
-                        height += getRenderer().getListCellRendererComponent(popup.getList(), getItemAt(i), i, false, false).getPreferredSize().height;
-                    }
-                }
-
-                // add Offset if needed
-                width += ((getMaximumRowCount() >= getItemCount()) ? 0 : offset);
-
-                popup.setPreferredSize(new Dimension(width, height + PADDING_HEIGHT));
-                popup.setLayout(new BorderLayout());
-                popup.add(comp, BorderLayout.CENTER);
-            }
         };
+        comboBox.addPopupMenuListener(new PopupMenuListener() {
+            private static final int PADDING_RIGHT = 7;
+            //Popup state to prevent feedback
+            private boolean stateCmb = false;
+            private int defaultWidth = 0;
+            private   SynthGraphicsUtils utils =new SynthGraphicsUtils();
+            //Extend JComboBox's length and reset it
+            public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+                JComboBox cmb = (JComboBox) e.getSource();
+                if (!stateCmb) {
+                    defaultWidth = cmb.getSize().width;
+                }
+                //Extend JComboBox
+                cmb.setSize(getExtendedWidth(cmb), cmb.getHeight());
+                //If it pops up now JPopupMenu will still be short
+                //Fire popupMenuCanceled...
+                if (!stateCmb) {
+                    cmb.firePopupMenuCanceled();
+                }
+                //Reset JComboBox and state
+                stateCmb = false;
+                cmb.setSize(defaultWidth, cmb.getHeight());
+            }
+
+            private int getExtendedWidth(JComboBox cmb) {
+
+                int width = (int) cmb.getSize().getWidth() ;
+
+
+                for (int i = 0; i < cmb.getItemCount(); i++) {
+                    Object text = cmb.getItemAt(i);
+                    if(text == null)
+                        continue;
+
+                    int textWidth = cmb.getFontMetrics(cmb.getFont()).stringWidth(text.toString());
+                    width = Math.max(width,
+                            textWidth+10);
+                }
+
+                return width;
+            }
+            //Show extended JPopupMenu
+
+            public void popupMenuCanceled(PopupMenuEvent e) {
+                JComboBox cmb = (JComboBox) e.getSource();
+                stateCmb = true;
+                //JPopupMenu is long now, so repop
+                cmb.showPopup();
+            }
+
+            public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+                stateCmb = false;
+            }
+        });
         comboBox.setPreferredSize(new Dimension(componentPreferredWidth, componentHight));
         comboBox.addItemListener(itemListener);
         return comboBox;
