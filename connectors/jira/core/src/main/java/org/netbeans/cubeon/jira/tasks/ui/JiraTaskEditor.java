@@ -317,6 +317,7 @@ public class JiraTaskEditor {
     }
 
     private void buildComponents() {
+        builder.setLablePreferredWidth(120);
         arrributesContainer.addComponentGroup(
                 builder.createLabel(NbBundle.getMessage(JiraTaskEditor.class,
                 "LBL_Project")), project = builder.createComboBox(), new JLabel());
