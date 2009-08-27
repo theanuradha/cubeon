@@ -77,8 +77,7 @@ public abstract class ComponentBuilder {
     public JLabel createLabel(String text) {
         JLabel label = new JLabel(text);
         label.setToolTipText(text);
-        int width = Math.max(lablePreferredWidth,label.getFontMetrics(label.getFont()).stringWidth(text)+10);
-        label.setPreferredSize(new Dimension(width,
+        label.setPreferredSize(new Dimension(lablePreferredWidth,
                 componentHight));
         return label;
     }
