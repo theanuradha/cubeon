@@ -9,7 +9,6 @@ import java.awt.Color;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.JComponent;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -51,6 +50,7 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
             txtName.setText(taskRepository.getName());
             txtUiserId.setText(repository.getUserName());
             txtPassword.setText(repository.getPassword());
+            chIgnoreSSL.setSelected(repository.isIgnoreSSL());
             if (repository.getProjectKey() != null) {
                 txtId.setText(repository.getURL() + "/browse/" + repository.getProjectKey());
             }
@@ -68,6 +68,7 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
 
         repository.setUserName(txtUiserId.getText().trim());
         repository.setPassword(new String(txtPassword.getPassword()));
+        repository.setIgnoreSSL(chIgnoreSSL.isSelected());
         String url = txtId.getText().trim();
         if (url.contains("/browse/")) {
             String[] tages = url.split("/browse/");
@@ -141,6 +142,7 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
         jProgressBar1 = new javax.swing.JProgressBar();
         btnValidate = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
+        chIgnoreSSL = new javax.swing.JCheckBox();
 
         lblName.setText(NbBundle.getMessage(ConfigurationHandlerImpl.class, "ConfigurationHandlerImpl.lblName.text")); // NOI18N
 
@@ -171,6 +173,8 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
         jLabel2.setForeground(javax.swing.UIManager.getDefaults().getColor("Label.disabledForeground"));
         jLabel2.setText(NbBundle.getMessage(ConfigurationHandlerImpl.class, "ConfigurationHandlerImpl.jLabel2.text", new Object[] {})); // NOI18N
 
+        chIgnoreSSL.setText(NbBundle.getMessage(ConfigurationHandlerImpl.class, "ConfigurationHandlerImpl.chIgnoreSSL.text")); // NOI18N
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -180,12 +184,13 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
                     .add(layout.createSequentialGroup()
                         .addContainerGap()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
-                            .add(lblRepo_id, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
-                            .add(txtName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
-                            .add(lblName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+                            .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 390, Short.MAX_VALUE)
+                            .add(lblRepo_id, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 390, Short.MAX_VALUE)
+                            .add(txtName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 390, Short.MAX_VALUE)
+                            .add(lblName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 390, Short.MAX_VALUE)
                             .add(btnValidate)
-                            .add(txtId, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+                            .add(txtId, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 390, Short.MAX_VALUE)
+                            .add(jLabel1)
                             .add(layout.createSequentialGroup()
                                 .add(10, 10, 10)
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -194,11 +199,12 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
                                 .add(30, 30, 30)
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                                     .add(txtPassword)
-                                    .add(txtUiserId, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 143, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                            .add(jLabel1)))
+                                    .add(txtUiserId, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 143, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 161, Short.MAX_VALUE))
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, chIgnoreSSL, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 390, Short.MAX_VALUE)))
                     .add(layout.createSequentialGroup()
                         .add(20, 20, 20)
-                        .add(jLabel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE)))
+                        .add(jLabel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -226,7 +232,9 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                             .add(txtPassword, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                             .add(lblPassword))))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 64, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 47, Short.MAX_VALUE)
+                .add(chIgnoreSSL, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 15, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 36, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(btnValidate)
@@ -254,7 +262,7 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
                     }
 
                     JiraSession session = new JiraSession(url,
-                            txtUiserId.getText().trim(), new String(txtPassword.getPassword()));
+                            txtUiserId.getText().trim(), new String(txtPassword.getPassword()),chIgnoreSSL.isSelected());
                     if (key != null) {
                         session.getProjectByKey(key);
                     }
@@ -274,8 +282,10 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
         });
 
     }//GEN-LAST:event_btnValidateActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnValidate;
+    private javax.swing.JCheckBox chIgnoreSSL;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;

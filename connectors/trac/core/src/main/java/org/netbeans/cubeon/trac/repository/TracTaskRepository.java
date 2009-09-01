@@ -60,6 +60,7 @@ public class TracTaskRepository implements TaskRepository {
     //----------------------------
     private String userName;
     private String password;
+    private boolean  ignoreSSL;
     private FileObject baseDir;
     private final TracRepositoryExtension extension;
     private State state = State.INACTIVE;
@@ -410,7 +411,7 @@ public class TracTaskRepository implements TaskRepository {
             _session = null;
             //try to reconnect
             _session = Lookup.getDefault().lookup(TracClient.class).
-                    createTracSession(getURL(), getUserName(), getPassword());
+                    createTracSession(getURL(), getUserName(), getPassword(),isIgnoreSSL());
         } finally {
             handle.finish();
         }
@@ -459,4 +460,13 @@ public class TracTaskRepository implements TaskRepository {
     public TracQuerySupport getQuerySupport() {
         return querySupport;
     }
+
+    public boolean isIgnoreSSL() {
+        return ignoreSSL;
+    }
+
+    public void setIgnoreSSL(boolean ignoreSSL) {
+        this.ignoreSSL = ignoreSSL;
+    }
+    
 }
