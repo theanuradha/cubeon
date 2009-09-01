@@ -26,6 +26,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
@@ -56,15 +61,59 @@ public class XmlRpcTracSession implements TracSession {
     private final int epochVersion;
     private final int majorVersion;
     private final int minorVersion;
+    private final SSLSocketFactory defaultSSLFactory = HttpsURLConnection.getDefaultSSLSocketFactory();
+
+    ;
 
     /**
-     * Create XmlRpcTracSession for trac 
+     * Create XmlRpcTracSession for trac
      * @param url
      * @param user
      * @param password
      * @throws org.netbeans.cubeon.trac.api.TracException
      */
     XmlRpcTracSession(String url, String user, String password) throws TracException {
+        this(url, user, password, false);
+    }
+
+    /**
+     * Create XmlRpcTracSession for trac 
+     * @param url
+     * @param user
+     * @param password
+     * @param ignoreSSL
+     * @throws org.netbeans.cubeon.trac.api.TracException
+     */
+    XmlRpcTracSession(String url, String user, String password, final boolean ignoreSSL) throws TracException {
+        if (ignoreSSL) {
+            TrustManager[] trustAllCerts = new TrustManager[]{
+                new X509TrustManager() {
+
+                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                        return null;
+                    }
+
+                    public void checkClientTrusted(
+                            java.security.cert.X509Certificate[] certs, String authType) {
+                    }
+
+                    public void checkServerTrusted(
+                            java.security.cert.X509Certificate[] certs, String authType) {
+                    }
+                }
+            };
+
+            // Install the all-trusting trust manager
+            try {
+                SSLContext sc = SSLContext.getInstance("SSL");
+                sc.init(null, trustAllCerts, new java.security.SecureRandom());
+
+                HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+
         try {
             config = new XmlRpcClientConfigImpl();
             //check closing '/' is avaiable
@@ -99,6 +148,10 @@ public class XmlRpcTracSession implements TracSession {
             throw new TracException(ex);
         } catch (MalformedURLException ex) {
             throw new TracException(ex);
+        } finally {
+            if (ignoreSSL) {
+                HttpsURLConnection.setDefaultSSLSocketFactory(defaultSSLFactory);
+            }
         }
     }
 
