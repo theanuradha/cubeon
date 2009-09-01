@@ -37,4 +37,16 @@ public class TracXmlRpcClient implements TracClient {
     public TracSession createTracSession(String url, String user, String password) throws TracException {
         return new XmlRpcTracSession(url, user, password);
     }
+    /**
+     *  Create xmlrpc base trac session
+     * @param url
+     * @param user
+     * @param password
+     * @param ignoreSSL
+     * @return
+     * @throws org.netbeans.cubeon.trac.api.TracException
+     */
+    public TracSession createTracSession(String url, String user, String password,boolean ignoreSSL) throws TracException {
+        return new XmlRpcTracSession(url, user, password,ignoreSSL);
+    }
 }

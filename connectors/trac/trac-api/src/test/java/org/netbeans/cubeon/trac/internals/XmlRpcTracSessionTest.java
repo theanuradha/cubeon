@@ -19,11 +19,6 @@ package org.netbeans.cubeon.trac.internals;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 import junit.framework.TestCase;
 import org.netbeans.cubeon.trac.api.Ticket;
 import org.netbeans.cubeon.trac.api.TicketAction;
@@ -47,7 +42,6 @@ public class XmlRpcTracSessionTest extends TestCase {
 
     private XmlRpcTracSession tracSession;
     private String user;
-    private SSLSocketFactory defaultSocketFactory = null;
 
     public XmlRpcTracSessionTest(String testName) {
         super(testName);
@@ -56,38 +50,11 @@ public class XmlRpcTracSessionTest extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        defaultSocketFactory = HttpsURLConnection.getDefaultSSLSocketFactory();
-        TrustManager[] trustAllCerts = new TrustManager[]{
-            new X509TrustManager() {
-
-                public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                    return null;
-                }
-
-                public void checkClientTrusted(
-                        java.security.cert.X509Certificate[] certs, String authType) {
-                }
-
-                public void checkServerTrusted(
-                        java.security.cert.X509Certificate[] certs, String authType) {
-                }
-            }
-        };
-
-        // Install the all-trusting trust manager
-        try {
-            SSLContext sc = SSLContext.getInstance("SSL");
-            sc.init(null, trustAllCerts, new java.security.SecureRandom());
-
-            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
 
         try {
             user = "cubeon-dev@googlegroups.com";
             tracSession = new XmlRpcTracSession("https://free2.projectlocker.com/Cubeon/cubeon/trac",
-                    user, "testing");
+                    user, "testing",true);
 //            user = "anuradha";
 //            tracSession = new XmlRpcTracSession("http://192.168.1.100:8000/argos",
 //                    user, "a123");
@@ -101,7 +68,7 @@ public class XmlRpcTracSessionTest extends TestCase {
 
     @Override
     protected void tearDown() throws Exception {
-        HttpsURLConnection.setDefaultSSLSocketFactory(defaultSocketFactory);
+        
     }
 
     /**
