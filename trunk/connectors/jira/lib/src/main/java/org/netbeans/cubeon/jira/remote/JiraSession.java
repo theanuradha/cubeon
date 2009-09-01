@@ -51,12 +51,16 @@ public class JiraSession {
     private JiraSoapService service;
 
     public JiraSession(String url, String user, String pass) throws JiraException {
+        this(url, user, pass, false);
+    }
+
+    public JiraSession(String url, String user, String pass, boolean ignoreSSL) throws JiraException {
         String defaultSocketSecureFactory = null;
         ClassLoader moduleClassLoader = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
 
-            if (url.startsWith("https")) {
+            if (ignoreSSL) {
                 defaultSocketSecureFactory = AxisProperties.getProperty("axis.socketSecureFactory");
 
                 AxisProperties.setProperty("axis.socketSecureFactory", "org.apache.axis.components.net.SunFakeTrustSocketFactory");
