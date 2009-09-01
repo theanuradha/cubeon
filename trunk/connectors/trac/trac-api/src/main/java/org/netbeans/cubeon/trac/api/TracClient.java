@@ -31,4 +31,5 @@ public interface TracClient {
      * @throws org.netbeans.cubeon.trac.api.TracException
      */
     TracSession createTracSession(String url, String user, String password) throws TracException;
+    TracSession createTracSession(String url, String user, String password,boolean ignoreSSL) throws TracException;
 }
