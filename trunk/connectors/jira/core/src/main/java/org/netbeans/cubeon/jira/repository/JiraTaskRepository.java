@@ -69,6 +69,7 @@ public class JiraTaskRepository implements TaskRepository {
     //----------------------------
     private String userName;
     private String password;
+    private boolean ignoreSSL;
     //----------------------------
     private final JiraRepositoryExtension extension;
     private final JiraTaskPriorityProvider jtpp = new JiraTaskPriorityProvider();
@@ -510,7 +511,7 @@ public class JiraTaskRepository implements TaskRepository {
         try {
             session = null;
             //try to reconnect
-            session = new JiraSession(url, getUserName(), password);
+            session = new JiraSession(url, getUserName(), password,isIgnoreSSL());
         } finally {
             handle.finish();
         }
@@ -540,5 +541,13 @@ public class JiraTaskRepository implements TaskRepository {
         hash = 97 * hash + (this.provider != null ? this.provider.hashCode() : 0);
         hash = 97 * hash + (this.id != null ? this.id.hashCode() : 0);
         return hash;
+    }
+
+    public boolean isIgnoreSSL() {
+        return ignoreSSL;
+    }
+
+    public void setIgnoreSSL(boolean ignoreSSL) {
+        this.ignoreSSL = ignoreSSL;
     }
 }

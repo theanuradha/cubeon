@@ -45,6 +45,7 @@ class JiraRepositoryPersistence {
     private static final String TAG_REPOSITORY = "repository";//NOI18N
     private static final String TAG_ID = "id";//NOI18N
     private static final String TAG_USERID = "user";//NOI18N
+    private static final String TAG_IGNORE_SSL = "ignore-ssl";//NOI18N
     private static final String TAG_VERSION = "version";//NOI18N
     private static final String VERSION = "1.0";//NOI18N
     private static final String TAG_URL = "url";//NOI18N
@@ -95,6 +96,7 @@ class JiraRepositoryPersistence {
         repositoryElement.setAttribute(TAG_NAME, repository.getName());
         repositoryElement.setAttribute(TAG_DESCRIPTION, repository.getDescription());
         repositoryElement.setAttribute(TAG_USERID, repository.getUserName());
+        repositoryElement.setAttribute(TAG_IGNORE_SSL, String.valueOf(repository.isIgnoreSSL()));
         repositoryElement.setAttribute(TAG_URL, repository.getURL());
         if (repository.getProjectKey() != null && repository.getProjectKey().trim().length() > 0) {
             repositoryElement.setAttribute(TAG_PROJECT, repository.getProjectKey());
@@ -159,6 +161,7 @@ class JiraRepositoryPersistence {
                     String description = element.getAttribute(TAG_DESCRIPTION);
                     String url = element.getAttribute(TAG_URL);
                     String user = element.getAttribute(TAG_USERID);
+                    String ignoreSSL = element.hasAttribute(TAG_IGNORE_SSL)? element.getAttribute(TAG_IGNORE_SSL):null;
                     String project = element.getAttribute(TAG_PROJECT);
 
                     String password = element.getAttribute(TAG_PASSWORD_HASH);
@@ -176,6 +179,7 @@ class JiraRepositoryPersistence {
                     jiraTaskRepository.setUserName(user);
                     jiraTaskRepository.setPassword(password);
                     jiraTaskRepository.setURL(url);
+                    jiraTaskRepository.setIgnoreSSL(ignoreSSL==null || Boolean.valueOf(ignoreSSL));
                     if (project == null || project.trim().length() == 0) {
                         jiraTaskRepository.setProjectKey(null);
                     } else {

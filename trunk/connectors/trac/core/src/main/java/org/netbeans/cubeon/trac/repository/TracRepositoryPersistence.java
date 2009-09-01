@@ -45,6 +45,7 @@ class TracRepositoryPersistence {
     private static final String TAG_REPOSITORY = "repository";//NOI18N
     private static final String TAG_ID = "id";//NOI18N
     private static final String TAG_USERID = "user";//NOI18N
+    private static final String TAG_IGNORE_SSL = "ignore-ssl";//NOI18N
     private static final String TAG_VERSION = "version";//NOI18N
     private static final String VERSION_ID = "1.0";//NOI18N
     private static final String TAG_URL = "url";//NOI18N
@@ -95,6 +96,7 @@ class TracRepositoryPersistence {
         repositoryElement.setAttribute(TAG_NAME, repository.getName());
         repositoryElement.setAttribute(TAG_DESCRIPTION, repository.getDescription());
         repositoryElement.setAttribute(TAG_USERID, repository.getUserName());
+        repositoryElement.setAttribute(TAG_IGNORE_SSL, String.valueOf(repository.isIgnoreSSL()));
         repositoryElement.setAttribute(TAG_URL, repository.getURL());
 
         repositoryElement.setAttribute(TAG_PASSWORD_HASH,
@@ -156,6 +158,7 @@ class TracRepositoryPersistence {
                     String description = element.getAttribute(TAG_DESCRIPTION);
                     String url = element.getAttribute(TAG_URL);
                     String user = element.getAttribute(TAG_USERID);
+                    String ignoreSSL = element.hasAttribute(TAG_IGNORE_SSL)?  element.getAttribute(TAG_IGNORE_SSL):null;
 
                     TracTaskRepository tracTaskRepository;
                     String password = element.getAttribute(TAG_PASSWORD_HASH);
@@ -166,6 +169,7 @@ class TracRepositoryPersistence {
                     tracTaskRepository.setUserName(user);
                     tracTaskRepository.setPassword(password);
                     tracTaskRepository.setURL(url);
+                    tracTaskRepository.setIgnoreSSL(ignoreSSL==null || Boolean.valueOf(ignoreSSL));
 
                     tracTaskRepository.loadAttributes();
                     repositorys.add(tracTaskRepository);
