@@ -62,8 +62,7 @@ public class XmlRpcTracSession implements TracSession {
     private final int majorVersion;
     private final int minorVersion;
     private final SSLSocketFactory defaultSSLFactory = HttpsURLConnection.getDefaultSSLSocketFactory();
-
-    ;
+    private SSLSocketFactory ignoredefaultSSLFactory = null;
 
     /**
      * Create XmlRpcTracSession for trac
@@ -107,8 +106,9 @@ public class XmlRpcTracSession implements TracSession {
             try {
                 SSLContext sc = SSLContext.getInstance("SSL");
                 sc.init(null, trustAllCerts, new java.security.SecureRandom());
+                ignoredefaultSSLFactory = sc.getSocketFactory();
+                HttpsURLConnection.setDefaultSSLSocketFactory(ignoredefaultSSLFactory);
 
-                HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
@@ -176,6 +176,7 @@ public class XmlRpcTracSession implements TracSession {
     public List<TicketType> getTicketTypes() throws TracException {
         List<TicketType> ticketTypes = new ArrayList<TicketType>();
         try {
+            setupSSLSocketFactory(true);
             //get a list of all ticket type names.
             Object[] types = (Object[]) client.execute("ticket.type.getAll",//NOI18N
                     new Object[0]);
@@ -188,6 +189,8 @@ public class XmlRpcTracSession implements TracSession {
             }
         } catch (XmlRpcException ex) {
             throw new TracException(ex);
+        } finally {
+            setupSSLSocketFactory(false);
         }
         return ticketTypes;
     }
@@ -200,6 +203,7 @@ public class XmlRpcTracSession implements TracSession {
     public List<TicketPriority> getTicketPriorities() throws TracException {
         List<TicketPriority> ticketPriorities = new ArrayList<TicketPriority>();
         try {
+            setupSSLSocketFactory(true);
             //get a list of all ticket priority names.
             Object[] priorities = (Object[]) client.execute("ticket.priority.getAll",//NOI18N
                     new Object[0]);
@@ -212,6 +216,8 @@ public class XmlRpcTracSession implements TracSession {
             }
         } catch (XmlRpcException ex) {
             throw new TracException(ex);
+        } finally {
+            setupSSLSocketFactory(false);
         }
         return ticketPriorities;
     }
@@ -224,6 +230,7 @@ public class XmlRpcTracSession implements TracSession {
     public List<TicketComponent> getTicketComponents() throws TracException {
         List<TicketComponent> ticketComponents = new ArrayList<TicketComponent>();
         try {
+            setupSSLSocketFactory(true);
             //get a list of all ticket component names.
             Object[] components = (Object[]) client.execute("ticket.component.getAll",//NOI18N
                     new Object[0]);
@@ -240,6 +247,8 @@ public class XmlRpcTracSession implements TracSession {
             }
         } catch (XmlRpcException ex) {
             throw new TracException(ex);
+        } finally {
+            setupSSLSocketFactory(false);
         }
         return ticketComponents;
     }
@@ -252,6 +261,7 @@ public class XmlRpcTracSession implements TracSession {
     public List<TicketVersion> getTicketVersions() throws TracException {
         List<TicketVersion> ticketVersions = new ArrayList<TicketVersion>();
         try {
+            setupSSLSocketFactory(true);
             //get a list of all ticket version names.
             Object[] versions = (Object[]) client.execute("ticket.version.getAll",//NOI18N
                     new Object[0]);
@@ -272,6 +282,8 @@ public class XmlRpcTracSession implements TracSession {
             }
         } catch (XmlRpcException ex) {
             throw new TracException(ex);
+        } finally {
+            setupSSLSocketFactory(false);
         }
         return ticketVersions;
     }
@@ -284,6 +296,7 @@ public class XmlRpcTracSession implements TracSession {
     public List<TicketSeverity> getTicketSeverities() throws TracException {
         List<TicketSeverity> ticketSeverities = new ArrayList<TicketSeverity>();
         try {
+            setupSSLSocketFactory(true);
             //get a list of all ticket severity names.
             Object[] severities = (Object[]) client.execute("ticket.severity.getAll",//NOI18N
                     new Object[0]);
@@ -296,6 +309,8 @@ public class XmlRpcTracSession implements TracSession {
             }
         } catch (XmlRpcException ex) {
             throw new TracException(ex);
+        } finally {
+            setupSSLSocketFactory(false);
         }
         return ticketSeverities;
     }
@@ -308,6 +323,7 @@ public class XmlRpcTracSession implements TracSession {
     public List<TicketMilestone> getTicketMilestones() throws TracException {
         List<TicketMilestone> ticketMilestones = new ArrayList<TicketMilestone>();
         try {
+            setupSSLSocketFactory(true);
             //get a list of all ticket milestone names.
             Object[] milestones = (Object[]) client.execute("ticket.milestone.getAll",//NOI18N
                     new Object[0]);
@@ -330,6 +346,8 @@ public class XmlRpcTracSession implements TracSession {
             }
         } catch (XmlRpcException ex) {
             throw new TracException(ex);
+        } finally {
+            setupSSLSocketFactory(false);
         }
         return ticketMilestones;
     }
@@ -342,6 +360,7 @@ public class XmlRpcTracSession implements TracSession {
     public List<TicketResolution> getTicketResolutions() throws TracException {
         List<TicketResolution> ticketResolutions = new ArrayList<TicketResolution>();
         try {
+            setupSSLSocketFactory(true);
             //get a list of all ticket resolution names.
             Object[] resolutions = (Object[]) client.execute("ticket.resolution.getAll",//NOI18N
                     new Object[0]);
@@ -354,6 +373,8 @@ public class XmlRpcTracSession implements TracSession {
             }
         } catch (XmlRpcException ex) {
             throw new TracException(ex);
+        } finally {
+            setupSSLSocketFactory(false);
         }
         return ticketResolutions;
     }
@@ -366,6 +387,7 @@ public class XmlRpcTracSession implements TracSession {
     public List<TicketStatus> getTicketStatuses() throws TracException {
         List<TicketStatus> ticketStatuses = new ArrayList<TicketStatus>();
         try {
+            setupSSLSocketFactory(true);
             //get a list of all ticket status names.
             Object[] statuses = (Object[]) client.execute("ticket.status.getAll",//NOI18N
                     new Object[0]);
@@ -378,6 +400,8 @@ public class XmlRpcTracSession implements TracSession {
             }
         } catch (XmlRpcException ex) {
             throw new TracException(ex);
+        } finally {
+            setupSSLSocketFactory(false);
         }
         return ticketStatuses;
     }
@@ -390,6 +414,7 @@ public class XmlRpcTracSession implements TracSession {
     public List<TicketField> getTicketFields() throws TracException {
         List<TicketField> ticketFields = new ArrayList<TicketField>();
         try {
+            setupSSLSocketFactory(true);
             //Return a list of all ticket fields fields.
             Object[] milestones = (Object[]) client.execute("ticket.getTicketFields",//NOI18N
                     new Object[0]);
@@ -418,12 +443,15 @@ public class XmlRpcTracSession implements TracSession {
             }
         } catch (XmlRpcException ex) {
             throw new TracException(ex);
+        } finally {
+            setupSSLSocketFactory(false);
         }
         return ticketFields;
     }
 
     public Ticket getTicket(int id) throws TracException {
         try {
+            setupSSLSocketFactory(true);
             Object[] ticketCalls = new Object[2];
             ticketCalls[0] = _createMultiCallElement("ticket.get",//NOI18N
                     new Object[]{id});
@@ -446,6 +474,8 @@ public class XmlRpcTracSession implements TracSession {
 
         } catch (XmlRpcException ex) {
             throw new TracException(ex);
+        } finally {
+            setupSSLSocketFactory(false);
         }
     }
 
@@ -509,6 +539,7 @@ public class XmlRpcTracSession implements TracSession {
     public List<Ticket> getTickets(int... ids) throws TracException {
         List<Ticket> tickets = new ArrayList<Ticket>(ids.length);
         try {
+            setupSSLSocketFactory(true);
             Object[] ticketCalls = new Object[ids.length * 2];
             int index = 0;
             for (int id : ids) {
@@ -539,6 +570,8 @@ public class XmlRpcTracSession implements TracSession {
 
         } catch (XmlRpcException ex) {
             throw new TracException(ex);
+        } finally {
+            setupSSLSocketFactory(false);
         }
         return tickets;
     }
@@ -546,6 +579,7 @@ public class XmlRpcTracSession implements TracSession {
     public Ticket createTicket(String summary, String description, Map<String, Object> attributes, boolean notify) throws TracException {
         Ticket ticket = null;
         try {
+            setupSSLSocketFactory(true);
             Object execute = client.execute("ticket.create",//NOI18N
                     new Object[]{summary, description, attributes, notify});
             if (execute instanceof Integer) {
@@ -554,12 +588,15 @@ public class XmlRpcTracSession implements TracSession {
             return ticket;
         } catch (XmlRpcException ex) {
             throw new TracException(ex);
+        } finally {
+            setupSSLSocketFactory(false);
         }
     }
 
     public Ticket updateTicket(String comment, Ticket ticket, boolean notify) throws TracException {
 
         try {
+            setupSSLSocketFactory(true);
             //backward compatibility on cubeon pathed xmlrpc plug-in
             if (majorVersion == 5 || majorVersion == 6) {
                 ticket.remove("action");
@@ -579,23 +616,29 @@ public class XmlRpcTracSession implements TracSession {
 
         } catch (XmlRpcException ex) {
             throw new TracException(ex);
+        } finally {
+            setupSSLSocketFactory(false);
         }
     }
 
     public void deleteTicket(Ticket ticket) throws TracException {
         try {
+            setupSSLSocketFactory(true);
             client.execute("ticket.delete",//NOI18N
                     new Object[]{ticket.getTicketId()});
 
 
         } catch (XmlRpcException ex) {
             throw new TracException(ex);
+        } finally {
+            setupSSLSocketFactory(false);
         }
     }
 
     public List<TicketAction> getTicketActions(int id) throws TracException {
         List<TicketAction> actions = new ArrayList<TicketAction>();
         try {
+            setupSSLSocketFactory(true);
             final String methodID;
             //backward compatibility on cubeon pathed xmlrpc plug-in
             if (majorVersion == 5 || majorVersion == 6) {
@@ -649,6 +692,8 @@ public class XmlRpcTracSession implements TracSession {
 
         } catch (XmlRpcException ex) {
             throw new TracException(ex);
+        } finally {
+            setupSSLSocketFactory(false);
         }
         return actions;
     }
@@ -656,6 +701,7 @@ public class XmlRpcTracSession implements TracSession {
     public List<Integer> queryTickets(String query) throws TracException {
         List<Integer> ids = new ArrayList<Integer>();
         try {
+            setupSSLSocketFactory(true);
             Object[] result = (Object[]) client.execute("ticket.query",//NOI18N
                     new Object[]{query});
 
@@ -665,6 +711,8 @@ public class XmlRpcTracSession implements TracSession {
 
         } catch (XmlRpcException ex) {
             throw new TracException(ex);
+        } finally {
+            setupSSLSocketFactory(false);
         }
         return ids;
     }
@@ -673,17 +721,33 @@ public class XmlRpcTracSession implements TracSession {
         //backward compatibility on cubeon pathed xmlrpc plug-in
         if (majorVersion == 5 || majorVersion == 6) {
             try {
+                setupSSLSocketFactory(true);
                 ticket.remove("action");
                 client.execute("ticket.executeAction",
                         new Object[]{ticket.getTicketId(), action.getName(),
                             comment, ticket.getAttributes(), notify});
 
-            } catch (XmlRpcException ex) {
+            } catch (XmlRpcException ex) {                
                 throw new TracException(ex);
+            } finally {
+                setupSSLSocketFactory(false);
             }
             return getTicket(ticket.getTicketId());
         }
         ticket.put("action", action.getName());
         return updateTicket(comment, ticket, notify);
+    }
+
+    private void setupSSLSocketFactory(boolean ignoreSSL) {
+
+        if (ignoreSSL) {
+            if (ignoredefaultSSLFactory != null) {
+                HttpsURLConnection.setDefaultSSLSocketFactory(ignoredefaultSSLFactory);
+            }
+        } else {
+            if (defaultSSLFactory != null) {
+                HttpsURLConnection.setDefaultSSLSocketFactory(defaultSSLFactory);
+            }
+        }
     }
 }
