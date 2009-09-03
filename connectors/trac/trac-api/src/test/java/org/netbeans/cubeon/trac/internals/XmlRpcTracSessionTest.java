@@ -49,26 +49,25 @@ public class XmlRpcTracSessionTest extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-        super.setUp();
+        if (tracSession == null) {
 
-        try {
-            user = "cubeon-dev@googlegroups.com";
-            tracSession = new XmlRpcTracSession("https://free2.projectlocker.com/Cubeon/cubeon/trac",
-                    user, "testing",true);
+            try {
+                user = "cubeon-dev@googlegroups.com";
+                tracSession = new XmlRpcTracSession("https://free2.projectlocker.com/Cubeon/cubeon/trac",
+                        user, "testing", true);
 //            user = "anuradha";
 //            tracSession = new XmlRpcTracSession("http://192.168.1.100:8000/argos",
 //                    user, "a123");
-        } catch (TracException tracException) {
-            System.out.println(tracException.getMessage());
-            System.out.println("XmlRpcTracSession : Connection Not found. " +
-                    "Check you Test trac repo url,username,password");
-            System.out.println("IGNORING XmlRpcTracSessionTest !!!");
+            } catch (TracException tracException) {
+                System.out.println(tracException.getMessage());
+                System.out.println("XmlRpcTracSession : Connection Not found. " + "Check you Test trac repo url,username,password");
+                System.out.println("IGNORING XmlRpcTracSessionTest !!!");
+            }
         }
     }
 
     @Override
     protected void tearDown() throws Exception {
-        
     }
 
     /**
@@ -262,10 +261,16 @@ public class XmlRpcTracSessionTest extends TestCase {
         //create dumy TicketAction                  "resolve"
         TicketAction dumyAction2 = new TicketAction("resolve");//NOI18N
         ticket.put(TracKeys.RESOLUTION, "fixed");
-        ticket = tracSession.executeAction(dumyAction2, "close Ticket", ticket, false);
-        assertEquals(ticket.get(TracKeys.STATUS), "closed");
+        try {
+            ticket = tracSession.executeAction(dumyAction2, "close Ticket", ticket, false);
+            assertEquals(ticket.get(TracKeys.STATUS), "closed");
+        } catch (TracException ex) {
+            //issue with non patched vertion
+            if (!ex.getMessage().contains("'add_warning' while executing 'ticket.update()'")) {
 
-
+                throw  ex;
+            }
+        }
         Thread.sleep(1000);//workaround to prevent http://trac-hacks.org/ticket/1863
         //test deleteTicket
         System.out.println("deleteTickets");
