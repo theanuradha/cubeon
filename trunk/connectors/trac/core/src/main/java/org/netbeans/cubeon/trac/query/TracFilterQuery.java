@@ -18,6 +18,7 @@ package org.netbeans.cubeon.trac.query;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
 
@@ -147,7 +148,7 @@ public class TracFilterQuery extends AbstractTracQuery {
                             }
                         }
                     } catch (TracException tracException) {
-                        //ignore
+                        Logger.getLogger(getClass().getName()).warning(tracException.getMessage());
                     }
                 }
             });
