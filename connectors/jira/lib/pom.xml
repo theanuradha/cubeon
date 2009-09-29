@@ -7,7 +7,7 @@
         <version>1.1.0.0</version>
     </parent>
     <artifactId>jira-connecter-lib</artifactId>
-    <packaging>jar</packaging>
+    <packaging>nbm</packaging>
     <name>Cube°n Jira Soap Lib</name>
     <version>1.1.0.0</version>
     <description>Jira soap library</description>
