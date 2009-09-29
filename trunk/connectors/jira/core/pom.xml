@@ -10,7 +10,7 @@
     <packaging>nbm</packaging>
     <name>Cube°n Jira Repository</name>
     <description>Jira Repository Connecter</description>
-    <version>1.1.0.0</version>
+    <version>1.1.0.1</version>
     <build>
         <plugins>
             <plugin>
@@ -91,63 +91,7 @@
             <artifactId>org-jdesktop-layout</artifactId>
             <version>${netbeans.release}</version>
         </dependency>
-        <dependency>
-            <groupId>com.dolby.jira.net</groupId>
-            <artifactId>jira-soap</artifactId>
-            <version>1.0-13.3.2</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>axis</groupId>
-            <artifactId>axis</artifactId>
-            <version>1.4</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.3</version>
-        </dependency>
-        <dependency>
-            <groupId>axis</groupId>
-            <artifactId>axis-jaxrpc</artifactId>
-            <version>1.4</version>
-        </dependency>
-        <dependency>
-            <groupId>axis</groupId>
-            <artifactId>axis-saaj</artifactId>
-            <version>1.4</version>
-        </dependency>
-        <dependency>
-            <groupId>axis</groupId>
-            <artifactId>axis-wsdl4j</artifactId>
-            <version>1.5.1</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-discovery</groupId>
-            <artifactId>commons-discovery</artifactId>
-            <version>0.2</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-netbeans-libs-commons_logging</artifactId>
-            <version>${netbeans.release}</version>
-        </dependency>
     </dependencies>
 </project>
+
+
