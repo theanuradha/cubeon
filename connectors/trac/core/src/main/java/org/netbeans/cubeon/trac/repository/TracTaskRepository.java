@@ -468,5 +468,9 @@ public class TracTaskRepository implements TaskRepository {
     public void setIgnoreSSL(boolean ignoreSSL) {
         this.ignoreSSL = ignoreSSL;
     }
+
+    TaskPersistenceHandler getTaskPersistenceHandler() {
+        return handler;
+    }
     
 }
