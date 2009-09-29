@@ -43,8 +43,7 @@ public class TracUtils {
             Ticket ticket = session.createTicket(task.getSummary(),
                     task.getDescription(),
                     new HashMap<String, Object>(task.getAttributes()), true);
-            repository.remove(task);
-
+            repository.getTaskPersistenceHandler().removeTaskElement(task);
             task.setId(ticketToTaskId(ticket));
             task.setTicketId(ticket.getTicketId());
             task.setLocal(false);
@@ -60,7 +59,7 @@ public class TracUtils {
             task.setActions(ticketActions);
             repository.persist(task);
             repository.getQuerySupport().getOutgoingQuery().removeTaskId(old);
-            //notify aout task id changed
+            //notify about task id changed
             repository.getNotifier().fireIdChanged(old, task.getId());
         }
     }
