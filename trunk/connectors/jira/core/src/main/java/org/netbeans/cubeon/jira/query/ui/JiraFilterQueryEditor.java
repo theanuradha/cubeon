@@ -25,6 +25,8 @@ package org.netbeans.cubeon.jira.query.ui;
 import java.awt.Image;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -38,6 +40,7 @@ import org.netbeans.cubeon.jira.query.JiraQuerySupport;
 import org.netbeans.cubeon.jira.repository.attributes.JiraFilter;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuerySupportProvider;
+import org.openide.awt.HtmlBrowser.URLDisplayer;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.BeanTreeView;
 import org.openide.nodes.AbstractNode;
@@ -259,6 +262,7 @@ public class JiraFilterQueryEditor extends javax.swing.JPanel implements Explore
 
         javax.swing.JScrollPane jScrollPane1 = beanTreeView;
         btnUpdateFilters = new javax.swing.JButton();
+        lblNotice = new javax.swing.JLabel();
 
         jScrollPane1.setBorder(javax.swing.BorderFactory.createEtchedBorder(null, javax.swing.UIManager.getDefaults().getColor("CheckBoxMenuItem.selectionBackground")));
 
@@ -269,22 +273,31 @@ public class JiraFilterQueryEditor extends javax.swing.JPanel implements Explore
             }
         });
 
+        lblNotice.setText(org.openide.util.NbBundle.getMessage(JiraFilterQueryEditor.class, "JiraFilterQueryEditor.lblNotice.text")); // NOI18N
+        lblNotice.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblNoticeMouseClicked(evt);
+            }
+        });
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
-                    .add(btnUpdateFilters))
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, lblNotice, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, btnUpdateFilters))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE)
+                .add(lblNotice, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 47, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(btnUpdateFilters)
                 .add(11, 11, 11))
@@ -295,7 +308,20 @@ public class JiraFilterQueryEditor extends javax.swing.JPanel implements Explore
 
         updateFilters();
     }//GEN-LAST:event_btnUpdateFiltersActionPerformed
+
+    private void lblNoticeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblNoticeMouseClicked
+       try {
+            URLDisplayer.getDefault().
+                    showURL(new URL(
+                    jiraQuerySupport.getJiraTaskRepository().getURL()+
+                    "/secure/IssueNavigator.jspa?mode=show&createNew=true"));//NOI18N
+        } catch (MalformedURLException ex) {
+            //ignore
+        }
+    }//GEN-LAST:event_lblNoticeMouseClicked
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnUpdateFilters;
+    private javax.swing.JLabel lblNotice;
     // End of variables declaration//GEN-END:variables
 }
