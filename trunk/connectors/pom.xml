@@ -15,6 +15,7 @@
         <module>jira</module>
         <module>local</module>
         <module>trac</module>
+        
     </modules>
     <build>
         <pluginManagement>
@@ -44,6 +45,12 @@
             <id>bugzilla</id>
             <modules>
                 <module>bugzilla</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>gcode</id>
+            <modules>
+                <module>gcode</module>
             </modules>
         </profile>
     </profiles>
