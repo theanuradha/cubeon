@@ -17,6 +17,7 @@
 package org.netbeans.cubeon.gcode.internals;
 
 import junit.framework.TestCase;
+import org.netbeans.cubeon.gcode.api.GCodeComment;
 import org.netbeans.cubeon.gcode.api.GCodeIssue;
 
 /**
@@ -25,6 +26,7 @@ import org.netbeans.cubeon.gcode.api.GCodeIssue;
  */
 public class GCodeSessionImplTest extends TestCase {
 
+    private String testcubeon = "test-cubeon";
     private String user = null;
     private String password = null;
 
@@ -34,7 +36,7 @@ public class GCodeSessionImplTest extends TestCase {
 
     public void testGetIssue() throws Exception {
         System.out.println("getIssue");
-        GCodeSessionImpl instance = new GCodeSessionImpl("test-cubeon", user, password);
+        GCodeSessionImpl instance = new GCodeSessionImpl(testcubeon, user, password);
         int id = 3;
         GCodeIssue expResult = null;
         GCodeIssue result = instance.getIssue(id);
@@ -42,6 +44,7 @@ public class GCodeSessionImplTest extends TestCase {
     }
 
     public static void printGCodeIssue(GCodeIssue codeIssue) {
+        System.out.println("ID : " + codeIssue.getId());
         System.out.println("Summary : " + codeIssue.getSummary());
         System.out.println("Description : " + codeIssue.getDescription());
         System.out.println("Report By : " + codeIssue.getReportedBy());
@@ -49,15 +52,38 @@ public class GCodeSessionImplTest extends TestCase {
         System.out.println("Status : " + codeIssue.getStatus());
         System.out.println("Owner : " + codeIssue.getOwner());
         System.out.println("Stars : " + codeIssue.getStars());
-        System.out.println("Lables___________________________");
+
+        System.out.print("Cc: ");
+        for (String cc : codeIssue.getCcs()) {
+            System.out.print(cc + ", ");
+        }
+        System.out.println("");
+        System.out.println("\nLables___________________________");
         for (String lable : codeIssue.getLables()) {
             System.out.println(lable);
         }
         System.out.println("_________________________________");
-        System.out.print("Cc: ");
-        for (String cc : codeIssue.getCcs()) {
-            System.out.print(cc+", ");
+        System.out.println("\nComments_________________________");
+        for (GCodeComment comment : codeIssue.getComments()) {
+            System.out.println("\tCommnet ID: " + comment.getCommentId());
+            System.out.println("\tComment : " + comment.getComment());
+            System.out.println("\tSummary : " + comment.getSummary());
+            System.out.println("\tAuthor : " + comment.getAuthor());
+            System.out.println("\tStatus : " + comment.getStatus());
+            System.out.println("\tOwner : " + comment.getOwner());
+            System.out.print("\tCc: ");
+            for (String cc : codeIssue.getCcs()) {
+                System.out.print(cc + ", ");
+            }
+            System.out.println("");
+            System.out.println("\tLables___________________________");
+            for (String lable : codeIssue.getLables()) {
+                System.out.println("\t\t" + lable);
+            }
+            System.out.println(".....................................");
+
         }
-        System.out.println("");
+        System.out.println("_________________________________");
+
     }
 }

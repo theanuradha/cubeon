@@ -21,11 +21,13 @@ import com.google.gdata.client.projecthosting.ProjectHostingService;
 import com.google.gdata.data.HtmlTextConstruct;
 import com.google.gdata.data.TextContent;
 import com.google.gdata.data.projecthosting.Cc;
+import com.google.gdata.data.projecthosting.CcUpdate;
 import com.google.gdata.data.projecthosting.IssueCommentsEntry;
 import com.google.gdata.data.projecthosting.IssueCommentsFeed;
 import com.google.gdata.data.projecthosting.IssuesEntry;
 import com.google.gdata.data.projecthosting.IssuesFeed;
 import com.google.gdata.data.projecthosting.Label;
+import com.google.gdata.data.projecthosting.Updates;
 import com.google.gdata.util.AuthenticationException;
 import com.google.gdata.util.ServiceException;
 import java.io.IOException;
@@ -34,6 +36,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.netbeans.cubeon.gcode.api.GCodeComment;
 import org.netbeans.cubeon.gcode.api.GCodeException;
 import org.netbeans.cubeon.gcode.api.GCodeIssue;
 import org.netbeans.cubeon.gcode.api.GCodeSession;
@@ -83,48 +86,87 @@ public class GCodeSessionImpl implements GCodeSession {
     public GCodeIssue getIssue(int id) throws GCodeException {
         try {
             IssuesEntry issuesEntry = getIssueEntry(String.valueOf(id));
-
-            String description = "";
-            TextContent textContent = (TextContent) issuesEntry.getContent();
-            if ((textContent != null) && (textContent.getContent() != null)) {
-                HtmlTextConstruct textConstruct =
-                        (HtmlTextConstruct) textContent.getContent();
-                description = textConstruct.getHtml();
-            }
-            GCodeIssue codeIssue = new GCodeIssue(id,
-                    issuesEntry.getTitle().getPlainText(), description);
-            //read Author
-            codeIssue.setReportedBy(issuesEntry.getAuthors().get(0).getName());
-            if (issuesEntry.hasState()) {
-                codeIssue.setState(GCodeState.valueOf(issuesEntry.getState().getValue().name()));
-            }
-            if (issuesEntry.hasStatus()) {
-                codeIssue.setStatus(issuesEntry.getStatus().getValue());
-            }
-            if (issuesEntry.hasStars()) {
-                codeIssue.setStars(issuesEntry.getStars().getValue());
-            }
-            if (issuesEntry.hasOwner()) {
-                codeIssue.setOwner(issuesEntry.getOwner().getUsername().getValue());
-            }
-            if (issuesEntry.hasLabels()) {
-                List<Label> labels = issuesEntry.getLabels();
-                for (Label label : labels) {
-                    codeIssue.addLable(label.getValue());
-                }
-            }
-            if (issuesEntry.hasCcs()) {
-                List<Cc> ccs = issuesEntry.getCcs();
-                for (Cc cc : ccs) {
-                    codeIssue.addCc(cc.getUsername().getValue());
-                }
-            }
+            GCodeIssue codeIssue = toGCodeIssue(issuesEntry);
             return codeIssue;
         } catch (IOException ex) {
             throw new GCodeException(ex);
         } catch (ServiceException ex) {
             throw new GCodeException(ex);
         }
+    }
+
+    private GCodeIssue toGCodeIssue(IssuesEntry issuesEntry) throws IOException, ServiceException {
+        String description = "";
+        TextContent textContent = (TextContent) issuesEntry.getContent();
+        if ((textContent != null) && (textContent.getContent() != null)) {
+            HtmlTextConstruct textConstruct = (HtmlTextConstruct) textContent.getContent();
+            description = textConstruct.getHtml();
+        }
+        GCodeIssue codeIssue = new GCodeIssue(getIssueId(issuesEntry.getId()), issuesEntry.getTitle().getPlainText(), description);
+        codeIssue.setReportedBy(issuesEntry.getAuthors().get(0).getName());
+        if (issuesEntry.hasState()) {
+            codeIssue.setState(GCodeState.valueOf(issuesEntry.getState().getValue().name()));
+        }
+        if (issuesEntry.hasStatus()) {
+            codeIssue.setStatus(issuesEntry.getStatus().getValue());
+        }
+        if (issuesEntry.hasStars()) {
+            codeIssue.setStars(issuesEntry.getStars().getValue());
+        }
+        if (issuesEntry.hasOwner()) {
+            codeIssue.setOwner(issuesEntry.getOwner().getUsername().getValue());
+        }
+        if (issuesEntry.hasLabels()) {
+            List<Label> labels = issuesEntry.getLabels();
+            for (Label label : labels) {
+                codeIssue.addLable(label.getValue());
+            }
+        }
+        if (issuesEntry.hasCcs()) {
+            List<Cc> ccs = issuesEntry.getCcs();
+            for (Cc cc : ccs) {
+                codeIssue.addCc(cc.getUsername().getValue());
+            }
+        }
+        //read comments
+        IssueCommentsFeed commentsFeed = getCommentsFeed(codeIssue.getId());
+        for (IssueCommentsEntry commentEntry : commentsFeed.getEntries()) {
+            GCodeComment codeComment = new GCodeComment(getCommentId(commentEntry.getId()),
+                    commentEntry.getAuthors().get(0).getName());
+            TextContent commentContent = (TextContent) commentEntry.getContent();
+            if ((commentContent != null) && (commentContent.getContent() != null)) {
+                HtmlTextConstruct textConstruct =
+                        (HtmlTextConstruct) commentContent.getContent();
+                codeComment.setComment(textConstruct.getHtml());
+            }
+            if (commentEntry.hasUpdates()) {
+                Updates updates = commentEntry.getUpdates();
+
+                if (updates.hasSummary()) {
+                    codeComment.setSummary(updates.getSummary().getValue());
+                }
+
+                if (updates.hasStatus()) {
+                    codeComment.setStatus(updates.getStatus().getValue());
+                }
+
+                if (updates.hasOwnerUpdate()) {
+                    codeComment.setOwner(updates.getOwnerUpdate().getValue());
+                }
+
+                for (Label label : updates.getLabels()) {
+                    codeComment.addLable(label.getValue());
+                }
+
+                for (CcUpdate cc : updates.getCcUpdates()) {
+                    codeComment.addCc(cc.getValue());
+                }
+
+            }
+
+            codeIssue.addComment(codeComment);
+        }
+        return codeIssue;
     }
 
     public List<GCodeIssue> getIssues(int... id) throws GCodeException {
