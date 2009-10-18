@@ -26,7 +26,7 @@ import java.util.List;
  */
 public class GCodeIssue {
 
-    private int id;
+    private String id;
     private String summary;
     private String description;
     private String status;
@@ -37,9 +37,10 @@ public class GCodeIssue {
     private long updatedDate = 0;
     private List<String> lables = new ArrayList<String>();
     private List<String> ccs = new ArrayList<String>();
+    private List<GCodeComment> comments = new ArrayList<GCodeComment>();
     private int stars;
 
-    public GCodeIssue(int id, String summary, String description) {
+    public GCodeIssue(String id, String summary, String description) {
         this.id = id;
         this.summary = summary;
         this.description = description;
@@ -61,11 +62,11 @@ public class GCodeIssue {
         this.description = description;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -130,7 +131,7 @@ public class GCodeIssue {
     }
 
     public boolean removeAllLables(Collection<? extends String> lables) {
-        return lables.removeAll(lables);
+        return this.lables.removeAll(lables);
     }
 
     public boolean addAllLables(Collection<? extends String> lables) {
@@ -150,7 +151,7 @@ public class GCodeIssue {
     }
 
     public boolean removeAllCcs(Collection<? extends String> ccs) {
-        return ccs.removeAll(ccs);
+        return this.ccs.removeAll(ccs);
     }
 
     public boolean addAllCcs(Collection<? extends String> ccs) {
@@ -163,6 +164,26 @@ public class GCodeIssue {
 
     public List<String> getCcs() {
         return new ArrayList<String>(ccs);
+    }
+
+    public boolean removeComment(GCodeComment codeComment) {
+        return comments.remove(codeComment);
+    }
+
+    public boolean removeAllComments(Collection<? extends GCodeComment> comments) {
+        return this.comments.removeAll(comments);
+    }
+
+    public boolean addAllComments(Collection<? extends GCodeComment> codeComments) {
+        return this.comments.addAll(codeComments);
+    }
+
+    public boolean addComment(GCodeComment comment) {
+        return comments.add(comment);
+    }
+
+    public List<GCodeComment> getComments() {
+        return new ArrayList<GCodeComment>(comments);
     }
 
     @Override
@@ -179,7 +200,7 @@ public class GCodeIssue {
             return false;
         }
         final GCodeIssue other = (GCodeIssue) obj;
-        if (this.id != other.id) {
+        if ((this.id == null) ? (other.id != null) : !this.id.equals(other.id)) {
             return false;
         }
         return true;
@@ -188,7 +209,9 @@ public class GCodeIssue {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 79 * hash + this.id;
+        hash = 89 * hash + (this.id != null ? this.id.hashCode() : 0);
         return hash;
     }
+
+   
 }
