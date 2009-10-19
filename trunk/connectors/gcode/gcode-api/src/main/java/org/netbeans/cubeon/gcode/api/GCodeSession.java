@@ -24,11 +24,21 @@ import java.util.List;
  */
 public interface GCodeSession {
 
+    GCodeIssue createIssue(GCodeIssue codeIssue, boolean notify) throws GCodeException;
+
     GCodeIssue getIssue(String id) throws GCodeException;
 
     List<GCodeIssue> getIssues(String... ids) throws GCodeException;
 
     List<GCodeIssue> getIssuesByQuery(GCodeQuery query) throws GCodeException;
 
+    /**
+     *
+     * @param query The built-in field operators are
+     *   summary:, description:, comment:, status:, reporter:, owner:, cc:, commentby:, and label:.
+     *   limit  search  by using is:open, or isnot:open.
+     * @return
+     * @throws GCodeException
+     */
     List<GCodeIssue> getIssuesByQueryString(String query) throws GCodeException;
 }

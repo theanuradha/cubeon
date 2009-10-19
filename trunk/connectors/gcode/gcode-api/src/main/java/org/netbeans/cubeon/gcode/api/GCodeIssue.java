@@ -35,7 +35,7 @@ public class GCodeIssue {
     private String reportedBy;
     private long createdDate = 0;
     private long updatedDate = 0;
-    private List<String> lables = new ArrayList<String>();
+    private List<String> labels = new ArrayList<String>();
     private List<String> ccs = new ArrayList<String>();
     private List<GCodeComment> comments = new ArrayList<GCodeComment>();
     private int stars;
@@ -126,24 +126,24 @@ public class GCodeIssue {
         this.updatedDate = updatedDate;
     }
 
-    public boolean removeLable(String lable) {
-        return lables.remove(lable);
+    public boolean removeLabel(String label) {
+        return labels.remove(label);
     }
 
-    public boolean removeAllLables(Collection<? extends String> lables) {
-        return this.lables.removeAll(lables);
+    public boolean removeAllLabels(Collection<? extends String> labels) {
+        return this.labels.removeAll(labels);
     }
 
-    public boolean addAllLables(Collection<? extends String> lables) {
-        return this.lables.addAll(lables);
+    public boolean addAllLabels(Collection<? extends String> labels) {
+        return this.labels.addAll(labels);
     }
 
-    public boolean addLable(String lable) {
-        return lables.add(lable);
+    public boolean addLabel(String label) {
+        return labels.add(label);
     }
 
-    public List<String> getLables() {
-        return new ArrayList<String>(lables);
+    public List<String> getLabels() {
+        return new ArrayList<String>(labels);
     }
 
     public boolean removeCc(String cc) {

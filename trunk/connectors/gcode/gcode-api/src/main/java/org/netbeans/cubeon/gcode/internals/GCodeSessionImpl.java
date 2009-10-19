@@ -21,6 +21,8 @@ import com.google.gdata.client.projecthosting.IssuesQuery;
 import com.google.gdata.client.projecthosting.ProjectHostingService;
 import com.google.gdata.data.DateTime;
 import com.google.gdata.data.HtmlTextConstruct;
+import com.google.gdata.data.Person;
+import com.google.gdata.data.PlainTextConstruct;
 import com.google.gdata.data.TextContent;
 import com.google.gdata.data.projecthosting.Cc;
 import com.google.gdata.data.projecthosting.CcUpdate;
@@ -29,7 +31,11 @@ import com.google.gdata.data.projecthosting.IssueCommentsFeed;
 import com.google.gdata.data.projecthosting.IssuesEntry;
 import com.google.gdata.data.projecthosting.IssuesFeed;
 import com.google.gdata.data.projecthosting.Label;
+import com.google.gdata.data.projecthosting.Owner;
+import com.google.gdata.data.projecthosting.SendEmail;
+import com.google.gdata.data.projecthosting.Status;
 import com.google.gdata.data.projecthosting.Updates;
+import com.google.gdata.data.projecthosting.Username;
 import com.google.gdata.util.AuthenticationException;
 import com.google.gdata.util.ServiceException;
 import java.io.IOException;
@@ -91,6 +97,42 @@ public class GCodeSessionImpl implements GCodeSession {
         }
     }
 
+    public GCodeIssue createIssue(GCodeIssue codeIssue, boolean notify) throws GCodeException {
+        try {
+            IssuesEntry entry = new IssuesEntry();
+            Person author = new Person();
+            author.setName(codeIssue.getReportedBy());
+            entry.getAuthors().add(author);
+            if (codeIssue.getOwner() != null) {
+                Owner owner = new Owner();
+                owner.setUsername(new Username(codeIssue.getOwner()));
+                entry.setOwner(owner);
+            }
+            for (String ccName : codeIssue.getCcs()) {
+                Cc cc = new Cc();
+                cc.setUsername(new Username(ccName));
+                entry.addCc(cc);
+            }
+            for (String label : codeIssue.getLabels()) {
+                entry.addLabel(new Label(label));
+            }
+            entry.setContent(new HtmlTextConstruct(codeIssue.getDescription()));
+            entry.setTitle(new PlainTextConstruct(codeIssue.getSummary()));
+            entry.setStatus(new Status(codeIssue.getStatus()));
+            if (notify) {
+                entry.setSendEmail(new SendEmail("True"));
+            } else {
+                entry.setSendEmail(new SendEmail("False"));
+            }
+            IssuesEntry issueInserted = insertIssue(entry);
+            return toGCodeIssue(issueInserted);
+        } catch (IOException ex) {
+            throw new GCodeException(ex);
+        } catch (ServiceException ex) {
+            throw new GCodeException(ex);
+        }
+    }
+
     public GCodeIssue getIssue(String id) throws GCodeException {
         try {
             IssuesEntry issuesEntry = getIssueEntry(String.valueOf(id));
@@ -137,7 +179,7 @@ public class GCodeSessionImpl implements GCodeSession {
     }
 
     public List<GCodeIssue> getIssuesByQueryString(String query) throws GCodeException {
-       try {
+        try {
             List<GCodeIssue> codeIssues = new ArrayList<GCodeIssue>();
             Query issuesQuery = new Query(issuesFeedUrl);
             issuesQuery.setFullTextQuery(query);
@@ -145,14 +187,13 @@ public class GCodeSessionImpl implements GCodeSession {
             for (IssuesEntry issuesEntry : queryIssues.getEntries()) {
                 codeIssues.add(toGCodeIssue(issuesEntry));
             }
-                 return codeIssues;
+            return codeIssues;
         } catch (IOException ex) {
             throw new GCodeException(ex);
         } catch (ServiceException ex) {
             throw new GCodeException(ex);
         }
     }
-
 
     private DateTime getDatetime(String format, String dataString) {
         if (dataString != null) {
@@ -190,7 +231,7 @@ public class GCodeSessionImpl implements GCodeSession {
         if (issuesEntry.hasLabels()) {
             List<Label> labels = issuesEntry.getLabels();
             for (Label label : labels) {
-                codeIssue.addLable(label.getValue());
+                codeIssue.addLabel(label.getValue());
             }
         }
         if (issuesEntry.hasCcs()) {
@@ -226,7 +267,7 @@ public class GCodeSessionImpl implements GCodeSession {
                 }
 
                 for (Label label : updates.getLabels()) {
-                    codeComment.addLable(label.getValue());
+                    codeComment.addLabel(label.getValue());
                 }
 
                 for (CcUpdate cc : updates.getCcUpdates()) {

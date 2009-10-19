@@ -51,6 +51,23 @@ public class GCodeSessionImplTest extends TestCase {
         //printGCodeIssue(result, true);
     }
 
+    public void testCreateIssue() throws Exception {
+        System.out.println("getIssue");
+        if (user != null && password != null) {
+            GCodeSessionImpl instance = new GCodeSessionImpl(testcubeon, user, password);
+
+            GCodeIssue expResult = makeNewIssue();
+            GCodeIssue result = instance.createIssue(expResult, false);
+            assertEquals(expResult.getOwner(), result.getOwner());
+            assertEquals(expResult.getStatus(), result.getStatus());
+            assertEquals(expResult.getReportedBy(), result.getReportedBy());
+            assertEquals(expResult.getSummary(), result.getSummary());
+        } else {
+            System.out.println("Test case testCreateIssue() ignored due to user and password is null");
+        }
+        //printGCodeIssue(result, true);
+    }
+
     public void testGetIssuesByQuery() throws Exception {
         System.out.println("testGetIssuesByQuery");
         GCodeSessionImpl instance = new GCodeSessionImpl(testcubeon, user, password);
@@ -74,6 +91,16 @@ public class GCodeSessionImplTest extends TestCase {
         assertTrue(suesByQuery.size() == 2);
     }
 
+    protected GCodeIssue makeNewIssue() {
+        GCodeIssue entry = new GCodeIssue("test", "issue summary", "issue description");
+        entry.setReportedBy(user);
+        entry.setStatus(("New"));
+        entry.addLabel(("Priority-High"));
+        entry.addLabel(("Milestone-2009"));
+        entry.addCc(user);
+        return entry;
+    }
+
     public static void printGCodeIssue(GCodeIssue codeIssue, boolean printComments) {
         System.out.println("ID : " + codeIssue.getId());
         System.out.println("Summary : " + codeIssue.getSummary());
@@ -89,9 +116,9 @@ public class GCodeSessionImplTest extends TestCase {
             System.out.print(cc + ", ");
         }
         System.out.println("");
-        System.out.println("\nLables___________________________");
-        for (String lable : codeIssue.getLables()) {
-            System.out.println(lable);
+        System.out.println("\nLabels___________________________");
+        for (String label : codeIssue.getLabels()) {
+            System.out.println(label);
         }
         if (printComments) {
             System.out.println("_________________________________");
@@ -108,9 +135,9 @@ public class GCodeSessionImplTest extends TestCase {
                     System.out.print(cc + ", ");
                 }
                 System.out.println("");
-                System.out.println("\tLables___________________________");
-                for (String lable : comment.getLables()) {
-                    System.out.println("\t\t" + lable);
+                System.out.println("\tLabels___________________________");
+                for (String label : comment.getLabels()) {
+                    System.out.println("\t\t" + label);
                 }
                 System.out.println(".....................................");
 
