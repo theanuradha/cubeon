@@ -22,7 +22,6 @@ package org.netbeans.cubeon.gcode.api;
  */
 public class GCodeQuery {
 
-    private String textQuery;
     private String publishedMin;
     private String publishedMax;
     private String updatedMin;
@@ -111,14 +110,7 @@ public class GCodeQuery {
         this.status = status;
     }
 
-    public String getTextQuery() {
-        return textQuery;
-    }
-
-    public void setTextQuery(String textQuery) {
-        this.textQuery = textQuery;
-    }
-
+ 
     public String getUpdatedMax() {
         return updatedMax;
     }

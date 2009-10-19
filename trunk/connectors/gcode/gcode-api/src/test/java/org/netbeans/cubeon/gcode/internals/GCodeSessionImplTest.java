@@ -52,6 +52,20 @@ public class GCodeSessionImplTest extends TestCase {
         codeQuery.setLabel("Type-Enhancement");
         codeQuery.setStatus("Started");
         List<GCodeIssue> suesByQuery = instance.getIssuesByQuery(codeQuery);
+        System.out.println("COUNT : "+suesByQuery.size());
+        for (GCodeIssue codeIssue : suesByQuery) {
+            printGCodeIssue(codeIssue, false);
+        }
+    }
+    public void testGetIssuesByQueryString() throws Exception {
+        System.out.println("getIssuesByQueryString");
+        GCodeSessionImpl instance = new GCodeSessionImpl(testcubeon, user, password);
+
+        List<GCodeIssue> suesByQuery = instance.getIssuesByQueryString("" +
+                "label:Type-Enhancement label:Google-Code-Connector" +
+                "" +
+                " ");
+        System.out.println("COUNT : "+suesByQuery.size());
         for (GCodeIssue codeIssue : suesByQuery) {
             printGCodeIssue(codeIssue, false);
         }

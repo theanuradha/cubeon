@@ -16,6 +16,7 @@
  */
 package org.netbeans.cubeon.gcode.internals;
 
+import com.google.gdata.client.Query;
 import com.google.gdata.client.projecthosting.IssuesQuery;
 import com.google.gdata.client.projecthosting.ProjectHostingService;
 import com.google.gdata.data.DateTime;
@@ -119,7 +120,6 @@ public class GCodeSessionImpl implements GCodeSession {
             issuesQuery.setLabel(query.getLabel());
             issuesQuery.setOwner(query.getOwner());
             issuesQuery.setStatus(query.getStatus());
-            issuesQuery.setFullTextQuery(query.getTextQuery());
             issuesQuery.setPublishedMax(getDatetime(query.DATE_FORMAT, query.getPublishedMax()));
             issuesQuery.setPublishedMin(getDatetime(query.DATE_FORMAT, query.getPublishedMin()));
             issuesQuery.setUpdatedMax(getDatetime(query.DATE_FORMAT, query.getUpdatedMax()));
@@ -135,6 +135,24 @@ public class GCodeSessionImpl implements GCodeSession {
             throw new GCodeException(ex);
         }
     }
+
+    public List<GCodeIssue> getIssuesByQueryString(String query) throws GCodeException {
+       try {
+            List<GCodeIssue> codeIssues = new ArrayList<GCodeIssue>();
+            Query issuesQuery = new Query(issuesFeedUrl);
+            issuesQuery.setFullTextQuery(query);
+            IssuesFeed queryIssues = queryIssues(issuesQuery);
+            for (IssuesEntry issuesEntry : queryIssues.getEntries()) {
+                codeIssues.add(toGCodeIssue(issuesEntry));
+            }
+                 return codeIssues;
+        } catch (IOException ex) {
+            throw new GCodeException(ex);
+        } catch (ServiceException ex) {
+            throw new GCodeException(ex);
+        }
+    }
+
 
     private DateTime getDatetime(String format, String dataString) {
         if (dataString != null) {
@@ -297,7 +315,7 @@ public class GCodeSessionImpl implements GCodeSession {
         return service.insert(commentsFeedUrl, entry);
     }
 
-    private IssuesFeed queryIssues(IssuesQuery query)
+    private IssuesFeed queryIssues(Query query)
             throws IOException, ServiceException {
         return service.query(query, IssuesFeed.class);
     }
