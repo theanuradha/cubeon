@@ -128,25 +128,5 @@ public class GCodeComment {
         this.status = status;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final GCodeComment other = (GCodeComment) obj;
-        if ((this.commentId == null) ? (other.commentId != null) : !this.commentId.equals(other.commentId)) {
-            return false;
-        }
-        return true;
-    }
 
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 79 * hash + (this.commentId != null ? this.commentId.hashCode() : 0);
-        return hash;
-    }
 }

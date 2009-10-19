@@ -32,8 +32,10 @@ import com.google.gdata.data.projecthosting.IssuesEntry;
 import com.google.gdata.data.projecthosting.IssuesFeed;
 import com.google.gdata.data.projecthosting.Label;
 import com.google.gdata.data.projecthosting.Owner;
+import com.google.gdata.data.projecthosting.OwnerUpdate;
 import com.google.gdata.data.projecthosting.SendEmail;
 import com.google.gdata.data.projecthosting.Status;
+import com.google.gdata.data.projecthosting.Summary;
 import com.google.gdata.data.projecthosting.Updates;
 import com.google.gdata.data.projecthosting.Username;
 import com.google.gdata.util.AuthenticationException;
@@ -52,6 +54,7 @@ import java.util.regex.Pattern;
 import org.netbeans.cubeon.gcode.api.GCodeComment;
 import org.netbeans.cubeon.gcode.api.GCodeException;
 import org.netbeans.cubeon.gcode.api.GCodeIssue;
+import org.netbeans.cubeon.gcode.api.GCodeIssueUpdate;
 import org.netbeans.cubeon.gcode.api.GCodeQuery;
 import org.netbeans.cubeon.gcode.api.GCodeSession;
 import org.netbeans.cubeon.gcode.api.GCodeState;
@@ -126,6 +129,46 @@ public class GCodeSessionImpl implements GCodeSession {
             }
             IssuesEntry issueInserted = insertIssue(entry);
             return toGCodeIssue(issueInserted);
+        } catch (IOException ex) {
+            throw new GCodeException(ex);
+        } catch (ServiceException ex) {
+            throw new GCodeException(ex);
+        }
+    }
+
+    public GCodeIssue updateIssue(GCodeIssueUpdate issueUpdate, boolean notify) throws GCodeException {
+        try {
+            // Create issue updates
+            Updates updates = new Updates();
+            Person author = new Person();
+            author.setName(issueUpdate.getAuthor());
+            if (issueUpdate.getSummary() != null) {
+                updates.setSummary(new Summary(issueUpdate.getSummary()));
+            }
+            if (issueUpdate.getStatus() != null) {
+                updates.setStatus(new Status(issueUpdate.getStatus()));
+            }
+            if (issueUpdate.getOwner() != null) {
+                updates.setOwnerUpdate(new OwnerUpdate(issueUpdate.getOwner()));
+            }
+            for (String label : issueUpdate.getLabels()) {
+                updates.addLabel(new Label(label));
+            }
+            for (String cc : issueUpdate.getCcs()) {
+                updates.addCcUpdate(new CcUpdate(cc));
+            }
+            IssueCommentsEntry entry = new IssueCommentsEntry();
+            entry.getAuthors().add(author);
+            entry.setContent(new HtmlTextConstruct(issueUpdate.getComment()));
+            entry.setUpdates(updates);
+            if (notify) {
+                entry.setSendEmail(new SendEmail("True"));
+            } else {
+                entry.setSendEmail(new SendEmail("False"));
+            }
+            insertComment(issueUpdate.getIssueId(), entry);
+            //read issue again
+            return getIssue(issueUpdate.getIssueId());
         } catch (IOException ex) {
             throw new GCodeException(ex);
         } catch (ServiceException ex) {
