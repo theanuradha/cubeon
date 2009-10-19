@@ -28,7 +28,7 @@ import org.netbeans.cubeon.gcode.api.GCodeQuery;
  */
 public class GCodeSessionImplTest extends TestCase {
 
-    private String testcubeon = "cubeon";
+    private String testcubeon = "test-cubeon";
     private String user = null;
     private String password = null;
 
@@ -39,36 +39,39 @@ public class GCodeSessionImplTest extends TestCase {
     public void testGetIssue() throws Exception {
         System.out.println("getIssue");
         GCodeSessionImpl instance = new GCodeSessionImpl(testcubeon, user, password);
-        String id = "16";
+        String id = "3";
         GCodeIssue expResult = null;
         GCodeIssue result = instance.getIssue(id);
-        printGCodeIssue(result, true);
+        assertEquals("3", result.getId());
+        assertEquals("theanuradha", result.getOwner());
+        assertEquals("Started", result.getStatus());
+        assertEquals("theanuradha", result.getReportedBy());
+        assertEquals("Google Code Support", result.getSummary());
+
+        //printGCodeIssue(result, true);
     }
 
     public void testGetIssuesByQuery() throws Exception {
         System.out.println("testGetIssuesByQuery");
         GCodeSessionImpl instance = new GCodeSessionImpl(testcubeon, user, password);
         GCodeQuery codeQuery = new GCodeQuery();
-        codeQuery.setLabel("Type-Enhancement");
+        codeQuery.setLabel("Type-Other");
         codeQuery.setStatus("Started");
         List<GCodeIssue> suesByQuery = instance.getIssuesByQuery(codeQuery);
-        System.out.println("COUNT : "+suesByQuery.size());
-        for (GCodeIssue codeIssue : suesByQuery) {
-            printGCodeIssue(codeIssue, false);
-        }
+        System.out.println("COUNT : " + suesByQuery.size());
+        assertTrue(suesByQuery.size() == 1);
     }
+
     public void testGetIssuesByQueryString() throws Exception {
         System.out.println("getIssuesByQueryString");
         GCodeSessionImpl instance = new GCodeSessionImpl(testcubeon, user, password);
 
-        List<GCodeIssue> suesByQuery = instance.getIssuesByQueryString("" +
-                "label:Type-Enhancement label:Google-Code-Connector" +
-                "" +
-                " ");
-        System.out.println("COUNT : "+suesByQuery.size());
-        for (GCodeIssue codeIssue : suesByQuery) {
-            printGCodeIssue(codeIssue, false);
-        }
+        List<GCodeIssue> suesByQuery = instance.getIssuesByQueryString(""
+                + "label:Type-Other label:UnitTest"
+                + ""
+                + " ");
+        System.out.println("COUNT : " + suesByQuery.size());
+        assertTrue(suesByQuery.size() == 2);
     }
 
     public static void printGCodeIssue(GCodeIssue codeIssue, boolean printComments) {
