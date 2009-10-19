@@ -16,9 +16,11 @@
  */
 package org.netbeans.cubeon.gcode.internals;
 
+import java.util.List;
 import junit.framework.TestCase;
 import org.netbeans.cubeon.gcode.api.GCodeComment;
 import org.netbeans.cubeon.gcode.api.GCodeIssue;
+import org.netbeans.cubeon.gcode.api.GCodeQuery;
 
 /**
  *
@@ -26,7 +28,7 @@ import org.netbeans.cubeon.gcode.api.GCodeIssue;
  */
 public class GCodeSessionImplTest extends TestCase {
 
-    private String testcubeon = "test-cubeon";
+    private String testcubeon = "cubeon";
     private String user = null;
     private String password = null;
 
@@ -37,13 +39,25 @@ public class GCodeSessionImplTest extends TestCase {
     public void testGetIssue() throws Exception {
         System.out.println("getIssue");
         GCodeSessionImpl instance = new GCodeSessionImpl(testcubeon, user, password);
-        int id = 3;
+        String id = "16";
         GCodeIssue expResult = null;
         GCodeIssue result = instance.getIssue(id);
-        printGCodeIssue(result);
+        printGCodeIssue(result, true);
     }
 
-    public static void printGCodeIssue(GCodeIssue codeIssue) {
+    public void testGetIssuesByQuery() throws Exception {
+        System.out.println("testGetIssuesByQuery");
+        GCodeSessionImpl instance = new GCodeSessionImpl(testcubeon, user, password);
+        GCodeQuery codeQuery = new GCodeQuery();
+        codeQuery.setLabel("Type-Enhancement");
+        codeQuery.setStatus("Started");
+        List<GCodeIssue> suesByQuery = instance.getIssuesByQuery(codeQuery);
+        for (GCodeIssue codeIssue : suesByQuery) {
+            printGCodeIssue(codeIssue, false);
+        }
+    }
+
+    public static void printGCodeIssue(GCodeIssue codeIssue, boolean printComments) {
         System.out.println("ID : " + codeIssue.getId());
         System.out.println("Summary : " + codeIssue.getSummary());
         System.out.println("Description : " + codeIssue.getDescription());
@@ -62,28 +76,30 @@ public class GCodeSessionImplTest extends TestCase {
         for (String lable : codeIssue.getLables()) {
             System.out.println(lable);
         }
-        System.out.println("_________________________________");
-        System.out.println("\nComments_________________________");
-        for (GCodeComment comment : codeIssue.getComments()) {
-            System.out.println("\tCommnet ID: " + comment.getCommentId());
-            System.out.println("\tComment : " + comment.getComment());
-            System.out.println("\tSummary : " + comment.getSummary());
-            System.out.println("\tAuthor : " + comment.getAuthor());
-            System.out.println("\tStatus : " + comment.getStatus());
-            System.out.println("\tOwner : " + comment.getOwner());
-            System.out.print("\tCc: ");
-            for (String cc : codeIssue.getCcs()) {
-                System.out.print(cc + ", ");
-            }
-            System.out.println("");
-            System.out.println("\tLables___________________________");
-            for (String lable : codeIssue.getLables()) {
-                System.out.println("\t\t" + lable);
-            }
-            System.out.println(".....................................");
+        if (printComments) {
+            System.out.println("_________________________________");
+            System.out.println("\nComments_________________________");
+            for (GCodeComment comment : codeIssue.getComments()) {
+                System.out.println("\tCommnet ID: " + comment.getCommentId());
+                System.out.println("\tComment : " + comment.getComment());
+                System.out.println("\tSummary : " + comment.getSummary());
+                System.out.println("\tAuthor : " + comment.getAuthor());
+                System.out.println("\tStatus : " + comment.getStatus());
+                System.out.println("\tOwner : " + comment.getOwner());
+                System.out.print("\tCc: ");
+                for (String cc : comment.getCcs()) {
+                    System.out.print(cc + ", ");
+                }
+                System.out.println("");
+                System.out.println("\tLables___________________________");
+                for (String lable : comment.getLables()) {
+                    System.out.println("\t\t" + lable);
+                }
+                System.out.println(".....................................");
 
+            }
+            System.out.println("_________________________________");
         }
-        System.out.println("_________________________________");
 
     }
 }

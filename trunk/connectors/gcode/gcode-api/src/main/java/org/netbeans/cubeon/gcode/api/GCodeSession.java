@@ -24,7 +24,9 @@ import java.util.List;
  */
 public interface GCodeSession {
 
-    GCodeIssue getIssue(int id) throws GCodeException;
+    GCodeIssue getIssue(String id) throws GCodeException;
 
-    List<GCodeIssue> getIssues(int... id) throws GCodeException;
+    List<GCodeIssue> getIssues(String... ids) throws GCodeException;
+
+    List<GCodeIssue> getIssuesByQuery(GCodeQuery query) throws GCodeException;
 }

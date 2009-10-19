@@ -18,6 +18,7 @@ package org.netbeans.cubeon.gcode.internals;
 
 import com.google.gdata.client.projecthosting.IssuesQuery;
 import com.google.gdata.client.projecthosting.ProjectHostingService;
+import com.google.gdata.data.DateTime;
 import com.google.gdata.data.HtmlTextConstruct;
 import com.google.gdata.data.TextContent;
 import com.google.gdata.data.projecthosting.Cc;
@@ -33,12 +34,18 @@ import com.google.gdata.util.ServiceException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.netbeans.cubeon.gcode.api.GCodeComment;
 import org.netbeans.cubeon.gcode.api.GCodeException;
 import org.netbeans.cubeon.gcode.api.GCodeIssue;
+import org.netbeans.cubeon.gcode.api.GCodeQuery;
 import org.netbeans.cubeon.gcode.api.GCodeSession;
 import org.netbeans.cubeon.gcode.api.GCodeState;
 
@@ -83,7 +90,7 @@ public class GCodeSessionImpl implements GCodeSession {
         }
     }
 
-    public GCodeIssue getIssue(int id) throws GCodeException {
+    public GCodeIssue getIssue(String id) throws GCodeException {
         try {
             IssuesEntry issuesEntry = getIssueEntry(String.valueOf(id));
             GCodeIssue codeIssue = toGCodeIssue(issuesEntry);
@@ -93,6 +100,52 @@ public class GCodeSessionImpl implements GCodeSession {
         } catch (ServiceException ex) {
             throw new GCodeException(ex);
         }
+    }
+
+    public List<GCodeIssue> getIssues(String... ids) throws GCodeException {
+        List<GCodeIssue> codeIssues = new ArrayList<GCodeIssue>();
+        for (String id : ids) {
+            codeIssues.add(getIssue(id));
+        }
+        return codeIssues;
+    }
+
+    public List<GCodeIssue> getIssuesByQuery(GCodeQuery query) throws GCodeException {
+        try {
+            List<GCodeIssue> codeIssues = new ArrayList<GCodeIssue>();
+            IssuesQuery issuesQuery = new IssuesQuery(issuesFeedUrl);
+            issuesQuery.setAuthor(query.getReporter());
+            issuesQuery.setCan(query.getCannedQuery());
+            issuesQuery.setLabel(query.getLabel());
+            issuesQuery.setOwner(query.getOwner());
+            issuesQuery.setStatus(query.getStatus());
+            issuesQuery.setFullTextQuery(query.getTextQuery());
+            issuesQuery.setPublishedMax(getDatetime(query.DATE_FORMAT, query.getPublishedMax()));
+            issuesQuery.setPublishedMin(getDatetime(query.DATE_FORMAT, query.getPublishedMin()));
+            issuesQuery.setUpdatedMax(getDatetime(query.DATE_FORMAT, query.getUpdatedMax()));
+            issuesQuery.setUpdatedMin(getDatetime(query.DATE_FORMAT, query.getUpdatedMin()));
+            IssuesFeed queryIssues = queryIssues(issuesQuery);
+            for (IssuesEntry issuesEntry : queryIssues.getEntries()) {
+                codeIssues.add(toGCodeIssue(issuesEntry));
+            }
+            return codeIssues;
+        } catch (IOException ex) {
+            throw new GCodeException(ex);
+        } catch (ServiceException ex) {
+            throw new GCodeException(ex);
+        }
+    }
+
+    private DateTime getDatetime(String format, String dataString) {
+        if (dataString != null) {
+            try {
+                Date parse = new SimpleDateFormat(format).parse(dataString);
+                return new DateTime(parse);
+            } catch (ParseException ex) {
+                Logger.getLogger(GCodeSessionImpl.class.getName()).warning(ex.getMessage());
+            }
+        }
+        return null;
     }
 
     private GCodeIssue toGCodeIssue(IssuesEntry issuesEntry) throws IOException, ServiceException {
@@ -167,10 +220,6 @@ public class GCodeSessionImpl implements GCodeSession {
             codeIssue.addComment(codeComment);
         }
         return codeIssue;
-    }
-
-    public List<GCodeIssue> getIssues(int... id) throws GCodeException {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     //util methods copied from google gdata sample code 
