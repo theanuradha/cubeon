@@ -26,6 +26,8 @@ public interface GCodeSession {
 
     GCodeIssue createIssue(GCodeIssue codeIssue, boolean notify) throws GCodeException;
 
+    GCodeIssue updateIssue(GCodeIssueUpdate issueUpdate, boolean notify) throws GCodeException;
+
     GCodeIssue getIssue(String id) throws GCodeException;
 
     List<GCodeIssue> getIssues(String... ids) throws GCodeException;

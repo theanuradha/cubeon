@@ -16,10 +16,12 @@
  */
 package org.netbeans.cubeon.gcode.internals;
 
+import java.util.Arrays;
 import java.util.List;
 import junit.framework.TestCase;
 import org.netbeans.cubeon.gcode.api.GCodeComment;
 import org.netbeans.cubeon.gcode.api.GCodeIssue;
+import org.netbeans.cubeon.gcode.api.GCodeIssueUpdate;
 import org.netbeans.cubeon.gcode.api.GCodeQuery;
 
 /**
@@ -52,7 +54,7 @@ public class GCodeSessionImplTest extends TestCase {
     }
 
     public void testCreateIssue() throws Exception {
-        System.out.println("getIssue");
+        System.out.println("testCreateIssue");
         if (user != null && password != null) {
             GCodeSessionImpl instance = new GCodeSessionImpl(testcubeon, user, password);
 
@@ -62,8 +64,37 @@ public class GCodeSessionImplTest extends TestCase {
             assertEquals(expResult.getStatus(), result.getStatus());
             assertEquals(expResult.getReportedBy(), result.getReportedBy());
             assertEquals(expResult.getSummary(), result.getSummary());
+            assertTrue(result.getLabels().containsAll(expResult.getLabels()));
+            assertTrue(result.getCcs().containsAll(expResult.getCcs()));
         } else {
             System.out.println("Test case testCreateIssue() ignored due to user and password is null");
+        }
+        //printGCodeIssue(result, true);
+    }
+
+    public void testUpdateIssue() throws Exception {
+        System.out.println("testUpdateIssue");
+        if (user != null && password != null) {
+            GCodeSessionImpl instance = new GCodeSessionImpl(testcubeon, user, password);
+
+
+            GCodeIssue codeIssue = instance.createIssue(makeNewIssue(), false);
+            GCodeIssueUpdate issueUpdate = new GCodeIssueUpdate(codeIssue.getId(), user);
+            issueUpdate.setStatus("Accepted");
+            //remove lable
+            issueUpdate.addLabel("-Priority-High");
+            issueUpdate.addLabel("Priority-Low");
+            issueUpdate.addCc("-" + user);
+            issueUpdate.setSummary(codeIssue.getSummary() + "UPDATED");
+            issueUpdate.setComment("test update comment ");
+            GCodeIssue result = instance.updateIssue(issueUpdate, false);
+            assertEquals(codeIssue.getSummary() + "UPDATED", result.getSummary());
+            assertEquals("Accepted", result.getStatus());
+            assertTrue(result.getCcs().isEmpty());
+            assertTrue(result.getLabels().containsAll(Arrays.asList("Priority-Low", "Milestone-2009")));
+            assertFalse(result.getLabels().containsAll(Arrays.asList("Priority-High")));
+        } else {
+            System.out.println("Test case testUpdateIssue() ignored due to user and password is null");
         }
         //printGCodeIssue(result, true);
     }
