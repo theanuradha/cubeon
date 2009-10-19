@@ -29,4 +29,6 @@ public interface GCodeSession {
     List<GCodeIssue> getIssues(String... ids) throws GCodeException;
 
     List<GCodeIssue> getIssuesByQuery(GCodeQuery query) throws GCodeException;
+
+    List<GCodeIssue> getIssuesByQueryString(String query) throws GCodeException;
 }
