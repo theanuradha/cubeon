@@ -123,4 +123,12 @@ public class GCodeIssueUpdate {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    @Override
+    public String toString() {
+        return "GCodeIssueUpdate [" + "author " + author + " " + "ccs " + ccs
+                + " " + "comment " + comment + " " + "issueId " + issueId + " "
+                + "labels " + labels + " " + "owner " + owner + " " + "status "
+                + status + " " + "summary " + summary + "]";
+    }
 }

@@ -187,11 +187,6 @@ public class GCodeIssue {
     }
 
     @Override
-    public String toString() {
-        return id + " - " + summary;
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
@@ -213,5 +208,14 @@ public class GCodeIssue {
         return hash;
     }
 
-   
+    @Override
+    public String toString() {
+        return "GCodeIssue [" + "ccs " + ccs + " " + "comments " + comments
+                + " " + "createdDate " + createdDate + " " + "description "
+                + description + " " + "id " + id + " " + "labels " + labels
+                + " " + "owner " + owner + " " + "reportedBy " + reportedBy
+                + " " + "stars " + stars + " " + "state " + state + " " + "status "
+                + status + " " + "summary " + summary + " " + "updatedDate "
+                + updatedDate + "]";
+    }
 }
