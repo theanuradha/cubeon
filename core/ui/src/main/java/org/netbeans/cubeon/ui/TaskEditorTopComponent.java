@@ -331,7 +331,13 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
         EventQueue.invokeLater(new Runnable() {
 
             public void run() {
-                setName(name);
+                //TODO : move to options
+                if (name.length() > 30) {
+                    setName(name.substring(0, 27) + "...");
+                } else {
+                    setName(name);
+                }
+                setToolTipText(editorNode.getShortDescription());
             }
         });
 
