@@ -33,8 +33,8 @@ public class GCodeQuery {
     private String status;
     private String label;
     private String cannedQuery;
-
     public final String DATE_FORMAT = ("MM-dd-yyy");
+
     public GCodeQuery() {
     }
 
@@ -110,7 +110,6 @@ public class GCodeQuery {
         this.status = status;
     }
 
- 
     public String getUpdatedMax() {
         return updatedMax;
     }
@@ -125,5 +124,16 @@ public class GCodeQuery {
 
     public void setUpdatedMin(String updatedMin) {
         this.updatedMin = updatedMin;
+    }
+
+    @Override
+    public String toString() {
+        return "GCodeQuery [" + "cannedQuery " + cannedQuery + " " + "label "
+                + label + " " + "maxResults " + maxResults + " " + "owner "
+                + owner + " " + "publishedMax " + publishedMax + " "
+                + "publishedMin " + publishedMin + " " + "reporter "
+                + reporter + " " + "startIndex " + startIndex + " "
+                + "status " + status + " " + "updatedMax "
+                + updatedMax + " " + "updatedMin " + updatedMin + "]";
     }
 }

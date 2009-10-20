@@ -128,5 +128,11 @@ public class GCodeComment {
         this.status = status;
     }
 
-
+    @Override
+    public String toString() {
+        return "GCodeComment [" + "author " + author + " " + "comment "
+                + comment + " " + "commentId " + commentId + " " + "owner "
+                + owner + " " + "status " + status + " " + "summary "
+                + summary + "]";
+    }
 }
