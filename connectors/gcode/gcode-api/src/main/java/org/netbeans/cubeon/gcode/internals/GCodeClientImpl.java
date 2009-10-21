@@ -15,12 +15,20 @@
  *  under the License.
  */
 
-package org.netbeans.cubeon.gcode.api;
+package org.netbeans.cubeon.gcode.internals;
+
+import org.netbeans.cubeon.gcode.api.GCodeClient;
+import org.netbeans.cubeon.gcode.api.GCodeException;
+import org.netbeans.cubeon.gcode.api.GCodeSession;
 
 /**
  *
  * @author Anuradha
  */
-public interface  GCodeClient {
-   GCodeSession createSession(String project, String user, String password) throws GCodeException;
+public class GCodeClientImpl implements  GCodeClient{
+
+    public GCodeSession createSession(String project, String user, String password) throws GCodeException {
+        return new GCodeSessionImpl(project, user, password);
+    }
+
 }
