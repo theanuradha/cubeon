@@ -58,7 +58,9 @@ public class RepositoryPersistence {
             Exceptions.printStackTrace(ex);
         } finally {
             try {
-                out.close();
+                if (out != null) {
+                    out.close();
+                }
             } catch (IOException ex) {
                 Logger.getLogger(RepositoryPersistence.class.getName()).warning(ex.getMessage());
             }
