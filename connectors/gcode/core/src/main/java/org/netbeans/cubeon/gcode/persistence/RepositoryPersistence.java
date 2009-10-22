@@ -49,7 +49,7 @@ public class RepositoryPersistence {
         FileWriter out = new FileWriter(file);
         jsonRepos.put("repositories", jSONArray);
         jsonRepos.put("version", "1");
-        out.write(jsonRepos.toJSONString());
+        out.write(new JsonIndenter(jsonRepos.toJSONString()).result());
         out.close();
     }
 
