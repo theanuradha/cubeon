@@ -22,10 +22,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -39,32 +41,59 @@ public class RepositoryPersistence {
         this.file = file;
     }
 
-    public void persistRepositoryInfos(List<RepositoryInfo> repositoryInfos) throws IOException {
-        JSONObject jsonRepos = new JSONObject();
-        JSONArray jSONArray = new JSONArray();
-        for (RepositoryInfo repositoryInfo : repositoryInfos) {
-            jSONArray.add(repositoryInfo);
+    public void persistRepositoryInfos(List<RepositoryInfo> repositoryInfos) {
+        FileWriter out = null;
+        try {
+            JSONObject jsonRepos = new JSONObject();
+            JSONArray jSONArray = new JSONArray();
+            for (RepositoryInfo repositoryInfo : repositoryInfos) {
+                jSONArray.add(repositoryInfo);
+            }
+            out = new FileWriter(file);
+            jsonRepos.put("repositories", jSONArray);
+            jsonRepos.put("version", "1");
+            out.write(new JsonIndenter(jsonRepos.toJSONString()).result());
+            out.close();
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        } finally {
+            try {
+                out.close();
+            } catch (IOException ex) {
+                Logger.getLogger(RepositoryPersistence.class.getName()).warning(ex.getMessage());
+            }
         }
-      
-        FileWriter out = new FileWriter(file);
-        jsonRepos.put("repositories", jSONArray);
-        jsonRepos.put("version", "1");
-        out.write(new JsonIndenter(jsonRepos.toJSONString()).result());
-        out.close();
     }
 
-    public List<RepositoryInfo> getRepositoryInfos() throws IOException, ParseException {
+    public List<RepositoryInfo> getRepositoryInfos() {
         List<RepositoryInfo> repositoryInfos = new ArrayList<RepositoryInfo>();
+        if (file.exists()) {
+            FileReader reader = null;
+            try {
 
-        FileReader reader = new FileReader(file);
-        JSONParser parser = new JSONParser();
-        JSONObject jsonRepos = (JSONObject) parser.parse(reader);
-        JSONArray jSONArray = (JSONArray) jsonRepos.get("repositories");
-        for (Object object : jSONArray) {
-            JSONObject jsonRepo = (JSONObject) object;
-            repositoryInfos.add(RepositoryInfo.toRepositoryInfo(jsonRepo));
+                reader = new FileReader(file);
+                JSONParser parser = new JSONParser();
+                JSONObject jsonRepos = (JSONObject) parser.parse(reader);
+                JSONArray jSONArray = (JSONArray) jsonRepos.get("repositories");
+                for (Object object : jSONArray) {
+                    JSONObject jsonRepo = (JSONObject) object;
+                    repositoryInfos.add(RepositoryInfo.toRepositoryInfo(jsonRepo));
+                }
+
+            } catch (IOException ex) {
+                Logger.getLogger(RepositoryPersistence.class.getName()).warning(ex.getMessage());
+            } catch (ParseException ex) {
+                Logger.getLogger(RepositoryPersistence.class.getName()).warning(ex.getMessage());
+            } finally {
+                try {
+                    if (reader != null) {
+                        reader.close();
+                    }
+                } catch (IOException ex) {
+                    Logger.getLogger(RepositoryPersistence.class.getName()).warning(ex.getMessage());
+                }
+            }
         }
         return repositoryInfos;
-
     }
 }
