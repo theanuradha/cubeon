@@ -19,8 +19,6 @@ package org.netbeans.cubeon.gcode.repository;
 import java.awt.Image;
 import java.util.List;
 import org.netbeans.cubeon.gcode.api.GCodeException;
-import org.netbeans.cubeon.tasks.spi.Notifier;
-import org.netbeans.cubeon.tasks.spi.repository.RepositoryEventAdapter;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.filesystems.FileObject;
@@ -44,6 +42,7 @@ public class GCodeTaskRepository implements TaskRepository {
     private final Lookup lookup;
     private State state = State.INACTIVE;
     private final GCodeRepositoryExtension extension;
+
     public GCodeTaskRepository(GCodeTaskRepositoryProvider provider,
             String id, String name, String description) {
         this.provider = provider;
@@ -54,8 +53,9 @@ public class GCodeTaskRepository implements TaskRepository {
 
 
 
-        lookup = Lookups.fixed(this,  provider,extension );
+        lookup = Lookups.fixed(this, provider, extension);
     }
+
     public String getId() {
         return id;
     }
@@ -100,6 +100,19 @@ public class GCodeTaskRepository implements TaskRepository {
         this.user = user;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+        extension.fireStateChanged(state);
+    }
+
     public TaskElement createTaskElement(String summery, String description) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -117,7 +130,7 @@ public class GCodeTaskRepository implements TaskRepository {
     }
 
     public State getState() {
-       return state;
+        return state;
     }
 
     public GCodeRepositoryExtension getNotifier() {
@@ -132,11 +145,11 @@ public class GCodeTaskRepository implements TaskRepository {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    void reconnect() throws GCodeException{
+    void reconnect() throws GCodeException {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    void updateAttributes() throws GCodeException{
+    void updateAttributes() throws GCodeException {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 }

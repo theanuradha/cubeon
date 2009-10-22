@@ -24,6 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.netbeans.cubeon.gcode.api.GCodeException;
 import org.netbeans.cubeon.gcode.persistence.RepositoryInfo;
 import org.netbeans.cubeon.gcode.persistence.RepositoryPersistence;
+import org.netbeans.cubeon.gcode.repository.ui.ConfigurationHandlerImpl;
 import org.netbeans.cubeon.gcode.utils.GCodeExceptionHandler;
 import org.netbeans.cubeon.tasks.core.api.RepositoryUtils;
 import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
@@ -188,7 +189,7 @@ public class GCodeTaskRepositoryProvider implements TaskRepositoryType {
     }
 
     public ConfigurationHandler createConfigurationHandler() {
-        return null;//new ConfigurationHandlerImpl(this);
+        return new ConfigurationHandlerImpl(this);
     }
 
     public FileObject getBaseDir() {
