@@ -17,9 +17,13 @@
 package org.netbeans.cubeon.gcode.persistence;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -42,24 +46,27 @@ public class RepositoryPersistence {
     }
 
     public void persistRepositoryInfos(List<RepositoryInfo> repositoryInfos) {
-        FileWriter out = null;
+        FileOutputStream fileOutputStream = null;
         try {
             JSONObject jsonRepos = new JSONObject();
             JSONArray jSONArray = new JSONArray();
             for (RepositoryInfo repositoryInfo : repositoryInfos) {
                 jSONArray.add(repositoryInfo);
             }
-            out = new FileWriter(file);
+            fileOutputStream = new FileOutputStream(file);            
             jsonRepos.put("repositories", jSONArray);
             jsonRepos.put("version", "1");
-            out.write(new JsonIndenter(jsonRepos.toJSONString()).result());
-            out.close();
+            Writer writer = new OutputStreamWriter(fileOutputStream);
+            String json = new JsonIndenter(jsonRepos.toJSONString()).result();
+            writer.write(json);
+            writer.close();
+            fileOutputStream.close();
         } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
+           Logger.getLogger(RepositoryPersistence.class.getName()).warning(ex.getMessage());
         } finally {
             try {
-                if (out != null) {
-                    out.close();
+                if (fileOutputStream != null) {
+                    fileOutputStream.close();
                 }
             } catch (IOException ex) {
                 Logger.getLogger(RepositoryPersistence.class.getName()).warning(ex.getMessage());
@@ -70,10 +77,11 @@ public class RepositoryPersistence {
     public List<RepositoryInfo> getRepositoryInfos() {
         List<RepositoryInfo> repositoryInfos = new ArrayList<RepositoryInfo>();
         if (file.exists()) {
-            FileReader reader = null;
-            try {
 
-                reader = new FileReader(file);
+            FileInputStream fileInputStream = null;
+            try {
+                fileInputStream = new FileInputStream(file);
+                Reader reader = new InputStreamReader(fileInputStream);
                 JSONParser parser = new JSONParser();
                 JSONObject jsonRepos = (JSONObject) parser.parse(reader);
                 JSONArray jSONArray = (JSONArray) jsonRepos.get("repositories");
@@ -81,15 +89,15 @@ public class RepositoryPersistence {
                     JSONObject jsonRepo = (JSONObject) object;
                     repositoryInfos.add(RepositoryInfo.toRepositoryInfo(jsonRepo));
                 }
-
+                reader.close();
             } catch (IOException ex) {
                 Logger.getLogger(RepositoryPersistence.class.getName()).warning(ex.getMessage());
             } catch (ParseException ex) {
                 Logger.getLogger(RepositoryPersistence.class.getName()).warning(ex.getMessage());
             } finally {
                 try {
-                    if (reader != null) {
-                        reader.close();
+                    if (fileInputStream != null) {
+                        fileInputStream.close();
                     }
                 } catch (IOException ex) {
                     Logger.getLogger(RepositoryPersistence.class.getName()).warning(ex.getMessage());

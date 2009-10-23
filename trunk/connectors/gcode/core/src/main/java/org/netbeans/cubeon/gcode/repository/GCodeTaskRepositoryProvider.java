@@ -17,6 +17,7 @@
 package org.netbeans.cubeon.gcode.repository;
 
 import java.awt.Image;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +62,7 @@ public class GCodeTaskRepositoryProvider implements TaskRepositoryType {
             Exceptions.printStackTrace(ex);
         }
         assert baseDir != null;
-        persistence = new RepositoryPersistence(FileUtil.toFile(baseDir));
+        persistence = new RepositoryPersistence(new File(FileUtil.toFile(baseDir), "repositories.json"));
     }
 
     public String getId() {
@@ -75,7 +76,7 @@ public class GCodeTaskRepositoryProvider implements TaskRepositoryType {
     public String getDescription() {
         return NbBundle.getMessage(GCodeTaskRepositoryProvider.class, "LBL_Trac_Repository_Description");
     }
- 
+
     public Image getImage() {
         return ImageUtilities.loadImage("org/netbeans/cubeon/gcode/gcode.png");
     }
@@ -84,12 +85,12 @@ public class GCodeTaskRepositoryProvider implements TaskRepositoryType {
         return Lookups.fixed(this);
     }
 
- public TaskRepository persistRepository(TaskRepository repository) {
+    public TaskRepository persistRepository(TaskRepository repository) {
 
         final GCodeTaskRepository gCodeTaskRepository =
                 repository.getLookup().lookup(GCodeTaskRepository.class);
         if (gCodeTaskRepository != null) {
-            
+
             if (!taskRepositorys.contains(gCodeTaskRepository)) {
                 taskRepositorys.add(gCodeTaskRepository);
             }
@@ -118,7 +119,7 @@ public class GCodeTaskRepositoryProvider implements TaskRepositoryType {
         return null;
     }
 
-    private  List<RepositoryInfo> getRepositoryInfos() {
+    private List<RepositoryInfo> getRepositoryInfos() {
         List<RepositoryInfo> repositoryInfos = new ArrayList<RepositoryInfo>(taskRepositorys.size());
         for (GCodeTaskRepository gctr : taskRepositorys) {
             repositoryInfos.add(new RepositoryInfo(gctr.getId(), gctr.getName(), gctr.getDescription(), gctr.getProject(), gctr.getUser(), RepositoryUtils.encodePassword(gctr.getUser(), gctr.getPassword())));
@@ -171,7 +172,7 @@ public class GCodeTaskRepositoryProvider implements TaskRepositoryType {
                 repository.setUser(repositoryInfo.getUser());
                 repository.setProject(repositoryInfo.getProject());
                 repository.setPassword(RepositoryUtils.decodePassword(repositoryInfo.getUser(),
-                repository.getPassword()));
+                        repositoryInfo.getPassword()));
                 taskRepositorys.add(repository);
             }
         }
