@@ -31,7 +31,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.openide.util.Exceptions;
 
 /**
  *
@@ -56,7 +55,7 @@ public class RepositoryPersistence {
             fileOutputStream = new FileOutputStream(file);            
             jsonRepos.put("repositories", jSONArray);
             jsonRepos.put("version", "1");
-            Writer writer = new OutputStreamWriter(fileOutputStream);
+            Writer writer = new OutputStreamWriter(fileOutputStream,"UTF8");
             String json = new JsonIndenter(jsonRepos.toJSONString()).result();
             writer.write(json);
             writer.close();
@@ -81,7 +80,7 @@ public class RepositoryPersistence {
             FileInputStream fileInputStream = null;
             try {
                 fileInputStream = new FileInputStream(file);
-                Reader reader = new InputStreamReader(fileInputStream);
+                Reader reader = new InputStreamReader(fileInputStream,"UTF8");
                 JSONParser parser = new JSONParser();
                 JSONObject jsonRepos = (JSONObject) parser.parse(reader);
                 JSONArray jSONArray = (JSONArray) jsonRepos.get("repositories");
