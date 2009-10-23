@@ -18,12 +18,17 @@ package org.netbeans.cubeon.gcode.repository;
 
 import java.awt.Image;
 import java.util.List;
+import org.netbeans.api.progress.ProgressHandle;
+import org.netbeans.api.progress.ProgressHandleFactory;
+import org.netbeans.cubeon.gcode.api.GCodeClient;
 import org.netbeans.cubeon.gcode.api.GCodeException;
+import org.netbeans.cubeon.gcode.api.GCodeSession;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.filesystems.FileObject;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.Lookups;
 
 /**
@@ -42,6 +47,7 @@ public class GCodeTaskRepository implements TaskRepository {
     private final Lookup lookup;
     private State state = State.INACTIVE;
     private final GCodeRepositoryExtension extension;
+    private GCodeSession _session;
 
     public GCodeTaskRepository(GCodeTaskRepositoryProvider provider,
             String id, String name, String description) {
@@ -54,6 +60,7 @@ public class GCodeTaskRepository implements TaskRepository {
 
 
         lookup = Lookups.fixed(this, provider, extension);
+        setState(State.ACTIVE);
     }
 
     public String getId() {
@@ -126,7 +133,7 @@ public class GCodeTaskRepository implements TaskRepository {
     }
 
     public void synchronize() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //TODO
     }
 
     public State getState() {
@@ -145,11 +152,29 @@ public class GCodeTaskRepository implements TaskRepository {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    void reconnect() throws GCodeException {
-        throw new UnsupportedOperationException("Not yet implemented");
+     public synchronized GCodeSession getSession() throws GCodeException {
+        if (_session == null) {
+            reconnect();
+        }
+        return _session;
     }
 
-    void updateAttributes() throws GCodeException {
-        throw new UnsupportedOperationException("Not yet implemented");
+    public synchronized void reconnect() throws GCodeException {
+        ProgressHandle handle = ProgressHandleFactory.createHandle(
+                NbBundle.getMessage(GCodeTaskRepository.class, "LBL_Connecting", getName()));
+        handle.start();
+        handle.switchToIndeterminate();
+        try {
+            _session = null;
+            //try to reconnect
+            _session = Lookup.getDefault().lookup(GCodeClient.class).
+                    createSession(project, user, password);
+        } finally {
+            handle.finish();
+        }
+    }
+
+    public void updateAttributes() throws GCodeException {
+        //TODO : Donothing for Now
     }
 }
