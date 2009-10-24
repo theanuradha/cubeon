@@ -30,6 +30,7 @@ public class GCodeComment {
     private String author;
     private String summary;
     private String comment;
+    private long  commentDate;
     private String owner;
     private String status;
     private List<String> labels = new ArrayList<String>();
@@ -46,6 +47,14 @@ public class GCodeComment {
 
     public void setAuthor(String author) {
         this.author = author;
+    }
+
+    public long getCommentDate() {
+        return commentDate;
+    }
+
+    public void setCommentDate(long commentDate) {
+        this.commentDate = commentDate;
     }
 
     public String getSummary() {

@@ -46,6 +46,9 @@ public class GCodeIssue {
         this.description = description;
     }
 
+    public GCodeIssue() {
+    }
+
     public long getCreatedDate() {
         return createdDate;
     }
