@@ -32,12 +32,18 @@ import org.json.simple.JSONAware;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.netbeans.cubeon.gcode.repository.GCodeTaskRepository;
+import org.netbeans.cubeon.gcode.utils.GCodeUtils;
+import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
+import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
+import org.netbeans.cubeon.tasks.spi.task.TaskType;
 
 /**
  *
  * @author Anuradha
  */
 public class AttributesHandler implements JSONAware {
+
 
     private final File file;
 
@@ -235,5 +241,28 @@ public class AttributesHandler implements JSONAware {
             labels.add("Usability");
             labels.add("Maintainability");
         }
+    }
+
+    public void loadProviders(GCodeTaskRepository repository) {
+        List<TaskStatus> statuses = new ArrayList<TaskStatus>();
+        for (String status : openStatueses) {
+            statuses.add(new TaskStatus(repository, status, status));
+        }
+        for (String status : closedStatuses) {
+            statuses.add(new TaskStatus(repository, status, status));
+        }
+        repository.getStatusProvider().setStatuses(statuses);
+        List<TaskType> taskTypes = new ArrayList<TaskType>();
+        List<TaskPriority> prioritys = new ArrayList<TaskPriority>();
+        for (String lable : labels) {
+            if (lable.toLowerCase().startsWith(GCodeUtils.PRIORITY_TAG)) {
+                prioritys.add(new TaskPriority(repository, lable, lable.replace(GCodeUtils.PRIORITY_TAG, "")));
+            } else if (lable.toLowerCase().startsWith(GCodeUtils.TYPE_TAG)) {
+                taskTypes.add(new TaskType(repository, lable, lable.replace(GCodeUtils.TYPE_TAG, "")));
+            }
+        }
+
+        repository.getTypeProvider().setTaskTypes(taskTypes);
+        repository.getPriorityProvider().setPriorities(prioritys);
     }
 }
