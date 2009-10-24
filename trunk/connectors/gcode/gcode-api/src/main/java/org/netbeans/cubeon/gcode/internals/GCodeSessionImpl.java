@@ -271,6 +271,12 @@ public class GCodeSessionImpl implements GCodeSession {
         if (issuesEntry.hasOwner()) {
             codeIssue.setOwner(issuesEntry.getOwner().getUsername().getValue());
         }
+        if (issuesEntry.getPublished() != null) {
+            codeIssue.setCreatedDate(issuesEntry.getPublished().getValue());
+        }
+        if (issuesEntry.getUpdated() != null) {
+            codeIssue.setUpdatedDate(issuesEntry.getUpdated().getValue());
+        }
         if (issuesEntry.hasLabels()) {
             List<Label> labels = issuesEntry.getLabels();
             for (Label label : labels) {
@@ -293,6 +299,9 @@ public class GCodeSessionImpl implements GCodeSession {
                 HtmlTextConstruct textConstruct =
                         (HtmlTextConstruct) commentContent.getContent();
                 codeComment.setComment(textConstruct.getHtml());
+            }
+            if (commentEntry.getPublished() != null) {
+                codeComment.setCommentDate(commentEntry.getPublished().getValue());
             }
             if (commentEntry.hasUpdates()) {
                 Updates updates = commentEntry.getUpdates();
