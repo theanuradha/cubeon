@@ -59,6 +59,7 @@ public class GCodeTaskRepository implements TaskRepository {
     private final GCodeTaskPriorityProvider priorityProvider;
     private final GCodeTaskTypeProvider typeProvider;
     private final GCodeTaskStatusProvider statusProvider;
+
     public GCodeTaskRepository(GCodeTaskRepositoryProvider provider,
             String id, String name, String description) {
         this.provider = provider;
@@ -74,13 +75,13 @@ public class GCodeTaskRepository implements TaskRepository {
                 Exceptions.printStackTrace(ex);
             }
         }
-        repositoryAttributes  = new AttributesHandler(
-                new File(FileUtil.toFile(baseDir),"attributes.json"));
+        repositoryAttributes = new AttributesHandler(
+                new File(FileUtil.toFile(baseDir), "attributes.json"));
 
         priorityProvider = new GCodeTaskPriorityProvider();
         typeProvider = new GCodeTaskTypeProvider();
         statusProvider = new GCodeTaskStatusProvider();
-        lookup = Lookups.fixed(this, provider, extension, priorityProvider, typeProvider,statusProvider);
+        lookup = Lookups.fixed(this, provider, extension, priorityProvider, typeProvider, statusProvider);
 
     }
 
@@ -196,9 +197,18 @@ public class GCodeTaskRepository implements TaskRepository {
     }
 
     public void updateAttributes() throws GCodeException {
+
+        setState(State.SYNCHRONIZING);
+        ProgressHandle handle = ProgressHandleFactory.createHandle(
+                NbBundle.getMessage(GCodeTaskRepository.class,
+                "LBL_Updating_Attributes", getName()));
         //TODO : http://code.google.com/p/support/issues/detail?id=3203
         repositoryAttributes.loadDefultAttributes();
         repositoryAttributes.persistAttributes();
+        loadAttributes();
+        handle.finish();
+
+
     }
 
     public void loadAttributes() {
@@ -223,8 +233,7 @@ public class GCodeTaskRepository implements TaskRepository {
         return typeProvider;
     }
 
-    public void update(GCodeTask codeTask) throws GCodeException{
+    public void update(GCodeTask codeTask) throws GCodeException {
         throw new UnsupportedOperationException("Not yet implemented");
     }
-    
 }

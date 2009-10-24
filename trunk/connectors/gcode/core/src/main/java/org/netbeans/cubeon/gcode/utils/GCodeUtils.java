@@ -17,6 +17,8 @@
 package org.netbeans.cubeon.gcode.utils;
 
 import java.util.List;
+import org.netbeans.cubeon.gcode.api.GCodeIssue;
+import org.netbeans.cubeon.gcode.repository.GCodeTaskRepository;
 import org.netbeans.cubeon.gcode.tasks.GCodeTask;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
 import org.netbeans.cubeon.tasks.spi.task.TaskType;
@@ -80,5 +82,20 @@ public class GCodeUtils {
             }
         }
         return null;
+    }
+
+    public static GCodeTask toCodeTask(GCodeTaskRepository repository,GCodeIssue codeIssue){
+        GCodeTask codeTask = new GCodeTask(repository, codeIssue.getId(),
+                codeIssue.getSummary(), codeIssue.getDescription());
+        codeTask.setCreatedDate(codeIssue.getCreatedDate());
+        codeTask.setUpdatedDate(codeIssue.getUpdatedDate());
+        codeTask.setStatus(codeIssue.getStatus());
+        codeTask.setState(codeIssue.getState());
+        codeTask.setStars(codeIssue.getStars());
+        codeTask.setOwner(codeIssue.getOwner());
+        codeTask.addAllCcs(codeIssue.getCcs());
+        codeTask.addAllLabels(codeIssue.getLabels());
+        codeTask.addAllComments(codeIssue.getComments());
+        return  codeTask;
     }
 }
