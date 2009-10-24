@@ -93,6 +93,7 @@ public class GCodeTaskRepositoryProvider implements TaskRepositoryType {
 
             if (!taskRepositorys.contains(gCodeTaskRepository)) {
                 taskRepositorys.add(gCodeTaskRepository);
+                //TODO show arributes editor
             }
             List<RepositoryInfo> repositoryInfos = getRepositoryInfos();
             persistence.persistRepositoryInfos(repositoryInfos);
@@ -173,6 +174,7 @@ public class GCodeTaskRepositoryProvider implements TaskRepositoryType {
                 repository.setProject(repositoryInfo.getProject());
                 repository.setPassword(RepositoryUtils.decodePassword(repositoryInfo.getUser(),
                         repositoryInfo.getPassword()));
+                repository.loadAttributes();
                 taskRepositorys.add(repository);
             }
         }
