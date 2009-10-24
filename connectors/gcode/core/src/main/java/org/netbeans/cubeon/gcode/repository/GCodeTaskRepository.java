@@ -26,6 +26,7 @@ import org.netbeans.cubeon.gcode.api.GCodeClient;
 import org.netbeans.cubeon.gcode.api.GCodeException;
 import org.netbeans.cubeon.gcode.api.GCodeSession;
 import org.netbeans.cubeon.gcode.persistence.AttributesHandler;
+import org.netbeans.cubeon.gcode.tasks.GCodeTask;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.filesystems.FileObject;
@@ -55,7 +56,9 @@ public class GCodeTaskRepository implements TaskRepository {
     private GCodeSession _session;
     private final AttributesHandler repositoryAttributes;
     private FileObject baseDir;
-
+    private final GCodeTaskPriorityProvider priorityProvider;
+    private final GCodeTaskTypeProvider typeProvider;
+    private final GCodeTaskStatusProvider statusProvider;
     public GCodeTaskRepository(GCodeTaskRepositoryProvider provider,
             String id, String name, String description) {
         this.provider = provider;
@@ -74,7 +77,10 @@ public class GCodeTaskRepository implements TaskRepository {
         repositoryAttributes  = new AttributesHandler(
                 new File(FileUtil.toFile(baseDir),"attributes.json"));
 
-        lookup = Lookups.fixed(this, provider, extension);
+        priorityProvider = new GCodeTaskPriorityProvider();
+        typeProvider = new GCodeTaskTypeProvider();
+        statusProvider = new GCodeTaskStatusProvider();
+        lookup = Lookups.fixed(this, provider, extension, priorityProvider, typeProvider,statusProvider);
 
     }
 
@@ -197,10 +203,28 @@ public class GCodeTaskRepository implements TaskRepository {
 
     public void loadAttributes() {
         repositoryAttributes.loadAttributes();
+        repositoryAttributes.loadProviders(this);
         setState(State.ACTIVE);
     }
 
     public AttributesHandler getRepositoryAttributes() {
         return repositoryAttributes;
     }
+
+    public GCodeTaskPriorityProvider getPriorityProvider() {
+        return priorityProvider;
+    }
+
+    public GCodeTaskStatusProvider getStatusProvider() {
+        return statusProvider;
+    }
+
+    public GCodeTaskTypeProvider getTypeProvider() {
+        return typeProvider;
+    }
+
+    public void update(GCodeTask codeTask) throws GCodeException{
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+    
 }
