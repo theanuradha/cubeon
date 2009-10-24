@@ -14,7 +14,6 @@
  *  limitations under the License.
  *  under the License.
  */
-
 package org.netbeans.cubeon.gcode.persistence;
 
 import java.io.BufferedInputStream;
@@ -28,26 +27,27 @@ import junit.framework.TestCase;
  *
  * @author Anuradha
  */
-public class AttributesPersistenceTest extends TestCase {
-    
-    public AttributesPersistenceTest(String testName) {
+public class AttributesHandlerTest extends TestCase {
+
+    public AttributesHandlerTest(String testName) {
         super(testName);
     }
 
     public void testPersistAttributes() throws IOException {
-        File file = File.createTempFile("AttributesPersistenceTest", null);
+        File file = File.createTempFile("AttributesHandlerTest", null);
         System.out.println("testPersistAttributes");
-        AttributesPersistence persistence = new AttributesPersistence(file);
+        AttributesHandler persistence = new AttributesHandler(file);
         persistence.loadDefultAttributes();
         persistence.persistAttributes();
         System.out.println(new String(fileToByteArray(file)));
-         AttributesPersistence savedPersistence = new AttributesPersistence(file);
-         assertTrue(persistence.getLabels().containsAll(savedPersistence.getLabels()));
-         assertTrue(persistence.getClosedStatuses().containsAll(savedPersistence.getClosedStatuses()));
-         assertTrue(persistence.getOpenStatueses().containsAll(savedPersistence.getOpenStatueses()));
+        AttributesHandler savedPersistence = new AttributesHandler(file);
+        savedPersistence.loadAttributes();
+        assertTrue(persistence.getLabels().containsAll(savedPersistence.getLabels()));
+        assertTrue(persistence.getClosedStatuses().containsAll(savedPersistence.getClosedStatuses()));
+        assertTrue(persistence.getOpenStatueses().containsAll(savedPersistence.getOpenStatueses()));
     }
 
-byte[] fileToByteArray(File file) throws FileNotFoundException, IOException {
+    byte[] fileToByteArray(File file) throws FileNotFoundException, IOException {
         byte[] buffer = new byte[(int) file.length()];
         BufferedInputStream input = new BufferedInputStream(new FileInputStream(file));
         input.read(buffer, 0, buffer.length);

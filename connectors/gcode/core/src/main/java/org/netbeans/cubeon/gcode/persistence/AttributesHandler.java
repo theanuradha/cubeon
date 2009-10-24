@@ -37,12 +37,15 @@ import org.json.simple.parser.ParseException;
  *
  * @author Anuradha
  */
-public class AttributesPersistence implements JSONAware {
+public class AttributesHandler implements JSONAware {
 
     private final File file;
 
-    public AttributesPersistence(File file) {
+    public AttributesHandler(File file) {
         this.file = file;
+    }
+
+    public void loadAttributes() {
         if (file.exists()) {
 
             FileInputStream fileInputStream = null;
@@ -62,48 +65,47 @@ public class AttributesPersistence implements JSONAware {
 
 
             } catch (IOException ex) {
-                Logger.getLogger(AttributesPersistence.class.getName()).warning(ex.getMessage());
+                Logger.getLogger(AttributesHandler.class.getName()).warning(ex.getMessage());
             } catch (ParseException ex) {
-                Logger.getLogger(AttributesPersistence.class.getName()).warning(ex.getMessage());
+                Logger.getLogger(AttributesHandler.class.getName()).warning(ex.getMessage());
             } finally {
                 try {
                     if (fileInputStream != null) {
                         fileInputStream.close();
                     }
                 } catch (IOException ex) {
-                    Logger.getLogger(AttributesPersistence.class.getName()).warning(ex.getMessage());
+                    Logger.getLogger(AttributesHandler.class.getName()).warning(ex.getMessage());
                 }
             }
         }
-
     }
 
-    public List<EntryInfo> getClosedStatuses() {
-        return new ArrayList<EntryInfo>(closedStatuses);
+    public List<String> getClosedStatuses() {
+        return new ArrayList<String>(closedStatuses);
     }
 
-    public void setClosedStatuses(List<EntryInfo> closedStatuses) {
-        this.closedStatuses = new ArrayList<EntryInfo>(closedStatuses);
+    public void setClosedStatuses(List<String> closedStatuses) {
+        this.closedStatuses = new ArrayList<String>(closedStatuses);
     }
 
-    public List<EntryInfo> getLabels() {
-        return new ArrayList<EntryInfo>(labels);
+    public List<String> getLabels() {
+        return new ArrayList<String>(labels);
     }
 
-    public void setLabels(List<EntryInfo> labels) {
-        this.labels = new ArrayList<EntryInfo>(labels);
+    public void setLabels(List<String> labels) {
+        this.labels = new ArrayList<String>(labels);
     }
 
-    public List<EntryInfo> getOpenStatueses() {
-        return new ArrayList<EntryInfo>(openStatueses);
+    public List<String> getOpenStatueses() {
+        return new ArrayList<String>(openStatueses);
     }
 
-    public void setOpenStatueses(List<EntryInfo> openStatueses) {
-        this.openStatueses = new ArrayList<EntryInfo>(openStatueses);
+    public void setOpenStatueses(List<String> openStatueses) {
+        this.openStatueses = new ArrayList<String>(openStatueses);
     }
-    private List<EntryInfo> openStatueses = new ArrayList<EntryInfo>();
-    private List<EntryInfo> closedStatuses = new ArrayList<EntryInfo>();
-    private List<EntryInfo> labels = new ArrayList<EntryInfo>();
+    private List<String> openStatueses = new ArrayList<String>();
+    private List<String> closedStatuses = new ArrayList<String>();
+    private List<String> labels = new ArrayList<String>();
 
     public String toJSONString() {
         JSONObject obj = new JSONObject();
@@ -113,13 +115,12 @@ public class AttributesPersistence implements JSONAware {
         return obj.toJSONString();
     }
 
-    private static List<EntryInfo> _getEntryInfos(JSONObject jsono, String key) {
-        List<EntryInfo> infos = new ArrayList<EntryInfo>();
+    private static List<String> _getEntryInfos(JSONObject jsono, String key) {
+        List<String> infos = new ArrayList<String>();
         JSONArray jSONArray = (JSONArray) jsono.get(key);
         if (jSONArray != null) {
             for (Object object : jSONArray) {
-                JSONObject nObject = (JSONObject) object;
-                infos.add(EntryInfo.toEntryInfo(nObject));
+                infos.add(object.toString());
             }
         }
         return infos;
@@ -139,14 +140,14 @@ public class AttributesPersistence implements JSONAware {
             writer.close();
             fileOutputStream.close();
         } catch (IOException ex) {
-            Logger.getLogger(AttributesPersistence.class.getName()).warning(ex.getMessage());
+            Logger.getLogger(AttributesHandler.class.getName()).warning(ex.getMessage());
         } finally {
             try {
                 if (fileOutputStream != null) {
                     fileOutputStream.close();
                 }
             } catch (IOException ex) {
-                Logger.getLogger(AttributesPersistence.class.getName()).warning(ex.getMessage());
+                Logger.getLogger(AttributesHandler.class.getName()).warning(ex.getMessage());
             }
         }
     }
@@ -160,9 +161,9 @@ public class AttributesPersistence implements JSONAware {
          *Started              = Work on this issue has begun
          */
         if (openStatueses.isEmpty()) {
-            openStatueses.add(new EntryInfo("New", "Issue has not had initial review yet"));
-            openStatueses.add(new EntryInfo("Accepted", "Problem reproduced / Need acknowledged"));
-            openStatueses.add(new EntryInfo("Started", "Work on this issue has begun"));
+            openStatueses.add("New");
+            openStatueses.add("Accepted");
+            openStatueses.add("Started");
         }
 
         //Closed Issue Status Values:
@@ -175,12 +176,12 @@ public class AttributesPersistence implements JSONAware {
          * Done                 = The requested non-coding task was completed
          */
         if (closedStatuses.isEmpty()) {
-            closedStatuses.add(new EntryInfo("Fixed", "Developer made source code changes, QA should verify"));
-            closedStatuses.add(new EntryInfo("Verified", "QA has verified that the fix worked"));
-            closedStatuses.add(new EntryInfo("Invalid", "This was not a valid issue report"));
-            closedStatuses.add(new EntryInfo("Duplicate", "This report duplicates an existing issue"));
-            closedStatuses.add(new EntryInfo("WontFix", "We decided to not take action on this issue"));
-            closedStatuses.add(new EntryInfo("Done", "The requested non-coding task was completed"));
+            closedStatuses.add("Fixed");
+            closedStatuses.add("Verified");
+            closedStatuses.add("Invalid");
+            closedStatuses.add("Duplicate");
+            closedStatuses.add("WontFix");
+            closedStatuses.add("Done");
         }
 
         //Predefined issue labels
@@ -210,29 +211,29 @@ public class AttributesPersistence implements JSONAware {
          * Maintainability      = Hinders future changes
          */
         if (labels.isEmpty()) {
-            labels.add(new EntryInfo("Type-Defect", "Report of a software defect"));
-            labels.add(new EntryInfo("Type-Enhancement", "Request for enhancement"));
-            labels.add(new EntryInfo("Type-Task", "Work item that doesn't change the code or docs"));
-            labels.add(new EntryInfo("Type-Review ", "Request for a source code review"));
-            labels.add(new EntryInfo("Type-Other", "Some other kind of issue"));
-            labels.add(new EntryInfo("Priority-Critical", "Must resolve in the specified milestone"));
-            labels.add(new EntryInfo("Priority-High", "trongly want to resolve in the specified milestone"));
-            labels.add(new EntryInfo("Priority-Medium", "Normal priority"));
-            labels.add(new EntryInfo("Priority-Low", "Might slip to later milestone"));
-            labels.add(new EntryInfo("OpSys-All", "Affects all operating systems"));
-            labels.add(new EntryInfo("OpSys-Windows", "Affects Windows users"));
-            labels.add(new EntryInfo("OpSys-Linux", "Affects Linux users"));
-            labels.add(new EntryInfo("OpSys-OSX", "Affects Mac OS X users"));
-            labels.add(new EntryInfo("Milestone-Release1.0", "All essential functionality working"));
-            labels.add(new EntryInfo("Component-UI", "Issue relates to program UI"));
-            labels.add(new EntryInfo("Component-Logic", "Issue relates to application logic"));
-            labels.add(new EntryInfo("Component-Persistence", "Issue relates to data storage components"));
-            labels.add(new EntryInfo("Component-Scripts", "Utility and installation scripts"));
-            labels.add(new EntryInfo("Component-Docs", "Issue relates to end-user documentation"));
-            labels.add(new EntryInfo("Security", "Security risk to users"));
-            labels.add(new EntryInfo("Performance", "Performance issue"));
-            labels.add(new EntryInfo("Usability", "Affects program usability"));
-            labels.add(new EntryInfo("Maintainability", "Hinders future changes"));
+            labels.add("Type-Defect");
+            labels.add("Type-Enhancement");
+            labels.add("Type-Task");
+            labels.add("Type-Review");
+            labels.add("Type-Other");
+            labels.add("Priority-Critical");
+            labels.add("Priority-High");
+            labels.add("Priority-Medium");
+            labels.add("Priority-Low");
+            labels.add("OpSys-All");
+            labels.add("OpSys-Windows");
+            labels.add("OpSys-Linux");
+            labels.add("OpSys-OSX");
+            labels.add("Milestone-Release1.0");
+            labels.add("Component-UI");
+            labels.add("Component-Logic");
+            labels.add("Component-Persistence");
+            labels.add("Component-Scripts");
+            labels.add("Component-Docs");
+            labels.add("Security");
+            labels.add("Performance");
+            labels.add("Usability");
+            labels.add("Maintainability");
         }
     }
 }

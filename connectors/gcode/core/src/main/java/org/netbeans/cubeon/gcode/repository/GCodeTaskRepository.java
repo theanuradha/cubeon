@@ -17,15 +17,20 @@
 package org.netbeans.cubeon.gcode.repository;
 
 import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
 import org.netbeans.cubeon.gcode.api.GCodeClient;
 import org.netbeans.cubeon.gcode.api.GCodeException;
 import org.netbeans.cubeon.gcode.api.GCodeSession;
+import org.netbeans.cubeon.gcode.persistence.AttributesHandler;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
+import org.openide.util.Exceptions;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -48,6 +53,8 @@ public class GCodeTaskRepository implements TaskRepository {
     private State state = State.INACTIVE;
     private final GCodeRepositoryExtension extension;
     private GCodeSession _session;
+    private final AttributesHandler repositoryAttributes;
+    private FileObject baseDir;
 
     public GCodeTaskRepository(GCodeTaskRepositoryProvider provider,
             String id, String name, String description) {
@@ -56,11 +63,19 @@ public class GCodeTaskRepository implements TaskRepository {
         this.name = name;
         this.description = description;
         extension = new GCodeRepositoryExtension(this);
-
-
+        baseDir = provider.getBaseDir().getFileObject(id);
+        if (baseDir == null) {
+            try {
+                baseDir = provider.getBaseDir().createFolder(id);
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+        repositoryAttributes  = new AttributesHandler(
+                new File(FileUtil.toFile(baseDir),"attributes.json"));
 
         lookup = Lookups.fixed(this, provider, extension);
-        setState(State.ACTIVE);
+
     }
 
     public String getId() {
@@ -152,7 +167,7 @@ public class GCodeTaskRepository implements TaskRepository {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-     public synchronized GCodeSession getSession() throws GCodeException {
+    public synchronized GCodeSession getSession() throws GCodeException {
         if (_session == null) {
             reconnect();
         }
@@ -175,6 +190,17 @@ public class GCodeTaskRepository implements TaskRepository {
     }
 
     public void updateAttributes() throws GCodeException {
-        //TODO : Donothing for Now
+        //TODO : http://code.google.com/p/support/issues/detail?id=3203
+        repositoryAttributes.loadDefultAttributes();
+        repositoryAttributes.persistAttributes();
+    }
+
+    public void loadAttributes() {
+        repositoryAttributes.loadAttributes();
+        setState(State.ACTIVE);
+    }
+
+    public AttributesHandler getRepositoryAttributes() {
+        return repositoryAttributes;
     }
 }
