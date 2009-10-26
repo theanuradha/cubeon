@@ -261,9 +261,9 @@ public class AttributesHandler implements JSONAware {
         List<TaskType> taskTypes = new ArrayList<TaskType>();
         List<TaskPriority> prioritys = new ArrayList<TaskPriority>();
         for (String lable : labels) {
-            if (lable.toLowerCase().startsWith(GCodeUtils.PRIORITY_TAG)) {
+            if (lable.startsWith(GCodeUtils.PRIORITY_TAG)) {
                 prioritys.add(new TaskPriority(repository, lable, lable.replace(GCodeUtils.PRIORITY_TAG, "")));
-            } else if (lable.toLowerCase().startsWith(GCodeUtils.TYPE_TAG)) {
+            } else if (lable.startsWith(GCodeUtils.TYPE_TAG)) {
                 taskTypes.add(new TaskType(repository, lable, lable.replace(GCodeUtils.TYPE_TAG, "")));
             }
         }
