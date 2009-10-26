@@ -49,6 +49,9 @@ import org.openide.util.lookup.Lookups;
  */
 public class GCodeTask extends GCodeIssue implements TaskElement {
 
+    public static String issueToTaskId(GCodeIssue sue) {
+        return "Issue " + sue.getId();
+    }
     private final GCodeTaskRepository taskRepository;
     private final GCodeTaskElementExtension extension;
     private final TaskEditorProvider editorProvider;
@@ -232,5 +235,4 @@ public class GCodeTask extends GCodeIssue implements TaskElement {
     public GCodeTaskElementExtension getExtension() {
         return extension;
     }
-    
 }

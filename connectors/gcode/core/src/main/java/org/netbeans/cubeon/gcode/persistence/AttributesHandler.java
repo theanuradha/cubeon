@@ -94,6 +94,12 @@ public class AttributesHandler implements JSONAware {
         this.closedStatuses = new ArrayList<String>(closedStatuses);
     }
 
+    public ArrayList<String> getStatuses() {
+        ArrayList<String> statuses = new ArrayList<String>(openStatueses);
+        statuses.addAll(closedStatuses);
+        return statuses;
+    }
+
     public List<String> getLabels() {
         return new ArrayList<String>(labels);
     }

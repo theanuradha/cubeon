@@ -32,6 +32,7 @@ import org.netbeans.cubeon.gcode.api.GCodeSession;
 import org.netbeans.cubeon.gcode.api.GCodeState;
 import org.netbeans.cubeon.gcode.persistence.AttributesHandler;
 import org.netbeans.cubeon.gcode.persistence.TaskPersistence;
+import org.netbeans.cubeon.gcode.query.GCodeQuerySupport;
 import org.netbeans.cubeon.gcode.tasks.GCodeTask;
 import org.netbeans.cubeon.gcode.utils.GCodeUtils;
 import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
@@ -69,6 +70,7 @@ public class GCodeTaskRepository implements TaskRepository {
     private final GCodeTaskTypeProvider typeProvider;
     private final GCodeTaskStatusProvider statusProvider;
     private final GCodeOfflineTaskSupport offlineTaskSupport;
+    private final GCodeQuerySupport querySupport;
     private final TaskPersistence handler;
     private Map<String, GCodeTask> map = new HashMap<String, GCodeTask>();
     private final TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
@@ -99,7 +101,8 @@ public class GCodeTaskRepository implements TaskRepository {
         statusProvider = new GCodeTaskStatusProvider();
         offlineTaskSupport = new GCodeOfflineTaskSupport(this);
         handler = new TaskPersistence(FileUtil.toFile(baseDir), this);
-        lookup = Lookups.fixed(this, provider, extension, priorityProvider, typeProvider, statusProvider, offlineTaskSupport);
+        querySupport = new GCodeQuerySupport(this, extension);
+        lookup = Lookups.fixed(this, provider, extension, priorityProvider, typeProvider, statusProvider, offlineTaskSupport, querySupport);
 
     }
 
@@ -192,12 +195,11 @@ public class GCodeTaskRepository implements TaskRepository {
         assert tracTask != null;
         handler.persist(tracTask);
         //notify to outgoing query about modified state
-        //FIXME un-comment
-//        if (tracTask.isModifiedFlag()) {
-//            querySupport.getOutgoingQuery().addTaskId(element.getId());
-//        } else {
-//            querySupport.getOutgoingQuery().removeTaskId(element.getId());
-//        }
+        if (tracTask.isModifiedFlag()) {
+            querySupport.getOutgoingQuery().addTaskId(element.getId());
+        } else {
+            querySupport.getOutgoingQuery().removeTaskId(element.getId());
+        }
     }
 
     public void revert(GCodeTask task) {
@@ -218,8 +220,7 @@ public class GCodeTaskRepository implements TaskRepository {
             handler.removeCache(tracTask);
         }
         //make sure to remove from outgoing resultset
-        //FIXME un-comment
-        //querySupport.getOutgoingQuery().removeTaskId(tracTask.getId());
+        querySupport.getOutgoingQuery().removeTaskId(tracTask.getId());
         extension.fireTaskRemoved(tracTask);
     }
 
@@ -244,7 +245,7 @@ public class GCodeTaskRepository implements TaskRepository {
         update(issue, task);
     }
 
-    public void update(GCodeIssue issue, GCodeTask task) throws GCodeException {
+    public void update(GCodeIssue issue, GCodeTask task) {
         synchronized (task) {
             //ignore if local task
             if (!task.isLocal()) {
@@ -319,6 +320,8 @@ public class GCodeTaskRepository implements TaskRepository {
                 NbBundle.getMessage(GCodeTaskRepository.class,
                 "LBL_Updating_Attributes", getName()));
         //TODO : http://code.google.com/p/support/issues/detail?id=3203
+        handle.start();
+        handle.switchToIndeterminate();
         repositoryAttributes.loadDefultAttributes();
         repositoryAttributes.persistAttributes();
         loadAttributes();
@@ -330,6 +333,7 @@ public class GCodeTaskRepository implements TaskRepository {
     public void loadAttributes() {
         repositoryAttributes.loadAttributes();
         repositoryAttributes.loadProviders(this);
+        querySupport.refresh();
         setState(State.ACTIVE);
     }
 
@@ -397,5 +401,9 @@ public class GCodeTaskRepository implements TaskRepository {
 
             }
         });
+    }
+
+    public GCodeQuerySupport getQuerySupport() {
+        return querySupport;
     }
 }
