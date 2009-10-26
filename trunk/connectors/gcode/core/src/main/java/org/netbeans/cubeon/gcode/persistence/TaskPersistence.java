@@ -43,49 +43,41 @@ public class TaskPersistence {
 
     private final File dir;
     private GCodeTaskRepository repository;
+    private List<String> tasks = new ArrayList<String>();
+    private int nextId;
 
     public TaskPersistence(File dir) {
         this.dir = dir;
+        _loadTasks();
     }
 
     public TaskPersistence(File dir, GCodeTaskRepository repository) {
         this.dir = dir;
         this.repository = repository;
+        _loadTasks();
     }
 
-    public void persist(GCodeTask codeTask) {
-        TaskInfo taskInfo = toTaskInfo(codeTask);
-
-        FileOutputStream fileOutputStream = null;
-        try {
-            JSONObject jsonRepos = new JSONObject();
-
-            fileOutputStream = new FileOutputStream(new File(dir, codeTask.getId() + ".json"));
-            jsonRepos.put("task", taskInfo);
-            jsonRepos.put("version", "1");
-            Writer writer = new OutputStreamWriter(fileOutputStream, "UTF8");
-            String json = new JsonIndenter(jsonRepos.toJSONString()).result();
-            writer.write(json);
-            writer.close();
-            fileOutputStream.close();
-        } catch (IOException ex) {
-            Logger.getLogger(TaskPersistence.class.getName()).warning(ex.getMessage());
-        } finally {
-            try {
-                if (fileOutputStream != null) {
-                    fileOutputStream.close();
-                }
-            } catch (IOException ex) {
-                Logger.getLogger(TaskPersistence.class.getName()).warning(ex.getMessage());
-            }
-        }
+    public String nextId() {
+        nextId++;
+        _persistTasks();
+        return String.valueOf(nextId);
     }
 
-    public GCodeTask getGCodeTask(String id) {
+    public void remove(GCodeTask codeTask) {
+        tasks.remove(codeTask.getId());
+        File file = new File(dir, "tasks/" + codeTask.getId() + ".json");
+        _remove(file);
+        _persistTasks();
+    }
+
+    public void removeCache(GCodeTask codeTask) {
+        File file = new File(dir, "cache/" + codeTask.getId() + ".json");
+        _remove(file);
+    }
+
+    private GCodeTask _getGCodeTask(File file) {
         GCodeTask codeTask = null;
-        File file = new File(dir, id + ".json");
         if (file.exists()) {
-
             FileInputStream fileInputStream = null;
             try {
                 fileInputStream = new FileInputStream(file);
@@ -113,6 +105,122 @@ public class TaskPersistence {
             }
         }
         return codeTask;
+    }
+
+    private void _remove(File file) {
+        if (file.exists()) {
+            file.delete();
+        }
+    }
+
+    public void persist(GCodeTask codeTask) {
+        File file = new File(dir, "tasks/" + codeTask.getId() + ".json");
+        _persist(codeTask, file);
+        tasks.add(codeTask.getId());
+        _persistTasks();
+    }
+
+    public void persistCache(GCodeTask codeTask) {
+        File file = new File(dir, "cache/" + codeTask.getId() + ".json");
+        _persist(codeTask, file);
+    }
+
+    private void _persist(GCodeTask codeTask, File file) {
+        TaskInfo taskInfo = toTaskInfo(codeTask);
+        FileOutputStream fileOutputStream = null;
+        try {
+            JSONObject jsonRepos = new JSONObject();
+            file.mkdirs();
+            fileOutputStream = new FileOutputStream(file);
+            jsonRepos.put("task", taskInfo);
+            jsonRepos.put("version", "1");
+            Writer writer = new OutputStreamWriter(fileOutputStream, "UTF8");
+            String json = new JsonIndenter(jsonRepos.toJSONString()).result();
+            writer.write(json);
+            writer.close();
+            fileOutputStream.close();
+        } catch (IOException ex) {
+            Logger.getLogger(TaskPersistence.class.getName()).warning(ex.getMessage());
+        } finally {
+            try {
+                if (fileOutputStream != null) {
+                    fileOutputStream.close();
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(TaskPersistence.class.getName()).warning(ex.getMessage());
+            }
+        }
+    }
+
+    public GCodeTask getGCodeTask(String id) {
+
+        File file = new File(dir, "tasks/" + id + ".json");
+        return _getGCodeTask(file);
+    }
+
+    public GCodeTask getCachedGCodeTask(String id) {
+
+        File file = new File(dir, "cache/" + id + ".json");
+        return _getGCodeTask(file);
+    }
+
+    private void _loadTasks() {
+        File file = new File(dir, "repository.json");
+        if (file.exists()) {
+
+            FileInputStream fileInputStream = null;
+            try {
+                fileInputStream = new FileInputStream(file);
+                Reader reader = new InputStreamReader(fileInputStream, "UTF8");
+                JSONParser parser = new JSONParser();
+                JSONObject jsono = (JSONObject) parser.parse(reader);
+                if (jsono != null) {
+                    nextId = JSONUtils.getIntValue(jsono, "next-id");
+                    tasks = JSONUtils.getStrings(jsono, "tasks");
+                }
+                reader.close();
+            } catch (IOException ex) {
+                Logger.getLogger(RepositoryPersistence.class.getName()).warning(ex.getMessage());
+            } catch (ParseException ex) {
+                Logger.getLogger(RepositoryPersistence.class.getName()).warning(ex.getMessage());
+            } finally {
+                try {
+                    if (fileInputStream != null) {
+                        fileInputStream.close();
+                    }
+                } catch (IOException ex) {
+                    Logger.getLogger(RepositoryPersistence.class.getName()).warning(ex.getMessage());
+                }
+            }
+        }
+    }
+
+    private void _persistTasks() {
+        FileOutputStream fileOutputStream = null;
+        try {
+            JSONObject jsonRepos = new JSONObject();
+            File file = new File(dir, "repository.json");
+            file.mkdirs();
+            fileOutputStream = new FileOutputStream(file);
+            jsonRepos.put("tasks", tasks);
+            jsonRepos.put("next-id", nextId);
+            jsonRepos.put("version", "1");
+            Writer writer = new OutputStreamWriter(fileOutputStream, "UTF8");
+            String json = new JsonIndenter(jsonRepos.toJSONString()).result();
+            writer.write(json);
+            writer.close();
+            fileOutputStream.close();
+        } catch (IOException ex) {
+            Logger.getLogger(TaskPersistence.class.getName()).warning(ex.getMessage());
+        } finally {
+            try {
+                if (fileOutputStream != null) {
+                    fileOutputStream.close();
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(TaskPersistence.class.getName()).warning(ex.getMessage());
+            }
+        }
     }
 
     private GCodeTask toGCodeTask(TaskInfo taskInfo) {

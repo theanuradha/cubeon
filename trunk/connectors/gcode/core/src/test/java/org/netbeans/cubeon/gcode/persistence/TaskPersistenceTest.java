@@ -45,11 +45,11 @@ public class TaskPersistenceTest extends TestCase {
         try {
             GCodeSessionImpl codeSessionImpl = new GCodeSessionImpl("test-cubeon", null, null);
             GCodeIssue issue = codeSessionImpl.getIssue("3");
-            GCodeTask codeTask = GCodeUtils.toCodeTask(null, issue);
+            GCodeTask codeTask = GCodeUtils.toCodeTask(new GCodeTask(null, null, null, null), issue);
             persistence.persist(codeTask);
             System.out.println(new String(
                     RepositoryPersistenceTest.fileToByteArray(new File(file,
-                    codeTask.getId() + ".json"))));
+                    "tasks/"+codeTask.getId() + ".json"))));
             GCodeTask result = persistence.getGCodeTask("3");
             assertEquals(codeTask.getId(), result.getId());
             assertEquals(codeTask.getSummary(), result.getSummary());
