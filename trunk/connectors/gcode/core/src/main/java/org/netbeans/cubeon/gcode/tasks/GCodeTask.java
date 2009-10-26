@@ -115,7 +115,7 @@ public class GCodeTask extends GCodeIssue implements TaskElement {
     public Image getImage() {
         Image image = TaskTypeBadge.getTaskImage();
         image = ImageUtilities.mergeImages(image,
-                ImageUtilities.loadImage("org/netbeans/cubeon/gcode/gcode-badge.png"), 6, 6);
+                ImageUtilities.loadImage("org/netbeans/cubeon/gcode/gcode-badge.png"), 0, 0);
         return image;
     }
 
