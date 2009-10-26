@@ -35,6 +35,7 @@ public class GCodeUtils {
     public static final String TYPE_TAG = "Type-";
     public static final String COMPONENT_TAG = "Component-";
     public static final String OS_TAG = "OpSys-";
+    public static final String MILESTONE_TAG = "Milestone-";
 
     private GCodeUtils() {
     }
@@ -165,7 +166,7 @@ public class GCodeUtils {
 
     public static List<String> getLabelTags() {
 
-        return Arrays.asList(PRIORITY_TAG, COMPONENT_TAG, OS_TAG, TYPE_TAG);
+        return Arrays.asList(PRIORITY_TAG, COMPONENT_TAG, OS_TAG, TYPE_TAG,MILESTONE_TAG);
     }
 
     private static String _getTagValue(String lable) {
