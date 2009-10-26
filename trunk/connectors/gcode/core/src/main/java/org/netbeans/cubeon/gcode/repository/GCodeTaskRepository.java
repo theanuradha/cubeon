@@ -67,6 +67,7 @@ public class GCodeTaskRepository implements TaskRepository {
     private final GCodeTaskPriorityProvider priorityProvider;
     private final GCodeTaskTypeProvider typeProvider;
     private final GCodeTaskStatusProvider statusProvider;
+    private final GCodeOfflineTaskSupport offlineTaskSupport;
     private final TaskPersistence handler;
     private Map<String, GCodeTask> map = new HashMap<String, GCodeTask>();
     private final TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
@@ -91,8 +92,9 @@ public class GCodeTaskRepository implements TaskRepository {
         priorityProvider = new GCodeTaskPriorityProvider();
         typeProvider = new GCodeTaskTypeProvider();
         statusProvider = new GCodeTaskStatusProvider();
+        offlineTaskSupport = new GCodeOfflineTaskSupport(this);
         handler = new TaskPersistence(FileUtil.toFile(baseDir), this);
-        lookup = Lookups.fixed(this, provider, extension, priorityProvider, typeProvider, statusProvider);
+        lookup = Lookups.fixed(this, provider, extension, priorityProvider, typeProvider, statusProvider,offlineTaskSupport);
 
     }
 
