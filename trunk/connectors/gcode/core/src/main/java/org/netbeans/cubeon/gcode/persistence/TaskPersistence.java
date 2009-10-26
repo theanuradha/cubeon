@@ -130,7 +130,7 @@ public class TaskPersistence {
         FileOutputStream fileOutputStream = null;
         try {
             JSONObject jsonRepos = new JSONObject();
-            file.mkdirs();
+            file.getParentFile().mkdirs();
             fileOutputStream = new FileOutputStream(file);
             jsonRepos.put("task", taskInfo);
             jsonRepos.put("version", "1");
@@ -200,7 +200,7 @@ public class TaskPersistence {
         try {
             JSONObject jsonRepos = new JSONObject();
             File file = new File(dir, "repository.json");
-            file.mkdirs();
+            file.getParentFile().mkdirs();
             fileOutputStream = new FileOutputStream(file);
             jsonRepos.put("tasks", tasks);
             jsonRepos.put("next-id", nextId);
