@@ -40,7 +40,7 @@ public class GCodeUtils {
         String tagLable = getTagLable(TYPE_TAG, codeTask);
         if (tagLable != null) {
             return new TaskType(codeTask.getTaskRepository(),
-                    tagLable, tagLable.replace(TYPE_TAG, ""));
+                    tagLable, _getTagValue(tagLable));
         }
         return null;
     }
@@ -59,7 +59,7 @@ public class GCodeUtils {
         String tagLable = getTagLable(PRIORITY_TAG, codeTask);
         if (tagLable != null) {
             return new TaskPriority(codeTask.getTaskRepository(),
-                    tagLable, tagLable.replace(PRIORITY_TAG, ""));
+                    tagLable, _getTagValue(tagLable));
         }
         return null;
     }
@@ -118,35 +118,35 @@ public class GCodeUtils {
         task.setReportedBy(issue.getReportedBy());
 
         if ((cachedTask.getStatus() == null && issue.getStatus() != null)
-                || !cachedTask.getStatus().equals(issue.getStatus())) {
+                ||( cachedTask.getStatus()!= null && !cachedTask.getStatus().equals(issue.getStatus()))) {
             task.setStatus(issue.getStatus());
         }
 
         if ((cachedTask.getSummary() == null && issue.getSummary() != null)
-                || !cachedTask.getSummary().equals(issue.getSummary())) {
+                || (cachedTask.getSummary() != null && !cachedTask.getSummary().equals(issue.getSummary()))) {
             task.setSummary(issue.getSummary());
         }
 
         if ((cachedTask.getDescription() == null && issue.getDescription() != null)
-                || !cachedTask.getDescription().equals(issue.getDescription())) {
+                || (cachedTask.getDescription()!=null && !cachedTask.getDescription().equals(issue.getDescription()))) {
             task.setDescription(issue.getDescription());
         }
 
         if ((cachedTask.getOwner() == null && issue.getOwner() != null)
-                || !cachedTask.getOwner().equals(issue.getOwner())) {
+                || (cachedTask.getOwner() != null && !cachedTask.getOwner().equals(issue.getOwner()))) {
             task.setOwner(issue.getOwner());
         }
 
         List<String> labels = task.getLabels();
-        
+
         List<String> remoteLabels = issue.getLabels();
         remoteLabels.removeAll(cachedTask.getLabels());
-        
+
         //remove same tags in local and remote
         labels = _getFillteredLabels(labels, _getLabelTags(remoteLabels));
         //add new labels from remote
         labels.addAll(remoteLabels);
-        task.setLabels(labels);        
+        task.setLabels(labels);
         List<String> ccs = task.getCcs();
         List<String> remoteCcs = issue.getCcs();
         remoteCcs.removeAll(cachedTask.getCcs());
@@ -170,14 +170,22 @@ public class GCodeUtils {
         }
         return tags;
     }
-    
-    private static List<String> _getFillteredLabels(List<String> labels, List<String> fillteredTags){
+
+    private static String _getTagValue(String lable) {
+        int tagIndex = lable.indexOf('-');
+        if (tagIndex > -1 && lable.length() > 1) {
+            return lable.substring(++tagIndex);
+        }
+        return lable;
+    }
+
+    private static List<String> _getFillteredLabels(List<String> labels, List<String> fillteredTags) {
         List<String> fillteredLabels = new ArrayList<String>();
         for (String label : labels) {
-            int indexOf = label.indexOf("-");
+            int indexOf = label.indexOf('-');
             if (indexOf != -1) {
                 String tag = label.substring(0, indexOf);
-                if(fillteredTags.contains(tag)){
+                if (fillteredTags.contains(tag)) {
                     continue;
                 }
                 fillteredLabels.add(label);
