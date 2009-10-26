@@ -228,4 +228,9 @@ public class GCodeTask extends GCodeIssue implements TaskElement {
         hash = 29 * hash + (this.getId() != null ? this.getId().hashCode() : 0);
         return hash;
     }
+
+    public GCodeTaskElementExtension getExtension() {
+        return extension;
+    }
+    
 }

@@ -19,14 +19,22 @@ package org.netbeans.cubeon.gcode.repository;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
 import org.netbeans.cubeon.gcode.api.GCodeClient;
 import org.netbeans.cubeon.gcode.api.GCodeException;
+import org.netbeans.cubeon.gcode.api.GCodeIssue;
 import org.netbeans.cubeon.gcode.api.GCodeSession;
+import org.netbeans.cubeon.gcode.api.GCodeState;
 import org.netbeans.cubeon.gcode.persistence.AttributesHandler;
+import org.netbeans.cubeon.gcode.persistence.TaskPersistence;
 import org.netbeans.cubeon.gcode.tasks.GCodeTask;
+import org.netbeans.cubeon.gcode.utils.GCodeUtils;
+import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.filesystems.FileObject;
@@ -59,7 +67,9 @@ public class GCodeTaskRepository implements TaskRepository {
     private final GCodeTaskPriorityProvider priorityProvider;
     private final GCodeTaskTypeProvider typeProvider;
     private final GCodeTaskStatusProvider statusProvider;
-
+    private final TaskPersistence handler;
+    private Map<String, GCodeTask> map = new HashMap<String, GCodeTask>();
+    private final TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
     public GCodeTaskRepository(GCodeTaskRepositoryProvider provider,
             String id, String name, String description) {
         this.provider = provider;
@@ -81,6 +91,7 @@ public class GCodeTaskRepository implements TaskRepository {
         priorityProvider = new GCodeTaskPriorityProvider();
         typeProvider = new GCodeTaskTypeProvider();
         statusProvider = new GCodeTaskStatusProvider();
+        handler = new TaskPersistence(FileUtil.toFile(baseDir), this);
         lookup = Lookups.fixed(this, provider, extension, priorityProvider, typeProvider, statusProvider);
 
     }
@@ -142,18 +153,118 @@ public class GCodeTaskRepository implements TaskRepository {
         extension.fireStateChanged(state);
     }
 
-    public TaskElement createTaskElement(String summery, String description) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public TaskElement createTaskElement(String summary, String description) {
+        String nextTaskId = handler.nextId();
+        nextTaskId = "New-" + nextTaskId;//NOI18N
+        GCodeTask codeTask = new GCodeTask(this, nextTaskId,
+                summary, description);
+        codeTask.setLocal(true);
+        List<String> openStatueses = repositoryAttributes.getOpenStatueses();
+        if (openStatueses.size() > 0) {
+            codeTask.setStatus(openStatueses.get(0));
+        }
+        codeTask.setState(GCodeState.OPEN);
+        codeTask.setLocal(true);
+
+        return codeTask;
     }
 
     public TaskElement getTaskElementById(String id) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        GCodeTask get = map.get(id);
+        if (get == null) {
+            get = handler.getGCodeTask(id);
+            if (get != null) {
+                map.put(id, get);
+            }
+        }
+        return get;
     }
 
     public void persist(TaskElement element) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        GCodeTask tracTask = element.getLookup().lookup(GCodeTask.class);
+        assert tracTask != null;
+        handler.persist(tracTask);
+        //notify to outgoing query about modified state
+        //FIXME un-comment
+//        if (tracTask.isModifiedFlag()) {
+//            querySupport.getOutgoingQuery().addTaskId(element.getId());
+//        } else {
+//            querySupport.getOutgoingQuery().removeTaskId(element.getId());
+//        }
     }
 
+    public void revert(GCodeTask task) {
+        synchronized (task) {
+            task.setNewComment(null);
+            GCodeTask cachedTask = handler.getCachedGCodeTask(task.getId());
+            GCodeUtils.toCodeTask(task, cachedTask);
+            task.setModifiedFlag(false);
+            persist(task);
+            task.getExtension().fireStateChenged();
+        }
+    }
+
+    public void remove(GCodeTask tracTask) {
+        handler.remove(tracTask);
+        //issue-26 check if loacl as local task not on cache
+        if (!tracTask.isLocal()) {
+            handler.removeCache(tracTask);
+        }
+        //make sure to remove from outgoing resultset
+        //FIXME un-comment
+        //querySupport.getOutgoingQuery().removeTaskId(tracTask.getId());
+        extension.fireTaskRemoved(tracTask);
+    }
+
+    public void cache(GCodeTask tracTask) {
+
+        handler.persistCache(tracTask);
+    }
+    public void update(GCodeTask task) throws GCodeException {
+        synchronized (task) {
+
+            GCodeSession session = getSession();
+            update(session, task);
+
+        }
+
+    }
+
+    private void update(GCodeSession session, GCodeTask task) throws GCodeException {
+        GCodeIssue issue = session.getIssue(task.getId());
+
+        update(issue, task);
+    }
+
+    public void update(GCodeIssue issue, GCodeTask task) throws GCodeException {
+        synchronized (task) {
+            //ignore if local task
+            if (!task.isLocal()) {
+
+                GCodeTask cachedTask = handler.getCachedGCodeTask(task.getId());
+                //if remote ticket not modified ignore and log
+                if (cachedTask != null && cachedTask.getUpdatedDate() == issue.getUpdatedDate()) {
+                    Logger.getLogger(getClass().getName()).info("Up to date : " + issue.getId());//NOI18N
+
+                } else {
+                    //issue - 85 we need to save any changes before task marege
+                    factory.save(task);
+                    //marege changes with remote ticket
+                    GCodeUtils.maregeToTask(this, issue, cachedTask, task);
+                    
+                    persist(task);
+
+                    //make cache up to date
+                    cache(GCodeUtils.toCodeTask(this, issue));
+                    //refresh task if open in editor
+                    factory.refresh(task);
+                    //notify task has changed
+                    task.getExtension().fireStateChenged();
+                }
+            }
+        }
+
+    }
     public void synchronize() {
         //TODO
     }
@@ -233,7 +344,9 @@ public class GCodeTaskRepository implements TaskRepository {
         return typeProvider;
     }
 
-    public void update(GCodeTask codeTask) throws GCodeException {
-        throw new UnsupportedOperationException("Not yet implemented");
+    public GCodeRepositoryExtension getExtension() {
+        return extension;
     }
+
+    
 }

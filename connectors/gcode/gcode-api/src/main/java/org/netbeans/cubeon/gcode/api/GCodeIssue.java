@@ -189,6 +189,18 @@ public class GCodeIssue {
         return new ArrayList<GCodeComment>(comments);
     }
 
+    public void setCcs(List<String> ccs) {
+        this.ccs = ccs;
+    }
+
+    public void setComments(List<GCodeComment> comments) {
+        this.comments = comments;
+    }
+
+    public void setLabels(List<String> labels) {
+        this.labels = labels;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {

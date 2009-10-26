@@ -16,6 +16,7 @@
  */
 package org.netbeans.cubeon.gcode.utils;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.netbeans.cubeon.gcode.api.GCodeIssue;
 import org.netbeans.cubeon.gcode.repository.GCodeTaskRepository;
@@ -84,18 +85,104 @@ public class GCodeUtils {
         return null;
     }
 
-    public static GCodeTask toCodeTask(GCodeTaskRepository repository,GCodeIssue codeIssue){
+    public static GCodeTask toCodeTask(GCodeTaskRepository repository, GCodeIssue codeIssue) {
         GCodeTask codeTask = new GCodeTask(repository, codeIssue.getId(),
                 codeIssue.getSummary(), codeIssue.getDescription());
+        return toCodeTask(codeTask, codeIssue);
+    }
+
+    public static GCodeTask toCodeTask(GCodeTask codeTask, GCodeIssue codeIssue) {
+        codeTask.setId(codeIssue.getId());
+        codeTask.setSummary(codeIssue.getSummary());
+        codeTask.setDescription(codeIssue.getDescription());
         codeTask.setCreatedDate(codeIssue.getCreatedDate());
         codeTask.setUpdatedDate(codeIssue.getUpdatedDate());
         codeTask.setStatus(codeIssue.getStatus());
         codeTask.setState(codeIssue.getState());
         codeTask.setStars(codeIssue.getStars());
         codeTask.setOwner(codeIssue.getOwner());
-        codeTask.addAllCcs(codeIssue.getCcs());
-        codeTask.addAllLabels(codeIssue.getLabels());
-        codeTask.addAllComments(codeIssue.getComments());
-        return  codeTask;
+        codeTask.setCcs(codeIssue.getCcs());
+        codeTask.setLabels(codeIssue.getLabels());
+        codeTask.setComments(codeIssue.getComments());
+        return codeTask;
+    }
+
+    public static void maregeToTask(GCodeTaskRepository repository, GCodeIssue issue, GCodeTask cachedTask, GCodeTask task) {
+        if (cachedTask == null) {
+            cachedTask = toCodeTask(repository, issue);
+            toCodeTask(cachedTask, task);
+        }
+
+        task.setStars(issue.getStars());
+        task.setState(issue.getState());
+        task.setReportedBy(issue.getReportedBy());
+
+        if ((cachedTask.getStatus() == null && issue.getStatus() != null)
+                || !cachedTask.getStatus().equals(issue.getStatus())) {
+            task.setStatus(issue.getStatus());
+        }
+
+        if ((cachedTask.getSummary() == null && issue.getSummary() != null)
+                || !cachedTask.getSummary().equals(issue.getSummary())) {
+            task.setSummary(issue.getSummary());
+        }
+
+        if ((cachedTask.getDescription() == null && issue.getDescription() != null)
+                || !cachedTask.getDescription().equals(issue.getDescription())) {
+            task.setDescription(issue.getDescription());
+        }
+
+        if ((cachedTask.getOwner() == null && issue.getOwner() != null)
+                || !cachedTask.getOwner().equals(issue.getOwner())) {
+            task.setOwner(issue.getOwner());
+        }
+
+        List<String> labels = task.getLabels();
+        
+        List<String> remoteLabels = issue.getLabels();
+        remoteLabels.removeAll(cachedTask.getLabels());
+        
+        //remove same tags in local and remote
+        labels = _getFillteredLabels(labels, _getLabelTags(remoteLabels));
+        //add new labels from remote
+        labels.addAll(remoteLabels);
+        task.setLabels(labels);        
+        List<String> ccs = task.getCcs();
+        List<String> remoteCcs = issue.getCcs();
+        remoteCcs.removeAll(cachedTask.getCcs());
+        ccs.addAll(remoteCcs);
+        task.setCcs(ccs);
+
+        //put created and updated date
+        task.setCreatedDate(issue.getCreatedDate());
+        task.setUpdatedDate(issue.getUpdatedDate());
+        task.setId(issue.getId());
+        task.setComments(issue.getComments());
+    }
+
+    private static List<String> _getLabelTags(List<String> labels) {
+        List<String> tags = new ArrayList<String>();
+        for (String label : labels) {
+            int indexOf = label.indexOf("-");
+            if (indexOf != -1) {
+                tags.add(label.substring(0, indexOf));
+            }
+        }
+        return tags;
+    }
+    
+    private static List<String> _getFillteredLabels(List<String> labels, List<String> fillteredTags){
+        List<String> fillteredLabels = new ArrayList<String>();
+        for (String label : labels) {
+            int indexOf = label.indexOf("-");
+            if (indexOf != -1) {
+                String tag = label.substring(0, indexOf);
+                if(fillteredTags.contains(tag)){
+                    continue;
+                }
+                fillteredLabels.add(label);
+            }
+        }
+        return fillteredLabels;
     }
 }
