@@ -307,7 +307,7 @@ public class GCodeTaskRepository implements TaskRepository {
         }
     }
 
-    public void updateAttributes() throws GCodeException {
+    public void updateAttributes() {
 
         setState(State.SYNCHRONIZING);
         ProgressHandle handle = ProgressHandleFactory.createHandle(
@@ -318,7 +318,7 @@ public class GCodeTaskRepository implements TaskRepository {
         repositoryAttributes.persistAttributes();
         loadAttributes();
         handle.finish();
-
+        setState(State.ACTIVE);
 
     }
 
@@ -346,6 +346,10 @@ public class GCodeTaskRepository implements TaskRepository {
 
     public GCodeRepositoryExtension getExtension() {
         return extension;
+    }
+
+    public void submit(GCodeTask task) throws GCodeException{
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     

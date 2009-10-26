@@ -1,2 +1,2 @@
-org.netbeans.cubeon.trac.tasks.actions.TracTaskActionsProviderImpl
+org.netbeans.cubeon.gcode.tasks.actions.GCodeTaskActionsProviderImpl
 #position=2000
