@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 import org.netbeans.cubeon.gcode.persistence.QueryPersistence;
+import org.netbeans.cubeon.gcode.query.ui.GCodeFilterQueryEditor;
 import org.netbeans.cubeon.gcode.repository.GCodeRepositoryExtension;
 import org.netbeans.cubeon.gcode.repository.GCodeTaskRepository;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
@@ -32,7 +33,7 @@ import org.openide.filesystems.FileUtil;
  */
 public class GCodeQuerySupport implements TaskQuerySupportProvider {
 
-    private List<TaskQuery> taskQuerys = new ArrayList<TaskQuery>(0);
+
     private GCodeTaskRepository repository;
     private GCodeRepositoryExtension extension;
     private final GCodeOGChangesQuery outgoingQuery;
@@ -61,18 +62,18 @@ public class GCodeQuerySupport implements TaskQuerySupportProvider {
     }
 
     public List<TaskQuery> getTaskQuerys() {
-        ArrayList<TaskQuery> arrayList = new ArrayList<TaskQuery>(taskQuerys);
+        ArrayList<TaskQuery> arrayList = new ArrayList<TaskQuery>(handler.getFilterQuerys());
         arrayList.add(0, outgoingQuery);
         return arrayList;
     }
 
     public ConfigurationHandler createConfigurationHandler(TaskQuery query) {
-        ConfigurationHandler configurationHandler = null;
+        GCodeFilterQueryEditor configurationHandler = new GCodeFilterQueryEditor(this);
         if (query != null) {
             AbstractGCodeQuery gCodeQuery = query.getLookup().lookup(AbstractGCodeQuery.class);
             switch (gCodeQuery.getType()) {
                 case FILTER: {
-                    
+                    configurationHandler.setQuery((GCodeFilterQuery) gCodeQuery);
                   
                 }
                 break;
@@ -86,9 +87,7 @@ public class GCodeQuerySupport implements TaskQuerySupportProvider {
         return repository;
     }
 
-    void setTaskQuery(List<AbstractGCodeQuery> localQuerys) {
-        taskQuerys = new ArrayList<TaskQuery>(localQuerys);
-    }
+   
 
     public void addTaskQuery(TaskQuery query) {
 
@@ -97,7 +96,6 @@ public class GCodeQuerySupport implements TaskQuerySupportProvider {
             return;
         }
         handler.persist(((GCodeFilterQuery) localQuery));
-        taskQuerys.add(query);
 
         extension.fireQueryAdded(query);
     }
@@ -117,7 +115,6 @@ public class GCodeQuerySupport implements TaskQuerySupportProvider {
             return;
         }
         handler.remove((GCodeFilterQuery) localQuery);
-        taskQuerys.remove(localQuery);
         extension.fireQueryRemoved(localQuery);
         localQuery.getTracExtension().fireRemoved();
     }
