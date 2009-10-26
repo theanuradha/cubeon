@@ -36,9 +36,9 @@ public class TaskPersistenceTest extends TestCase {
     }
 
     public void testPersist() throws IOException {
-        File file = File.createTempFile("TaskPersistenceTest", null);
+        File file = File.createTempFile("TaskPersistenceTest", ".tmp");
         //create temp dir
-        file = new File(file.getParentFile(), "TaskPersistence");
+        file = new File(file.getParentFile(), file.getName().replaceAll(".tmp", ""));
         file.mkdirs();
         System.out.println("TaskPersistenceTest");
         TaskPersistence persistence = new TaskPersistence(file);
