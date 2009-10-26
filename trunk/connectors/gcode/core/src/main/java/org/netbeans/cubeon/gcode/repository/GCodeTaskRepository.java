@@ -43,6 +43,7 @@ import org.openide.util.Exceptions;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.util.RequestProcessor;
 import org.openide.util.lookup.Lookups;
 
 /**
@@ -71,6 +72,10 @@ public class GCodeTaskRepository implements TaskRepository {
     private final TaskPersistence handler;
     private Map<String, GCodeTask> map = new HashMap<String, GCodeTask>();
     private final TaskEditorFactory factory = Lookup.getDefault().lookup(TaskEditorFactory.class);
+    //locks
+    private final Object SYNCHRONIZE_LOCK = new Object();
+    public final Object SYNCHRONIZE_QUERY_LOCK = new Object();
+
     public GCodeTaskRepository(GCodeTaskRepositoryProvider provider,
             String id, String name, String description) {
         this.provider = provider;
@@ -94,7 +99,7 @@ public class GCodeTaskRepository implements TaskRepository {
         statusProvider = new GCodeTaskStatusProvider();
         offlineTaskSupport = new GCodeOfflineTaskSupport(this);
         handler = new TaskPersistence(FileUtil.toFile(baseDir), this);
-        lookup = Lookups.fixed(this, provider, extension, priorityProvider, typeProvider, statusProvider,offlineTaskSupport);
+        lookup = Lookups.fixed(this, provider, extension, priorityProvider, typeProvider, statusProvider, offlineTaskSupport);
 
     }
 
@@ -171,7 +176,7 @@ public class GCodeTaskRepository implements TaskRepository {
         return codeTask;
     }
 
-    public TaskElement getTaskElementById(String id) {
+    public GCodeTask getTaskElementById(String id) {
         GCodeTask get = map.get(id);
         if (get == null) {
             get = handler.getGCodeTask(id);
@@ -222,6 +227,7 @@ public class GCodeTaskRepository implements TaskRepository {
 
         handler.persistCache(tracTask);
     }
+
     public void update(GCodeTask task) throws GCodeException {
         synchronized (task) {
 
@@ -253,7 +259,7 @@ public class GCodeTaskRepository implements TaskRepository {
                     factory.save(task);
                     //marege changes with remote ticket
                     GCodeUtils.maregeToTask(this, issue, cachedTask, task);
-                    
+
                     persist(task);
 
                     //make cache up to date
@@ -267,9 +273,6 @@ public class GCodeTaskRepository implements TaskRepository {
         }
 
     }
-    public void synchronize() {
-        //TODO
-    }
 
     public State getState() {
         return state;
@@ -279,12 +282,12 @@ public class GCodeTaskRepository implements TaskRepository {
         return extension;
     }
 
-    List<String> getTaskIds() {
-        throw new UnsupportedOperationException("Not yet implemented");
+    public List<String> getTaskIds() {
+        return handler.getTaskIds();
     }
 
-    FileObject getBaseDir() {
-        throw new UnsupportedOperationException("Not yet implemented");
+    public FileObject getBaseDir() {
+        return baseDir;
     }
 
     public synchronized GCodeSession getSession() throws GCodeException {
@@ -350,9 +353,49 @@ public class GCodeTaskRepository implements TaskRepository {
         return extension;
     }
 
-    public void submit(GCodeTask task) throws GCodeException{
+    public void submit(GCodeTask task) throws GCodeException {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    
+    public void synchronize() {
+        RequestProcessor.getDefault().post(new Runnable() {
+
+            public void run() {
+                synchronized (SYNCHRONIZE_LOCK) {
+                    List<String> taskIds = handler.getTaskIds();
+                    if (taskIds.isEmpty()) {
+                        return;
+                    }
+                    ProgressHandle handle = ProgressHandleFactory.createHandle(
+                            NbBundle.getMessage(GCodeTaskRepository.class,
+                            "LBL_Synchronizing_Tasks", getName()));
+                    handle.start(taskIds.size());
+                    try {
+                        GCodeSession session = getSession();
+                        if (session != null) {
+                            for (String id : taskIds) {
+                                GCodeTask tracTask = getTaskElementById(id);
+                                if (tracTask != null && !tracTask.isLocal()) {
+
+                                    handle.progress(tracTask.getId() + " : " + tracTask.getName(), taskIds.indexOf(id));
+
+                                    update(session, tracTask);
+
+
+                                }
+
+                            }
+                        }
+                    } catch (GCodeException ex) {
+                        Logger.getLogger(GCodeTaskRepository.class.getName()).warning(ex.getMessage());
+                    } finally {
+                        handle.finish();
+                    }
+
+
+                }
+
+            }
+        });
+    }
 }

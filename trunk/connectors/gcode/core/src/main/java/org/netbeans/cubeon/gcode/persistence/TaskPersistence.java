@@ -291,4 +291,8 @@ public class TaskPersistence {
         taskInfo.setComments(commentInfos);
         return taskInfo;
     }
+
+    public List<String> getTaskIds() {
+        return new ArrayList<String>(tasks);
+    }
 }
