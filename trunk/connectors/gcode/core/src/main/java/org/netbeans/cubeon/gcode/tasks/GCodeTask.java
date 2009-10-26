@@ -89,7 +89,7 @@ public class GCodeTask extends GCodeIssue implements TaskElement {
         if (isLocal()) {
             return NbBundle.getMessage(GCodeTask.class, "Key_New") + " : " + getName();
         }
-        return getId() + " : " + getName();
+        return issueToTaskId(this) + " : " + getName();
     }
 
     public boolean isLocal() {
@@ -115,7 +115,7 @@ public class GCodeTask extends GCodeIssue implements TaskElement {
     public Image getImage() {
         Image image = TaskTypeBadge.getTaskImage();
         image = ImageUtilities.mergeImages(image,
-                ImageUtilities.loadImage("org/netbeans/cubeon/gcode/gcode-badge.png"), 0, 0);
+                ImageUtilities.loadImage("org/netbeans/cubeon/gcode/gcode-badge.png"), -4, -4);
         return image;
     }
 
