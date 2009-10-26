@@ -29,6 +29,7 @@ import org.netbeans.cubeon.gcode.repository.ui.ConfigurationHandlerImpl;
 import org.netbeans.cubeon.gcode.utils.GCodeExceptionHandler;
 import org.netbeans.cubeon.tasks.core.api.RepositoryUtils;
 import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
+import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepositoryType;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
@@ -146,11 +147,10 @@ public class GCodeTaskRepositoryProvider implements TaskRepositoryType {
                 }
 
             }
-            //FIXME
-//            List<TaskQuery> querys = gcodeTaskRepository.getQuerySupport().getTaskQuerys();
-//            for (TaskQuery query : querys) {
-//                gcodeTaskRepository.getQuerySupport().removeTaskQuery(query);
-//            }
+            List<TaskQuery> querys = gcodeTaskRepository.getQuerySupport().getTaskQuerys();
+            for (TaskQuery query : querys) {
+                gcodeTaskRepository.getQuerySupport().removeTaskQuery(query);
+            }
 
             try {
                 FileObject baseDir1 = gcodeTaskRepository.getBaseDir();
