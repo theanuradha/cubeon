@@ -119,7 +119,7 @@ public class GCodeSessionImplTest extends TestCase {
                 + ""
                 + " ");
         System.out.println("COUNT : " + suesByQuery.size());
-        assertTrue(suesByQuery.size() == 2);
+        assertTrue(suesByQuery.size() == 1);
     }
 
     protected GCodeIssue makeNewIssue() {
