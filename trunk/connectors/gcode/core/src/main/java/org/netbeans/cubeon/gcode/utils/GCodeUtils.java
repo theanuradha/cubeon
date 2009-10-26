@@ -17,6 +17,7 @@
 package org.netbeans.cubeon.gcode.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.netbeans.cubeon.gcode.api.GCodeIssue;
 import org.netbeans.cubeon.gcode.repository.GCodeTaskRepository;
@@ -30,8 +31,10 @@ import org.netbeans.cubeon.tasks.spi.task.TaskType;
  */
 public class GCodeUtils {
 
-    public static final String PRIORITY_TAG = "priority-";
-    public static final String TYPE_TAG = "type-";
+    public static final String PRIORITY_TAG = "Priority-";
+    public static final String TYPE_TAG = "Type-";
+    public static final String COMPONENT_TAG = "Component-";
+    public static final String OS_TAG = "OpSys-";
 
     private GCodeUtils() {
     }
@@ -78,7 +81,7 @@ public class GCodeUtils {
     private static String getTagLable(String tag, GCodeTask codeTask) {
         List<String> labels = codeTask.getLabels();
         for (String label : labels) {
-            if (label.toLowerCase().startsWith(tag)) {
+            if (label.startsWith(tag)) {
                 return label;
             }
         }
@@ -118,7 +121,7 @@ public class GCodeUtils {
         task.setReportedBy(issue.getReportedBy());
 
         if ((cachedTask.getStatus() == null && issue.getStatus() != null)
-                ||( cachedTask.getStatus()!= null && !cachedTask.getStatus().equals(issue.getStatus()))) {
+                || (cachedTask.getStatus() != null && !cachedTask.getStatus().equals(issue.getStatus()))) {
             task.setStatus(issue.getStatus());
         }
 
@@ -128,7 +131,7 @@ public class GCodeUtils {
         }
 
         if ((cachedTask.getDescription() == null && issue.getDescription() != null)
-                || (cachedTask.getDescription()!=null && !cachedTask.getDescription().equals(issue.getDescription()))) {
+                || (cachedTask.getDescription() != null && !cachedTask.getDescription().equals(issue.getDescription()))) {
             task.setDescription(issue.getDescription());
         }
 
@@ -141,9 +144,9 @@ public class GCodeUtils {
 
         List<String> remoteLabels = issue.getLabels();
         remoteLabels.removeAll(cachedTask.getLabels());
-
+        List<String> _getAvailableTags = _getAvailableTags(remoteLabels);
         //remove same tags in local and remote
-        labels = _getFillteredLabels(labels, _getLabelTags(remoteLabels));
+        labels = _getFillteredLabels(labels, _getAvailableTags);
         //add new labels from remote
         labels.addAll(remoteLabels);
         task.setLabels(labels);
@@ -160,15 +163,9 @@ public class GCodeUtils {
         task.setComments(issue.getComments());
     }
 
-    private static List<String> _getLabelTags(List<String> labels) {
-        List<String> tags = new ArrayList<String>();
-        for (String label : labels) {
-            int indexOf = label.indexOf("-");
-            if (indexOf != -1) {
-                tags.add(label.substring(0, indexOf));
-            }
-        }
-        return tags;
+    public static List<String> getLabelTags() {
+
+        return Arrays.asList(PRIORITY_TAG, COMPONENT_TAG, OS_TAG, TYPE_TAG);
     }
 
     private static String _getTagValue(String lable) {
@@ -181,16 +178,28 @@ public class GCodeUtils {
 
     private static List<String> _getFillteredLabels(List<String> labels, List<String> fillteredTags) {
         List<String> fillteredLabels = new ArrayList<String>();
+        OUTER:
         for (String label : labels) {
-            int indexOf = label.indexOf('-');
-            if (indexOf != -1) {
-                String tag = label.substring(0, indexOf);
-                if (fillteredTags.contains(tag)) {
-                    continue;
+            for (String tag : fillteredTags) {
+                if (label.startsWith(tag)) {
+                    continue OUTER;
                 }
-                fillteredLabels.add(label);
             }
+            fillteredLabels.add(label);
         }
         return fillteredLabels;
+    }
+
+    private static List<String> _getAvailableTags(List<String> labels) {
+        List<String> tags = new ArrayList<String>();
+        for (String label : labels) {
+            for (String tag : getLabelTags()) {
+                if (label.startsWith(tag)) {
+                    tags.add(tag);
+                    break;
+                }
+            }
+        }
+        return tags;
     }
 }

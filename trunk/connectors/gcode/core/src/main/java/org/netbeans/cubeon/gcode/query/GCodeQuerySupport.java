@@ -17,33 +17,25 @@
 package org.netbeans.cubeon.gcode.query;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
-import org.netbeans.cubeon.gcode.persistence.AttributesHandler;
 import org.netbeans.cubeon.gcode.persistence.QueryPersistence;
 import org.netbeans.cubeon.gcode.repository.GCodeRepositoryExtension;
 import org.netbeans.cubeon.gcode.repository.GCodeTaskRepository;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuerySupportProvider;
-import org.netbeans.cubeon.ui.query.QueryEditor;
-import org.netbeans.cubeon.ui.query.QueryFilter;
-import org.netbeans.cubeon.ui.query.QueryField;
-import org.netbeans.cubeon.ui.query.QuerySupport;
 import org.openide.filesystems.FileUtil;
 
 /**
  *
  * @author Anuradha
  */
-public class GCodeQuerySupport implements TaskQuerySupportProvider, QuerySupport<GCodeFilterQuery> {
+public class GCodeQuerySupport implements TaskQuerySupportProvider {
 
     private List<TaskQuery> taskQuerys = new ArrayList<TaskQuery>(0);
     private GCodeTaskRepository repository;
     private GCodeRepositoryExtension extension;
     private final GCodeOGChangesQuery outgoingQuery;
-    List<QueryField> queryFields = new LinkedList<QueryField>();
     private static Logger LOG = Logger.getLogger(GCodeQuerySupport.class.getName());
     private QueryPersistence handler;
 
@@ -66,7 +58,6 @@ public class GCodeQuerySupport implements TaskQuerySupportProvider, QuerySupport
 
     public void refresh() {
         handler.refresh();
-        refreshQueryFields();
     }
 
     public List<TaskQuery> getTaskQuerys() {
@@ -81,16 +72,13 @@ public class GCodeQuerySupport implements TaskQuerySupportProvider, QuerySupport
             AbstractGCodeQuery gCodeQuery = query.getLookup().lookup(AbstractGCodeQuery.class);
             switch (gCodeQuery.getType()) {
                 case FILTER: {
-                    QueryEditor editor = new QueryEditor(this);
-                    editor.setTaskQuery(query.getLookup().lookup(GCodeFilterQuery.class));
-                    configurationHandler = editor;
+                    
+                  
                 }
                 break;
             }
 
-        } else {
-            configurationHandler = new QueryEditor(this);
-        }
+        } 
         return configurationHandler;
     }
 
@@ -169,48 +157,6 @@ public class GCodeQuerySupport implements TaskQuerySupportProvider, QuerySupport
         return outgoingQuery;
     }
 
-    @Override
-    public List<QueryField> getQueryFields() {
-        return queryFields;
-    }
-
-    @Override
-    public void setQueryFromFilters(GCodeFilterQuery query, List<QueryFilter> filters) {
-        StringBuilder queryString = new StringBuilder();
-
-        // set native query string
-        query.setQuery(queryString.toString());
-
-        LOG.info("setQueryFromFilters: query=[" + queryString + "] " + filters); // NOI18N
-    }
-
-    @Override
-    public List<QueryFilter> createFiltersFromQuery(GCodeFilterQuery query) {
-        List<QueryFilter> filters = new LinkedList<QueryFilter>();
-
-        
-        return filters;
-    }
-
-    @Override
-    public GCodeFilterQuery createQuery() {
-        return new GCodeFilterQuery(repository, handler.nextId());
-    }
-
-    @Override
-    public void setQueryName(GCodeFilterQuery query, String name) {
-        query.setName(name);
-    }
-
-    private void refreshQueryFields() {
-        queryFields.clear();
-        int order = 0; // TicketField doesn't supply the order attribute yet
-        // TicketField doesn't supply the order attribute yet
-        AttributesHandler repositoryAttributes = repository.getRepositoryAttributes();
-
-        queryFields.add(new QueryField("status", "Status",
-                QueryField.Type.SELECT, order++, new LinkedHashSet(repositoryAttributes.getStatuses())));
-    }
-
-
+   
+    
 }
