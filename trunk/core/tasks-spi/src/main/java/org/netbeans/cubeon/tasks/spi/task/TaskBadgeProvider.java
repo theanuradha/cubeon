@@ -30,5 +30,5 @@ public interface TaskBadgeProvider {
      * @param image
      * @return
      */
-    Image bageTaskIcon(TaskElement element,Image image);
+    Image badgeTaskIcon(TaskElement element,Image image);
 }

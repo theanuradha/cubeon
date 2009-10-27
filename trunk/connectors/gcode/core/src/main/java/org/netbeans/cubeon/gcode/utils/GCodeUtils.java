@@ -46,7 +46,7 @@ public class GCodeUtils {
             return new TaskType(codeTask.getTaskRepository(),
                     tagLable, _getTagValue(tagLable));
         }
-        return new TaskType(codeTask.getTaskRepository(), "#none", "None");
+        return null;
     }
 
     public static void setTaskType(GCodeTask codeTask, TaskType taskType) {
@@ -65,7 +65,7 @@ public class GCodeUtils {
             return new TaskPriority(codeTask.getTaskRepository(),
                     tagLable, _getTagValue(tagLable));
         }
-        return new TaskPriority(codeTask.getTaskRepository(), "#none", "None");
+        return null;
     }
 
     public static void setTaskPriority(GCodeTask codeTask, TaskPriority priority) {

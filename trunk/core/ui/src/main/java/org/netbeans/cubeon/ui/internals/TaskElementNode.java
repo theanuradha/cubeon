@@ -318,7 +318,7 @@ public class TaskElementNode extends AbstractNode {
                 Lookup.getDefault().lookupAll(TaskBadgeProvider.class);
 
         for (TaskBadgeProvider provider : badgeProviders) {
-            image = provider.bageTaskIcon(element, image);
+            image = provider.badgeTaskIcon(element, image);
 
         }
 
