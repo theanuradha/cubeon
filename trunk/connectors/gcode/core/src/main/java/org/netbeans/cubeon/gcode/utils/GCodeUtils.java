@@ -99,6 +99,7 @@ public class GCodeUtils {
         codeTask.setId(codeIssue.getId());
         codeTask.setSummary(codeIssue.getSummary());
         codeTask.setDescription(codeIssue.getDescription());
+        codeTask.setReportedBy(codeIssue.getReportedBy());
         codeTask.setCreatedDate(codeIssue.getCreatedDate());
         codeTask.setUpdatedDate(codeIssue.getUpdatedDate());
         codeTask.setStatus(codeIssue.getStatus());

@@ -116,7 +116,9 @@ public class TaskPersistence {
     public void persist(GCodeTask codeTask) {
         File file = new File(dir, "tasks/" + codeTask.getId() + ".json");
         _persist(codeTask, file);
-        tasks.add(codeTask.getId());
+        if (!tasks.contains(codeTask.getId())) {
+            tasks.add(codeTask.getId());
+        }
         _persistTasks();
     }
 
@@ -230,6 +232,7 @@ public class TaskPersistence {
         codeTask.setId(taskInfo.getId());
         codeTask.setSummary(taskInfo.getSummary());
         codeTask.setDescription(taskInfo.getDescription());
+        codeTask.setReportedBy(taskInfo.getReportedBy());
         codeTask.setStatus(taskInfo.getStatus());
         codeTask.setState(GCodeState.valueOf(taskInfo.getState()));
         codeTask.setOwner(taskInfo.getOwner());
@@ -247,6 +250,7 @@ public class TaskPersistence {
                     taskInfo.getReportedBy());
             codeComment.setComment(taskCommentInfo.getComment());
             codeComment.setCommentDate(taskCommentInfo.getCommentDate());
+            codeComment.setAuthor(taskCommentInfo.getAuthor());
             codeComment.setSummary(taskCommentInfo.getSummary());
             codeComment.setStatus(taskCommentInfo.getStatus());
             codeComment.addAllLabels(taskCommentInfo.getLabels());
@@ -263,6 +267,7 @@ public class TaskPersistence {
         taskInfo.setId(codeTask.getId());
         taskInfo.setSummary(codeTask.getSummary());
         taskInfo.setDescription(codeTask.getDescription());
+        taskInfo.setReportedBy(codeTask.getReportedBy());
         taskInfo.setStatus(codeTask.getStatus());
         taskInfo.setState(codeTask.getState().name());
         taskInfo.setOwner(codeTask.getOwner());
