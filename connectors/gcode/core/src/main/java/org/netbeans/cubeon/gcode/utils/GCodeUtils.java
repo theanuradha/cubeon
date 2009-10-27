@@ -169,6 +169,10 @@ public class GCodeUtils {
 
         return Arrays.asList(PRIORITY_TAG, COMPONENT_TAG, OS_TAG, TYPE_TAG,MILESTONE_TAG);
     }
+    public static List<String> getLimitLabelTags() {
+
+        return Arrays.asList(PRIORITY_TAG,  TYPE_TAG,MILESTONE_TAG);
+    }
 
     private static String _getTagValue(String lable) {
         int tagIndex = lable.indexOf('-');
@@ -195,7 +199,7 @@ public class GCodeUtils {
     private static List<String> _getAvailableTags(List<String> labels) {
         List<String> tags = new ArrayList<String>();
         for (String label : labels) {
-            for (String tag : getLabelTags()) {
+            for (String tag : getLimitLabelTags()) {
                 if (label.startsWith(tag)) {
                     tags.add(tag);
                     break;
