@@ -14,7 +14,6 @@
  *  limitations under the License.
  *  under the License.
  */
-
 package org.netbeans.cubeon.gcode.tasks;
 
 import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider;
@@ -23,13 +22,15 @@ import org.netbeans.cubeon.tasks.spi.task.TaskEditorProvider;
  *
  * @author Anuradha
  */
-public class TaskEditorProviderImpl implements TaskEditorProvider{
+public class TaskEditorProviderImpl implements TaskEditorProvider {
 
-    public TaskEditorProviderImpl(GCodeTask aThis) {
+    private GCodeTask codeTask;
+
+    public TaskEditorProviderImpl(GCodeTask codeTask) {
+        this.codeTask = codeTask;
     }
 
     public EditorAttributeHandler createEditorAttributeHandler() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new GCodeAttributeHandler(codeTask);
     }
-
 }
