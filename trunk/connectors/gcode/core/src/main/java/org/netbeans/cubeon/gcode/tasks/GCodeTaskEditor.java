@@ -16,6 +16,7 @@
  */
 package org.netbeans.cubeon.gcode.tasks;
 
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -101,7 +102,7 @@ public class GCodeTaskEditor {
         arrributesContainer.addComponentGroup(
                 builder.createLabel(NbBundle.getMessage(GCodeTaskEditor.class,
                 "LBL_CC")), cc = builder.createTextField());
-
+        cc.setPreferredSize(new Dimension(builder.getComponentPreferredWidth()*2, builder.getComponentHight()));
 
     }
 
