@@ -39,6 +39,7 @@ import org.netbeans.cubeon.common.ui.components.ComponentContainer;
 import org.netbeans.cubeon.common.ui.components.TextEditorUI;
 import org.netbeans.cubeon.gcode.tasks.actions.OpenInBrowserTaskAction;
 import org.netbeans.cubeon.gcode.tasks.actions.SubmitTaskAction;
+import org.netbeans.cubeon.gcode.utils.GCodeUtils;
 import org.openide.util.NbBundle;
 
 /**
@@ -69,6 +70,7 @@ public class GCodeTaskEditor {
     private JTextField assignee;
     private JTextField cc;
     private final Set<ChangeListener> listeners = new HashSet<ChangeListener>(1);
+    private final List<JTextField> labelFields = new ArrayList<JTextField>(1);
 
     public GCodeTaskEditor(TaskEditor editor, GCodeTask task) {
         this.editor = editor;
@@ -83,7 +85,7 @@ public class GCodeTaskEditor {
 
     private void buildComponents() {
         //build attribute
-
+        labelFields.clear();
 
 
         arrributesContainer.addComponentGroup(
@@ -102,8 +104,28 @@ public class GCodeTaskEditor {
         arrributesContainer.addComponentGroup(
                 builder.createLabel(NbBundle.getMessage(GCodeTaskEditor.class,
                 "LBL_CC")), cc = builder.createTextField());
-        cc.setPreferredSize(new Dimension(builder.getComponentPreferredWidth()*2, builder.getComponentHight()));
+        cc.setPreferredSize(new Dimension(builder.getComponentPreferredWidth() * 2, builder.getComponentHight()));
 
+        arrributesContainer.nextSection();
+
+        arrributesContainer.addComponentGroup(
+                builder.createLabel(NbBundle.getMessage(GCodeTaskEditor.class,
+                "LBL_Labels")), addLabelField(builder.createTextField()),
+                addLabelField(builder.createTextField()), addLabelField(builder.createTextField()));
+        addLabelSection();
+
+    }
+
+    private void addLabelSection() {
+        arrributesContainer.nextSection();
+        arrributesContainer.addComponentGroup(
+                builder.createLabel(""), addLabelField(builder.createTextField()),
+                addLabelField(builder.createTextField()), addLabelField(builder.createTextField()));
+    }
+
+    private JTextField addLabelField(JTextField field) {
+        labelFields.add(field);
+        return field;
     }
 
     public void refresh() {
@@ -133,12 +155,59 @@ public class GCodeTaskEditor {
         cc.setText(getAsString(task.getCcs()));
         _loadCombos(status, task.getTaskRepository().getRepositoryAttributes().getStatuses(),
                 false, task.getStatus());
-
+        setLabelFields(task.getLabels());
         //enable notify
         builder.setNotifyMode(true);
         openInBrowserTaskAction.setEnabled(!task.isLocal());
         submitTaskAction.setEnabled(task.isModifiedFlag());
         modifiedFlag.set(false);
+    }
+
+    public List<String> getLabelsFromFields() {
+        builder.setNotifyMode(false);
+        List<String> limitLabelTags = GCodeUtils.getLimitLabelTags();
+        List<String> tagAdded = new ArrayList<String>(limitLabelTags.size());
+        List<String> labels = new ArrayList<String>();
+        OUTER:
+        for (JTextField textField : labelFields) {
+            String text = textField.getText();
+            if (text != null && text.trim().length() > 0) {
+                for (String tag : limitLabelTags) {
+                    if (text.startsWith(tag)) {
+                        if (tagAdded.contains(tag)) {
+                            continue OUTER;
+                        }
+                        tagAdded.add(tag);
+                        break;
+                    }
+                }
+                labels.add(text.trim());
+            }
+        }
+        //rebuild lables
+        setLabelFields(labels);
+         builder.setNotifyMode(true);
+        return labels;
+    }
+
+    private void setLabelFields(List<String> labels) {
+        for (JTextField textField : labelFields) {
+            textField.setText(null);
+        }
+        if (labels.size() > 0) {
+            int moreLabels = (task.getLabels().size() - labelFields.size()) / 3;
+            while (moreLabels >= 0) {
+                addLabelSection();
+                moreLabels--;
+            }
+        }
+        arrributesContainer.doLayout();
+        arrributesContainer.repaint();
+        arrributesContainer.updateUI();
+        for (String label : labels) {
+            JTextField textField = labelFields.get(labels.indexOf(label));
+            textField.setText(label);
+        }
     }
 
     public String getAsString(List<String> strings) {
@@ -201,6 +270,7 @@ public class GCodeTaskEditor {
         String owner = assignee.getText().trim();
         task.setOwner(owner.length() > 0 ? owner : null);
         task.setCcs(getAsList(cc.getText().trim()));
+        task.setLabels(getLabelsFromFields());
         //set as modified if already or actuvaly modified
         if (task.isModifiedFlag() || modifiedFlag.get()) {
             task.setModifiedFlag(true);
