@@ -30,14 +30,15 @@ import org.openide.util.Utilities;
  */
 public class PriorityBadgeProvider implements TaskBadgeProvider {
 
-    public Image bageTaskIcon(TaskElement element, Image image) {
+    public Image badgeTaskIcon(TaskElement element, Image image) {
 
         TaskPriorityProvider provider = element.getTaskRepository().getLookup().lookup(TaskPriorityProvider.class);
         if (provider != null) {
             TaskPriority priority = provider.getTaskPriority(element);
-            
 
-            image = Utilities.mergeImages(NodeUtils.getTaskPriorityImage(priority), image, 7, 0);
+            if (priority != null) {
+                image = Utilities.mergeImages(NodeUtils.getTaskPriorityImage(priority), image, 7, 0);
+            }
 
         }
         return image;

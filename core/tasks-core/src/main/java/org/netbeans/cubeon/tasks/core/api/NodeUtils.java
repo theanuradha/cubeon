@@ -29,8 +29,6 @@ import org.openide.util.Utilities;
  */
 public class NodeUtils {
 
-
-
     /**
      * Returns default folder icon as {@link java.awt.Image}. Never returns
      * <code>null</code>.
@@ -39,8 +37,8 @@ public class NodeUtils {
      * @return Image
      */
     public static Image getTreeFolderIcon(boolean opened) {
-        Image base ;
-       final  Icon baseIcon = UIManager.getIcon(opened ? OPENED_ICON_KEY_UIMANAGER : ICON_KEY_UIMANAGER); // #70263
+        Image base;
+        final Icon baseIcon = UIManager.getIcon(opened ? OPENED_ICON_KEY_UIMANAGER : ICON_KEY_UIMANAGER); // #70263
         if (baseIcon != null) {
             base = Utilities.icon2Image(baseIcon);
         } else {
@@ -52,18 +50,19 @@ public class NodeUtils {
         assert base != null;
         return base;
     }
-    public static Image incomingBadge(){
-      return Utilities.loadImage("org/netbeans/cubeon/tasks/core/incoming.png");
+
+    public static Image incomingBadge() {
+        return Utilities.loadImage("org/netbeans/cubeon/tasks/core/incoming.png");
     }
 
-    public static Image outgoingBadge(){
-      return Utilities.loadImage("org/netbeans/cubeon/tasks/core/outgoing.png");
+    public static Image outgoingBadge() {
+        return Utilities.loadImage("org/netbeans/cubeon/tasks/core/outgoing.png");
     }
 
     public static Image getTaskPriorityImage(TaskPriority priority) {
         Image badge;
         final TaskPriorityProvider provider = priority.getRepository().getLookup().lookup(TaskPriorityProvider.class);
-        final int indexOf = provider.getTaskPriorities().indexOf(priority);
+        final int indexOf = priority != null ? provider.getTaskPriorities().indexOf(priority) : -1;
         switch (indexOf) {
             case 0:
                 badge = Utilities.loadImage("org/netbeans/cubeon/tasks/core/priority/p1.png");
@@ -82,8 +81,8 @@ public class NodeUtils {
                 break;
 
             default:
-                badge = Utilities.loadImage("org/netbeans/cubeon/tasks/core/priority/p5.gif");
-
+                badge = Utilities.loadImage("org/netbeans/cubeon/tasks/core/priority/p3.gif");
+                break;
         }
         return badge;
     }

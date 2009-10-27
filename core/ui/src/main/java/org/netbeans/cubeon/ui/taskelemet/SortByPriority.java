@@ -75,10 +75,10 @@ public class SortByPriority implements TaskElementComparator {
 
     private int compareTaskElements(TaskElement o1, TaskElement o2) {
         TaskPriorityProvider provider1 = o1.getTaskRepository().getLookup().lookup(TaskPriorityProvider.class);
-        if (provider1 != null) {
+        if (provider1 != null && provider1.getTaskPriority(o1)!=null) {
 
             TaskPriorityProvider provider2 = o2.getTaskRepository().getLookup().lookup(TaskPriorityProvider.class);
-            if (provider2 != null) {
+            if (provider2 != null && provider2.getTaskPriority(o2)!=null) {
                 return provider1.getTaskPriority(o1).getId().compareTo(provider2.getTaskPriority(o2).getId());
             }
         }
