@@ -16,12 +16,14 @@
  */
 package org.netbeans.cubeon.gcode.tasks;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.Action;
 import javax.swing.JComboBox;
@@ -43,7 +45,6 @@ import org.openide.util.NbBundle;
  * @author Anuradha
  */
 public class GCodeTaskEditor {
-
 
     private static final String EMPTY = "";
     private final GCodeTask task;
@@ -138,12 +139,25 @@ public class GCodeTaskEditor {
         submitTaskAction.setEnabled(task.isModifiedFlag());
         modifiedFlag.set(false);
     }
-    public String getAsString(List<String> strings){
+
+    public String getAsString(List<String> strings) {
         StringBuilder stringBuilder = new StringBuilder();
         for (String s : strings) {
             stringBuilder.append(s).append(",");
         }
         return stringBuilder.toString();
+    }
+
+    public List<String> getAsList(String string) {
+        List<String> strings = new ArrayList<String>();
+        StringTokenizer tokenizer = new StringTokenizer(string.trim(), ",");
+        while (tokenizer.hasMoreTokens()) {
+            String nextToken = tokenizer.nextToken().trim();
+            if (nextToken.length() > 0) {
+                strings.add(nextToken);
+            }
+        }
+        return strings;
     }
 
     private void _loadCombos(JComboBox comboBox, List<String> options,
@@ -184,15 +198,17 @@ public class GCodeTaskEditor {
         }
 
         String owner = assignee.getText().trim();
-        task.setOwner(owner);
+        task.setOwner(owner.length() > 0 ? owner : null);
+        task.setCcs(getAsList(cc.getText().trim()));
         //set as modified if already or actuvaly modified
         if (task.isModifiedFlag() || modifiedFlag.get()) {
             task.setModifiedFlag(true);
         }
-
+        String statusValue = getSelectedValve(status);
+        task.setStatus((statusValue != null && statusValue.length() > 0) ? statusValue : null);
         submitTaskAction.setEnabled(task.isModifiedFlag());
         task.getTaskRepository().persist(task);
-
+        task.getExtension().fireStateChenged();
         return task;
     }
 
