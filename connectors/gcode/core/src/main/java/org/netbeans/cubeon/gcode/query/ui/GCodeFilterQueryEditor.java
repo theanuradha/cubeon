@@ -148,10 +148,9 @@ public class GCodeFilterQueryEditor extends javax.swing.JPanel implements TaskQu
         lblName = new javax.swing.JLabel();
         txtName = new javax.swing.JTextField();
         lblName1 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        txtQuery = new javax.swing.JEditorPane();
         jScrollPane2 = new javax.swing.JScrollPane();
         lblHint = new javax.swing.JLabel();
+        txtQuery = new javax.swing.JTextField();
 
         lblName.setLabelFor(txtName);
         lblName.setText(NbBundle.getMessage(GCodeFilterQueryEditor.class, "GCodeFilterQueryEditor.lblName.text")); // NOI18N
@@ -165,8 +164,6 @@ public class GCodeFilterQueryEditor extends javax.swing.JPanel implements TaskQu
         lblName1.setLabelFor(txtName);
         lblName1.setText(NbBundle.getMessage(GCodeFilterQueryEditor.class, "GCodeFilterQueryEditor.lblName1.text")); // NOI18N
 
-        jScrollPane1.setViewportView(txtQuery);
-
         lblHint.setText(NbBundle.getMessage(GCodeFilterQueryEditor.class, "GCodeFilterQueryEditor.lblHint.text")); // NOI18N
         jScrollPane2.setViewportView(lblHint);
 
@@ -177,11 +174,11 @@ public class GCodeFilterQueryEditor extends javax.swing.JPanel implements TaskQu
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
                     .addComponent(lblName)
                     .addComponent(txtName, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
                     .addComponent(lblName1)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE))
+                    .addComponent(txtQuery, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -191,12 +188,12 @@ public class GCodeFilterQueryEditor extends javax.swing.JPanel implements TaskQu
                 .addComponent(lblName)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblName1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtQuery, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 302, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 337, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -205,13 +202,12 @@ public class GCodeFilterQueryEditor extends javax.swing.JPanel implements TaskQu
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNameActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblHint;
     private javax.swing.JLabel lblName;
     private javax.swing.JLabel lblName1;
     private javax.swing.JTextField txtName;
-    private javax.swing.JEditorPane txtQuery;
+    private javax.swing.JTextField txtQuery;
     // End of variables declaration//GEN-END:variables
 
     public void setQuery(GCodeFilterQuery query) {
