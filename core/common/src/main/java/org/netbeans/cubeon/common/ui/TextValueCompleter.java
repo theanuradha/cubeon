@@ -16,6 +16,7 @@
  */
 package org.netbeans.cubeon.common.ui;
 
+import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -84,7 +85,14 @@ public class TextValueCompleter implements DocumentListener {
 
             @Override
             public void focusLost(FocusEvent e) {
-                hidePopup();
+                EventQueue.invokeLater(new Runnable() {
+
+                    public void run() {
+                        if (!completionList.hasFocus()) {
+                            hidePopup();
+                        }
+                    }
+                });
             }
         });
         caretListener = new CaretListener() {
@@ -291,6 +299,11 @@ public class TextValueCompleter implements DocumentListener {
         // and where its bottom left is
         java.awt.Point los = field.getLocationOnScreen();
         int popX = los.x;
+        int caretPosition = field.getCaretPosition();
+        if(caretPosition>0 && field.getText().length()>=caretPosition){
+            int stringWidth = field.getFontMetrics(field.getFont()).stringWidth(field.getText().substring(0, caretPosition));
+            popX+=stringWidth;
+        }
         int popY = los.y + field.getHeight();
         popup = PopupFactory.getSharedInstance().getPopup(field, listScroller, popX, popY);
         field.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), ACTION_HIDEPOPUP);
