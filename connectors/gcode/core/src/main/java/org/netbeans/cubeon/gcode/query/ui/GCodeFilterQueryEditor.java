@@ -151,6 +151,8 @@ public class GCodeFilterQueryEditor extends javax.swing.JPanel implements TaskQu
         jScrollPane2 = new javax.swing.JScrollPane();
         lblHint = new javax.swing.JLabel();
         txtQuery = new javax.swing.JTextField();
+        lblMaxResultCount = new javax.swing.JLabel();
+        txtMaxResultCount = new javax.swing.JTextField();
 
         lblName.setLabelFor(txtName);
         lblName.setText(NbBundle.getMessage(GCodeFilterQueryEditor.class, "GCodeFilterQueryEditor.lblName.text")); // NOI18N
@@ -167,6 +169,11 @@ public class GCodeFilterQueryEditor extends javax.swing.JPanel implements TaskQu
         lblHint.setText(NbBundle.getMessage(GCodeFilterQueryEditor.class, "GCodeFilterQueryEditor.lblHint.text")); // NOI18N
         jScrollPane2.setViewportView(lblHint);
 
+        lblMaxResultCount.setText(org.openide.util.NbBundle.getMessage(GCodeFilterQueryEditor.class, "GCodeFilterQueryEditor.lblMaxResultCount.text")); // NOI18N
+
+        txtMaxResultCount.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtMaxResultCount.setText(org.openide.util.NbBundle.getMessage(GCodeFilterQueryEditor.class, "GCodeFilterQueryEditor.txtMaxResultCount.text")); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -178,7 +185,11 @@ public class GCodeFilterQueryEditor extends javax.swing.JPanel implements TaskQu
                     .addComponent(lblName)
                     .addComponent(txtName, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
                     .addComponent(lblName1)
-                    .addComponent(txtQuery, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE))
+                    .addComponent(txtQuery, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lblMaxResultCount)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(txtMaxResultCount, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -193,7 +204,11 @@ public class GCodeFilterQueryEditor extends javax.swing.JPanel implements TaskQu
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtQuery, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 337, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 317, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblMaxResultCount)
+                    .addComponent(txtMaxResultCount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -204,8 +219,10 @@ public class GCodeFilterQueryEditor extends javax.swing.JPanel implements TaskQu
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblHint;
+    private javax.swing.JLabel lblMaxResultCount;
     private javax.swing.JLabel lblName;
     private javax.swing.JLabel lblName1;
+    private javax.swing.JTextField txtMaxResultCount;
     private javax.swing.JTextField txtName;
     private javax.swing.JTextField txtQuery;
     // End of variables declaration//GEN-END:variables
@@ -214,6 +231,7 @@ public class GCodeFilterQueryEditor extends javax.swing.JPanel implements TaskQu
         this.query = query;
         txtQuery.setText(query.getQuery());
         txtName.setText(query.getName());
+        txtMaxResultCount.setText(""+query.getMaxResults());
     }
 
     public TaskQuery getTaskQuery() {
@@ -222,6 +240,12 @@ public class GCodeFilterQueryEditor extends javax.swing.JPanel implements TaskQu
         }
         query.setQuery((txtQuery.getText()));
         query.setName(txtName.getText());
+        try {
+            query.setMaxResults(Integer.parseInt(txtMaxResultCount.getText().trim()));
+        } catch (NumberFormatException numberFormatException) {
+            //ignore
+            query.setMaxResults(GCodeFilterQuery.MAX_RESULTS);
+        }
         return query;
     }
     private final Set<ChangeListener> listeners = new HashSet<ChangeListener>(1);

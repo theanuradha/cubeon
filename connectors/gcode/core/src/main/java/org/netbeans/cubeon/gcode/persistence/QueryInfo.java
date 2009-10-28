@@ -30,6 +30,7 @@ public class QueryInfo implements JSONAware {
     private String id;
     private String name;
     private String query;
+    private int maxResults;
     private List<String> ids = new ArrayList<String>();
 
     public String toJSONString() {
@@ -38,6 +39,7 @@ public class QueryInfo implements JSONAware {
         jsono.put("name", name);
         jsono.put("query", query);
         jsono.put("task-ids", ids);
+        jsono.put("max-results", maxResults);
         return jsono.toJSONString();
     }
 
@@ -46,6 +48,7 @@ public class QueryInfo implements JSONAware {
         queryInfo.id = (String) jsono.get("id");
         queryInfo.name = (String) jsono.get("name");
         queryInfo.query = (String) jsono.get("query");
+        queryInfo.maxResults = JSONUtils.getIntValue(jsono, "max-results");
         queryInfo.ids = JSONUtils.getStrings(jsono, "task-ids");
         return queryInfo;
     }
@@ -68,6 +71,14 @@ public class QueryInfo implements JSONAware {
 
     public String getName() {
         return name;
+    }
+
+    public int getMaxResults() {
+        return maxResults;
+    }
+
+    public void setMaxResults(int maxResults) {
+        this.maxResults = maxResults;
     }
 
     public void setName(String name) {

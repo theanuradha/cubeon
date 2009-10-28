@@ -40,9 +40,11 @@ import org.openide.util.lookup.Lookups;
  * @author Anuradha
  */
 public class GCodeFilterQuery extends AbstractGCodeQuery {
+    public static final int MAX_RESULTS = 0;
 
     private String name;
     private String query;
+    private int maxResults = MAX_RESULTS;
     private List<String> ids = new ArrayList<String>();
 
     public GCodeFilterQuery(GCodeTaskRepository repository, String id) {
@@ -90,7 +92,7 @@ public class GCodeFilterQuery extends AbstractGCodeQuery {
                         try {
                             GCodeSession session = repository.getSession();
                             handle.progress(NbBundle.getMessage(GCodeFilterQuery.class, "LBL_Requsting_Issues_From_Repository"));
-                            List<GCodeIssue> remoteIssues = session.getIssuesByQueryString(query);
+                            List<GCodeIssue> remoteIssues = session.getIssuesByQueryString(query,maxResults);
 
                             ids.clear();
                             handle.switchToDeterminate(remoteIssues.size());
@@ -162,6 +164,14 @@ public class GCodeFilterQuery extends AbstractGCodeQuery {
 
     public void setIds(List<String> ids) {
         this.ids = new ArrayList<String>(ids);
+    }
+
+    public int getMaxResults() {
+        return maxResults;
+    }
+
+    public void setMaxResults(int maxResults) {
+        this.maxResults = maxResults;
     }
 
     @Override

@@ -118,6 +118,7 @@ public class QueryPersistence {
         filterQuery.setName(info.getName());
         filterQuery.setQuery(info.getQuery());
         filterQuery.setIds(info.getIds());
+        filterQuery.setMaxResults(info.getMaxResults());
         return filterQuery;
 
     }
@@ -129,6 +130,7 @@ public class QueryPersistence {
         info.setName(filterQuery.getName());
         info.setQuery(filterQuery.getQuery());
         info.setIds(filterQuery.getIds());
+        info.setMaxResults(filterQuery.getMaxResults());
         return info;
     }
 
