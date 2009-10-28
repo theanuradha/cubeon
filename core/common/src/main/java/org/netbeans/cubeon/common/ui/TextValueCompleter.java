@@ -114,8 +114,16 @@ public class TextValueCompleter implements DocumentListener {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() > 1) {
                     field.getDocument().removeDocumentListener(TextValueCompleter.this);
+                    String compelted = completionList.getSelectedValue().toString();
                     applyCompletion(completionList.getSelectedValue().toString());
-                    hidePopup();
+                    if (TextValueCompleter.this.callBackFilter.needSeparators(compelted)) {
+                        hidePopup();
+                    } else {
+                        buildPopup();
+                        if (completionListModel.isEmpty()) {
+                            hidePopup();
+                        }
+                    }
                     field.getDocument().addDocumentListener(TextValueCompleter.this);
                 }
             }
@@ -167,10 +175,19 @@ public class TextValueCompleter implements DocumentListener {
 
             public void actionPerformed(ActionEvent e) {
                 field.getDocument().removeDocumentListener(TextValueCompleter.this);
+                String compelted = null;
                 if (completionList.getSelectedValue() != null) {
-                    applyCompletion(completionList.getSelectedValue().toString());
+                    compelted = completionList.getSelectedValue().toString();
+                    applyCompletion(compelted);
                 }
-                hidePopup();
+                if (compelted == null || TextValueCompleter.this.callBackFilter.needSeparators(compelted)) {
+                    hidePopup();
+                } else {
+                    buildPopup();
+                    if (completionListModel.isEmpty()) {
+                        hidePopup();
+                    }
+                }
                 field.getDocument().addDocumentListener(TextValueCompleter.this);
             }
         });
@@ -300,9 +317,9 @@ public class TextValueCompleter implements DocumentListener {
         java.awt.Point los = field.getLocationOnScreen();
         int popX = los.x;
         int caretPosition = field.getCaretPosition();
-        if(caretPosition>0 && field.getText().length()>=caretPosition){
+        if (caretPosition > 0 && field.getText().length() >= caretPosition) {
             int stringWidth = field.getFontMetrics(field.getFont()).stringWidth(field.getText().substring(0, caretPosition));
-            popX+=stringWidth;
+            popX += stringWidth;
         }
         int popY = los.y + field.getHeight();
         popup = PopupFactory.getSharedInstance().getPopup(field, listScroller, popX, popY);
