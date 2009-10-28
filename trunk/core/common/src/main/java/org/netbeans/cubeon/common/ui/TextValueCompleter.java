@@ -32,7 +32,6 @@ import javax.swing.AbstractAction;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.Popup;
@@ -43,9 +42,10 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.JTextComponent;
 
 /**
- * inner class does the matching of the JTextField's
+ * inner class does the matching of the JTextComponent's
  * document to completion strings kept in an ArrayList
  * @author mkleint
  * @author Anuradha
@@ -64,18 +64,18 @@ public class TextValueCompleter implements DocumentListener {
     private DefaultListModel completionListModel;
     private JScrollPane listScroller;
     private Popup popup;
-    private JTextField field;
+    private JTextComponent field;
     private String separators;
     private CaretListener caretListener;
     private boolean loading;
     private static final String LOADING = "Loading...";
     private final CallBackFilter callBackFilter;
 
-    public TextValueCompleter(Collection<String> completions, JTextField fld) {
+    public TextValueCompleter(Collection<String> completions, JTextComponent fld) {
         this(completions, fld, new DefultCallBackFilter());
     }
 
-    public TextValueCompleter(Collection<String> completions, JTextField fld, CallBackFilter callBackFilter) {
+    public TextValueCompleter(Collection<String> completions, JTextComponent fld, CallBackFilter callBackFilter) {
         this.completions = completions;
         this.field = fld;
         this.callBackFilter = callBackFilter;
@@ -180,7 +180,7 @@ public class TextValueCompleter implements DocumentListener {
         });
     }
 
-    public TextValueCompleter(Collection<String> completions, JTextField fld, String separators) {
+    public TextValueCompleter(Collection<String> completions, JTextComponent fld, String separators) {
         this(completions, fld);
         this.separators = separators;
     }
