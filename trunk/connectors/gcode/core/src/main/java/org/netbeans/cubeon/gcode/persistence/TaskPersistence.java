@@ -64,8 +64,11 @@ public class TaskPersistence {
     }
 
     public void remove(GCodeTask codeTask) {
-        tasks.remove(codeTask.getId());
-        File file = new File(dir, "tasks/" + codeTask.getId() + ".json");
+        remove(codeTask.getId());
+    }
+    public void remove(String id) {
+        tasks.remove(id);
+        File file = new File(dir, "tasks/" + id + ".json");
         _remove(file);
         _persistTasks();
     }
