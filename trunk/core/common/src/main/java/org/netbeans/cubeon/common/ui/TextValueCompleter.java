@@ -180,8 +180,8 @@ public class TextValueCompleter implements DocumentListener {
         });
     }
 
-    public TextValueCompleter(Collection<String> completions, JTextComponent fld, String separators) {
-        this(completions, fld);
+    public TextValueCompleter(Collection<String> completions, JTextComponent fld, String separators, CallBackFilter callBackFilter) {
+        this(completions, fld, callBackFilter);
         this.separators = separators;
     }
 
@@ -224,7 +224,10 @@ public class TextValueCompleter implements DocumentListener {
                     if (separators.indexOf(token.charAt(0)) != -1) {
                         newValue = newValue + token;
                     }
-                    newValue = newValue + completed + separators;
+                    newValue = newValue + completed;
+                    if (callBackFilter.needSeparators(completed)) {
+                        newValue += separators;
+                    }
                     caretPosition = newValue.length();
                     while (tok.hasMoreTokens()) {
                         newValue = newValue + tok.nextToken();
@@ -239,7 +242,10 @@ public class TextValueCompleter implements DocumentListener {
                     newValue = newValue + token;
                 }
             }
-            newValue = newValue + completed + separators;
+            newValue = newValue + completed;
+            if (callBackFilter.needSeparators(completed)) {
+                newValue += separators;
+            }
             field.setText(newValue);
             field.setCaretPosition(newValue.length());
         } else {
@@ -339,6 +345,8 @@ public class TextValueCompleter implements DocumentListener {
 
     public static interface CallBackFilter {
 
+        boolean needSeparators(String compelted);
+
         Collection<String> getFilterdCollection(String prifix, Collection<String> completions);
     }
 
@@ -359,6 +367,10 @@ public class TextValueCompleter implements DocumentListener {
                 }
             }
             return list;
+        }
+
+        public boolean needSeparators(String compelted) {
+            return true;
         }
     }
 }
