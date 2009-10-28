@@ -67,6 +67,8 @@ public class GCodeSessionImpl implements GCodeSession {
 
     private static final String FEED_URI_BASE =
             "http://code.google.com/feeds/issues";
+    //Value of zero indicates that the server is free to determine the maximum value.
+    private static final int RESULT_LIMIT = 0;
     private final ProjectHostingService service;
     private static final String PROJECTION = "/full";
     /** Issues API base URL constructed from the given project name. */
@@ -197,6 +199,14 @@ public class GCodeSessionImpl implements GCodeSession {
     }
 
     public List<GCodeIssue> getIssuesByQuery(GCodeQuery query) throws GCodeException {
+        return getIssuesByQuery(query, RESULT_LIMIT);
+    }
+
+    public List<GCodeIssue> getIssuesByQueryString(String query) throws GCodeException {
+        return getIssuesByQueryString(query, RESULT_LIMIT);
+    }
+
+    public List<GCodeIssue> getIssuesByQuery(GCodeQuery query, int resultLimit) throws GCodeException {
         try {
             List<GCodeIssue> codeIssues = new ArrayList<GCodeIssue>();
             IssuesQuery issuesQuery = new IssuesQuery(issuesFeedUrl);
@@ -209,6 +219,7 @@ public class GCodeSessionImpl implements GCodeSession {
             issuesQuery.setPublishedMin(getDatetime(query.DATE_FORMAT, query.getPublishedMin()));
             issuesQuery.setUpdatedMax(getDatetime(query.DATE_FORMAT, query.getUpdatedMax()));
             issuesQuery.setUpdatedMin(getDatetime(query.DATE_FORMAT, query.getUpdatedMin()));
+            issuesQuery.setMaxResults(resultLimit);
             IssuesFeed queryIssues = queryIssues(issuesQuery);
             for (IssuesEntry issuesEntry : queryIssues.getEntries()) {
                 codeIssues.add(toGCodeIssue(issuesEntry));
@@ -221,11 +232,12 @@ public class GCodeSessionImpl implements GCodeSession {
         }
     }
 
-    public List<GCodeIssue> getIssuesByQueryString(String query) throws GCodeException {
+    public List<GCodeIssue> getIssuesByQueryString(String query, int resultLimit) throws GCodeException {
         try {
             List<GCodeIssue> codeIssues = new ArrayList<GCodeIssue>();
             Query issuesQuery = new Query(issuesFeedUrl);
             issuesQuery.setFullTextQuery(query);
+            issuesQuery.setMaxResults(resultLimit);
             IssuesFeed queryIssues = queryIssues(issuesQuery);
             for (IssuesEntry issuesEntry : queryIssues.getEntries()) {
                 codeIssues.add(toGCodeIssue(issuesEntry));
