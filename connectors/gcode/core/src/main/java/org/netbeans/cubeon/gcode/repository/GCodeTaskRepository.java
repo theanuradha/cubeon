@@ -406,12 +406,12 @@ public class GCodeTaskRepository implements TaskRepository {
                         GCodeSession session = getSession();
                         if (session != null) {
                             for (String id : taskIds) {
-                                GCodeTask tracTask = getTaskElementById(id);
-                                if (tracTask != null && !tracTask.isLocal()) {
+                                GCodeTask gCodeTask = getTaskElementById(id);
+                                if (gCodeTask != null && !gCodeTask.isLocal()) {
 
-                                    handle.progress(tracTask.getId() + " : " + tracTask.getName(), taskIds.indexOf(id));
+                                    handle.progress(GCodeTask.issueToTaskId(gCodeTask) + " : " + gCodeTask.getName(), taskIds.indexOf(id));
 
-                                    update(session, tracTask);
+                                    update(session, gCodeTask);
 
 
                                 }

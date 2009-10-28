@@ -19,6 +19,7 @@ package org.netbeans.cubeon.gcode.tasks;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -26,6 +27,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.Action;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -34,6 +37,7 @@ import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.netbeans.cubeon.common.ui.TaskEditor;
+import org.netbeans.cubeon.common.ui.TextValueCompleter;
 import org.netbeans.cubeon.common.ui.components.ComponentBuilder;
 import org.netbeans.cubeon.common.ui.components.ComponentContainer;
 import org.netbeans.cubeon.common.ui.components.TextEditorUI;
@@ -71,6 +75,13 @@ public class GCodeTaskEditor {
     private JTextField cc;
     private final Set<ChangeListener> listeners = new HashSet<ChangeListener>(1);
     private final List<JTextField> labelFields = new ArrayList<JTextField>(1);
+    private final TextValueCompleter.DefultCallBackFilter callBackFilter = new TextValueCompleter.DefultCallBackFilter() {
+
+        @Override
+        public Collection<String> getFilterdCollection(String prifix, Collection<String> completions) {
+            return super.getFilterdCollection(prifix, _getFilterdLabelsFromFields(prifix,completions));
+        }
+    };
 
     public GCodeTaskEditor(TaskEditor editor, GCodeTask task) {
         this.editor = editor;
@@ -124,6 +135,7 @@ public class GCodeTaskEditor {
     }
 
     private JTextField addLabelField(JTextField field) {
+        new TextValueCompleter(task.getTaskRepository().getRepositoryAttributes().getLabels(), field, callBackFilter);
         labelFields.add(field);
         return field;
     }
@@ -163,6 +175,40 @@ public class GCodeTaskEditor {
         modifiedFlag.set(false);
     }
 
+    private List<String> _getFilterdLabelsFromFields(String prifix,Collection<String> completions) {
+        List<String> labels = new ArrayList<String>();
+        List<String> limitLabelTags = GCodeUtils.getLimitLabelTags();
+        List<String> tagAdded = new ArrayList<String>(limitLabelTags.size());
+
+        OUTER:
+        for (JTextField textField : labelFields) {
+            String text = textField.getText();
+            if (text != null && text.trim().length() > 0) {
+                for (String tag : limitLabelTags) {
+                    if (text.startsWith(tag)) {
+                        if (tagAdded.contains(tag)) {
+                            continue OUTER;
+                        }
+                        tagAdded.add(tag);
+                        break;
+                    }
+                }
+            }
+        }
+        Pattern pattern = Pattern.compile(prifix ); //NOI18N
+        OUTER:
+        for (String item : completions) {
+            for (String tag : tagAdded) {
+                Matcher matcher = pattern.matcher(tag);
+                 if (item.startsWith(tag)&& !matcher.matches()) {
+                     continue OUTER;
+                 }
+            }
+            labels.add(item);
+        }
+        return labels;
+    }
+
     public List<String> getLabelsFromFields() {
         builder.setNotifyMode(false);
         List<String> limitLabelTags = GCodeUtils.getLimitLabelTags();
@@ -186,7 +232,7 @@ public class GCodeTaskEditor {
         }
         //rebuild lables
         setLabelFields(labels);
-         builder.setNotifyMode(true);
+        builder.setNotifyMode(true);
         return labels;
     }
 
