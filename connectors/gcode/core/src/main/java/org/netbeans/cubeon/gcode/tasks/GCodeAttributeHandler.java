@@ -176,9 +176,9 @@ public class GCodeAttributeHandler implements EditorAttributeHandler {
     }
 
     private String buildChangesSet(StringBuffer buffer, GCodeComment comment) {
-        buffer.append("\n");
+        buffer.append("\n\n");
         buffer.append(comment.getComment() != null ? comment.getComment()
-                : "(No comment was entered for this change.)").append("\n");
+                : "(No comment was entered for this change.)").append("\n\n");
         if (comment.getSummary() != null) {
             buffer.append("Summary: ").append(comment.getSummary()).append("\n");
         }

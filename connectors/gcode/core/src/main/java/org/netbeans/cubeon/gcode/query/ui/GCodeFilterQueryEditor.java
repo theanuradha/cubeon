@@ -22,12 +22,17 @@
  */
 package org.netbeans.cubeon.gcode.query.ui;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import javax.swing.JComponent;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import org.netbeans.cubeon.common.ui.TextValueCompleter;
 import org.netbeans.cubeon.gcode.query.AbstractGCodeQuery;
 import org.netbeans.cubeon.gcode.query.GCodeFilterQuery;
 import org.netbeans.cubeon.gcode.query.GCodeQuerySupport;
@@ -44,11 +49,91 @@ public class GCodeFilterQueryEditor extends javax.swing.JPanel implements TaskQu
     private static final long serialVersionUID = -4455036599583142301L;
     private final GCodeQuerySupport querySupport;
     private GCodeFilterQuery query;
+    private List<String> queryOptions = Arrays.asList(
+            "summary:", "description:", "comment:", "status:", "reporter:",
+            "owner:", "cc:", "commentby:", "label:", "has:",
+            "opened-before", "modified-before",
+            "closed-before",
+            "opened-after", "modified-after",
+            "closed-after", "is:");
 
     /** Creates new form TracFilterQueryEditor */
-    public GCodeFilterQueryEditor(GCodeQuerySupport querySupport) {
+    public GCodeFilterQueryEditor(final GCodeQuerySupport querySupport) {
         initComponents();
         this.querySupport = querySupport;
+        TextValueCompleter.CallBackFilter callBackFilter = new TextValueCompleter.DefultCallBackFilter() {
+
+            @Override
+            public Collection<String> getFilterdCollection(String prifix, Collection<String> completions) {
+                List<String> items = new ArrayList<String>();
+
+                if (prifix.contains("label:")) {
+                    List<String> labels = querySupport.getTaskRepository().getRepositoryAttributes().getLabels();
+                    for (String label : labels) {
+                        items.add("label:" + label);
+                    }
+                    return super.getFilterdCollection(prifix, items);
+                }
+                if (prifix.contains("status:")) {
+                    List<String> statuses = querySupport.getTaskRepository().getRepositoryAttributes().getStatuses();
+                    for (String status : statuses) {
+                        items.add("status:" + status);
+                    }
+                    return super.getFilterdCollection(prifix, items);
+                }
+                if (prifix.contains("is:")) {
+                    items.add("is:open");
+                    items.add("is:starred");
+                    return super.getFilterdCollection(prifix, items);
+                }
+                if (prifix.contains("has:")) {
+                    items.addAll(Arrays.asList(
+                            "has:summary", "has:description", "has:comment", "has:status", "has:reporter",
+                            "has:owner", "has:cc", "has:commentby", "has:label", "has:attachment"));
+
+                    return super.getFilterdCollection(prifix, items);
+                }
+                if (prifix.contains("opened-before")) {
+                    items.add("opened-before:YYYY/MM/DD");
+                    items.add("opened-before:today-N");
+                    return super.getFilterdCollection(prifix, items);
+                }
+                if (prifix.contains("opened-after")) {
+                    items.add("opened-after:YYYY/MM/DD");
+                    items.add("opened-after:today-N");
+                    return super.getFilterdCollection(prifix, items);
+                }
+
+                if (prifix.contains("closed-before")) {
+                    items.add("closed-before:YYYY/MM/DD");
+                    items.add("closed-before:today-N");
+                    return super.getFilterdCollection(prifix, items);
+                }
+                if (prifix.contains("closed-after")) {
+                    items.add("closed-after:YYYY/MM/DD");
+                    items.add("closed-after:today-N");
+                    return super.getFilterdCollection(prifix, items);
+                }
+
+                if (prifix.contains("modified-before")) {
+                    items.add("modified-before:YYYY/MM/DD");
+                    items.add("modified-before:today-N");
+                    return super.getFilterdCollection(prifix, items);
+                }
+                if (prifix.contains("modified-after")) {
+                    items.add("modified-after:YYYY/MM/DD");
+                    items.add("modified-after:today-N");
+                    return super.getFilterdCollection(prifix, items);
+                }
+                return super.getFilterdCollection(prifix, completions);
+            }
+
+            @Override
+            public boolean needSeparators(String compelted) {
+                return !queryOptions.contains(compelted);
+            }
+        };
+        new TextValueCompleter(queryOptions, txtQuery, " ", callBackFilter);
     }
 
     /** This method is called from within the constructor to
@@ -115,7 +200,6 @@ public class GCodeFilterQueryEditor extends javax.swing.JPanel implements TaskQu
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-
 
     private void txtNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNameActionPerformed
         // TODO add your handling code here:
