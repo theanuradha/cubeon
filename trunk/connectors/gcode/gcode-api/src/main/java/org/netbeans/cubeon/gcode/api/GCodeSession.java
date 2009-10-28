@@ -34,6 +34,8 @@ public interface GCodeSession {
 
     List<GCodeIssue> getIssuesByQuery(GCodeQuery query) throws GCodeException;
 
+    List<GCodeIssue> getIssuesByQuery(GCodeQuery query, int resultLimit) throws GCodeException;
+
     /**
      *
      * @param query The built-in field operators are
@@ -43,4 +45,6 @@ public interface GCodeSession {
      * @throws GCodeException
      */
     List<GCodeIssue> getIssuesByQueryString(String query) throws GCodeException;
+
+    List<GCodeIssue> getIssuesByQueryString(String query, int resultLimit) throws GCodeException;
 }
