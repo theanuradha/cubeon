@@ -103,7 +103,7 @@ public class GCodeAttributeHandler implements EditorAttributeHandler {
     }
 
     public String getDisplayName() {
-        return task.getId();
+        return GCodeTask.issueToTaskId(task);
     }
 
     public String getShortDescription() {
@@ -149,13 +149,14 @@ public class GCodeAttributeHandler implements EditorAttributeHandler {
         final DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();
         List<GCodeComment> codeComments = task.getComments();
         commentsGroup.setSummary("(" + codeComments.size() + ")");
-        for (GCodeComment ticketChange : codeComments) {
+        for (GCodeComment comment : codeComments) {
             StringBuffer buffer = new StringBuffer();
-            buffer.append(dateFormat.format(new Date(ticketChange.getCommentDate()))).append(" By ");
-            buffer.append(ticketChange.getAuthor());
+            buffer.append(dateFormat.format(new Date(comment.getCommentDate()))).append(" By ");
+            buffer.append(comment.getAuthor());
 
 
-            ComponentGroup cg = new ComponentGroup(buffer.toString(), buffer.toString());
+            ComponentGroup cg = new ComponentGroup("Comment - " + comment.getCommentId(), buffer.toString());
+            cg.setSummary(buffer.toString());
             JEditorPane editorPane = new JEditorPane() {
 
                 @Override
@@ -166,7 +167,7 @@ public class GCodeAttributeHandler implements EditorAttributeHandler {
             };
 
             editorPane.setEditable(false);
-            editorPane.setText(buildChangesSet(ticketChange));
+            editorPane.setText(buildChangesSet(buffer, comment));
             cg.setComponent(editorPane);
             cg.setOpen(false);
             commentsGroup.addGroup(cg);
@@ -174,8 +175,8 @@ public class GCodeAttributeHandler implements EditorAttributeHandler {
         commentsGroup.refresh();
     }
 
-    private String buildChangesSet(GCodeComment comment) {
-        StringBuffer buffer = new StringBuffer();
+    private String buildChangesSet(StringBuffer buffer, GCodeComment comment) {
+        buffer.append("\n");
         buffer.append(comment.getComment() != null ? comment.getComment()
                 : "(No comment was entered for this change.)").append("\n");
         if (comment.getSummary() != null) {
