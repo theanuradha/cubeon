@@ -19,7 +19,10 @@ package org.netbeans.cubeon.gcode.utils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.netbeans.cubeon.gcode.api.GCodeException;
 import org.netbeans.cubeon.gcode.api.GCodeIssue;
+import org.netbeans.cubeon.gcode.api.GCodeIssueUpdate;
+import org.netbeans.cubeon.gcode.api.GCodeSession;
 import org.netbeans.cubeon.gcode.repository.GCodeTaskRepository;
 import org.netbeans.cubeon.gcode.tasks.GCodeTask;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
@@ -167,11 +170,12 @@ public class GCodeUtils {
 
     public static List<String> getLabelTags() {
 
-        return Arrays.asList(PRIORITY_TAG, COMPONENT_TAG, OS_TAG, TYPE_TAG,MILESTONE_TAG);
+        return Arrays.asList(PRIORITY_TAG, COMPONENT_TAG, OS_TAG, TYPE_TAG, MILESTONE_TAG);
     }
+
     public static List<String> getLimitLabelTags() {
 
-        return Arrays.asList(PRIORITY_TAG,  TYPE_TAG,MILESTONE_TAG);
+        return Arrays.asList(PRIORITY_TAG, TYPE_TAG, MILESTONE_TAG);
     }
 
     private static String _getTagValue(String lable) {
@@ -207,5 +211,67 @@ public class GCodeUtils {
             }
         }
         return tags;
+    }
+
+    public static void createIssue(GCodeTaskRepository repository, GCodeTask task) throws GCodeException {
+        if (task.isLocal()) {
+            String old = task.getId();
+            GCodeSession session = repository.getSession();
+            task.setReportedBy(repository.getUser());
+            GCodeIssue createdIssue = session.createIssue(task, true);
+
+            repository.getTaskPersistenceHandler().remove(old);
+            task.setLocal(false);
+            toCodeTask(task, createdIssue);
+            repository.persist(task);
+            repository.getQuerySupport().getOutgoingQuery().removeTaskId(old);
+            //notify about task id changed
+            repository.getNotifier().fireIdChanged(old, task.getId());
+        }
+    }
+
+    public static GCodeIssueUpdate getIssueUpdate(GCodeTaskRepository repository, GCodeTask task) {
+        GCodeIssueUpdate update = new GCodeIssueUpdate(task.getId(), repository.getUser());
+        update.setComment(task.getNewComment()!=null && task.getNewComment().length()>0 ? task.getNewComment(): "-");
+        GCodeTask cachedTask = repository.getTaskPersistenceHandler().getCachedGCodeTask(task.getId());
+        if (cachedTask == null || task.getOwner() == null || !task.getOwner().equals(cachedTask.getOwner())) {
+            update.setOwner(task.getOwner());
+        }
+        if (cachedTask == null || task.getStatus() == null || !task.getStatus().equals(cachedTask.getStatus())) {
+            update.setStatus(task.getStatus());
+        }
+        if (cachedTask == null || task.getSummary() == null || !task.getSummary().equals(cachedTask.getSummary())) {
+            update.setSummary(task.getSummary());
+        }
+        if (cachedTask != null) {
+            List<String> labels = task.getLabels();
+            List<String> cachedLabels = cachedTask.getLabels();
+            List<String> removedLabels = new ArrayList<String>(cachedLabels);
+            removedLabels.removeAll(labels);
+            List<String> addLabels = new ArrayList<String>(labels);
+            addLabels.removeAll(cachedLabels);
+
+            for (String label : removedLabels) {
+                update.addLabel("-" + label);
+            }
+            update.addAllLabels(addLabels);
+
+            List<String> ccs = task.getCcs();
+            List<String> cachedCcs = cachedTask.getCcs();
+            List<String> removedCcs = new ArrayList<String>(cachedCcs);
+            removedCcs.removeAll(ccs);
+            List<String> addCcs = new ArrayList<String>(ccs);
+            addCcs.removeAll(cachedCcs);
+
+            for (String cc : removedCcs) {
+                update.addCc("-" + cc);
+            }
+            update.addAllCcs(addCcs);
+
+        } else {
+            update.addAllCcs(task.getCcs());
+            update.addAllLabels(task.getLabels());
+        }
+        return update;
     }
 }

@@ -28,6 +28,7 @@ import org.netbeans.api.progress.ProgressHandleFactory;
 import org.netbeans.cubeon.gcode.api.GCodeClient;
 import org.netbeans.cubeon.gcode.api.GCodeException;
 import org.netbeans.cubeon.gcode.api.GCodeIssue;
+import org.netbeans.cubeon.gcode.api.GCodeIssueUpdate;
 import org.netbeans.cubeon.gcode.api.GCodeSession;
 import org.netbeans.cubeon.gcode.api.GCodeState;
 import org.netbeans.cubeon.gcode.persistence.AttributesHandler;
@@ -358,7 +359,34 @@ public class GCodeTaskRepository implements TaskRepository {
     }
 
     public void submit(GCodeTask task) throws GCodeException {
-        throw new UnsupportedOperationException("Not yet implemented");
+         synchronized (task) {
+            //if task is local create ticket on server
+            if (task.isLocal()) {
+                GCodeUtils.createIssue(this, task);
+            } else {
+                /*sbmit changes*/
+                GCodeSession session = getSession();
+                GCodeIssueUpdate issueUpdate = GCodeUtils.getIssueUpdate(this,task);
+                GCodeIssue updatedIssue = session.updateIssue(issueUpdate, true);
+
+                GCodeUtils.toCodeTask(task, updatedIssue);
+                
+                //make cache up to date
+                task.setModifiedFlag(false);
+                task.setNewComment("");
+                persist(task);
+                cache(task);
+            }
+            //you have to notify all
+            task.getExtension().fireNameChenged();
+            task.getExtension().fireDescriptionChenged();
+            task.getExtension().firePriorityChenged();
+            task.getExtension().fireResolutionChenged();
+            task.getExtension().fireStatusChenged();
+            task.getExtension().fireTypeChenged();
+            task.getExtension().fireStateChenged();
+
+        }
     }
 
     public void synchronize() {
@@ -405,5 +433,9 @@ public class GCodeTaskRepository implements TaskRepository {
 
     public GCodeQuerySupport getQuerySupport() {
         return querySupport;
+    }
+
+    public TaskPersistence getTaskPersistenceHandler() {
+        return handler;
     }
 }
