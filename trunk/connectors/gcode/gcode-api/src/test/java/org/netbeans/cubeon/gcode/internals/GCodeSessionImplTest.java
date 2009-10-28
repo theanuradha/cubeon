@@ -100,26 +100,41 @@ public class GCodeSessionImplTest extends TestCase {
     }
 
     public void testGetIssuesByQuery() throws Exception {
-        System.out.println("testGetIssuesByQuery");
-        GCodeSessionImpl instance = new GCodeSessionImpl(testcubeon, user, password);
-        GCodeQuery codeQuery = new GCodeQuery();
-        codeQuery.setLabel("Type-Other");
-        codeQuery.setStatus("Started");
-        List<GCodeIssue> suesByQuery = instance.getIssuesByQuery(codeQuery);
-        System.out.println("COUNT : " + suesByQuery.size());
-        assertTrue(suesByQuery.size() == 1);
+        if (user != null && password != null) {
+            System.out.println("testGetIssuesByQuery");
+            GCodeSessionImpl instance = new GCodeSessionImpl(testcubeon, user, password);
+            GCodeIssue makeNewIssue = makeNewIssue();
+            makeNewIssue.addLabel("Type-Other");
+            makeNewIssue.setStatus("Started");
+            instance.createIssue(makeNewIssue, false);
+            GCodeQuery codeQuery = new GCodeQuery();
+            codeQuery.setLabel("Type-Other");
+            codeQuery.setStatus("Started");
+            List<GCodeIssue> suesByQuery = instance.getIssuesByQuery(codeQuery);
+            System.out.println("COUNT : " + suesByQuery.size());
+            assertTrue(suesByQuery.size() > 0);
+        } else {
+            System.out.println("Test case testGetIssuesByQuery() ignored due to user and password is null");
+        }
     }
 
     public void testGetIssuesByQueryString() throws Exception {
-        System.out.println("getIssuesByQueryString");
-        GCodeSessionImpl instance = new GCodeSessionImpl(testcubeon, user, password);
-
-        List<GCodeIssue> suesByQuery = instance.getIssuesByQueryString(""
-                + "label:Type-Other label:UnitTest"
-                + ""
-                + " ");
-        System.out.println("COUNT : " + suesByQuery.size());
-        assertTrue(suesByQuery.size() == 1);
+        if (user != null && password != null) {
+            System.out.println("getIssuesByQueryString");
+            GCodeSessionImpl instance = new GCodeSessionImpl(testcubeon, user, password);
+            GCodeIssue makeNewIssue = makeNewIssue();
+            makeNewIssue.addLabel("Type-Other");
+            makeNewIssue.setStatus("Started");
+            instance.createIssue(makeNewIssue, false);
+            List<GCodeIssue> suesByQuery = instance.getIssuesByQueryString(""
+                    + "label:Type-Other label:UnitTest"
+                    + ""
+                    + " ");
+            System.out.println("COUNT : " + suesByQuery.size());
+            assertTrue(suesByQuery.size() > 1);
+        } else {
+            System.out.println("Test case testGetIssuesByQueryString() ignored due to user and password is null");
+        }
     }
 
     protected GCodeIssue makeNewIssue() {
