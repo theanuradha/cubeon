@@ -28,9 +28,9 @@
                   <Component id="lblName1" alignment="0" min="-2" max="-2" attributes="1"/>
                   <Component id="txtQuery" alignment="0" pref="454" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="lblMaxResultCount" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="32767" attributes="1"/>
-                      <Component id="txtMaxResultCount" min="-2" pref="57" max="-2" attributes="0"/>
+                      <Component id="lblMaxResultCount" min="-2" pref="401" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="txtMaxResultCount" pref="49" max="32767" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -111,9 +111,7 @@
     <Component class="javax.swing.JTextField" name="txtMaxResultCount">
       <Properties>
         <Property name="horizontalAlignment" type="int" value="4"/>
-        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/netbeans/cubeon/gcode/query/ui/Bundle.properties" key="GCodeFilterQueryEditor.txtMaxResultCount.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
-        </Property>
+        <Property name="text" type="java.lang.String" value="0" noResource="true"/>
       </Properties>
     </Component>
   </SubComponents>
