@@ -172,7 +172,7 @@ public class GCodeFilterQueryEditor extends javax.swing.JPanel implements TaskQu
         lblMaxResultCount.setText(org.openide.util.NbBundle.getMessage(GCodeFilterQueryEditor.class, "GCodeFilterQueryEditor.lblMaxResultCount.text")); // NOI18N
 
         txtMaxResultCount.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        txtMaxResultCount.setText(org.openide.util.NbBundle.getMessage(GCodeFilterQueryEditor.class, "GCodeFilterQueryEditor.txtMaxResultCount.text")); // NOI18N
+        txtMaxResultCount.setText("0"); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -187,9 +187,9 @@ public class GCodeFilterQueryEditor extends javax.swing.JPanel implements TaskQu
                     .addComponent(lblName1)
                     .addComponent(txtQuery, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblMaxResultCount)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(txtMaxResultCount, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(lblMaxResultCount, javax.swing.GroupLayout.PREFERRED_SIZE, 401, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtMaxResultCount, javax.swing.GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -216,6 +216,7 @@ public class GCodeFilterQueryEditor extends javax.swing.JPanel implements TaskQu
     private void txtNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNameActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNameActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblHint;
