@@ -219,7 +219,9 @@ public class GCodeSessionImpl implements GCodeSession {
             issuesQuery.setPublishedMin(getDatetime(query.DATE_FORMAT, query.getPublishedMin()));
             issuesQuery.setUpdatedMax(getDatetime(query.DATE_FORMAT, query.getUpdatedMax()));
             issuesQuery.setUpdatedMin(getDatetime(query.DATE_FORMAT, query.getUpdatedMin()));
-            issuesQuery.setMaxResults(resultLimit);
+            if (resultLimit > 0) {
+                issuesQuery.setMaxResults(resultLimit);
+            }
             IssuesFeed queryIssues = queryIssues(issuesQuery);
             for (IssuesEntry issuesEntry : queryIssues.getEntries()) {
                 codeIssues.add(toGCodeIssue(issuesEntry));
@@ -237,7 +239,9 @@ public class GCodeSessionImpl implements GCodeSession {
             List<GCodeIssue> codeIssues = new ArrayList<GCodeIssue>();
             Query issuesQuery = new Query(issuesFeedUrl);
             issuesQuery.setFullTextQuery(query);
-            issuesQuery.setMaxResults(resultLimit);
+            if (resultLimit > 0) {
+                issuesQuery.setMaxResults(resultLimit);
+            }
             IssuesFeed queryIssues = queryIssues(issuesQuery);
             for (IssuesEntry issuesEntry : queryIssues.getEntries()) {
                 codeIssues.add(toGCodeIssue(issuesEntry));
