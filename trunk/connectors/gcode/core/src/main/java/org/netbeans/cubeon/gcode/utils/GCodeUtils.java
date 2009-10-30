@@ -23,6 +23,8 @@ import org.netbeans.cubeon.gcode.api.GCodeException;
 import org.netbeans.cubeon.gcode.api.GCodeIssue;
 import org.netbeans.cubeon.gcode.api.GCodeIssueUpdate;
 import org.netbeans.cubeon.gcode.api.GCodeSession;
+import org.netbeans.cubeon.gcode.api.GCodeState;
+import org.netbeans.cubeon.gcode.persistence.AttributesHandler;
 import org.netbeans.cubeon.gcode.repository.GCodeTaskRepository;
 import org.netbeans.cubeon.gcode.tasks.GCodeTask;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
@@ -112,6 +114,27 @@ public class GCodeUtils {
         codeTask.setCcs(codeIssue.getCcs());
         codeTask.setLabels(codeIssue.getLabels());
         codeTask.setComments(codeIssue.getComments());
+        //try to validate status is available
+        if (codeTask.getTaskRepository() != null) {
+            GCodeTaskRepository taskRepository = codeTask.getTaskRepository();
+            AttributesHandler attributesHandler = taskRepository.getRepositoryAttributes();
+            if (codeIssue.getState() == GCodeState.OPEN) {
+                List<String> openStatueses = attributesHandler.getOpenStatueses();
+                if (!openStatueses.contains(codeIssue.getStatus())) {
+                    openStatueses.add(codeIssue.getStatus());
+                    attributesHandler.setOpenStatueses(openStatueses);
+                    attributesHandler.persistAttributes();
+                }
+            } else {
+                List<String> closedStatuses = attributesHandler.getClosedStatuses();
+                if (!closedStatuses.contains(codeIssue.getStatus())) {
+                    closedStatuses.add(codeIssue.getStatus());
+                    attributesHandler.setClosedStatuses(closedStatuses);
+                    attributesHandler.persistAttributes();
+                }
+            }
+        }
+
         return codeTask;
     }
 
@@ -232,7 +255,7 @@ public class GCodeUtils {
 
     public static GCodeIssueUpdate getIssueUpdate(GCodeTaskRepository repository, GCodeTask task) {
         GCodeIssueUpdate update = new GCodeIssueUpdate(task.getId(), repository.getUser());
-        update.setComment(task.getNewComment()!=null && task.getNewComment().length()>0 ? task.getNewComment(): "-");
+        update.setComment(task.getNewComment() != null && task.getNewComment().length() > 0 ? task.getNewComment() : "-");
         GCodeTask cachedTask = repository.getTaskPersistenceHandler().getCachedGCodeTask(task.getId());
         if (cachedTask == null || task.getOwner() == null || !task.getOwner().equals(cachedTask.getOwner())) {
             update.setOwner(task.getOwner());
