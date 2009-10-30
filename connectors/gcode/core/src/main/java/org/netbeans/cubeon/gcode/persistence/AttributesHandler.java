@@ -25,6 +25,7 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 import org.json.simple.JSONArray;
@@ -43,7 +44,6 @@ import org.netbeans.cubeon.tasks.spi.task.TaskType;
  * @author Anuradha
  */
 public class AttributesHandler implements JSONAware {
-
 
     private final File file;
 
@@ -164,88 +164,104 @@ public class AttributesHandler implements JSONAware {
         }
     }
 
+    /**
+     *New                  = Issue has not had initial review yet
+     *Accepted             = Problem reproduced / Need acknowledged
+     *Started              = Work on this issue has begun
+     */
+    public List<String> getDefaultOpenStatueses() {
+
+        return new ArrayList<String>(Arrays.asList("New", "Accepted", "Started"));
+    }
+
+    /**
+     * Fixed                = Developer made source code changes, QA should verify
+     * Verified             = QA has verified that the fix worked
+     * Invalid              = This was not a valid issue report
+     * Duplicate            = This report duplicates an existing issue
+     * WontFix              = We decided to not take action on this issue
+     * Done                 = The requested non-coding task was completed
+     */
+    public List<String> getDefaultClosedStatueses() {
+
+        return new ArrayList<String>(Arrays.asList("Fixed",
+                "Verified",
+                "Invalid",
+                "Duplicate",
+                "WontFix",
+                "Done"));
+    }
+
+    /**
+     * Type-Defect          = Report of a software defect
+     * Type-Enhancement     = Request for enhancement
+     * Type-Task            = Work item that doesn't change the code or docs
+     * Type-Review          = Request for a source code review
+     * Type-Other           = Some other kind of issue
+     * Priority-Critical    = Must resolve in the specified milestone
+     * Priority-High        = Strongly want to resolve in the specified milestone
+     * Priority-Medium      = Normal priority
+     * Priority-Low         = Might slip to later milestone
+     * OpSys-All            = Affects all operating systems
+     * OpSys-Windows        = Affects Windows users
+     * OpSys-Linux          = Affects Linux users
+     * OpSys-OSX            = Affects Mac OS X users
+     * Milestone-Release1.0 = All essential functionality working
+     * Component-UI         = Issue relates to program UI
+     * Component-Logic      = Issue relates to application logic
+     * Component-Persistence = Issue relates to data storage components
+     * Component-Scripts    = Utility and installation scripts
+     * Component-Docs       = Issue relates to end-user documentation
+     * Security             = Security risk to users
+     * Performance          = Performance issue
+     * Usability            = Affects program usability
+     * Maintainability      = Hinders future changes
+     */
+    public List<String> getDefaultLabels() {
+
+        return new ArrayList<String>(Arrays.asList("Type-Defect",
+                "Type-Enhancement",
+                "Type-Task",
+                "Type-Review",
+                "Type-Other",
+                "Priority-Critical",
+                "Priority-High",
+                "Priority-Medium",
+                "Priority-Low",
+                "OpSys-All",
+                "OpSys-Windows",
+                "OpSys-Linux",
+                "OpSys-OSX",
+                "Milestone-Release1.0",
+                "Component-UI",
+                "Component-Logic",
+                "Component-Persistence",
+                "Component-Scripts",
+                "Component-Docs",
+                "Security",
+                "Performance",
+                "Usability",
+                "Maintainability"));
+    }
+
     public void loadDefultAttributes() {
         //Predefined status values
         //Open Issue Status Values:
-        /**
-         *New                  = Issue has not had initial review yet
-         *Accepted             = Problem reproduced / Need acknowledged
-         *Started              = Work on this issue has begun
-         */
+
         if (openStatueses.isEmpty()) {
-            openStatueses.add("New");
-            openStatueses.add("Accepted");
-            openStatueses.add("Started");
+            openStatueses.addAll(getDefaultOpenStatueses());
         }
 
         //Closed Issue Status Values:
-        /**
-         * Fixed                = Developer made source code changes, QA should verify
-         * Verified             = QA has verified that the fix worked
-         * Invalid              = This was not a valid issue report
-         * Duplicate            = This report duplicates an existing issue
-         * WontFix              = We decided to not take action on this issue
-         * Done                 = The requested non-coding task was completed
-         */
+
         if (closedStatuses.isEmpty()) {
-            closedStatuses.add("Fixed");
-            closedStatuses.add("Verified");
-            closedStatuses.add("Invalid");
-            closedStatuses.add("Duplicate");
-            closedStatuses.add("WontFix");
-            closedStatuses.add("Done");
+            closedStatuses.addAll(getDefaultClosedStatueses());
         }
 
         //Predefined issue labels
-        /**
-         * Type-Defect          = Report of a software defect
-         * Type-Enhancement     = Request for enhancement
-         * Type-Task            = Work item that doesn't change the code or docs
-         * Type-Review          = Request for a source code review
-         * Type-Other           = Some other kind of issue
-         * Priority-Critical    = Must resolve in the specified milestone
-         * Priority-High        = Strongly want to resolve in the specified milestone
-         * Priority-Medium      = Normal priority
-         * Priority-Low         = Might slip to later milestone
-         * OpSys-All            = Affects all operating systems
-         * OpSys-Windows        = Affects Windows users
-         * OpSys-Linux          = Affects Linux users
-         * OpSys-OSX            = Affects Mac OS X users
-         * Milestone-Release1.0 = All essential functionality working
-         * Component-UI         = Issue relates to program UI
-         * Component-Logic      = Issue relates to application logic
-         * Component-Persistence = Issue relates to data storage components
-         * Component-Scripts    = Utility and installation scripts
-         * Component-Docs       = Issue relates to end-user documentation
-         * Security             = Security risk to users
-         * Performance          = Performance issue
-         * Usability            = Affects program usability
-         * Maintainability      = Hinders future changes
-         */
+
         if (labels.isEmpty()) {
-            labels.add("Type-Defect");
-            labels.add("Type-Enhancement");
-            labels.add("Type-Task");
-            labels.add("Type-Review");
-            labels.add("Type-Other");
-            labels.add("Priority-Critical");
-            labels.add("Priority-High");
-            labels.add("Priority-Medium");
-            labels.add("Priority-Low");
-            labels.add("OpSys-All");
-            labels.add("OpSys-Windows");
-            labels.add("OpSys-Linux");
-            labels.add("OpSys-OSX");
-            labels.add("Milestone-Release1.0");
-            labels.add("Component-UI");
-            labels.add("Component-Logic");
-            labels.add("Component-Persistence");
-            labels.add("Component-Scripts");
-            labels.add("Component-Docs");
-            labels.add("Security");
-            labels.add("Performance");
-            labels.add("Usability");
-            labels.add("Maintainability");
+            labels.addAll(getDefaultLabels());
         }
     }
 

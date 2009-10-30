@@ -19,9 +19,12 @@ package org.netbeans.cubeon.gcode.repository;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
@@ -323,8 +326,34 @@ public class GCodeTaskRepository implements TaskRepository {
         //TODO : http://code.google.com/p/support/issues/detail?id=3203
         handle.start();
         handle.switchToIndeterminate();
-        repositoryAttributes.loadDefultAttributes();
+        //Work-around --get repository attributes----
+        Set<String> labels = new HashSet<String>();
+        Set<String> openStatuses = new HashSet<String>();
+        Set<String> closedStatuses = new HashSet<String>();
+        try {
+            GCodeSession session = getSession();
+            List<GCodeIssue> openIssues = session.getIssuesByQueryString("is:open has:label", 50);
+            for (GCodeIssue openIssue : openIssues) {
+                labels.addAll(openIssue.getLabels());
+                openStatuses.add(openIssue.getStatus());
+            }
+            List<GCodeIssue> closedIssues = session.getIssuesByQueryString("-is:open has:label", 50);
+            for (GCodeIssue closedIssue : closedIssues) {
+                labels.addAll(closedIssue.getLabels());
+                closedStatuses.add(closedIssue.getStatus());
+            }
+        } catch (GCodeException ex) {
+            Logger.getLogger(GCodeTaskRepository.class.getName()).warning(ex.getMessage());
+        }
+        List<String> repoLabels = repositoryAttributes.getDefaultLabels();
+        labels.removeAll(repoLabels);
+        repoLabels.addAll(labels);
+        Collections.sort(repoLabels);
+        repositoryAttributes.setLabels(repoLabels);
+        repositoryAttributes.setOpenStatueses(repositoryAttributes.getDefaultOpenStatueses());
+        repositoryAttributes.setClosedStatuses(repositoryAttributes.getDefaultClosedStatueses());
         repositoryAttributes.persistAttributes();
+
         loadAttributes();
         handle.finish();
         setState(State.ACTIVE);
@@ -359,18 +388,18 @@ public class GCodeTaskRepository implements TaskRepository {
     }
 
     public void submit(GCodeTask task) throws GCodeException {
-         synchronized (task) {
+        synchronized (task) {
             //if task is local create ticket on server
             if (task.isLocal()) {
                 GCodeUtils.createIssue(this, task);
             } else {
                 /*sbmit changes*/
                 GCodeSession session = getSession();
-                GCodeIssueUpdate issueUpdate = GCodeUtils.getIssueUpdate(this,task);
+                GCodeIssueUpdate issueUpdate = GCodeUtils.getIssueUpdate(this, task);
                 GCodeIssue updatedIssue = session.updateIssue(issueUpdate, true);
 
                 GCodeUtils.toCodeTask(task, updatedIssue);
-                
+
                 //make cache up to date
                 task.setModifiedFlag(false);
                 task.setNewComment("");
