@@ -67,6 +67,7 @@ public class JiraFilterQueryEditor extends javax.swing.JPanel implements Explore
         initComponents();
         this.jiraQuerySupport = jiraQuerySupport;
         beanTreeView.setRootVisible(false);
+        beanTreeView.setPopupAllowed(false);
         explorerManager.addPropertyChangeListener(new PropertyChangeListener() {
 
             public void propertyChange(PropertyChangeEvent evt) {
