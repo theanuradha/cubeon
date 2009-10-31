@@ -105,11 +105,14 @@ public class GCodeTask extends GCodeIssue implements TaskElement {
     }
 
     public Lookup getLookup() {
-        return Lookups.fixed(this, extension, editorProvider, taskRepository, stackTraceProvider);
+        return Lookups.fixed(this, extension, editorProvider, taskRepository,
+                stackTraceProvider);
     }
 
     public boolean isCompleted() {
-        return GCodeState.CLOSED == getState();
+        return GCodeState.CLOSED == getState() ||
+                (getStatus()!=null && taskRepository.getRepositoryAttributes().
+                getClosedStatuses().contains(getStatus()));
     }
 
     public Image getImage() {
