@@ -34,6 +34,7 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.netbeans.cubeon.common.ui.TaskEditor;
@@ -67,6 +68,7 @@ public class GCodeTaskEditor {
     };
     private ComponentContainer arrributesContainer = new ComponentContainer();
     private final TextEditorUI descriptionComponent = new TextEditorUI();
+    private final JTextPane descriptionViewComponent = new JTextPane();
     private final TextEditorUI newCommentComponent = new TextEditorUI();
     //default trac fields
     private JComboBox status;
@@ -79,7 +81,7 @@ public class GCodeTaskEditor {
 
         @Override
         public Collection<String> getFilterdCollection(String prifix, Collection<String> completions) {
-            return super.getFilterdCollection(prifix, _getFilterdLabelsFromFields(prifix,completions));
+            return super.getFilterdCollection(prifix, _getFilterdLabelsFromFields(prifix, completions));
         }
     };
 
@@ -89,7 +91,9 @@ public class GCodeTaskEditor {
         openInBrowserTaskAction = new OpenInBrowserTaskAction(task);
         submitTaskAction = new SubmitTaskAction(task);
         editor.addSummaryDocumentListener(builder.getDocumentListener());
-        descriptionComponent.getDocument().addDocumentListener(builder.getDocumentListener());
+        if (task.isLocal()) {
+            descriptionComponent.getDocument().addDocumentListener(builder.getDocumentListener());
+        }
         newCommentComponent.getDocument().addDocumentListener(builder.getDocumentListener());
         buildComponents();
     }
@@ -152,10 +156,14 @@ public class GCodeTaskEditor {
 
 
 
-
-        descriptionComponent.setText(task.getDescription());
+        if (task.isLocal()) {
+            descriptionComponent.setText(task.getDescription());
+        } else {
+            descriptionViewComponent.setText(task.getDescription());
+        }
         newCommentComponent.setEditable(!task.isLocal());
         descriptionComponent.setEditable(task.isLocal());
+        descriptionViewComponent.setEditable(false);
 
         newCommentComponent.setText(task.getNewComment());
 
@@ -175,7 +183,7 @@ public class GCodeTaskEditor {
         modifiedFlag.set(false);
     }
 
-    private List<String> _getFilterdLabelsFromFields(String prifix,Collection<String> completions) {
+    private List<String> _getFilterdLabelsFromFields(String prifix, Collection<String> completions) {
         List<String> labels = new ArrayList<String>();
         List<String> limitLabelTags = GCodeUtils.getLimitLabelTags();
         List<String> tagAdded = new ArrayList<String>(limitLabelTags.size());
@@ -195,14 +203,14 @@ public class GCodeTaskEditor {
                 }
             }
         }
-        Pattern pattern = Pattern.compile(prifix ); //NOI18N
+        Pattern pattern = Pattern.compile(prifix); //NOI18N
         OUTER:
         for (String item : completions) {
             for (String tag : tagAdded) {
                 Matcher matcher = pattern.matcher(tag);
-                 if (item.startsWith(tag)&& !matcher.matches()) {
-                     continue OUTER;
-                 }
+                if (item.startsWith(tag) && !matcher.matches()) {
+                    continue OUTER;
+                }
             }
             labels.add(item);
         }
@@ -384,7 +392,7 @@ public class GCodeTaskEditor {
         return newCommentComponent;
     }
 
-    public TextEditorUI getDescriptionComponent() {
-        return descriptionComponent;
+    public JComponent getDescriptionComponent() {
+        return task.isLocal() ? descriptionComponent : descriptionViewComponent;
     }
 }
