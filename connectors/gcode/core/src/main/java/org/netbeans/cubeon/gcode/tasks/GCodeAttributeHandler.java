@@ -61,6 +61,8 @@ public class GCodeAttributeHandler implements EditorAttributeHandler {
         descriptionGroup = new ComponentGroup(
                 getMessage(GCodeAttributeHandler.class, "LBL_Description"),
                 getMessage(GCodeAttributeHandler.class, "LBL_Description_Dec"));
+        descriptionGroup.setOpen(task.isCompleted() || !(task.getDescription() != null &&
+                task.getDescription().trim().length() > 0));
 
         //Attributes Group 
         attributesGroup = new ComponentGroup(getMessage(GCodeAttributeHandler.class, "LBL_Attributes"),
