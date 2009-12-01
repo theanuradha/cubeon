@@ -104,7 +104,7 @@ public class TaskContextAction extends AbstractAction implements ContextAwareAct
                     if (cp !=null && cp.contains(primaryFile)) {
                         FileObject findOwnerRoot = cp.findOwnerRoot(primaryFile);
                         String path = primaryFile.getPath().replace(findOwnerRoot.getPath(), "");//NOI18N
-                        return new JavaResource(path,dataObject);
+                        return new JavaResource(path);
                     }
                 }
 
