@@ -34,6 +34,9 @@ public abstract class StackTraceProvider {
     public final List<StackTrace> analyze() {
         List<StackTrace> traces = new ArrayList<StackTrace>();
         for (String text : getAnalyzableTexts()) {
+            if (text == null) {
+                continue;
+            }
             List<StackTrace.Line> lines = new ArrayList<StackTrace.Line>();
             BufferedReader stackTrace = new BufferedReader(new StringReader(text));
             String line = null;
@@ -47,7 +50,7 @@ public abstract class StackTraceProvider {
                             String filename = m.group(4);
                             String resource = pkg.replace('.', '/') + filename;
                             int lineNumber = Integer.parseInt(m.group(5));
-                            lines.add(new StackTrace.Line(line.trim(),resource, lineNumber));
+                            lines.add(new StackTrace.Line(line.trim(), resource, lineNumber));
                         }
                     }
                     m = EXCEPTION_MESSAGE.matcher(line);
