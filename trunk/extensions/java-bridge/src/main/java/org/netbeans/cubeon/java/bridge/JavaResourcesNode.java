@@ -27,9 +27,9 @@ import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
+import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
-import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 
 /**
@@ -49,7 +49,7 @@ public class JavaResourcesNode extends AbstractNode {
 
     @Override
     public Image getIcon(int type) {
-        return Utilities.loadImage("org/netbeans/cubeon/java/bridge/sourcegroup.png");
+        return ImageUtilities.loadImage("org/netbeans/cubeon/java/bridge/sourcegroup.png");
     }
 
     @Override
@@ -75,7 +75,7 @@ public class JavaResourcesNode extends AbstractNode {
             @Override
             public Node getNode() {
                 return TagNode.createNode(getPath(), getPath(),
-                        Utilities.loadImage("org/netbeans/cubeon/java/bridge/wait.gif"));
+                        ImageUtilities.loadImage("org/netbeans/cubeon/java/bridge/wait.gif"));
             }
         };
         private TaskElement taskElement;
@@ -97,9 +97,6 @@ public class JavaResourcesNode extends AbstractNode {
             RequestProcessor.getDefault().post(new Runnable() {
 
                 public void run() {
-                    for (JavaResource resource : resourceSet.getJavaResources()) {
-                        resource.init();
-                    }
                     EventQueue.invokeLater(new Runnable() {
 
                         public void run() {
