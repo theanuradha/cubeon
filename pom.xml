@@ -29,12 +29,12 @@
         <repository>
             <id>cubeon</id>
             <name>Cubeon Releases</name>
-            <url>svn:https://cubeon.googlecode.com/svn/repository/releases/</url>
+            <url>svn:http://cubeon.googlecode.com/svn/repository/releases/</url>
         </repository>
         <snapshotRepository>
             <id>cubeon</id>
             <name>Cubeon Snapshots</name>
-            <url>svn:https://cubeon.googlecode.com/svn/repository/snapshots/</url>
+            <url>svn:http://cubeon.googlecode.com/svn/repository/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
     <profiles>
