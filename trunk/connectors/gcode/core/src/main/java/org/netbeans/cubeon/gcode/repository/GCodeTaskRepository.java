@@ -195,11 +195,11 @@ public class GCodeTaskRepository implements TaskRepository {
     }
 
     public void persist(TaskElement element) {
-        GCodeTask tracTask = element.getLookup().lookup(GCodeTask.class);
-        assert tracTask != null;
-        handler.persist(tracTask);
+        GCodeTask codeTask = element.getLookup().lookup(GCodeTask.class);
+        assert codeTask != null;
+        handler.persist(codeTask);
         //notify to outgoing query about modified state
-        if (tracTask.isModifiedFlag()) {
+        if (codeTask.isModifiedFlag()) {
             querySupport.getOutgoingQuery().addTaskId(element.getId());
         } else {
             querySupport.getOutgoingQuery().removeTaskId(element.getId());

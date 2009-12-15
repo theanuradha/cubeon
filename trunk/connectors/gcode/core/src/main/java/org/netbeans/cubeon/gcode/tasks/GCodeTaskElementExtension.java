@@ -30,8 +30,8 @@ public class GCodeTaskElementExtension extends  Notifier<TaskElementChangeAdapte
 
     private GCodeTask codeTask;
     
-    public GCodeTaskElementExtension(GCodeTask tracTask) {
-        this.codeTask = tracTask;
+    public GCodeTaskElementExtension(GCodeTask codeTask) {
+        this.codeTask = codeTask;
       
     }
 

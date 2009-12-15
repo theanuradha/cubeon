@@ -57,7 +57,7 @@ public class GCodeFilterQueryEditor extends javax.swing.JPanel implements TaskQu
             "opened-after", "modified-after",
             "closed-after", "is:");
 
-    /** Creates new form TracFilterQueryEditor */
+    /** Creates new form GcodeFilterQueryEditor */
     public GCodeFilterQueryEditor(final GCodeQuerySupport querySupport) {
         initComponents();
         this.querySupport = querySupport;

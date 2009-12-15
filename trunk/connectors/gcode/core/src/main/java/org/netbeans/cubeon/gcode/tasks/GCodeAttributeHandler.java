@@ -51,7 +51,7 @@ public class GCodeAttributeHandler implements EditorAttributeHandler {
     private ComponentGroup attributesGroup;
     private ComponentGroup newCommentGroup;
     private ContainerGroup commentsGroup;
-    private final GCodeTaskEditor tracTaskEditor;
+    private final GCodeTaskEditor gCodeTaskEditor;
 
     public GCodeAttributeHandler(GCodeTask task) {
         this.task = task;
@@ -87,12 +87,12 @@ public class GCodeAttributeHandler implements EditorAttributeHandler {
         editorSupport = new TaskEditorSupport();
         editor = editorSupport.createEditor();
         editor.setLeftSideGroups(descriptionGroup, attributesGroup, commentsGroup, newCommentGroup);
-        tracTaskEditor = new GCodeTaskEditor(editor, task);
+        gCodeTaskEditor = new GCodeTaskEditor(editor, task);
         // attributesGroup.setOpen(task.isLocal());
-        attributesGroup.setComponent(tracTaskEditor.getAttributesPanel());
+        attributesGroup.setComponent(gCodeTaskEditor.getAttributesPanel());
 
-        newCommentGroup.setComponent(tracTaskEditor.getNewCommentComponent());
-        descriptionGroup.setComponent(tracTaskEditor.getDescriptionComponent());
+        newCommentGroup.setComponent(gCodeTaskEditor.getNewCommentComponent());
+        descriptionGroup.setComponent(gCodeTaskEditor.getDescriptionComponent());
         editor.setLeftActiveGroup(descriptionGroup);
         refresh();
 
@@ -113,16 +113,16 @@ public class GCodeAttributeHandler implements EditorAttributeHandler {
 
     public final void addChangeListener(ChangeListener l) {
 
-        tracTaskEditor.addChangeListener(l);
+        gCodeTaskEditor.addChangeListener(l);
     }
 
     public final void removeChangeListener(ChangeListener l) {
 
-        tracTaskEditor.removeChangeListener(l);
+        gCodeTaskEditor.removeChangeListener(l);
     }
 
     public List<Action> getActions() {
-        return tracTaskEditor.getActions();
+        return gCodeTaskEditor.getActions();
     }
 
     public JComponent[] getComponent() {
@@ -133,13 +133,13 @@ public class GCodeAttributeHandler implements EditorAttributeHandler {
 
     public void refresh() {
 
-        tracTaskEditor.refresh();
+        gCodeTaskEditor.refresh();
         refreshComments(commentsGroup);
     }
 
     public TaskElement save() {
 
-        task = tracTaskEditor.read();
+        task = gCodeTaskEditor.read();
 
         task.getExtension().fireStateChenged();
         return task;
@@ -218,11 +218,11 @@ public class GCodeAttributeHandler implements EditorAttributeHandler {
         public void validate() {
             if (docked) {
                 putValue(NAME, "Undock");
-                Image undock = ImageUtilities.loadImage("org/netbeans/cubeon/trac/undock.png");
+                Image undock = ImageUtilities.loadImage("org/netbeans/cubeon/gcode/undock.png");
                 putValue(SMALL_ICON, ImageUtilities.image2Icon(undock));
             } else {
                 putValue(NAME, "Dock");
-                Image dock = ImageUtilities.loadImage("org/netbeans/cubeon/trac/dock.png");
+                Image dock = ImageUtilities.loadImage("org/netbeans/cubeon/gcode/dock.png");
                 putValue(SMALL_ICON, ImageUtilities.image2Icon(dock));
             }
         }

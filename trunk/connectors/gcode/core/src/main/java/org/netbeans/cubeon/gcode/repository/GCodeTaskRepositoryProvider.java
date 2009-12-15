@@ -71,11 +71,11 @@ public class GCodeTaskRepositoryProvider implements TaskRepositoryType {
     }
 
     public String getName() {
-        return NbBundle.getMessage(GCodeTaskRepositoryProvider.class, "LBL_Trac_Repository");
+        return NbBundle.getMessage(GCodeTaskRepositoryProvider.class, "LBL_Gcode_Repository");
     }
 
     public String getDescription() {
-        return NbBundle.getMessage(GCodeTaskRepositoryProvider.class, "LBL_Trac_Repository_Description");
+        return NbBundle.getMessage(GCodeTaskRepositoryProvider.class, "LBL_Gcode_Repository_Description");
     }
 
     public Image getImage() {
