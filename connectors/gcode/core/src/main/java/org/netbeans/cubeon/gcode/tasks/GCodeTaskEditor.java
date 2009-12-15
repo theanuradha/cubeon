@@ -70,7 +70,7 @@ public class GCodeTaskEditor {
     private final TextEditorUI descriptionComponent = new TextEditorUI();
     private final JTextPane descriptionViewComponent = new JTextPane();
     private final TextEditorUI newCommentComponent = new TextEditorUI();
-    //default trac fields
+    //default gcode fields
     private JComboBox status;
     private JLabel reportedBy;
     private JTextField assignee;

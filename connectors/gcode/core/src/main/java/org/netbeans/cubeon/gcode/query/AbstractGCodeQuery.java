@@ -60,7 +60,7 @@ public abstract class AbstractGCodeQuery implements TaskQuery {
         return extension;
     }
 
-    public QueryExtension getTracExtension() {
+    public QueryExtension getGcodeExtension() {
         return extension;
     }
 

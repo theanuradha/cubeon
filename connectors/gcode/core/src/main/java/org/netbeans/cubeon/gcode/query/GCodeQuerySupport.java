@@ -106,7 +106,7 @@ public class GCodeQuerySupport implements TaskQuerySupportProvider {
             return;
         }
         handler.persist((GCodeFilterQuery) localQuery);
-        localQuery.getTracExtension().fireAttributesUpdated();
+        localQuery.getGcodeExtension().fireAttributesUpdated();
     }
 
     public void removeTaskQuery(TaskQuery query) {
@@ -116,7 +116,7 @@ public class GCodeQuerySupport implements TaskQuerySupportProvider {
         }
         handler.remove((GCodeFilterQuery) localQuery);
         extension.fireQueryRemoved(localQuery);
-        localQuery.getTracExtension().fireRemoved();
+        localQuery.getGcodeExtension().fireRemoved();
     }
 
     public TaskQuery findTaskQueryById(String id) {
