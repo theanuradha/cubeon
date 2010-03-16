@@ -24,11 +24,9 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.netbeans.cubeon.context.spi.TaskResource;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
-import org.netbeans.cubeon.tasks.spi.task.TaskElementFilter;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
-import org.openide.util.Lookup;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.Lookups;
@@ -70,16 +68,7 @@ public class TaskLinksNode extends AbstractNode {
                 };
     }
 
-    private static boolean isFilterd(TaskElement element, List<TaskElementFilter> filters) {
-
-
-        for (TaskElementFilter filter : filters) {
-            if (filter.isFiltered(element)) {
-                return true;
-            }
-        }
-        return false;
-    }
+    
 
     private static class ResourcesChildern extends Children.Keys<TaskResource> {
 
@@ -98,17 +87,10 @@ public class TaskLinksNode extends AbstractNode {
 
         @Override
         protected void addNotify() {
-            List<TaskElementFilter> filters = new ArrayList<TaskElementFilter>();
-            for (TaskElementFilter taskElementFilter : Lookup.getDefault().lookupAll(TaskElementFilter.class)) {
-                if (taskElementFilter.isEnable()) {
-                    filters.add(taskElementFilter);
-                }
-            }
+
             List<TaskResource> resources = new ArrayList<TaskResource>();
             for (TaskLinkResource taskResource : resourceSet.getTaskLinkResource()) {
-                if (!isFilterd(taskResource.getElement(), filters)) {
                     resources.add(taskResource);
-                }
             }
 
             setKeys(resources);
