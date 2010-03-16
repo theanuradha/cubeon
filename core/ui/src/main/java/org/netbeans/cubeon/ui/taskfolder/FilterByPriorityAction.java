@@ -38,7 +38,7 @@ import org.netbeans.cubeon.ui.TaskExplorerTopComponent;
 import org.netbeans.cubeon.ui.filters.PriorityFilter;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
-import org.openide.util.Utilities;
+import org.openide.util.ImageUtilities;
 import org.openide.util.actions.Presenter.Menu;
 import org.openide.util.actions.Presenter.Popup;
 
@@ -59,7 +59,7 @@ public class FilterByPriorityAction extends AbstractAction implements Menu, Popu
         lookup.lookup(TaskElementFilter.class);
         this.filter = lookup.lookup(PriorityFilter.class);
         putValue(NAME, filter.getName());
-        putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/ui/filterPriority.png")));
+        putValue(SMALL_ICON, new ImageIcon(ImageUtilities.loadImage("org/netbeans/cubeon/ui/filterPriority.png")));
 
 
     }

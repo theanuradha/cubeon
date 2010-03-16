@@ -41,7 +41,7 @@ import org.openide.util.RequestProcessor;
 import org.openide.util.RequestProcessor.Task;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
-import org.openide.util.Utilities;
+import org.openide.util.ImageUtilities;
 
 /**
  * Top component which displays something.
@@ -60,7 +60,7 @@ final class ResultsTopComponent extends TopComponent implements ExplorerManager.
         initComponents();
         setName(NbBundle.getMessage(ResultsTopComponent.class, "CTL_ResultsTopComponent"));
         setToolTipText(NbBundle.getMessage(ResultsTopComponent.class, "HINT_ResultsTopComponent"));
-        setIcon(Utilities.loadImage(ICON_PATH, true));
+        setIcon(ImageUtilities.loadImage(ICON_PATH, true));
         ActionMap actionMap = getActionMap();
 
 
@@ -262,7 +262,7 @@ final class ResultsTopComponent extends TopComponent implements ExplorerManager.
 
         @Override
         public Image getIcon(int arg0) {
-            return Utilities.loadImage(ICON_PATH);
+            return ImageUtilities.loadImage(ICON_PATH);
         }
     }
 }

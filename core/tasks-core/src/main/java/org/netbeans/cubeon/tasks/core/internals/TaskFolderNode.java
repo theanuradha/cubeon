@@ -40,7 +40,7 @@ import org.openide.nodes.Node;
 import org.openide.nodes.NodeTransfer;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
-import org.openide.util.Utilities;
+import org.openide.util.ImageUtilities;
 import org.openide.util.actions.Presenter;
 import org.openide.util.actions.Presenter.Popup;
 import org.openide.util.datatransfer.PasteType;
@@ -67,8 +67,8 @@ public class TaskFolderNode extends AbstractNode {
     public Image getIcon(int i) {
         Image image = NodeUtils.getTreeFolderIcon(false);
         if (folder.getTaskQuery() != null) {
-            image = Utilities.mergeImages(image,
-                    Utilities.loadImage("org/netbeans/cubeon/tasks/core/badge_query.png"), 14, 0);
+            image = ImageUtilities.mergeImages(image,
+                    ImageUtilities.loadImage("org/netbeans/cubeon/tasks/core/badge_query.png"), 14, 0);
         }
         return image;
     }
@@ -77,8 +77,8 @@ public class TaskFolderNode extends AbstractNode {
     public Image getOpenedIcon(int i) {
         Image image = NodeUtils.getTreeFolderIcon(true);
         if (folder.getTaskQuery() != null) {
-            image = Utilities.mergeImages(image,
-                    Utilities.loadImage("org/netbeans/cubeon/tasks/core/badge_query.png"), 14, 0);
+            image = ImageUtilities.mergeImages(image,
+                    ImageUtilities.loadImage("org/netbeans/cubeon/tasks/core/badge_query.png"), 14, 0);
         }
         return image;
     }

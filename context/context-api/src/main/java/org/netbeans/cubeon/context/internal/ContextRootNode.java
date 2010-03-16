@@ -32,7 +32,7 @@ import org.openide.nodes.Children.Array;
 import org.openide.nodes.Node;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
-import org.openide.util.Utilities;
+import org.openide.util.ImageUtilities;
 
 /**
  *
@@ -72,7 +72,7 @@ public class ContextRootNode extends AbstractNode {
         } else {
             Node activeNode = TagNode.createNode(NbBundle.getMessage(TaskContextManager.class, "LBL_ActivateNode"),
                     NbBundle.getMessage(TaskContextManager.class, "LBL_ActivateNode"),
-                    Utilities.loadImage("org/netbeans/cubeon/context/api/task.png"));
+                    ImageUtilities.loadImage("org/netbeans/cubeon/context/api/task.png"));
             array.add(new Node[]{activeNode});
         }
 

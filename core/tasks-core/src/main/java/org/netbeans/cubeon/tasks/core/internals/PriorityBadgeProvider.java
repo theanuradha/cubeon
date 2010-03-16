@@ -22,7 +22,7 @@ import org.netbeans.cubeon.tasks.spi.repository.TaskPriorityProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskBadgeProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskPriority;
-import org.openide.util.Utilities;
+import org.openide.util.ImageUtilities;
 
 /**
  *
@@ -37,7 +37,7 @@ public class PriorityBadgeProvider implements TaskBadgeProvider {
             TaskPriority priority = provider.getTaskPriority(element);
 
             if (priority != null) {
-                image = Utilities.mergeImages(NodeUtils.getTaskPriorityImage(priority), image, 7, 0);
+                image = ImageUtilities.mergeImages(NodeUtils.getTaskPriorityImage(priority), image, 7, 0);
             }
 
         }

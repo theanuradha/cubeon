@@ -41,7 +41,7 @@ import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
-import org.openide.util.Utilities;
+import org.openide.util.ImageUtilities;
 import org.openide.util.lookup.Lookups;
 
 /**
@@ -137,7 +137,7 @@ public class JavanetTaskRepository implements TaskRepository, Submitable, Revert
     }
 
     public Image getImage() {
-        return Utilities.loadImage("org/netbeans/cubeon/javanet/javanet.png");
+        return ImageUtilities.loadImage("org/netbeans/cubeon/javanet/javanet.png");
     }
 
     public TaskElement createTaskElement(String arg0, String arg1) {

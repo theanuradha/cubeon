@@ -31,7 +31,7 @@ import org.netbeans.cubeon.tasks.core.api.TaskEditorFactory;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
-import org.openide.util.Utilities;
+import org.openide.util.ImageUtilities;
 
 /**
  *
@@ -46,7 +46,7 @@ public class SubmitTaskAction extends AbstractAction {
         this.task = task;
         putValue(NAME, NbBundle.getMessage(SubmitTaskAction.class, "LBL_Submit_Local_Changes"));
         putValue(SHORT_DESCRIPTION, NbBundle.getMessage(SubmitTaskAction.class, "LBL_Submit_Local_Changes"));
-        putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/gcode/task-submit.png")));
+        putValue(SMALL_ICON, new ImageIcon(ImageUtilities.loadImage("org/netbeans/cubeon/gcode/task-submit.png")));
         setEnabled(task.isModifiedFlag());
     }
 

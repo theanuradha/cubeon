@@ -27,7 +27,7 @@ import org.netbeans.cubeon.tasks.spi.repository.RepositoryEventAdapter;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.openide.util.Lookup;
-import org.openide.util.Utilities;
+import org.openide.util.ImageUtilities;
 import org.openide.util.lookup.Lookups;
 
 /**
@@ -168,7 +168,7 @@ public class LocalTaskRepository implements TaskRepository {
     }
 
     public Image getImage() {
-        return Utilities.loadImage("org/netbeans/cubeon/local/nodes/local-repository.png");
+        return ImageUtilities.loadImage("org/netbeans/cubeon/local/nodes/local-repository.png");
     }
 
     public LocalTaskRepositoryProvider getProvider() {

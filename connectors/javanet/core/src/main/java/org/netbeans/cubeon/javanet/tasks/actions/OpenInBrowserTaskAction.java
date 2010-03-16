@@ -23,7 +23,7 @@ import javax.swing.ImageIcon;
 import org.netbeans.cubeon.javanet.tasks.JavanetTask;
 import org.openide.awt.HtmlBrowser.URLDisplayer;
 import org.openide.util.NbBundle;
-import org.openide.util.Utilities;
+import org.openide.util.ImageUtilities;
 
 /**
  *
@@ -37,7 +37,7 @@ public class OpenInBrowserTaskAction extends AbstractAction {
         this.task = task;
         putValue(NAME, NbBundle.getMessage(OpenInBrowserTaskAction.class, "LBL_Open_Task_In_Browser"));
         putValue(SHORT_DESCRIPTION,  NbBundle.getMessage(OpenInBrowserTaskAction.class, "LBL_Open_Task_In_Browser"));
-        putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/javanet/web.png")));
+        putValue(SMALL_ICON, new ImageIcon(ImageUtilities.loadImage("org/netbeans/cubeon/javanet/web.png")));
     }
 
 

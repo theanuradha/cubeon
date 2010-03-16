@@ -21,7 +21,7 @@ import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.openide.util.NbBundle;
-import org.openide.util.Utilities;
+import org.openide.util.ImageUtilities;
 
 /**
  * Action which shows Resuts component.
@@ -32,12 +32,12 @@ public class ResultsAction extends AbstractAction {
 
     public ResultsAction() {
         super(NbBundle.getMessage(ResultsAction.class, "CTL_ResultsAction"));
-        putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage(ResultsTopComponent.ICON_PATH, true)));
+        putValue(SMALL_ICON, new ImageIcon(ImageUtilities.loadImage(ResultsTopComponent.ICON_PATH, true)));
     }
 
     public ResultsAction(TaskQuery query) {
         super(NbBundle.getMessage(ResultsAction.class, "LBL_ShowResults"));
-        putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage(ResultsTopComponent.ICON_PATH, true)));
+        putValue(SMALL_ICON, new ImageIcon(ImageUtilities.loadImage(ResultsTopComponent.ICON_PATH, true)));
         this.query = query;
 
     }

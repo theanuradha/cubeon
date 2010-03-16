@@ -96,7 +96,7 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="taskViewActionPerformed"/>
               </Events>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="DropDownButtonFactory.createDropDownButton((new ImageIcon(Utilities.loadImage(&quot;org/netbeans/cubeon/ui/view.png&quot;))), viewMenu);"/>
+                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="DropDownButtonFactory.createDropDownButton((new ImageIcon(ImageUtilities.loadImage(&quot;org/netbeans/cubeon/ui/view.png&quot;))), viewMenu);"/>
               </AuxValues>
             </Component>
             <Component class="javax.swing.JToolBar$Separator" name="sep">

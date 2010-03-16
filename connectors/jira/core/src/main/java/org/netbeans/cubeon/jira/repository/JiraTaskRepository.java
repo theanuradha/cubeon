@@ -42,7 +42,7 @@ import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
-import org.openide.util.Utilities;
+import org.openide.util.ImageUtilities;
 import org.openide.util.lookup.Lookups;
 
 /**
@@ -146,7 +146,7 @@ public class JiraTaskRepository implements TaskRepository {
     }
 
     public Image getImage() {
-        return Utilities.loadImage("org/netbeans/cubeon/jira/repository/jira-repository.png");
+        return ImageUtilities.loadImage("org/netbeans/cubeon/jira/repository/jira-repository.png");
     }
 
     public List<String> getTaskIds() {

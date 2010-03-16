@@ -48,7 +48,7 @@ import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
-import org.openide.util.Utilities;
+import org.openide.util.ImageUtilities;
 import org.openide.util.lookup.Lookups;
 
 /**
@@ -234,7 +234,7 @@ public class JiraFilterQueryEditor extends javax.swing.JPanel implements Explore
 
         @Override
         public Image getIcon(int type) {
-            return Utilities.loadImage("org/netbeans/cubeon/jira/query/ui/filter.png");
+            return ImageUtilities.loadImage("org/netbeans/cubeon/jira/query/ui/filter.png");
         }
     }
 

@@ -20,7 +20,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import org.openide.util.NbBundle;
-import org.openide.util.Utilities;
+import org.openide.util.ImageUtilities;
 import org.openide.windows.TopComponent;
 
 /**
@@ -34,7 +34,7 @@ public class TaskExplorerAction extends AbstractAction {
 
     public TaskExplorerAction(String name) {
         super(name);
-        putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage(TaskExplorerTopComponent.ICON_PATH, true)));
+        putValue(SMALL_ICON, new ImageIcon(ImageUtilities.loadImage(TaskExplorerTopComponent.ICON_PATH, true)));
 
     }
 

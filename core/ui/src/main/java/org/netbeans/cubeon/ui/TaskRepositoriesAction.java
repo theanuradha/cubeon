@@ -9,7 +9,7 @@ import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
 import org.openide.util.NbBundle;
-import org.openide.util.Utilities;
+import org.openide.util.ImageUtilities;
 import org.openide.util.actions.Presenter.Popup;
 import org.openide.windows.TopComponent;
 
@@ -20,7 +20,7 @@ public class TaskRepositoriesAction extends AbstractAction implements Popup {
 
     public TaskRepositoriesAction(String name) {
         super(name);
-        putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage(TaskRepositoriesTopComponent.ICON_PATH, true)));
+        putValue(SMALL_ICON, new ImageIcon(ImageUtilities.loadImage(TaskRepositoriesTopComponent.ICON_PATH, true)));
     }
 
     public TaskRepositoriesAction() {

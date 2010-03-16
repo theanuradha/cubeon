@@ -27,7 +27,7 @@ import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.util.Lookup;
-import org.openide.util.Utilities;
+import org.openide.util.ImageUtilities;
 import org.openide.util.lookup.Lookups;
 
 /**
@@ -47,7 +47,7 @@ public class TaskLinksNode extends AbstractNode {
 
     @Override
     public Image getIcon(int type) {
-        return Utilities.loadImage("org/netbeans/cubeon/context/task/link/subtasks.png");
+        return ImageUtilities.loadImage("org/netbeans/cubeon/context/task/link/subtasks.png");
     }
 
     @Override
