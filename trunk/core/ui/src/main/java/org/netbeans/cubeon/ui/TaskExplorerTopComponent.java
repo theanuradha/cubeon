@@ -57,7 +57,7 @@ import org.openide.util.RequestProcessor;
 import org.openide.util.RequestProcessor.Task;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
-import org.openide.util.Utilities;
+import org.openide.util.ImageUtilities;
 
 /**
  * Top component which displays Tasks
@@ -80,7 +80,7 @@ public final class TaskExplorerTopComponent extends TopComponent implements Expl
         initComponents();
         setName(NbBundle.getMessage(TaskExplorerTopComponent.class, "CTL_TaskExplorerTopComponent"));
         setToolTipText(NbBundle.getMessage(TaskExplorerTopComponent.class, "HINT_TaskExplorerTopComponent"));
-        setIcon(Utilities.loadImage(ICON_PATH, true));
+        setIcon(ImageUtilities.loadImage(ICON_PATH, true));
         taskTreeView.setRootVisible(false);
         unloadViewMenu();
         //Task Explorer - remove task keyboard shortcu
@@ -210,7 +210,7 @@ public final class TaskExplorerTopComponent extends TopComponent implements Expl
         mainToolBar = new javax.swing.JToolBar();
         newTask = new javax.swing.JButton();
         refresh = new javax.swing.JButton();
-        taskView = DropDownButtonFactory.createDropDownButton((new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/ui/view.png"))), viewMenu);
+        taskView = DropDownButtonFactory.createDropDownButton((new ImageIcon(ImageUtilities.loadImage("org/netbeans/cubeon/ui/view.png"))), viewMenu);
         javax.swing.JToolBar.Separator sep = new javax.swing.JToolBar.Separator();
         focas = new javax.swing.JButton();
         goBackToRoot = new javax.swing.JButton();
@@ -427,10 +427,10 @@ private void taskViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             contextManager = Lookup.getDefault().lookup(TaskContextManager.class);
             if (contextManager.getContextView().equals(selectedView)) {
                 putValue(SHORT_DESCRIPTION, NbBundle.getMessage(TaskExplorerTopComponent.class, "LBL_Hide_Task_Context"));
-                putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/ui/focus_off.png")));
+                putValue(SMALL_ICON, new ImageIcon(ImageUtilities.loadImage("org/netbeans/cubeon/ui/focus_off.png")));
             } else {
                 putValue(SHORT_DESCRIPTION, NbBundle.getMessage(TaskExplorerTopComponent.class, "LBL_Show_Task_Context"));
-                putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/ui/focus_on.png")));
+                putValue(SMALL_ICON, new ImageIcon(ImageUtilities.loadImage("org/netbeans/cubeon/ui/focus_on.png")));
             }
 
 
@@ -456,8 +456,8 @@ private void taskViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         public GoBack() {
             putValue(SHORT_DESCRIPTION, NbBundle.getMessage(TaskExplorerTopComponent.class, "LBL_Go_Back_ To_ Root"));
             Image image = NodeUtils.getTreeFolderIcon(false);
-            Image badge = Utilities.loadImage("org/netbeans/cubeon/ui/goBack.png");
-            Image mergeImages = Utilities.mergeImages(image, badge, 7, 0);
+            Image badge = ImageUtilities.loadImage("org/netbeans/cubeon/ui/goBack.png");
+            Image mergeImages = ImageUtilities.mergeImages(image, badge, 7, 0);
             putValue(SMALL_ICON, new ImageIcon(mergeImages));
         }
 

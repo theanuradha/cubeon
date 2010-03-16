@@ -27,7 +27,7 @@ import org.netbeans.cubeon.tasks.spi.task.TaskElementFilter;
 import org.netbeans.cubeon.ui.TaskExplorerTopComponent;
 import org.netbeans.cubeon.ui.filters.TaskCompletedFilter;
 import org.openide.util.Lookup;
-import org.openide.util.Utilities;
+import org.openide.util.ImageUtilities;
 import org.openide.util.actions.Presenter.Menu;
 import org.openide.util.actions.Presenter.Popup;
 
@@ -50,7 +50,7 @@ public class FilterCompletedAction extends AbstractAction implements Menu, Popup
         item = new JCheckBoxMenuItem(this);
         item.setSelected(filter.isEnable());
         putValue(NAME, filter.getName());
-        putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/ui/completed_task.png")));
+        putValue(SMALL_ICON, new ImageIcon(ImageUtilities.loadImage("org/netbeans/cubeon/ui/completed_task.png")));
 
     }
 

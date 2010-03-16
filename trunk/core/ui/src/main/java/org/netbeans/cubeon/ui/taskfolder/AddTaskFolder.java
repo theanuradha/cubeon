@@ -9,7 +9,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import org.netbeans.cubeon.tasks.core.api.TaskFolder;
 import org.openide.util.NbBundle;
-import org.openide.util.Utilities;
+import org.openide.util.ImageUtilities;
 
 /**
  *
@@ -49,7 +49,7 @@ public class AddTaskFolder extends javax.swing.JPanel {
         final AddTaskFolder aetf = new AddTaskFolder(parent);
         aetf.lblMainHeader.setText(NbBundle.getMessage(AddTaskFolder.class, "LBL_UI_Add_Folder"));
         aetf.lblSubHeader.setText(NbBundle.getMessage(AddTaskFolder.class, "LBL_UI_Add_Folder_Description"));
-        aetf.lblIcon.setIcon(new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/ui/folder_add.png")));
+        aetf.lblIcon.setIcon(new ImageIcon(ImageUtilities.loadImage("org/netbeans/cubeon/ui/folder_add.png")));
 
         return aetf;
     }
@@ -58,7 +58,7 @@ public class AddTaskFolder extends javax.swing.JPanel {
         final AddTaskFolder aetf = new AddTaskFolder(parent);
         aetf.lblMainHeader.setText(NbBundle.getMessage(AddTaskFolder.class, "LBL_UI_Edit_Folder"));
         aetf.lblSubHeader.setText(NbBundle.getMessage(AddTaskFolder.class, "LBL_UI_Edit_Folder_Description"));
-        aetf.lblIcon.setIcon(new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/ui/folder_edit.png")));
+        aetf.lblIcon.setIcon(new ImageIcon(ImageUtilities.loadImage("org/netbeans/cubeon/ui/folder_edit.png")));
 
         return aetf;
     }

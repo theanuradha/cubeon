@@ -28,7 +28,7 @@ import org.netbeans.cubeon.tasks.spi.Notifier;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.netbeans.cubeon.tasks.spi.task.TaskElementChangeAdapter;
 import org.openide.util.Lookup;
-import org.openide.util.Utilities;
+import org.openide.util.ImageUtilities;
 import org.openide.util.lookup.Lookups;
 import org.netbeans.cubeon.common.ui.TaskTypeBadge;
 /**
@@ -186,16 +186,16 @@ public class JavanetTask implements TaskElement {
 
             switch (type) {
                 case DEFECT:
-                    image = Utilities.mergeImages(image,  TaskTypeBadge.getBadge(TaskTypeBadge.DEFACT), 0, 0);
+                    image = ImageUtilities.mergeImages(image,  TaskTypeBadge.getBadge(TaskTypeBadge.DEFACT), 0, 0);
                     break;
                 case ENHANCEMENT:
-                    image = Utilities.mergeImages(image,  TaskTypeBadge.getBadge(TaskTypeBadge.ENHANCEMENT), 0, 0);
+                    image = ImageUtilities.mergeImages(image,  TaskTypeBadge.getBadge(TaskTypeBadge.ENHANCEMENT), 0, 0);
                     break;
                 case FEATURE:
-                    image = Utilities.mergeImages(image,  TaskTypeBadge.getBadge(TaskTypeBadge.FEATURE), 0, 0);
+                    image = ImageUtilities.mergeImages(image,  TaskTypeBadge.getBadge(TaskTypeBadge.FEATURE), 0, 0);
                     break;
                 case TASK:
-                    image = Utilities.mergeImages(image,  TaskTypeBadge.getBadge(TaskTypeBadge.TASK), 0, 0);
+                    image = ImageUtilities.mergeImages(image,  TaskTypeBadge.getBadge(TaskTypeBadge.TASK), 0, 0);
                     break;
             }
 

@@ -27,7 +27,7 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
-import org.openide.util.Utilities;
+import org.openide.util.ImageUtilities;
 
 /**
  * Top component which displays something.
@@ -46,7 +46,7 @@ final class TaskRepositoriesTopComponent extends TopComponent implements Explore
         initComponents();
         setName(NbBundle.getMessage(TaskRepositoriesTopComponent.class, "CTL_TaskRepositoriesTopComponent"));
         setToolTipText(NbBundle.getMessage(TaskRepositoriesTopComponent.class, "HINT_TaskRepositoriesTopComponent"));
-        setIcon(Utilities.loadImage(ICON_PATH, true));
+        setIcon(ImageUtilities.loadImage(ICON_PATH, true));
         //hide root node
         treeView.setRootVisible(false);
 
@@ -135,7 +135,7 @@ final class TaskRepositoriesTopComponent extends TopComponent implements Explore
 
             @Override
             public Image getIcon(int arg0) {
-                return Utilities.loadImage("org/netbeans/cubeon/ui/repository.png", true);
+                return ImageUtilities.loadImage("org/netbeans/cubeon/ui/repository.png", true);
             }
 
             @Override

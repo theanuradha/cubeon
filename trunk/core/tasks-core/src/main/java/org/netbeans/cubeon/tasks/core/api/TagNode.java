@@ -21,7 +21,7 @@ import javax.swing.Action;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
-import org.openide.util.Utilities;
+import org.openide.util.ImageUtilities;
 
 /**
  *
@@ -31,7 +31,7 @@ public class TagNode extends AbstractNode {
 
     private Action preferredAction;
     private Action[] actions;
-    private Image image = Utilities.loadImage("org/netbeans/cubeon/tasks/core/empty.png");
+    private Image image = ImageUtilities.loadImage("org/netbeans/cubeon/tasks/core/empty.png");
 
     private TagNode(String name, String description) {
         super(Children.LEAF);

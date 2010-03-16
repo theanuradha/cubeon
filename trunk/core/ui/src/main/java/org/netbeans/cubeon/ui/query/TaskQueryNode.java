@@ -26,7 +26,7 @@ import org.netbeans.cubeon.tasks.spi.query.TaskQuery;
 import org.netbeans.cubeon.tasks.spi.query.TaskQueryEventAdapter;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
-import org.openide.util.Utilities;
+import org.openide.util.ImageUtilities;
 
 /**
  *
@@ -94,7 +94,7 @@ public class TaskQueryNode extends AbstractNode {
 
     @Override
     public Image getIcon(int arg0) {
-        return Utilities.loadImage("org/netbeans/cubeon/ui/query.png");
+        return ImageUtilities.loadImage("org/netbeans/cubeon/ui/query.png");
     }
 
     @Override

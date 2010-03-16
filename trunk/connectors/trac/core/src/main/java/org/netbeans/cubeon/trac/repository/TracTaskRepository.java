@@ -41,7 +41,7 @@ import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
-import org.openide.util.Utilities;
+import org.openide.util.ImageUtilities;
 import org.openide.util.lookup.Lookups;
 
 /**
@@ -126,7 +126,7 @@ public class TracTaskRepository implements TaskRepository {
     }
 
     public Image getImage() {
-        return Utilities.loadImage("org/netbeans/cubeon/trac/trac-repository.png");
+        return ImageUtilities.loadImage("org/netbeans/cubeon/trac/trac-repository.png");
     }
 
     public TaskElement createTaskElement(String summary, String description) {

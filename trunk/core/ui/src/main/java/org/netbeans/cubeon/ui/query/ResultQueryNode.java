@@ -27,7 +27,7 @@ import org.openide.nodes.Children;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 import org.openide.util.RequestProcessor.Task;
-import org.openide.util.Utilities;
+import org.openide.util.ImageUtilities;
 
 /**
  *
@@ -98,7 +98,7 @@ public class ResultQueryNode extends AbstractNode {
 
     @Override
     public Image getIcon(int arg0) {
-        return Utilities.loadImage(ResultsTopComponent.ICON_PATH);
+        return ImageUtilities.loadImage(ResultsTopComponent.ICON_PATH);
     }
 
     @Override

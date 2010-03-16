@@ -44,7 +44,7 @@ public class RevertChangesAction extends AbstractAction {
 
 
 
-    //putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/jira/history.png")));
+    //putValue(SMALL_ICON, new ImageIcon(ImageUtilities.loadImage("org/netbeans/cubeon/jira/history.png")));
     }
 
     public void actionPerformed(ActionEvent e) {

@@ -25,7 +25,7 @@ import javax.swing.ImageIcon;
 import org.netbeans.cubeon.jira.tasks.JiraTask;
 import org.openide.awt.HtmlBrowser.URLDisplayer;
 import org.openide.util.NbBundle;
-import org.openide.util.Utilities;
+import org.openide.util.ImageUtilities;
 
 /**
  *
@@ -40,7 +40,7 @@ public class OpenTaskHistoryAction extends AbstractAction {
         this.task = task;
         putValue(NAME, NbBundle.getMessage(OpenTaskHistoryAction.class, "LBL_Open_Change_History"));
         putValue(SHORT_DESCRIPTION, NbBundle.getMessage(OpenTaskHistoryAction.class, "LBL_Open_Change_History"));
-        putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/jira/history.png")));
+        putValue(SMALL_ICON, new ImageIcon(ImageUtilities.loadImage("org/netbeans/cubeon/jira/history.png")));
     }
 
     public void actionPerformed(ActionEvent e) {

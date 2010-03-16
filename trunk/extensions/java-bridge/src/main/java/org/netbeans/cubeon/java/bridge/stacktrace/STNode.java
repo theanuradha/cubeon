@@ -38,7 +38,7 @@ import org.openide.text.Line.Set;
 import org.openide.text.Line.ShowOpenType;
 import org.openide.text.Line.ShowVisibilityType;
 import org.openide.util.NbBundle;
-import org.openide.util.Utilities;
+import org.openide.util.ImageUtilities;
 import org.openide.util.lookup.Lookups;
 
 /**
@@ -58,7 +58,7 @@ public class STNode extends AbstractNode {
 
     @Override
     public Image getIcon(int type) {
-        return Utilities.loadImage("org/netbeans/cubeon/java/bridge/stacktrace.png");
+        return ImageUtilities.loadImage("org/netbeans/cubeon/java/bridge/stacktrace.png");
     }
 
     @Override
@@ -85,7 +85,7 @@ public class STNode extends AbstractNode {
             String name = resource.getName();
             OpenLine openLine = new OpenLine(resource);
             return new Node[]{TagNode.createNode(name, name,
-                        Utilities.loadImage("org/netbeans/cubeon/java/bridge/line.png"),
+                        ImageUtilities.loadImage("org/netbeans/cubeon/java/bridge/line.png"),
                         openLine, new Action[]{openLine})
                     };
         }

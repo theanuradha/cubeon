@@ -31,7 +31,7 @@ import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
-import org.openide.util.Utilities;
+import org.openide.util.ImageUtilities;
 import org.openide.util.lookup.Lookups;
 
 /**
@@ -51,7 +51,7 @@ public class STResourcesNode extends AbstractNode {
 
     @Override
     public Image getIcon(int type) {
-        return Utilities.loadImage("org/netbeans/cubeon/java/bridge/stacktraces.png");
+        return ImageUtilities.loadImage("org/netbeans/cubeon/java/bridge/stacktraces.png");
     }
 
     @Override
@@ -79,7 +79,7 @@ public class STResourcesNode extends AbstractNode {
                     @Override
                     public Node getNode() {
                         return TagNode.createNode(getPath(), getPath(),
-                                Utilities.loadImage("org/netbeans/cubeon/java/bridge/wait.gif"));
+                                ImageUtilities.loadImage("org/netbeans/cubeon/java/bridge/wait.gif"));
                     }
                 };
         private TaskElement taskElement;

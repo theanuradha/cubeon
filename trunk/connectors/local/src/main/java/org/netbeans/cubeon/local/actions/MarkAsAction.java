@@ -26,7 +26,7 @@ import org.netbeans.cubeon.local.repository.LocalTaskStatusProvider;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
 import org.netbeans.cubeon.tasks.spi.task.TaskStatus;
 import org.openide.util.NbBundle;
-import org.openide.util.Utilities;
+import org.openide.util.ImageUtilities;
 import org.openide.util.actions.Presenter.Menu;
 import org.openide.util.actions.Presenter.Popup;
 
@@ -71,7 +71,7 @@ public class MarkAsAction extends AbstractAction implements Menu, Popup {
             this.status = status;
             putValue(NAME, status.getText());
             if (selected) {
-                putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/local/selected.png")));
+                putValue(SMALL_ICON, new ImageIcon(ImageUtilities.loadImage("org/netbeans/cubeon/local/selected.png")));
 
             }
             setEnabled(!selected);

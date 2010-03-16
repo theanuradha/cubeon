@@ -25,7 +25,7 @@ import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
-import org.openide.util.Utilities;
+import org.openide.util.ImageUtilities;
 import org.openide.util.lookup.Lookups;
 
 import java.awt.*;
@@ -113,7 +113,7 @@ public class BugzillaTaskRepositoryProvider implements TaskRepositoryType {
      * {@inheritDoc}
      */
     public Image getImage() {
-        return Utilities.loadImage( "org/netbeans/cubeon/bugzilla/core/bugzilla.png" );
+        return ImageUtilities.loadImage( "org/netbeans/cubeon/bugzilla/core/bugzilla.png" );
     }
 
     /**

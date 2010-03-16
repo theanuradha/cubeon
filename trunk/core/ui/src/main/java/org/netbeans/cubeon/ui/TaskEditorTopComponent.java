@@ -40,7 +40,7 @@ import org.openide.nodes.Node;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
-import org.openide.util.Utilities;
+import org.openide.util.ImageUtilities;
 import org.openide.windows.TopComponent;
 
 /**
@@ -130,10 +130,10 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
     private void _focus() {
         if (element.equals(context.getActive())) {
             focus.setToolTipText(NbBundle.getMessage(TaskEditorTopComponent.class, "LBL_InactiveTask"));
-            focus.setIcon(new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/ui/focus_off.png")));
+            focus.setIcon(new ImageIcon(ImageUtilities.loadImage("org/netbeans/cubeon/ui/focus_off.png")));
         } else {
             focus.setToolTipText(NbBundle.getMessage(TaskEditorTopComponent.class, "LBL_ActiveTask"));
-            focus.setIcon(new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/ui/focus_on.png")));
+            focus.setIcon(new ImageIcon(ImageUtilities.loadImage("org/netbeans/cubeon/ui/focus_on.png")));
         }
     }
 

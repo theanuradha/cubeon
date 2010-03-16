@@ -27,7 +27,7 @@ import org.openide.nodes.Node;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
-import org.openide.util.Utilities;
+import org.openide.util.ImageUtilities;
 import org.openide.util.actions.NodeAction;
 
 /**
@@ -40,7 +40,7 @@ public class SynchronizeTaskAction extends NodeAction {
 
         putValue(NAME, NbBundle.getMessage(SynchronizeTaskAction.class, "LBL_Synchronize"));
         putValue(SHORT_DESCRIPTION, NbBundle.getMessage(SynchronizeTaskAction.class, "LBL_Synchronize"));
-        putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/ui/refresh.png")));
+        putValue(SMALL_ICON, new ImageIcon(ImageUtilities.loadImage("org/netbeans/cubeon/ui/refresh.png")));
     }
 
     public static Action createSynchronizeTaskAction(final TaskElement element) {
@@ -69,7 +69,7 @@ public class SynchronizeTaskAction extends NodeAction {
         };
         action.putValue(NAME, NbBundle.getMessage(SynchronizeTaskAction.class, "LBL_Synchronize"));
         action.putValue(SHORT_DESCRIPTION, NbBundle.getMessage(SynchronizeTaskAction.class, "LBL_Synchronize"));
-        action.putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage("org/netbeans/cubeon/ui/refresh.png")));
+        action.putValue(SMALL_ICON, new ImageIcon(ImageUtilities.loadImage("org/netbeans/cubeon/ui/refresh.png")));
         return action;
     }
 
