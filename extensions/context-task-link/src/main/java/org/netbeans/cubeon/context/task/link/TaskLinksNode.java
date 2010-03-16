@@ -17,8 +17,10 @@
 package org.netbeans.cubeon.context.task.link;
 
 import java.awt.Image;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.netbeans.cubeon.context.spi.TaskResource;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
@@ -28,6 +30,7 @@ import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.util.Lookup;
 import org.openide.util.ImageUtilities;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.Lookups;
 
 /**
@@ -57,7 +60,14 @@ public class TaskLinksNode extends AbstractNode {
 
     @Override
     public Action[] getActions(boolean context) {
-        return new Action[0];
+        return new Action[]{new AbstractAction(
+                    NbBundle.getMessage(TaskLinksNode.class, "LBL_Refresh")) {
+
+                public void actionPerformed(ActionEvent e) {
+                    refresh();
+                }
+            }
+                };
     }
 
     private static boolean isFilterd(TaskElement element, List<TaskElementFilter> filters) {
@@ -100,7 +110,7 @@ public class TaskLinksNode extends AbstractNode {
                     resources.add(taskResource);
                 }
             }
-            
+
             setKeys(resources);
         }
     }
