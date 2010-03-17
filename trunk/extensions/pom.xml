@@ -16,6 +16,7 @@
         <module>java-bridge</module>
         <module>analyzer-spi</module>
         <module>debugger-bridge</module>
+        <module>resources-bridge</module>
     </modules>
     <build>
         <pluginManagement>
