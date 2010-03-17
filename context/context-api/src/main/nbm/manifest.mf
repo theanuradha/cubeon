@@ -1,4 +1,5 @@
 Manifest-Version: 1.0
+OpenIDE-Module-Install: org/netbeans/cubeon/context/internal/Installer.class
 OpenIDE-Module-Localizing-Bundle: org/netbeans/cubeon/context/api/Bundle.properties
 OpenIDE-Module-Layer: org/netbeans/cubeon/context/api/layer.xml
 AutoUpdate-Show-In-Client: false

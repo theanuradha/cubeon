@@ -4,9 +4,23 @@
 <filesystem>
     <folder name="Editors">
         <folder name="Popup">
-                <file name="org-netbeans-cubeon-context-internal-TaskContextEditorPopupAction.instance">
-                    <attr name="position" intvalue="10000"/>
-                </file>
+            <file name="org-netbeans-cubeon-context-internal-TaskContextEditorPopupAction.instance">
+                <attr name="position" intvalue="10000"/>
+            </file>
+        </folder>
+    </folder>
+
+
+    <!-- :::::::::::::::::::::::::::::::::::::::::::::::::::::::::-->
+    <folder name="Loaders">
+        <folder name="folder">
+            <folder name="any">
+                <folder name="Actions">
+                    <file name="org-netbeans-cubeon-context-internal-TaskContextEditorPopupAction.instance">
+                        <attr name="position" intvalue="10000"/>
+                    </file>
+                </folder>
+            </folder>
         </folder>
     </folder>
 </filesystem>
