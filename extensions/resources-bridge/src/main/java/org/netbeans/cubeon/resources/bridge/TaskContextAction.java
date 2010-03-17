@@ -56,6 +56,9 @@ public class TaskContextAction extends AbstractAction implements ContextAwareAct
         TaskContextManager contextManager = Lookup.getDefault().lookup(TaskContextManager.class);
         TaskContext taskContext = contextManager.getActiveTaskContext();
         this.context = context;
+        if(context==null){
+            context = Utilities.actionsGlobalContext();
+        }
         if (taskContext != null) {
             resourceSet = taskContext.getLookup().lookup(OtherResourceSet.class);
 
