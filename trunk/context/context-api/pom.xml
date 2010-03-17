@@ -44,6 +44,11 @@
             <artifactId>cubeon-tasks-spi</artifactId>
             <version>${cubeon.release}</version>
         </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-modules</artifactId>
+            <version>RELEASE65</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -54,3 +59,4 @@
         </plugins>
     </build>
 </project>
+
