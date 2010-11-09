@@ -116,19 +116,13 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>nbm-maven-plugin</artifactId>
-                    <version>3.1</version>
+                    <version>3.4</version>
                     <extensions>true</extensions>
                     <configuration>
                         <descriptor>src/main/nbm/module.xml</descriptor>
                         <keystorealias>cubeon</keystorealias>
                     </configuration>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.netbeans.nbbuild</groupId>
-                            <artifactId>tasks</artifactId>
-                            <version>6.0</version>
-                        </dependency>
-                    </dependencies>
+
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
