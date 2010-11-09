@@ -15,7 +15,7 @@
         <module>jira</module>
         <module>local</module>
         <module>trac</module>
-        <module>gcode</module>
+        <!--module>gcode</module-->
     </modules>
     <build>
         <pluginManagement>
