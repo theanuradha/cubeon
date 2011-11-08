@@ -4,12 +4,12 @@
     <parent>
         <groupId>org.netbeans.cubeon</groupId>
         <artifactId>cubeon-jira-module</artifactId>
-        <version>1.1.0.0</version>
+        <version>1.2.0.0</version>
     </parent>
     <artifactId>jira-connecter-lib</artifactId>
     <packaging>nbm</packaging>
     <name>Cube°n Jira Soap Lib</name>
-    <version>1.1.0.0</version>
+    <version>1.2.0.0</version>
     <description>Jira soap library</description>
     <dependencies>
         <dependency>
@@ -20,6 +20,11 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util</artifactId>
+            <version>${netbeans.release}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util-lookup</artifactId>
             <version>${netbeans.release}</version>
         </dependency>
         <dependency>
