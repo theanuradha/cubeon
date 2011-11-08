@@ -282,11 +282,12 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
                     NbBundle.getMessage(TaskEditorTopComponent.class, "CTL_Question"),
                     NotifyDescriptor.YES_NO_CANCEL_OPTION);
             Object notify = DialogDisplayer.getDefault().notify(d);
-            if (notify == NotifyDescriptor.OK_OPTION) {
+            if (notify == NotifyDescriptor.YES_OPTION) {
                 try {
                     save();
                 } catch (IOException ex) {
                     Exceptions.printStackTrace(ex);
+                    return false; // this is to ensure that editor is not closed if something fails during save
                 }
             } else if (notify == NotifyDescriptor.NO_OPTION) {
 
