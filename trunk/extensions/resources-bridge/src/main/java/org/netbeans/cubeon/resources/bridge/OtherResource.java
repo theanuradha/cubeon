@@ -57,7 +57,7 @@ public class OtherResource implements TaskResource {
         this.projectId = projectId;
     }
 
-    private DataObject getDataObject() {
+     DataObject getDataObject() {
         DataObject dataObject = null;
 
         try {
