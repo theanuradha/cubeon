@@ -15,12 +15,17 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util</artifactId>
-            <version>RELEASE69</version>
+            <version>${netbeans.release}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-windows</artifactId>
-            <version>RELEASE69</version>
+            <version>${netbeans.release}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-awt</artifactId>
+            <version>${netbeans.release}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
@@ -87,7 +92,7 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-modules</artifactId>
-            <version>RELEASE69</version>
+            <version>${netbeans.release}</version>
         </dependency>
     </dependencies>
     <build>

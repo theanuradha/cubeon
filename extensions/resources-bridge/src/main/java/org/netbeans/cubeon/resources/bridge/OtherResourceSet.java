@@ -88,10 +88,10 @@ public class OtherResourceSet implements TaskResourceSet {
     }
 
     public List<TaskResource> getResources() {
-        return new ArrayList<TaskResource>(getJavaResources());
+        return new ArrayList<TaskResource>(getRefResources());
     }
 
-    public List<OtherResource> getJavaResources() {
+    public List<OtherResource> getRefResources() {
         if (lasyInit.getAndSet(false)) {
             List<OtherResource> refresh =
                     new ResourcesPersistenceHandler(contextManager.getActiveContextHandler()).refresh();
@@ -105,7 +105,7 @@ public class OtherResourceSet implements TaskResourceSet {
     }
 
     boolean contains(OtherResource element) {
-        for (OtherResource resource : getJavaResources()) {
+        for (OtherResource resource : getRefResources()) {
             if (element.equals(resource)  ) {
                 return true;
             }
@@ -115,7 +115,7 @@ public class OtherResourceSet implements TaskResourceSet {
 
     void remove(OtherResource element) {
         TaskResource tr = null;
-        for (OtherResource resource : getJavaResources()) {
+        for (OtherResource resource : getRefResources()) {
             if (element.equals(resource)) {
                 tr = resource;
                 break;

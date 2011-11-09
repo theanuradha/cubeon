@@ -15,16 +15,22 @@
  */
 package org.netbeans.cubeon.resources.bridge;
 
+import java.awt.EventQueue;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.List;
+import java.util.Set;
+import org.netbeans.api.actions.Openable;
 import org.netbeans.cubeon.context.api.TaskContext;
 import org.netbeans.cubeon.context.api.TaskContextManager;
+import org.netbeans.cubeon.context.spi.TaskResourceSet;
 import org.netbeans.cubeon.tasks.core.api.CubeonContext;
 import org.netbeans.cubeon.tasks.core.api.CubeonContextListener;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
 import org.openide.loaders.DataObject;
 import org.openide.modules.ModuleInstall;
 import org.openide.util.Lookup;
+import org.openide.windows.Mode;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
@@ -67,7 +73,7 @@ public class Installer extends ModuleInstall {
 
             }
         };
-        TaskContextManager contextManager = Lookup.getDefault().lookup(TaskContextManager.class);
+        final TaskContextManager contextManager = Lookup.getDefault().lookup(TaskContextManager.class);
         TaskContext taskContext = contextManager.getActiveTaskContext();
         if (taskContext != null) {
             //this will pick up files opening and add to active 
@@ -78,11 +84,49 @@ public class Installer extends ModuleInstall {
 
             public void taskActivated(TaskElement element) {
                 WindowManager.getDefault().getRegistry().addPropertyChangeListener(activationListener);
+                TaskContext active = contextManager.getTaskContext(element);
+                List<TaskResourceSet> resourceSets = active.getResourceSets();
+                for (TaskResourceSet trs : resourceSets) {
+                    if (trs instanceof OtherResourceSet) {
+                        OtherResourceSet resourceSet = (OtherResourceSet) trs;
+                        openResourceSet(resourceSet);
+                    }
+                }
             }
 
             public void taskDeactivated(TaskElement element) {
-               WindowManager.getDefault().getRegistry().removePropertyChangeListener(activationListener);
+                WindowManager.getDefault().getRegistry().removePropertyChangeListener(activationListener);
+                EventQueue.invokeLater(new Runnable() {
+
+                    public void run() {
+                        closeTCs();
+                    }
+                });
             }
         });
+    }
+
+    private void openResourceSet(OtherResourceSet ors) {
+        List<OtherResource> refResources = ors.getRefResources();
+        for (OtherResource or : refResources) {
+            DataObject dataObject = or.getDataObject();
+            if(dataObject!=null){
+                dataObject.getLookup().lookup(Openable.class).open();
+            }
+        }
+    }
+
+    private void closeTCs() {
+        Set<? extends Mode> modes = WindowManager.getDefault().getModes();
+
+        for (Mode mode : modes) {
+            if (WindowManager.getDefault().isEditorMode(mode)) {
+                TopComponent[] topComponents = mode.getTopComponents();
+                for (TopComponent tc : topComponents) {
+                    tc.close();
+                }
+            }
+
+        }
     }
 }
