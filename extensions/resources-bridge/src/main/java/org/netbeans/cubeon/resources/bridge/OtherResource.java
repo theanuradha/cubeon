@@ -18,9 +18,13 @@ package org.netbeans.cubeon.resources.bridge;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import org.netbeans.api.project.Project;
+import org.netbeans.api.project.ProjectInformation;
+import org.netbeans.api.project.ui.OpenProjects;
 import org.netbeans.cubeon.context.api.TaskContext;
 import org.netbeans.cubeon.context.api.TaskContextManager;
 import org.netbeans.cubeon.context.spi.TaskResource;
@@ -42,31 +46,56 @@ import org.openide.util.lookup.Lookups;
 public class OtherResource implements TaskResource {
 
     private final String path;
+    private final String projectId;
 
     public OtherResource(String path) {
+        this(null, path);
+    }
+
+    public OtherResource(String projectId, String path) {
         this.path = path;
+        this.projectId = projectId;
     }
 
     private DataObject getDataObject() {
         DataObject dataObject = null;
-        try {
 
-            File file = new File(path);
-            file = FileUtil.normalizeFile(file);
-            FileObject fileObject = FileUtil.toFileObject(file);
+        try {
+            FileObject fileObject = null;
+            if (projectId == null) {
+                File file = new File(path);
+                file = FileUtil.normalizeFile(file);
+                fileObject = FileUtil.toFileObject(file);
+
+            } else {
+                Project[] openProjects = OpenProjects.getDefault().getOpenProjects();
+                for (Project project : openProjects) {
+                    ProjectInformation pi = project.getLookup().lookup(ProjectInformation.class);
+                    if (pi.getName().equals(projectId)) {
+                         fileObject = project.getProjectDirectory().getFileObject(path);
+                        break;
+                    }
+                }
+            }
             if (fileObject != null) {
+
                 dataObject = DataObject.find(fileObject);
             }
 
+
         } catch (DataObjectNotFoundException ex) {
 
-            Logger.getLogger(OtherResource.class.getName()).fine("Missing : " + path);//NOI18N
+            Logger.getLogger(OtherResource.class.getName()).log(Level.FINE, "Missing : {0}", path);//NOI18N
         }
         return dataObject;
     }
 
     public String getPath() {
         return path;
+    }
+
+    public String getProjectId() {
+        return projectId;
     }
 
     public String getName() {

@@ -32,6 +32,7 @@ import org.openide.nodes.Node;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 import org.openide.util.ImageUtilities;
+import org.openide.util.Lookup;
 import org.openide.util.lookup.Lookups;
 
 /**
@@ -74,13 +75,26 @@ public class STResourcesNode extends AbstractNode {
     private static class ResourcesChildern extends Children.Keys<TaskResource> {
 
         private static final TaskResource LOADINFG =
-                new JavaResource(NbBundle.getMessage(STResourcesNode.class, "LBL_Loading")) {
+                new TaskResource() {
 
-                    @Override
-                    public Node getNode() {
-                        return TagNode.createNode(getPath(), getPath(),
-                                ImageUtilities.loadImage("org/netbeans/cubeon/java/bridge/wait.gif"));
-                    }
+            public String getName() {
+                return NbBundle.getMessage(STResourcesNode.class, "LBL_Loading");
+            }
+
+            public String getDescription() {
+                return getName();
+            }
+            public Lookup getLookup() {
+                return Lookups.fixed(this);
+            }
+            public void open() {
+            }
+
+            @Override
+            public Node getNode() {
+                return TagNode.createNode(getName(), getName(),
+                        ImageUtilities.loadImage("org/netbeans/cubeon/java/bridge/wait.gif"));
+            }
                 };
         private TaskElement taskElement;
         private STResourceSet resourceSet;
