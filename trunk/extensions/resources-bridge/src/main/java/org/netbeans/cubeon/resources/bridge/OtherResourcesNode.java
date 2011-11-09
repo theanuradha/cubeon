@@ -40,7 +40,6 @@ public class OtherResourcesNode extends AbstractNode {
 
     private TaskElement taskElement;
     private OtherResourceSet resourceSet;
-
     public OtherResourcesNode(TaskElement taskElement, OtherResourceSet resourceSet) {
         super(new ResourcesChildern(taskElement, resourceSet), Lookups.fixed(taskElement, resourceSet));
         this.resourceSet = resourceSet;
@@ -92,7 +91,7 @@ public class OtherResourcesNode extends AbstractNode {
         }
 
         @Override
-        protected void addNotify() {
+        public void addNotify() {
             setKeys(new TaskResource[]{LOADINFG});
             RequestProcessor.getDefault().post(new Runnable() {
 
@@ -111,6 +110,13 @@ public class OtherResourcesNode extends AbstractNode {
     }
 
     void refresh() {
-        setChildren(new ResourcesChildern(taskElement, resourceSet));
+        final ResourcesChildern resourcesChildern = (ResourcesChildern) getChildren();
+        EventQueue.invokeLater(new Runnable() {
+
+            public void run() {
+               resourcesChildern.addNotify();
+            }
+        });
+        
     }
 }

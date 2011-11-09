@@ -106,7 +106,7 @@ public class OtherResourceSet implements TaskResourceSet {
 
     boolean contains(OtherResource element) {
         for (OtherResource resource : getJavaResources()) {
-            if (element.getPath().equals(resource.getPath())) {
+            if (element.equals(resource)  ) {
                 return true;
             }
         }
@@ -116,7 +116,7 @@ public class OtherResourceSet implements TaskResourceSet {
     void remove(OtherResource element) {
         TaskResource tr = null;
         for (OtherResource resource : getJavaResources()) {
-            if (element.getPath().equals(resource.getPath())) {
+            if (element.equals(resource)) {
                 tr = resource;
                 break;
             }

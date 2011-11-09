@@ -16,9 +16,16 @@
  */
 package org.netbeans.cubeon.resources.bridge;
 
+import java.io.File;
+import org.netbeans.api.project.FileOwnerQuery;
+import org.netbeans.api.project.Project;
+import org.netbeans.api.project.ProjectInformation;
 import org.netbeans.cubeon.context.spi.TaskResourceSet;
 import org.netbeans.cubeon.context.spi.TaskResouresProvider;
 import org.netbeans.cubeon.tasks.spi.task.TaskElement;
+import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
+import org.openide.loaders.DataObject;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.Lookups;
 
@@ -38,5 +45,25 @@ public class OtherResourceProvider implements TaskResouresProvider {
 
     public TaskResourceSet createResourceSet(TaskElement element) {
         return new OtherResourceSet(element, this);
+    }
+    
+    static OtherResource toResource(DataObject dataObject) {
+        
+        if (dataObject != null) {
+            FileObject primaryFile = dataObject.getPrimaryFile();
+            Project owner = FileOwnerQuery.getOwner(primaryFile);
+            if(owner == null){
+                File toFile = FileUtil.toFile(primaryFile);
+                if (toFile != null) {
+                    String path = toFile.getAbsolutePath();
+                    return new OtherResource(path);
+                }
+            }else{
+                ProjectInformation pi = owner.getLookup().lookup(ProjectInformation.class);
+                String path = FileUtil.getRelativePath(owner.getProjectDirectory(), primaryFile);
+                return new OtherResource(pi.getName(), path);
+            }
+        }
+        return null;
     }
 }

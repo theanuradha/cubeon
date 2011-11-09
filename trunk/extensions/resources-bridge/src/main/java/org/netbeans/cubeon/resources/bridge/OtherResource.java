@@ -117,6 +117,32 @@ public class OtherResource implements TaskResource {
         return Lookups.fixed(this);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final OtherResource other = (OtherResource) obj;
+        if ((this.path == null) ? (other.path != null) : !this.path.equals(other.path)) {
+            return false;
+        }
+        if ((this.projectId == null) ? (other.projectId != null) : !this.projectId.equals(other.projectId)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 53 * hash + (this.path != null ? this.path.hashCode() : 0);
+        hash = 53 * hash + (this.projectId != null ? this.projectId.hashCode() : 0);
+        return hash;
+    }
+
     private Node getResourceNode() {
         DataObject dataObject = getDataObject();
 
