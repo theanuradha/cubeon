@@ -39,7 +39,7 @@ public class ContainerGroup extends Group {
 
     private List<Group> groups = new ArrayList<Group>();
     private final TreeGroupView groupView = new TreeGroupView(false);
-
+    private ComponentGroupPanel componentGroupPanel;
     public ContainerGroup(String name, String description) {
         super(name, description);
     }
@@ -87,11 +87,14 @@ public class ContainerGroup extends Group {
         for (Action action : super.getToolbarActions()) {
             toolbarActionList.add(action);
         }
-        
-        Action expand=new AbstractAction() {
+        Action expand= new AbstractAction() {
 
             public void actionPerformed(ActionEvent e) {
+               
                groupView.expandAll();
+               if(componentGroupPanel!=null){
+                   componentGroupPanel.open();
+               }
             }
         };
         expand.putValue(AbstractAction.NAME,
@@ -102,7 +105,11 @@ public class ContainerGroup extends Group {
         Action collapse=new AbstractAction() {
 
             public void actionPerformed(ActionEvent e) {
+                
                groupView.collapseAll();
+               if(componentGroupPanel!=null){
+                   componentGroupPanel.close();
+               }
             }
         };
         collapse.putValue(AbstractAction.NAME,
@@ -121,7 +128,7 @@ public class ContainerGroup extends Group {
 
         AbstractGroupView gv = lookup.lookup(AbstractGroupView.class);
         assert gv != null;
-        ComponentGroupPanel componentGroupPanel = new ComponentGroupPanel(gv, this);
+        componentGroupPanel = new ComponentGroupPanel(gv, this);
 
         return componentGroupPanel;
     }

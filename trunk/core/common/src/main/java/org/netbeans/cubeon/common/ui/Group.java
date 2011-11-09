@@ -36,7 +36,7 @@ public abstract class Group {
     private String summary;
     private boolean foldable = true;
     private boolean open = true;
-    private Action[] haeaderActions = new Action[0];
+    private Action[] headerActions = new Action[0];
     private Action[] toolbarActions = new Action[0];
     private final Set<ChangeListener> listeners = new HashSet<ChangeListener>(1);
 
@@ -80,11 +80,11 @@ public abstract class Group {
     public abstract GroupPanel createGroupPanel(Lookup lookup);
 
     public Action[] getHaeaderActions() {
-        return haeaderActions;
+        return headerActions;
     }
 
     public void setHaeaderActions(Action[] haeaderActions) {
-        this.haeaderActions = haeaderActions;
+        this.headerActions = haeaderActions;
         fireChangeEvent("HEADER_ACTIONS");
     }
 
