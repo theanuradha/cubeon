@@ -34,6 +34,7 @@ class ResourcesPersistenceHandler {
     private static final String TAG_ID = "id";
     private static final String TAG_RESOURCES_PATHS = "resources-paths";
     private static final String TAG_PATH = "path";
+    private static final String TAG_PROJECT_ID = "project-id";
     private final TaskContextHandler contextHandler;
 
     ResourcesPersistenceHandler(TaskContextHandler contextHandler) {
@@ -65,8 +66,12 @@ class ResourcesPersistenceHandler {
                     if (node.getNodeType() == Node.ELEMENT_NODE) {
                         Element element = (Element) node;
                         String id = element.getAttribute(TAG_ID);
+                        String pid = element.getAttribute(TAG_PROJECT_ID);
 
-                        if (resource.getPath().equals(id)) {
+                        if (resource.getPath().equals(id) && (
+                                (pid==null && resource.getProjectId()==null) ||
+                                (pid!=null && pid.equals(resource.getProjectId()))
+                                )) {
                             trelement = element;
                             break;
                         }
@@ -98,6 +103,9 @@ class ResourcesPersistenceHandler {
                 Element taskElement = document.createElement(TAG_PATH);
                 tasksElement.appendChild(taskElement);
                 taskElement.setAttribute(TAG_ID, resource.getPath());
+                if(resource.getProjectId()!=null){
+                    taskElement.setAttribute(TAG_PROJECT_ID, resource.getProjectId());
+                }
 
                 contextHandler.saveContextDocument(document);
             }
@@ -129,8 +137,9 @@ class ResourcesPersistenceHandler {
                     if (node.getNodeType() == Node.ELEMENT_NODE) {
                         Element element = (Element) node;
                         String id = element.getAttribute(TAG_ID);
+                        String pid = element.getAttribute(TAG_PROJECT_ID);
 
-                        resources.add(new OtherResource(id));
+                        resources.add(new OtherResource(pid,id));
 
 
                     }
