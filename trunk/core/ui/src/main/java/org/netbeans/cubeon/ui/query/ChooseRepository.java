@@ -10,6 +10,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.Action;
+import javax.swing.JScrollPane;
 import org.netbeans.cubeon.tasks.core.api.TaskNodeFactory;
 import org.netbeans.cubeon.tasks.spi.query.TaskQuerySupportProvider;
 import org.netbeans.cubeon.tasks.spi.repository.TaskRepository;
@@ -33,6 +34,7 @@ final class ChooseRepository extends javax.swing.JPanel implements ExplorerManag
     /** Creates new form ChooseRepository */
     ChooseRepository(final ChooseRepositoryWizard wizard, List<TaskRepository> repositories) {
         initComponents();
+        taskTreeView.setBorder(new JScrollPane().getBorder());
         taskTreeView.setRootVisible(false);
         taskTreeView.setPopupAllowed(false);
         explorerManager.addPropertyChangeListener(new PropertyChangeListener() {
@@ -124,7 +126,7 @@ final class ChooseRepository extends javax.swing.JPanel implements ExplorerManag
 
         pnlHeader.setBackground(new java.awt.Color(255, 255, 255));
 
-        lblMainHeader.setFont(new java.awt.Font("Tahoma", 1, 11));
+        lblMainHeader.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         lblMainHeader.setText(NbBundle.getMessage(ChooseRepository.class, "LBL_Repo")); // NOI18N
 
         lblSubHeader.setText(NbBundle.getMessage(ChooseRepository.class, "LBL_Repo_Dec")); // NOI18N
@@ -156,13 +158,13 @@ final class ChooseRepository extends javax.swing.JPanel implements ExplorerManag
                         .add(lblMainHeader)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .add(lblSubHeader))
-                    .add(lblIcon, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE))
+                    .add(lblIcon, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .add(8, 8, 8)
                 .add(jSeparator1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .add(2, 2, 2))
         );
 
-        scrPane.setBorder(javax.swing.BorderFactory.createEtchedBorder(null, javax.swing.UIManager.getDefaults().getColor("ComboBox.selectionBackground")));
+        scrPane.setBorder(null);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);

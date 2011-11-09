@@ -27,11 +27,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
-import javax.swing.AbstractAction;
-import javax.swing.ActionMap;
-import javax.swing.ImageIcon;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JPopupMenu;
+import javax.swing.*;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import org.netbeans.cubeon.context.api.TaskContextManager;
@@ -142,7 +138,6 @@ public final class TaskExplorerTopComponent extends TopComponent implements Expl
             preferences.put(SELECTED_VIEW, view.getId());
             final Node node = view.getRootContext();
             explorerManager.setRootContext(node);
-            focas.setAction(new Context());
             expand();
         }
     }
@@ -212,7 +207,6 @@ public final class TaskExplorerTopComponent extends TopComponent implements Expl
         refresh = new javax.swing.JButton();
         taskView = DropDownButtonFactory.createDropDownButton((new ImageIcon(ImageUtilities.loadImage("org/netbeans/cubeon/ui/view.png"))), viewMenu);
         javax.swing.JToolBar.Separator sep = new javax.swing.JToolBar.Separator();
-        focas = new javax.swing.JButton();
         goBackToRoot = new javax.swing.JButton();
         subToolbar = new javax.swing.JToolBar();
         downMenu = new javax.swing.JButton();
@@ -262,12 +256,6 @@ public final class TaskExplorerTopComponent extends TopComponent implements Expl
         mainToolBar.add(taskView);
         mainToolBar.add(sep);
 
-        focas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/cubeon/ui/focus_off.png"))); // NOI18N
-        focas.setFocusable(false);
-        focas.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        focas.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        mainToolBar.add(focas);
-
         goBackToRoot.setFocusable(false);
         goBackToRoot.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         goBackToRoot.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -315,7 +303,6 @@ private void taskViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 }//GEN-LAST:event_taskViewActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton downMenu;
-    private javax.swing.JButton focas;
     private javax.swing.JButton goBackToRoot;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JToolBar mainToolBar;
