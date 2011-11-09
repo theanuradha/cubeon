@@ -1,4 +1,5 @@
 Manifest-Version: 1.0
+OpenIDE-Module-Install: org/netbeans/cubeon/resources/bridge/Installer.class
 OpenIDE-Module-Localizing-Bundle: org/netbeans/cubeon/resources/bridge/Bundle.properties
 
 

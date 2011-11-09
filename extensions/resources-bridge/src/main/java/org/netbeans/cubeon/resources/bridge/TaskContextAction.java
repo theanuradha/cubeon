@@ -16,6 +16,8 @@
  */
 package org.netbeans.cubeon.resources.bridge;
 
+
+
 import java.awt.event.ActionEvent;
 import java.io.File;
 import javax.swing.AbstractAction;
@@ -23,10 +25,8 @@ import javax.swing.Action;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectInformation;
-
 import org.netbeans.cubeon.context.api.TaskContext;
 import org.netbeans.cubeon.context.api.TaskContextManager;
-
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
@@ -64,8 +64,8 @@ public class TaskContextAction extends AbstractAction implements ContextAwareAct
         }
         if (taskContext != null) {
             resourceSet = taskContext.getLookup().lookup(OtherResourceSet.class);
-
-            resource = toResource(context);
+            DataObject dataObject = context.lookup(DataObject.class);
+            resource = OtherResourceProvider.toResource(dataObject);
             setEnabled(resource != null);
             if (resource != null && resourceSet.contains(resource)) {
                 remove = true;
@@ -98,23 +98,5 @@ public class TaskContextAction extends AbstractAction implements ContextAwareAct
         return new TaskContextAction(arg0);
     }
 
-    private static OtherResource toResource(Lookup l) {
-        DataObject dataObject = l.lookup(DataObject.class);
-        if (dataObject != null) {
-            FileObject primaryFile = dataObject.getPrimaryFile();
-            Project owner = FileOwnerQuery.getOwner(primaryFile);
-            if(owner == null){
-                File toFile = FileUtil.toFile(primaryFile);
-                if (toFile != null) {
-                    String path = toFile.getAbsolutePath();
-                    return new OtherResource(path);
-                }
-            }else{
-                ProjectInformation pi = owner.getLookup().lookup(ProjectInformation.class);
-                String path = FileUtil.getRelativePath(owner.getProjectDirectory(), primaryFile);
-                return new OtherResource(pi.getName(), path);
-            }
-        }
-        return null;
-    }
+     
 }
