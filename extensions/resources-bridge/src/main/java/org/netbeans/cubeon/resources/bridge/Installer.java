@@ -96,12 +96,7 @@ public class Installer extends ModuleInstall {
 
             public void taskDeactivated(TaskElement element) {
                 WindowManager.getDefault().getRegistry().removePropertyChangeListener(activationListener);
-                EventQueue.invokeLater(new Runnable() {
-
-                    public void run() {
-                        closeTCs();
-                    }
-                });
+                closeTCs();
             }
         });
     }
@@ -110,7 +105,7 @@ public class Installer extends ModuleInstall {
         List<OtherResource> refResources = ors.getRefResources();
         for (OtherResource or : refResources) {
             DataObject dataObject = or.getDataObject();
-            if(dataObject!=null){
+            if (dataObject != null) {
                 dataObject.getLookup().lookup(Openable.class).open();
             }
         }
@@ -123,7 +118,9 @@ public class Installer extends ModuleInstall {
             if (WindowManager.getDefault().isEditorMode(mode)) {
                 TopComponent[] topComponents = mode.getTopComponents();
                 for (TopComponent tc : topComponents) {
-                    tc.close();
+                    DataObject dataObj = tc.getLookup().lookup(DataObject.class);
+                    if (dataObj != null) 
+                      tc.close();
                 }
             }
 
