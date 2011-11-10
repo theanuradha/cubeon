@@ -53,7 +53,7 @@ public class Installer extends ModuleInstall {
 
 
 
-                if (TopComponent.Registry.PROP_TC_OPENED.equals(evt.getPropertyName())) {
+                if (TopComponent.Registry.PROP_ACTIVATED.equals(evt.getPropertyName())) {
                     TopComponent tc = WindowManager.getDefault().getRegistry().getActivated();
                     DataObject dataObj = tc.getLookup().lookup(DataObject.class);
                     if (dataObj != null) {
