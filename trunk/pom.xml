@@ -7,7 +7,7 @@
     <name>Cube°n</name>
     <description>Cube°n Task-Focused Interface for NetBeans </description>
     <url>http://cubeon.googlecode.com</url>
-    <version>1.2.0.0</version>
+    <version>1.2.1.0</version>
     <inceptionYear>2008</inceptionYear>
     <scm>
         <connection>scm:svn:http://cubeon.googlecode.com/svn/trunk/</connection>
@@ -199,7 +199,7 @@
         <java15.home>${java.home}/..</java15.home>
       <!-- the version of netbeans we depend on-->
         <netbeans.release>RELEASE69</netbeans.release>
-        <cubeon.release>1.2.0.0</cubeon.release>
+        <cubeon.release>1.2.1.0</cubeon.release>
     </properties>
   <!--reporting>
       <plugins>

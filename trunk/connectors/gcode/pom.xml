@@ -3,14 +3,14 @@
     <parent>
         <groupId>org.netbeans.cubeon</groupId>
         <artifactId>cubeon-connectors</artifactId>
-        <version>1.2.0.0</version>
+        <version>1.2.1.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>cubeon-gcode-module</artifactId>
     <packaging>pom</packaging>
     <name>Cube°n Google Code Module</name>
     <description>Google Code Connecter for the Cube°n </description>
-    <version>1.2.0.0</version>
+    <version>1.2.1.0</version>
     <modules>
         <module>gcode-api</module>
         <module>core</module>

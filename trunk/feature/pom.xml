@@ -3,12 +3,12 @@
     <parent>
         <groupId>org.netbeans.cubeon</groupId>
         <artifactId>cubeon-parent</artifactId>
-        <version>1.2.0.0</version>
+        <version>1.2.1.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>feature</artifactId>
     <packaging>nbm</packaging>
-    <version>1.2.0.0</version>
+    <version>1.2.1.0</version>
     <name>Cube°n Kit</name>
     <description>Cube°n related features</description>
 
