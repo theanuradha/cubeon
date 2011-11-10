@@ -3,14 +3,14 @@
     <parent>
         <groupId>org.netbeans.cubeon</groupId>
         <artifactId>cubeon-bugzilla-module</artifactId>
-        <version>1.2.0.0</version>
+        <version>1.2.1.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>cubeon-bugzilla-core</artifactId>
     <packaging>nbm</packaging>
     <name>Cube°n Bugzilla Repository</name>
     <description>Bugzilla Repository Connector</description>
-    <version>1.2.0.0</version>
+    <version>1.2.1.0</version>
     <build>
         <plugins>
             <plugin>

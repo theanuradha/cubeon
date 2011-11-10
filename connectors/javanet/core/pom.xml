@@ -3,14 +3,14 @@
     <parent>
         <groupId>org.netbeans.cubeon</groupId>
         <artifactId>cubeon-javanet-module</artifactId>
-        <version>1.2.0.0</version>
+        <version>1.2.1.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>cubeon-javanet-connecter</artifactId>
     <packaging>nbm</packaging>
     <name>Cube°n Java.net Repository</name>
     <description>Java.net Repository Connecter</description>
-    <version>1.2.0.0</version>
+    <version>1.2.1.0</version>
     <build>
         <plugins>
             <plugin>
