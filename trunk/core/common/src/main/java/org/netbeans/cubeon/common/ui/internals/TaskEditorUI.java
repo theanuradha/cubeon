@@ -127,7 +127,7 @@ public class TaskEditorUI extends javax.swing.JPanel implements TaskEditor {
         lblUpdated.setForeground(new java.awt.Color(102, 102, 102));
         lblUpdated.setText(NbBundle.getMessage(TaskEditorUI.class, "TaskEditorUI.lblUpdated.text","-")); // NOI18N
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        jPanel1.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0, new java.awt.Color(137, 140, 149)));
         jPanel1.setOpaque(false);
 
         pnlLeftSide.setOpaque(false);
@@ -147,8 +147,8 @@ public class TaskEditorUI extends javax.swing.JPanel implements TaskEditor {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, pnlLeftSide, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 374, Short.MAX_VALUE)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, pnlRightSide, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 374, Short.MAX_VALUE)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, pnlLeftSide, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, pnlRightSide, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE)
         );
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
