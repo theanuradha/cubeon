@@ -210,15 +210,16 @@ public final class TaskExplorerTopComponent extends TopComponent implements Expl
         goBackToRoot = new javax.swing.JButton();
         subToolbar = new javax.swing.JToolBar();
         downMenu = new javax.swing.JButton();
-        jSeparator1 = new javax.swing.JSeparator();
 
         setLayout(new java.awt.BorderLayout());
 
         treeView.setBorder(null);
         add(treeView, java.awt.BorderLayout.CENTER);
 
+        mainToolbarHolder.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(137, 140, 149)));
         mainToolbarHolder.setLayout(new java.awt.BorderLayout());
 
+        mainToolBar.setBorder(null);
         mainToolBar.setFloatable(false);
         mainToolBar.setRollover(true);
 
@@ -263,6 +264,7 @@ public final class TaskExplorerTopComponent extends TopComponent implements Expl
 
         mainToolbarHolder.add(mainToolBar, java.awt.BorderLayout.CENTER);
 
+        subToolbar.setBorder(null);
         subToolbar.setFloatable(false);
         subToolbar.setRollover(true);
 
@@ -278,7 +280,6 @@ public final class TaskExplorerTopComponent extends TopComponent implements Expl
         subToolbar.add(downMenu);
 
         mainToolbarHolder.add(subToolbar, java.awt.BorderLayout.EAST);
-        mainToolbarHolder.add(jSeparator1, java.awt.BorderLayout.SOUTH);
 
         add(mainToolbarHolder, java.awt.BorderLayout.PAGE_START);
     }// </editor-fold>//GEN-END:initComponents
@@ -304,7 +305,6 @@ private void taskViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton downMenu;
     private javax.swing.JButton goBackToRoot;
-    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JToolBar mainToolBar;
     private javax.swing.JPanel mainToolbarHolder;
     private javax.swing.JButton newTask;

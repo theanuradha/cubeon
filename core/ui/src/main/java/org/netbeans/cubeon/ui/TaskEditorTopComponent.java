@@ -163,10 +163,11 @@ final class TaskEditorTopComponent extends TopComponent implements SaveCookie, C
         header.setMinimumSize(new java.awt.Dimension(0, 34));
         header.setPreferredSize(new java.awt.Dimension(0, 34));
 
-        lblHeader.setFont(new java.awt.Font("Tahoma", 1, 13));
+        lblHeader.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
         lblHeader.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/netbeans/cubeon/ui/repository.png"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(lblHeader, "Task Element Name"); // NOI18N
 
+        jToolBar1.setBorder(null);
         jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
         jToolBar1.setOpaque(false);

@@ -145,10 +145,10 @@ final class ChooseRepositoryProvider extends javax.swing.JPanel implements Explo
         lblMainHeader = new javax.swing.JLabel();
         lblSubHeader = new javax.swing.JLabel();
         lblIcon = new javax.swing.JLabel();
-        jSeparator1 = new javax.swing.JSeparator();
         javax.swing.JScrollPane scrPane = taskTreeView;
 
         pnlHeader.setBackground(new java.awt.Color(255, 255, 255));
+        pnlHeader.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(137, 140, 149)));
 
         lblMainHeader.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         lblMainHeader.setText(NbBundle.getMessage(ChooseRepositoryProvider.class, "LBL_Repo_Provider")); // NOI18N
@@ -171,7 +171,6 @@ final class ChooseRepositoryProvider extends javax.swing.JPanel implements Explo
                 .add(45, 45, 45)
                 .add(lblIcon, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 18, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
-            .add(jSeparator1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
         );
         pnlHeaderLayout.setVerticalGroup(
             pnlHeaderLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -183,9 +182,7 @@ final class ChooseRepositoryProvider extends javax.swing.JPanel implements Explo
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .add(lblSubHeader))
                     .add(lblIcon, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .add(8, 8, 8)
-                .add(jSeparator1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(2, 2, 2))
+                .add(12, 12, 12))
         );
 
         scrPane.setBorder(null);
@@ -210,7 +207,6 @@ final class ChooseRepositoryProvider extends javax.swing.JPanel implements Explo
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel lblIcon;
     private javax.swing.JLabel lblMainHeader;
     private javax.swing.JLabel lblSubHeader;
