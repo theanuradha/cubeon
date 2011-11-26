@@ -14,17 +14,8 @@ Cube°n Trac Connector is for Connect to [http://trac.edgewall.org/ Trac issue t
       * Tracking of Locally Modified tasks and revert modifications.
   
   * Installation prerequisites
-      * You will need a special version of the [http://trac-hacks.org/wiki/XmlRpcPlugin Trac-XMLRPC Plugin]. 
-      * The original available plugin has some [http://trac-hacks.org/ticket/3110 problems] with Trac 0.11 and the custom workflow. 
-      * These are fixed and the version of the XMLRPC is incremented to 1.5. 
-      * You can get this enhanced version via
-          * downloading the [http://cubeon.googlecode.com/files/workflow-actions-1.6.6.patch patch] and appling it to the latest available version from the official [http://trac-hacks.org/svn/xmlrpcplugin SVN] or
-          * downloading the [http://cubeon.googlecode.com/files/TracXMLRPC-1.6.6-py2.5.egg Trac-XMLRPC PythonEgg] for Python 2.5
-          * downloading the [http://cubeon.googlecode.com/files/TracXMLRPC-1.6.6-py2.6.egg Trac-XMLRPC PythonEgg] for Python 2.6
-      * Add the PythonEgg to the plugin directory of your Trac repository
-      * Further details can be found on the original distribution [http://trac-hacks.org/wiki/XmlRpcPlugin site]
+ [http://trac-hacks.org/wiki/XmlRpcPlugin XmlRpcPlugin ]
 
-*Note* : Patched Trac xmlrpc 1.5 has compatibility issues ( see [http://code.google.com/p/cubeon/issues/detail?id=81 Issue-81]  ), avoid those issues please use the [http://cubeon.googlecode.com/files/workflow-actions-1.6.6.patch patch 1.6]  or [http://cubeon.googlecode.com/files/TracXMLRPC-1.6.0-py2.5.egg Trac-XMLRPC 1.6 PythonEgg].To work with patched Trac xmlrpc 1.6 you need to use [http://cubeon.googlecode.com/files/dev-23-04.zip cube'n 1.1 dev version]
 
 [CreateTracRepository Create Trac Repository]
 
