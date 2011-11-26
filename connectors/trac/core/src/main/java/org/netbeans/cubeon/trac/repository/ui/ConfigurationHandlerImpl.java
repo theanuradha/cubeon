@@ -135,7 +135,6 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
         lblPassword = new javax.swing.JLabel();
         txtPassword = new javax.swing.JPasswordField();
         chIgnoreSSL = new javax.swing.JCheckBox();
-        jLabel3 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         lblNotify = new javax.swing.JLabel();
         jProgressBar1 = new javax.swing.JProgressBar();
@@ -156,20 +155,12 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
 
         chIgnoreSSL.setText(NbBundle.getMessage(ConfigurationHandlerImpl.class, "ConfigurationHandlerImpl.chIgnoreSSL.text")); // NOI18N
 
-        jLabel3.setText(NbBundle.getMessage(ConfigurationHandlerImpl.class, "ConfigurationHandlerImpl.jLabel3.text")); // NOI18N
-        jLabel3.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel3MouseClicked(evt);
-            }
-        });
-
         jPanel1.setLayout(new java.awt.BorderLayout());
 
         lblNotify.setText(NbBundle.getMessage(ConfigurationHandlerImpl.class, "ConfigurationHandlerImpl.lblNotify.text","-")); // NOI18N
         jPanel1.add(lblNotify, java.awt.BorderLayout.CENTER);
 
         jProgressBar1.setIndeterminate(true);
-        jProgressBar1.setPreferredSize(new java.awt.Dimension(146, 14));
         jPanel1.add(jProgressBar1, java.awt.BorderLayout.SOUTH);
 
         btnValidate.setText(NbBundle.getMessage(ConfigurationHandlerImpl.class, "ConfigurationHandlerImpl.btnValidate.text","-")); // NOI18N
@@ -188,9 +179,6 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
                     .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
                         .addContainerGap()
                         .add(chIgnoreSSL, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 421, Short.MAX_VALUE))
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(jLabel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE))
                     .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
                         .addContainerGap()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -233,7 +221,6 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
                 .add(jLabel2)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jLabel1)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                         .add(lblUserID)
@@ -245,9 +232,7 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
                             .add(lblPassword))))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(chIgnoreSSL, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 18, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jLabel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 47, Short.MAX_VALUE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 61, Short.MAX_VALUE)
                 .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 36, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(btnValidate)
@@ -290,22 +275,11 @@ public class ConfigurationHandlerImpl extends javax.swing.JPanel implements Conf
 
     }//GEN-LAST:event_btnValidateActionPerformed
 
-    private void jLabel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseClicked
-        try {
-            URLDisplayer.getDefault().
-                    showURL(new URL(
-                    "http://code.google.com/p/cubeon/wiki/GSTracRepository"));//NOI18N
-        } catch (MalformedURLException ex) {
-            //ignore
-        }
-    }//GEN-LAST:event_jLabel3MouseClicked
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnValidate;
     private javax.swing.JCheckBox chIgnoreSSL;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JLabel lblName;
