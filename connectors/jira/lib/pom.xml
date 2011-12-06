@@ -53,10 +53,9 @@
             <version>0.2</version>
         </dependency>
         <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-netbeans-libs-commons_logging</artifactId>
-            <version>${netbeans.release}</version>
-            <type>jar</type>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.1.1</version>
         </dependency>
     </dependencies>
     <repositories>
