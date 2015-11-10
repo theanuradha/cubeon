@@ -1,0 +1,22 @@
+# Getting Started with Cube°n
+# Cube°n Task-Focused Interface for Netbeans #
+
+Cube°n makes tasks a first class part of NetBeans by integrating with issue tracking system. It then monitors your work activity to identify what's relevant and improves productivity by reducing searching, scrolling, navigation and sharing expertise.
+## Getting Started with Cube°n ##
+
+  * Cube°n only works with Netbeans 6.5 or Latest
+
+  * Get latest Cube°n bits from https://cubeon.googlecode.com/
+
+After successful install go to **Windows** > **Cube°n** > and open both **Task Explorer** and **Task Repository** view
+
+> http://cubeon.googlecode.com/svn/images/WindowMenu.PNG
+
+
+  * Task Repository Connectors
+    * [Local Repository](GSLocalRepository.md)
+    * [Jira Repository Connector](GSJiraRepository.md)
+
+  * [Task Explorer](GS_Task_Explorer.md)
+
+  * [Task Context](GS_Task_Context.md)

@@ -1,0 +1,12 @@
+### Getting Started with Task Context ###
+
+Task Context enables multitasking by monitors your work activity to identify what's relevant and improves productivity by reducing searching, scrolling, navigation and sharing expertise.
+
+  * Features
+    * Task Linking (Grouping related tasks under Task ).
+    * Source Linking (Grouping related Sources under Task ).
+    * Stacktraces Navigation (Scan and view task related Stacktraces and supports direct navigation to source code).
+    * Active Task Context View On Task Explorer.
+
+
+> [Working With Task Context](GS_working_with_context.md)

@@ -1,0 +1,16 @@
+# Cube'n release -1.0.3.0 #
+> The Cube'n team is happy to announce the 1.0.3.0 release of Task integration for Netbeans (Cube'n). This release is primarily focused on Trac Repository Connector,Usability (D'n'D) bug fixes, improving stability and performance.
+
+> ## Whats New ##
+    * [Trac Repository Connector](GSTracRepository.md)
+      * Supports to connect Trac 0.11 repository.
+      * Create/Modify Task **offline/online** and merge task with remote repository.
+      * Rich Task Editor with attributes editing, workflow actions and comments.
+      * Trac Repository Query Support.
+      * Customized Trac Repositories including custom workflows.
+      * Tracking of Locally Modified tasks and revert modifications.
+    * Drag n Drop Task Management.
+      * Task explorer task management
+      * Query result view to task explorer
+
+> Please Join our [User group](http://groups.google.com/group/cubeon-user) and bug reports and feature requests are welcome in the project [issue tracker](http://code.google.com/p/cubeon/issues/list).

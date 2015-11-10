@@ -1,0 +1,31 @@
+### Working With Task Context ###
+
+#  In order to use Task Context you need to a Activate Task.Activate task is simple you can simply click on Task Editor blue icon or right click on task explorer and select "Activate".
+
+> http://cubeon.googlecode.com/svn/images/activateTaskEditor.PNG
+
+  * OR
+
+> http://cubeon.googlecode.com/svn/images/activateTaskExplorer.PNG
+
+
+#  Note: If you activate Task from Task Editor it will automatically switch to Task Context View on Task Explorer, If you click on Task Explorer and select "Activate" it will not switch to Task Context View, you have to change to Task Context View by Click on Task Explorer blue icon or View Drop Menu.
+
+> http://cubeon.googlecode.com/svn/images/contextViewSelect.PNG
+
+
+
+#  Task Context has api/spi there is possibility add any resource can be associated with task.
+
+> Current implementation of context api/spi support as follows .
+
+  * Add any source to Task if it on open projects class path,Add sources by right click on source and "add to active task context".
+
+  * Stacktraces automatically detect if  task description or comments have any.
+
+  * Sub/Related Task are support add any task by right click on task.
+
+> http://cubeon.googlecode.com/svn/images/taskcontext.PNG
+
+NOTE:
+> Automatic sub task detect will not supported due to Jira Soap API limitations.[Issue 12](http://code.google.com/p/cubeon/issues/detail?id=12)

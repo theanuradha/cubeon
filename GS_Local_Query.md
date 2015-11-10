@@ -1,0 +1,10 @@
+### Getting Started with Local Repository Query ###
+
+#  Right Click On any Local Repository and select "New Query..."
+> Note: Optionally you can create queries by Right Click on Task Explorer or Task repository View.
+
+> http://cubeon.googlecode.com/svn/images/newLocalQuery.PNG
+
+#  Edit Attributes and Finish.It will Open up Query results view showing matching Tasks.
+
+> http://cubeon.googlecode.com/svn/images/queryresultView.PNG

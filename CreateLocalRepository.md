@@ -1,0 +1,11 @@
+## Create New Local Repository ##
+
+# Right Click on Repository View And invoke "New Task Repository..." and it will open wizard to select Repository Connector Type (Local,[Jira](GSJiraRepository.md) etc...).
+Select Local Repository and go Next > .
+
+> http://cubeon.googlecode.com/svn/images/selectRepoType.PNG
+
+
+# Add a name and description and click Finish.
+
+> http://cubeon.googlecode.com/svn/images/createLocalrepo.PNG
